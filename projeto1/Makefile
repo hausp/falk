@@ -17,6 +17,9 @@ LDLIBS    :=-lm
 LDFLAGS   :=
 CXXFLAGS  :=-std=c++11 -Wall
 INCLUDE   :=-I$(HDRDIR)
+# MKX variables
+MKXINC    :=flex bison
+MKXALL    :=$(patsubst %,%all,$(MKXINC))
 # Files
 SRC       :=$(shell find $(SRCDIR) -name '*.cpp')
 DEP       :=$(patsubst %.cpp,$(DEPDIR)/%.d,$(SRC))
@@ -32,56 +35,58 @@ TSTEXEC   :=$(patsubst $(TESTDIR)/%.cpp,$(BINDIR)/%,$(TSTFILE))
 .PHONY: all makedir clean clean_deps clean_all tests
 
 ################################# MAIN RULES ##################################
-all: makedir $(EXEC)
+all: makedir $(MKXALL) $(EXEC)
 
 $(EXEC): $(OBJ)
-    @echo "[linking] $@"
-    @$(CXX) $(OBJ) -o $@ $(LDLIBS) $(LDFLAGS)
+	@echo "[linking] $@"
+	@$(CXX) $(OBJ) -o $@ $(LDLIBS) $(LDFLAGS)
 
 $(BUILDIR)/%.o: %.cpp
-    @echo "[  $(CXX)  ] $< -> .o"
-    @mkdir -p $(BUILDIR)/$(*D)
-    @$(CXX) $(CXXFLAGS) $(INCLUDE) -c $< -o $@
+	@echo "[  $(CXX)  ] $< -> .o"
+	@mkdir -p $(BUILDIR)/$(*D)
+	@$(CXX) $(CXXFLAGS) $(INCLUDE) -c $< -o $@
 
 # For each .cpp file, creates a .d file with all dependencies of .cpp,
 # including .d as target (to ensure up-to-date dependencies, in case of
 # new includes being added)
 $(DEPDIR)/%.d: %.cpp
-    @echo "[makedep] $< -> .d"
-    @mkdir -p $(DEPDIR)/$(*D)
-    @$(CXX) -MM -MP -MT "$(BUILDIR)/$*.o $@" -MF "$@" $< $(INCLUDE) $(CXXFLAGS)
+	@echo "[makedep] $< -> .d"
+	@mkdir -p $(DEPDIR)/$(*D)
+	@$(CXX) -MM -MP -MT "$(BUILDIR)/$*.o $@" -MF "$@" $< $(INCLUDE) $(CXXFLAGS)
 
 makedir: | $(BINDIR)
 
 $(BINDIR):
-    @echo "[ mkdir ] Creating directory '$@'"
-    @mkdir -p $@
+	@echo "[ mkdir ] Creating directory '$@'"
+	@mkdir -p $@
 
 ################################ TESTS RULES ##################################
 tests: makedir $(TSTEXEC)
 
 $(TSTEXEC): $(PUREOBJ) $(TSTOBJ)
-    @echo "[linking] $@"
-    @$(CXX) $(PUREOBJ) $(BUILDIR)/$(TESTDIR)/$(@F).o -o $@ $(LDLIBS) $(LDFLAGS)
+	@echo "[linking] $@"
+	@$(CXX) $(PUREOBJ) $(BUILDIR)/$(TESTDIR)/$(@F).o -o $@ $(LDLIBS) $(LDFLAGS)
 
 ################################ CLEAN RULES ##################################
 # Only remove object files
 clean:
-    @$(RM) -r $(BUILDIR)
+	@$(RM) -r $(BUILDIR)
 
 # Only remove dependency files
 clean_deps:
-    @$(RM) -r $(DEPDIR)
+	@$(RM) -r $(DEPDIR)
 
 # Remove object, binary and dependency files
 clean_all: clean clean_deps
-    @$(RM) $(EXEC) $(TSTEXEC)
+	@$(RM) $(EXEC) $(TSTEXEC)
 
 ################################## INCLUDES ###################################
+-include $(MKXINC)
 # Do not include list of dependencies when they are going to be deleted, i.e.,
 # when the target is clean_all or clean_deps
 ifneq ($(MAKECMDGOALS), clean_all)
 ifneq ($(MAKECMDGOALS), clean_deps)
 -include $(DEP)
 -include $(TSTDEP)
+endif
 endif
