@@ -32,7 +32,7 @@ extern void yyerror(const char* s, ...);
  * Types should match the names used in the union.
  * Example: %type<node> expr
  */
-%type <com> program lines line expr
+%type <type> program lines line expr
 %type <var> assignment
 
 /* Operator precedence for mathematical operators

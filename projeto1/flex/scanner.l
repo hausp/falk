@@ -9,7 +9,8 @@ void yyerror(const char* s, ...);
 
 %option noyywrap nodefault yylineno
 
-num -?([0-9]+)/*\.?[0-9]*|\.[0-9]+)(e-?[0-9]+)?*/
+type int
+num -?([0-9]+)
 var ([a-zA-Z][a-zA-Z0-9_]*)
 nonacceptable [^-\+\*\\(\)/=\n{num}{var} \t]+
 
@@ -17,11 +18,10 @@ nonacceptable [^-\+\*\\(\)/=\n{num}{var} \t]+
 %%
 
 [ \t]               ; //ignores spaces
+{type}				{yylval.type = Type::INT; return T_TYPE;}
 {var}               {yylval.var = yytext[0]; return T_VAR;}
 {num} 				{yylval.value = std::atof(yytext); return T_REAL;}
-/*{num}"i"			{yytext[yyleng-1] = '\0';
-				     yylval.value = std::atof(yytext); return T_IMAG;}*/
-"+"                 {return T_PLUS;} /*special character with " "*/
+"+"                 {return T_PLUS;} /* special character with " " */
 "-"					{return T_MINUS;}
 \*                  {return T_TIMES;} /* special character with \ */
 "/"					{return T_DIVIDE;}
@@ -29,7 +29,7 @@ nonacceptable [^-\+\*\\(\)/=\n{num}{var} \t]+
 ")"					{return T_CPAR;}
 "="                 {return T_ASSIGN;}
 \n                  {return T_NL;}
-{nonacceptable}	    {yyerror("unknown symbol %s\n", *yytext);} /*complains about every unknown character*/
+{nonacceptable}	    {yyerror("unknown symbol %s\n", *yytext);} /* complains about every unknown character */
 
 %%
 

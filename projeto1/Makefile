@@ -12,20 +12,20 @@ BINDIR    :=.
 TESTDIR   :=tests
 DEPDIR    :=.deps
 # Compiler & linker flags
-CXX       :=clang
+CXX       :=clang++
 LDLIBS    :=-lm
 LDFLAGS   :=
-CXXFLAGS  :=-std=c++11 -Wall
+CXXFLAGS  :=-std=c++11 -fcxx-exceptions -Wno-deprecated-register -Wall
 INCLUDE   :=-I$(HDRDIR)
 # MKX variables
-MKXINC    :=flex bison
-MKXALL    :=$(patsubst %,%all,$(MKXINC))
+MKXINC    :=bison.mkx flex.mkx
+MKXALL    :=$(patsubst %.mkx,%all,$(MKXINC))
 # Files
 SRC       :=$(shell find $(SRCDIR) -name '*.cpp')
 DEP       :=$(patsubst %.cpp,$(DEPDIR)/%.d,$(SRC))
 OBJ       :=$(patsubst %.cpp,$(BUILDIR)/%.o,$(SRC))
 MAIN      :=main
-EXEC      :=$(BINDIR)/executable
+EXEC      :=$(BINDIR)/lukacompiler
 PUREOBJ   :=$(filter-out $(BUILDIR)/$(SRCDIR)/$(MAIN).o,$(OBJ))
 TSTFILE   :=$(shell find $(TESTDIR) -name '*.cpp' 2> /dev/null)
 TSTDEP    :=$(patsubst %.cpp,$(DEPDIR)/%.d,$(TSTFILE))
@@ -35,14 +35,14 @@ TSTEXEC   :=$(patsubst $(TESTDIR)/%.cpp,$(BINDIR)/%,$(TSTFILE))
 .PHONY: all makedir clean clean_deps clean_all tests
 
 ################################# MAIN RULES ##################################
-all: makedir $(MKXALL) $(EXEC)
+all: makedir $(EXEC)
 
-$(EXEC): $(OBJ)
+$(EXEC): $(MKXALL) $(OBJ)
 	@echo "[linking] $@"
 	@$(CXX) $(OBJ) -o $@ $(LDLIBS) $(LDFLAGS)
 
 $(BUILDIR)/%.o: %.cpp
-	@echo "[  $(CXX)  ] $< -> .o"
+	@echo "[$(CXX)] $< -> .o"
 	@mkdir -p $(BUILDIR)/$(*D)
 	@$(CXX) $(CXXFLAGS) $(INCLUDE) -c $< -o $@
 

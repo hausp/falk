@@ -4,15 +4,15 @@
 ###############################################################################
 
 ################################## VARIABLES ##################################
-FLEX     := flex
-FLEXDIR  := flex
-FLEXIN   := $(shell find $(FLEXDIR) -name '*.l')
-FLEXOUT  := $(patsubst $(FLEXDIR)/%.l,$(SRCDIR)/%.cpp,$(FLEXIN))
+BISON     := bison
+BISONDIR  := bison
+BISONIN   := $(shell find $(BISONDIR) -name '*.y')
+BISONOUT  := $(patsubst $(BISONDIR)/%.y,$(SRCDIR)/%.cpp,$(BISONIN))
 
-.PHONY: flexall
+.PHONY: bisonall
 
-flexall: $(FLEXOUT)
+bisonall: $(BISONOUT)
 
-$(SRCDIR)/%.cpp: $(FLEXDIR)/%.l
-	@echo "[ $(FLEX) ] $^ -> .cpp"
-	$(FLEX) -o $@ $^
+$(SRCDIR)/%.cpp $(HDRDIR)/%.h: $(BISONDIR)/%.y
+	@echo "[ $(BISON) ] $^ -> .h .cpp"
+	@$(BISON) --defines=$(HDRDIR)/$*.h --output=$(SRCDIR)/$*.cpp $^
