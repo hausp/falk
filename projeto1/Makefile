@@ -8,10 +8,11 @@
 SRCDIR    :=src
 HDRDIR    :=include
 BUILDIR   :=build
-BINDIR    :=bin
+BINDIR    :=.
 TESTDIR   :=tests
 DEPDIR    :=.deps
 # Compiler & linker flags
+CXX       :=clang
 LDLIBS    :=-lm
 LDFLAGS   :=
 CXXFLAGS  :=-std=c++11 -Wall
@@ -74,7 +75,7 @@ clean_deps:
 
 # Remove object, binary and dependency files
 clean_all: clean clean_deps
-    @$(RM) -r $(BINDIR)
+    @$(RM) $(EXEC) $(TSTEXEC)
 
 ################################## INCLUDES ###################################
 # Do not include list of dependencies when they are going to be deleted, i.e.,
