@@ -4,15 +4,22 @@
 ###############################################################################
 
 ################################## VARIABLES ##################################
-FLEX     := flex
-FLEXDIR  := flex
-FLEXIN   := $(shell find $(FLEXDIR) -name '*.l')
-FLEXOUT  := $(patsubst $(FLEXDIR)/%.l,$(SRCDIR)/%.cpp,$(FLEXIN))
+FLEXDIR   :=flex
+FLEXIN    :=$(shell find $(FLEXDIR) -name '*.l' 2> /dev/null)
+FLEXOUT   :=$(patsubst $(FLEXDIR)/%.l,$(SRCDIR)/%.cpp,$(FLEXIN))
+MAKEDIR   +=$(FLEXDIR)
 
-.PHONY: flexall
+ifneq ($(filter $(FLEXOUT),$(SRC)), $(FLEXOUT))
+OBJ += $(patsubst %.cpp,$(BUILDIR)/%.o,$(FLEXOUT))
+DEP += $(patsubst %.cpp,$(DEPDIR)/%.d,$(FLEXOUT))
+endif
 
-flexall: $(FLEXOUT)
+.PHONY: flexall flexclean
 
+#################################### RULES ####################################
 $(SRCDIR)/%.cpp: $(FLEXDIR)/%.l
-	@echo "[ $(FLEX) ] $^ -> .cpp"
-	$(FLEX) -o $@ $^
+	@echo "[  $(LEX)  ] $^ -> .cpp"
+	@$(LEX) -o $@ $^
+
+flexclean:
+	@$(RM) $(FLEXOUT)

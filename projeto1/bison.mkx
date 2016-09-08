@@ -4,15 +4,24 @@
 ###############################################################################
 
 ################################## VARIABLES ##################################
-BISON     := bison
-BISONDIR  := bison
-BISONIN   := $(shell find $(BISONDIR) -name '*.y')
-BISONOUT  := $(patsubst $(BISONDIR)/%.y,$(SRCDIR)/%.cpp,$(BISONIN))
+BISON     :=bison
+BISONDIR  :=bison
+BISONIN   :=$(shell find $(BISONDIR) -name '*.y' 2> /dev/null)
+BISONDEF  :=$(patsubst $(BISONDIR)/%.y,$(HDRDIR)/%.h,$(BISONIN))
+BISONOUT  :=$(patsubst $(BISONDIR)/%.y,$(SRCDIR)/%.cpp,$(BISONIN))
+MAKEDIR   +=$(BISONDIR)
 
-.PHONY: bisonall
+ifneq ($(filter $(BISONOUT),$(SRC)), $(BISONOUT))
+OBJ += $(patsubst %.cpp,$(BUILDIR)/%.o,$(BISONOUT))
+DEP += $(patsubst %.cpp,$(DEPDIR)/%.d,$(BISONOUT))
+endif
 
-bisonall: $(BISONOUT)
+.PHONY: bisonall bisonclean
 
+#################################### RULES ####################################
 $(SRCDIR)/%.cpp $(HDRDIR)/%.h: $(BISONDIR)/%.y
 	@echo "[ $(BISON) ] $^ -> .h .cpp"
 	@$(BISON) --defines=$(HDRDIR)/$*.h --output=$(SRCDIR)/$*.cpp $^
+
+bisonclean:
+	@$(RM) $(BISONOUT) $(BISONDEF)

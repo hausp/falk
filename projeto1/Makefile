@@ -11,15 +11,16 @@ BUILDIR   :=build
 BINDIR    :=.
 TESTDIR   :=tests
 DEPDIR    :=.deps
+MAKEDIR   :=$(BINDIR) $(SRCDIR) $(HDRDIR)
 # Compiler & linker flags
 CXX       :=clang++
-LDLIBS    :=-lm
+LDLIBS    :=
 LDFLAGS   :=
 CXXFLAGS  :=-std=c++11 -fcxx-exceptions -Wno-deprecated-register -Wall
 INCLUDE   :=-I$(HDRDIR)
-# MKX variables
-MKXINC    :=bison.mkx flex.mkx
-MKXALL    :=$(patsubst %.mkx,%all,$(MKXINC))
+# MaKefile eXtension variables
+MKXFILES  :=$(wildcard *.mkx)
+MKXCLEAN  :=$(patsubst %.mkx,%clean,$(MKXFILES))
 # Files
 SRC       :=$(shell find $(SRCDIR) -name '*.cpp')
 DEP       :=$(patsubst %.cpp,$(DEPDIR)/%.d,$(SRC))
@@ -37,9 +38,11 @@ TSTEXEC   :=$(patsubst $(TESTDIR)/%.cpp,$(BINDIR)/%,$(TSTFILE))
 ################################# MAIN RULES ##################################
 all: makedir $(EXEC)
 
-$(EXEC): $(MKXALL) $(OBJ)
+-include $(MKXFILES)
+
+$(EXEC): $(OBJ)
 	@echo "[linking] $@"
-	@$(CXX) $(OBJ) -o $@ $(LDLIBS) $(LDFLAGS)
+	@$(CXX) $^ -o $@ $(LDLIBS) $(LDFLAGS)
 
 $(BUILDIR)/%.o: %.cpp
 	@echo "[$(CXX)] $< -> .o"
@@ -54,9 +57,9 @@ $(DEPDIR)/%.d: %.cpp
 	@mkdir -p $(DEPDIR)/$(*D)
 	@$(CXX) -MM -MP -MT "$(BUILDIR)/$*.o $@" -MF "$@" $< $(INCLUDE) $(CXXFLAGS)
 
-makedir: | $(BINDIR)
+makedir: | $(MAKEDIR)
 
-$(BINDIR):
+$(MAKEDIR):
 	@echo "[ mkdir ] Creating directory '$@'"
 	@mkdir -p $@
 
@@ -69,19 +72,18 @@ $(TSTEXEC): $(PUREOBJ) $(TSTOBJ)
 
 ################################ CLEAN RULES ##################################
 # Only remove object files
-clean:
+clean: $(MKXCLEAN)
 	@$(RM) -r $(BUILDIR)
 
 # Only remove dependency files
-clean_deps:
+clean_deps: $(MKXCLEAN_DEPS)
 	@$(RM) -r $(DEPDIR)
 
 # Remove object, binary and dependency files
 clean_all: clean clean_deps
 	@$(RM) $(EXEC) $(TSTEXEC)
 
-################################## INCLUDES ###################################
--include $(MKXINC)
+################################ PREREQUISITES ################################
 # Do not include list of dependencies when they are going to be deleted, i.e.,
 # when the target is clean_all or clean_deps
 ifneq ($(MAKECMDGOALS), clean_all)
