@@ -62,8 +62,16 @@
 
 
 /* Copy the first part of user declarations.  */
+#line 5 "bison/parser.y" /* yacc.c:339  */
 
-#line 67 "src/parser.cpp" /* yacc.c:339  */
+#include <cmath>
+#include <iostream>
+#include <unordered_map>
+
+extern int yylex();
+extern void yyerror(const char* s, ...);
+
+#line 75 "src/parser.cpp" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -97,7 +105,7 @@ extern int yydebug;
 
     #include "symbol_map.hpp"
 
-#line 101 "src/parser.cpp" /* yacc.c:355  */
+#line 109 "src/parser.cpp" /* yacc.c:355  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -114,8 +122,9 @@ extern int yydebug;
     T_OPAR = 265,
     T_CPAR = 266,
     T_ASSIGN = 267,
-    T_NL = 268,
-    U_MINUS = 269
+    T_COMMA = 268,
+    T_NL = 269,
+    U_MINUS = 270
   };
 #endif
 
@@ -130,7 +139,7 @@ union YYSTYPE
     int value;
     char * var;
 
-#line 134 "src/parser.cpp" /* yacc.c:355  */
+#line 143 "src/parser.cpp" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -147,20 +156,11 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 151 "src/parser.cpp" /* yacc.c:358  */
+#line 160 "src/parser.cpp" /* yacc.c:358  */
 /* Unqualified %code blocks.  */
-#line 5 "bison/parser.y" /* yacc.c:359  */
+#line 14 "bison/parser.y" /* yacc.c:359  */
 
-#include <cmath>
-#include <iostream>
-#include <unordered_map>
-
-extern int yylex();
-extern void yyerror(const char* s, ...);
-symbol_map symbols;
-%
-#line 15 "bison/parser.y" /* yacc.c:359  */
-
+    symbol_map symbols;
 
 #line 166 "src/parser.cpp" /* yacc.c:359  */
 
@@ -407,7 +407,7 @@ union yyalloc
 #define YYLAST   1
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  15
+#define YYNTOKENS  16
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  4
 /* YYNRULES -- Number of rules.  */
@@ -418,7 +418,7 @@ union yyalloc
 /* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
    by yylex, with out-of-bounds checking.  */
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   269
+#define YYMAXUTOK   270
 
 #define YYTRANSLATE(YYX)                                                \
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
@@ -453,14 +453,15 @@ static const yytype_uint8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,     7,     8,     9,    10,    11,    12,    13,    14
+       5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
+      15
 };
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    60,    60,    64,    65,    68
+       0,    61,    61,    65,    66,    69
 };
 #endif
 
@@ -470,8 +471,8 @@ static const yytype_uint8 yyrline[] =
 static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "T_TYPE", "T_VAR", "T_NUMBER", "T_PLUS",
-  "T_TIMES", "T_DIVIDE", "T_MINUS", "T_OPAR", "T_CPAR", "T_ASSIGN", "T_NL",
-  "U_MINUS", "$accept", "program", "lines", "line", YY_NULLPTR
+  "T_TIMES", "T_DIVIDE", "T_MINUS", "T_OPAR", "T_CPAR", "T_ASSIGN",
+  "T_COMMA", "T_NL", "U_MINUS", "$accept", "program", "lines", "line", YY_NULLPTR
 };
 #endif
 
@@ -481,7 +482,7 @@ static const char *const yytname[] =
 static const yytype_uint16 yytoknum[] =
 {
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-     265,   266,   267,   268,   269
+     265,   266,   267,   268,   269,   270
 };
 # endif
 
@@ -539,13 +540,13 @@ static const yytype_uint8 yycheck[] =
      symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,    16,    17,    18,     0,    18
+       0,    17,    18,    19,     0,    19
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,    15,    16,    17,    17,    18
+       0,    16,    17,    18,    18,    19
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
@@ -1228,7 +1229,7 @@ yyreduce:
   switch (yyn)
     {
       
-#line 1232 "src/parser.cpp" /* yacc.c:1646  */
+#line 1233 "src/parser.cpp" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1456,6 +1457,6 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 80 "bison/parser.y" /* yacc.c:1906  */
+#line 91 "bison/parser.y" /* yacc.c:1906  */
 
 

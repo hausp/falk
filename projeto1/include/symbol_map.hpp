@@ -14,7 +14,7 @@ struct todo_impl;
 template<>
 struct todo_impl<Type::INT> {
     using type = int;
-}
+};
 
 template<Type type>
 using todo = typename todo_impl<type>::type;
@@ -36,7 +36,7 @@ private:
     std::unordered_map<unsigned, variable<Type::INT>> int_vars;
 
     template<Type type>
-    variable<type>& todo(const std::string& name);
+    auto& container();
 };
 
 #include "symbol_map.ipp"

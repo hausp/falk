@@ -61,8 +61,9 @@ extern int yydebug;
     T_OPAR = 265,
     T_CPAR = 266,
     T_ASSIGN = 267,
-    T_NL = 268,
-    U_MINUS = 269
+    T_COMMA = 268,
+    T_NL = 269,
+    U_MINUS = 270
   };
 #endif
 
@@ -77,7 +78,7 @@ union YYSTYPE
     int value;
     char * var;
 
-#line 81 "include/parser.h" /* yacc.c:1909  */
+#line 82 "include/parser.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

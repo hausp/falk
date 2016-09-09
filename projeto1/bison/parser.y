@@ -39,6 +39,7 @@ extern void yyerror(const char* s, ...);
  */
 %type <type> program lines line expr
 %type <var> assignment
+%type <int> opt_init
 
 /* Operator precedence for mathematical operators
  * The latest it is listed, the highest the precedence
