@@ -16,7 +16,7 @@ MAKEDIR   :=$(BINDIR) $(SRCDIR) $(HDRDIR)
 CXX       :=clang++
 LDLIBS    :=
 LDFLAGS   :=
-CXXFLAGS  :=-std=c++11 -fcxx-exceptions -Wno-deprecated-register -Wall
+CXXFLAGS  :=-std=c++14 -fcxx-exceptions -Wno-deprecated-register -Wall
 INCLUDE   :=-I$(HDRDIR)
 # MaKefile eXtension variables
 MKXFILES  :=$(wildcard *.mkx)

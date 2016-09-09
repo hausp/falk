@@ -62,16 +62,8 @@
 
 
 /* Copy the first part of user declarations.  */
-#line 1 "bison/parser.y" /* yacc.c:339  */
 
-#include <cmath>
-#include <iostream>
-#include <unordered_map>
-
-extern int yylex();
-extern void yyerror(const char* s, ...);
-
-#line 75 "src/parser.cpp" /* yacc.c:339  */
+#line 67 "src/parser.cpp" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -101,13 +93,11 @@ extern void yyerror(const char* s, ...);
 extern int yydebug;
 #endif
 /* "%code requires" blocks.  */
-#line 10 "bison/parser.y" /* yacc.c:355  */
+#line 1 "bison/parser.y" /* yacc.c:355  */
 
-    enum class Type {
-        INT
-    };
+    #include "symbol_map.hpp"
 
-#line 111 "src/parser.cpp" /* yacc.c:355  */
+#line 101 "src/parser.cpp" /* yacc.c:355  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -116,15 +106,16 @@ extern int yydebug;
   {
     T_TYPE = 258,
     T_VAR = 259,
-    T_PLUS = 260,
-    T_TIMES = 261,
-    T_DIVIDE = 262,
-    T_MINUS = 263,
-    T_OPAR = 264,
-    T_CPAR = 265,
-    T_ASSIGN = 266,
-    T_NL = 267,
-    U_MINUS = 268
+    T_NUMBER = 260,
+    T_PLUS = 261,
+    T_TIMES = 262,
+    T_DIVIDE = 263,
+    T_MINUS = 264,
+    T_OPAR = 265,
+    T_CPAR = 266,
+    T_ASSIGN = 267,
+    T_NL = 268,
+    U_MINUS = 269
   };
 #endif
 
@@ -133,11 +124,13 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 21 "bison/parser.y" /* yacc.c:355  */
+#line 23 "bison/parser.y" /* yacc.c:355  */
 
     Type type;
+    int value;
+    char * var;
 
-#line 141 "src/parser.cpp" /* yacc.c:355  */
+#line 134 "src/parser.cpp" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -154,13 +147,22 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 158 "src/parser.cpp" /* yacc.c:358  */
+#line 151 "src/parser.cpp" /* yacc.c:358  */
 /* Unqualified %code blocks.  */
-#line 52 "bison/parser.y" /* yacc.c:359  */
+#line 5 "bison/parser.y" /* yacc.c:359  */
 
-    std::unordered_map<char, complex> vars;
+#include <cmath>
+#include <iostream>
+#include <unordered_map>
 
-#line 164 "src/parser.cpp" /* yacc.c:359  */
+extern int yylex();
+extern void yyerror(const char* s, ...);
+symbol_map symbols;
+%
+#line 15 "bison/parser.y" /* yacc.c:359  */
+
+
+#line 166 "src/parser.cpp" /* yacc.c:359  */
 
 #ifdef short
 # undef short
@@ -400,23 +402,23 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  6
+#define YYFINAL  4
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   3
+#define YYLAST   1
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  14
+#define YYNTOKENS  15
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  5
+#define YYNNTS  4
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  7
+#define YYNRULES  5
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  9
+#define YYNSTATES  6
 
 /* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
    by yylex, with out-of-bounds checking.  */
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   268
+#define YYMAXUTOK   269
 
 #define YYTRANSLATE(YYX)                                                \
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
@@ -451,14 +453,14 @@ static const yytype_uint8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,     7,     8,     9,    10,    11,    12,    13
+       5,     6,     7,     8,     9,    10,    11,    12,    13,    14
 };
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    59,    59,    63,    64,    68,    69,    72
+       0,    60,    60,    64,    65,    68
 };
 #endif
 
@@ -467,9 +469,9 @@ static const yytype_uint8 yyrline[] =
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "$end", "error", "$undefined", "T_TYPE", "T_VAR", "T_PLUS", "T_TIMES",
-  "T_DIVIDE", "T_MINUS", "T_OPAR", "T_CPAR", "T_ASSIGN", "T_NL", "U_MINUS",
-  "$accept", "program", "lines", "line", "expr", YY_NULLPTR
+  "$end", "error", "$undefined", "T_TYPE", "T_VAR", "T_NUMBER", "T_PLUS",
+  "T_TIMES", "T_DIVIDE", "T_MINUS", "T_OPAR", "T_CPAR", "T_ASSIGN", "T_NL",
+  "U_MINUS", "$accept", "program", "lines", "line", YY_NULLPTR
 };
 #endif
 
@@ -479,14 +481,14 @@ static const char *const yytname[] =
 static const yytype_uint16 yytoknum[] =
 {
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-     265,   266,   267,   268
+     265,   266,   267,   268,   269
 };
 # endif
 
-#define YYPACT_NINF -13
+#define YYPACT_NINF -2
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-13)))
+  (!!((Yystate) == (-2)))
 
 #define YYTABLE_NINF -1
 
@@ -497,7 +499,7 @@ static const yytype_uint16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-     -12,   -13,     1,   -12,   -13,   -10,   -13,   -13,   -13
+      -2,     0,    -2,    -2,    -2,    -2
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -505,19 +507,19 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       0,     5,     0,     2,     3,     0,     1,     4,     6
+       5,     0,     2,     3,     1,     4
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -13,   -13,   -13,     0,   -13
+      -2,    -2,    -2,    -1
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     2,     3,     4,     5
+      -1,     1,     2,     3
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -525,31 +527,31 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_uint8 yytable[] =
 {
-       1,     6,     8,     7
+       4,     5
 };
 
 static const yytype_uint8 yycheck[] =
 {
-      12,     0,    12,     3
+       0,     2
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,    12,    15,    16,    17,    18,     0,    17,    12
+       0,    16,    17,    18,     0,    18
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,    14,    15,    16,    16,    17,    17,    18
+       0,    15,    16,    17,    17,    18
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
-       0,     2,     1,     1,     2,     1,     2,     0
+       0,     2,     1,     1,     2,     0
 };
 
 
@@ -1225,20 +1227,8 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-        case 5:
-#line 68 "bison/parser.y" /* yacc.c:1646  */
-    { (yyval.type) = {0, 0} /*NULL*/; }
+      
 #line 1232 "src/parser.cpp" /* yacc.c:1646  */
-    break;
-
-  case 6:
-#line 69 "bison/parser.y" /* yacc.c:1646  */
-    { std::cout << "Res: " << (yyvsp[-1].type).real << " + " << (yyvsp[-1].type).imag << 'i' << std::endl; }
-#line 1238 "src/parser.cpp" /* yacc.c:1646  */
-    break;
-
-
-#line 1242 "src/parser.cpp" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1466,6 +1456,6 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 75 "bison/parser.y" /* yacc.c:1906  */
+#line 80 "bison/parser.y" /* yacc.c:1906  */
 
 

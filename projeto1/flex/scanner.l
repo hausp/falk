@@ -18,18 +18,19 @@ nonacceptable [^-\+\*\\(\)/=\n{num}{var} \t]+
 %%
 
 [ \t]               ; //ignores spaces
-{type}				{yylval.type = Type::INT; return T_TYPE;}
-{var}               {yylval.var = yytext[0]; return T_VAR;}
-{num} 				{yylval.value = std::atof(yytext); return T_REAL;}
-"+"                 {return T_PLUS;} /* special character with " " */
-"-"					{return T_MINUS;}
-\*                  {return T_TIMES;} /* special character with \ */
-"/"					{return T_DIVIDE;}
-"("					{return T_OPAR;}
-")"					{return T_CPAR;}
-"="                 {return T_ASSIGN;}
-\n                  {return T_NL;}
-{nonacceptable}	    {yyerror("unknown symbol %s\n", *yytext);} /* complains about every unknown character */
+{type}				{ yylval.type = Type::INT; return T_TYPE;}
+{var}               { yylval.var = yytext/*Potencial de ruim */; return T_VAR;}
+{num} 				{ yylval.value = std::atof(yytext); return T_NUMBER;}
+"+"                 { return T_PLUS;} /* special character with " " */
+"-"					{ return T_MINUS;}
+\*                  { return T_TIMES;} /* special character with \ */
+"/"					{ return T_DIVIDE;}
+"("					{ return T_OPAR;}
+")"					{ return T_CPAR;}
+"="                 { return T_ASSIGN;}
+","					{ return T_COMMA; }
+\n                  { return T_NL;}
+{nonacceptable}	    { /*std::cout << "nonacceptable" << std::endl;*/	yyerror("unknown symbol %s\n", *yytext);} /* complains about every unknown character */
 
 %%
 

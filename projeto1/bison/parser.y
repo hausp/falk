@@ -1,3 +1,7 @@
+%code requires {
+    #include "symbol_map.hpp"
+}
+
 %{
 #include <cmath>
 #include <iostream>
@@ -7,10 +11,8 @@ extern int yylex();
 extern void yyerror(const char* s, ...);
 %}
 
-%code requires{
-    enum class Type {
-        INT
-    };
+%code {
+    symbol_map symbols;
 }
 
 %define parse.trace
@@ -20,13 +22,16 @@ extern void yyerror(const char* s, ...);
  */
 %union {
     Type type;
+    int value;
+    char * var;
 }
 
 /* token defines our terminal symbols (tokens).
  */
 %token <type> T_TYPE
 %token <var> T_VAR
-%token T_PLUS T_TIMES T_DIVIDE T_MINUS T_OPAR T_CPAR T_ASSIGN T_NL
+%token <value> T_NUMBER
+%token T_PLUS T_TIMES T_DIVIDE T_MINUS T_OPAR T_CPAR T_ASSIGN T_COMMA T_NL
 
 /* type defines the type of our nonterminal symbols.
  * Types should match the names used in the union.
@@ -49,10 +54,6 @@ extern void yyerror(const char* s, ...);
  */
 %start program
 
-%code {
-    std::unordered_map<char, complex> vars;
-}
-
 %%
 
 program: /*use ctrl+d to stop*/
@@ -65,11 +66,25 @@ lines:
     ;
 
 line: 
-    T_NL { $$ = {0, 0} /*NULL*/; } /*nothing here to be used */
-    | expr T_NL { std::cout << "Res: " << $1.real << " + " << $1.imag << 'i' << std::endl; }
+    //T_NL { $$ = 0/*NULL*/; } /*nothing here to be used */
+    //| expr T_NL { std::cout << "Res: " << $1.real << " + " << $1.imag << 'i' << std::endl; }
     ;
 
 expr:
+    ;
+
+declaration:
+    T_TYPE T_VAR opt_init opt_others { symbols.assign($2, {$1, $3}); }
+    ;
+
+opt_init:
+    T_ASSIGN T_NUMBER { $$ = $2; }
+    |                 { $$ = 0; }
+    ;
+
+opt_others:
+    T_COMMA declaration
+    |
     ;
 
 %%

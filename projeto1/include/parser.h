@@ -40,13 +40,11 @@
 extern int yydebug;
 #endif
 /* "%code requires" blocks.  */
-#line 10 "bison/parser.y" /* yacc.c:1909  */
+#line 1 "bison/parser.y" /* yacc.c:1909  */
 
-    enum class Type {
-        INT
-    };
+    #include "symbol_map.hpp"
 
-#line 50 "include/parser.h" /* yacc.c:1909  */
+#line 48 "include/parser.h" /* yacc.c:1909  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -55,15 +53,16 @@ extern int yydebug;
   {
     T_TYPE = 258,
     T_VAR = 259,
-    T_PLUS = 260,
-    T_TIMES = 261,
-    T_DIVIDE = 262,
-    T_MINUS = 263,
-    T_OPAR = 264,
-    T_CPAR = 265,
-    T_ASSIGN = 266,
-    T_NL = 267,
-    U_MINUS = 268
+    T_NUMBER = 260,
+    T_PLUS = 261,
+    T_TIMES = 262,
+    T_DIVIDE = 263,
+    T_MINUS = 264,
+    T_OPAR = 265,
+    T_CPAR = 266,
+    T_ASSIGN = 267,
+    T_NL = 268,
+    U_MINUS = 269
   };
 #endif
 
@@ -72,11 +71,13 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 21 "bison/parser.y" /* yacc.c:1909  */
+#line 23 "bison/parser.y" /* yacc.c:1909  */
 
     Type type;
+    int value;
+    char * var;
 
-#line 80 "include/parser.h" /* yacc.c:1909  */
+#line 81 "include/parser.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
