@@ -67,8 +67,8 @@ lines:
     ;
 
 line: 
-    //T_NL { $$ = 0/*NULL*/; } /*nothing here to be used */
-    //| expr T_NL { std::cout << "Res: " << $1.real << " + " << $1.imag << 'i' << std::endl; }
+    T_NL { $$ = 0; }
+    | declaration T_NL { std::cout << "gg" << std::endl; }
     ;
 
 expr:
