@@ -2,14 +2,11 @@
 
 #include "SyntaxTree.hpp"
 
+polska::Node::Node(size_t children) : children(children) {}
 
-void SyntaxTree::emplace(const std::string& content, unsigned p, Type type) {
-	if (!root) {
-		root.reset(new Node(content, p, type));
-	}
-}
-
-SyntaxTree::Node::Node(const std::string& content, unsigned p, Type type)
- : content(content), priority(p), type(type) {
-
+polska::NodePtr polska::Node::create(const std::string& value) {
+    auto node = std::make_unique<Node>(0);
+    node->type = Type::OPERAND;
+    node->content = value;
+    return node;
 }

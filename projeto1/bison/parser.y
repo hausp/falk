@@ -1,5 +1,6 @@
 %code requires {
     #include "symbol_map.hpp"
+    #include "SyntaxTree.hpp"
 }
 
 %{
@@ -24,6 +25,7 @@ extern void yyerror(const char* s, ...);
     Type type;
     int value;
     char * var;
+    polska::NodePtr node;
 }
 
 /* token defines our terminal symbols (tokens).
@@ -37,8 +39,8 @@ extern void yyerror(const char* s, ...);
  * Types should match the names used in the union.
  * Example: %type<node> expr
  */
-%type <type> program lines line expr
-%type <var> assignment
+%type <node> expr command assignment program lines line expr variable
+%type <var>  opt_others declaration
 %type <int> opt_init
 
 /* Operator precedence for mathematical operators
@@ -68,23 +70,44 @@ lines:
 
 line: 
     T_NL { $$ = 0; }
-    | declaration T_NL { std::cout << "gg" << std::endl; }
+    | command T_NL
     ;
 
-expr:
+command:
+    declaration
+    | assignment
     ;
 
 declaration:
-    T_TYPE T_VAR opt_init opt_others { symbols.assign($2, {$1, $3}); }
+    T_TYPE T_VAR opt_init opt_others { Types::register(T_TYPE); symbols.assign($2, {$1, $3}); }
+    ;
+
+variable:
+    T_VAR { $$ = polska::Node::create($1); }
+    ;
+
+assignment:
+    variable T_ASSIGN expr { $$ = polska::Node::create(polska::Operator::ASSIGN, $1, $3); }
     ;
 
 opt_init:
     T_ASSIGN T_NUMBER { $$ = $2; }
-    |                 { $$ = 0; }
+    | { $$ = 0; }
     ;
 
+expr:
+    T_NUMBER { $$ = polska::Node::create(std::to_string($1)); }
+    | expr T_PLUS expr { $$ = polska::Node::create(polska::Operator::PLUS, $1, $3); }
+    | expr T_MINUS expr { $$ = polska::Node::create(polska::Operator::MINUS, $1, $3); }
+    | expr T_TIMES expr { $$ = polska::Node::create(polska::Operator::TIMES, $1, $3); }
+    | expr T_DIVIDE expr { $$ = polska::Node::create(polska::Operator::DIVIDE, $1, $3); }
+    | T_MINUS expr %prec U_MINUS { $$ = polska::Node::create(polska::Operator::MINUS, $2); }
+    | T_OPAR expr T_CPAR { $$ = polska::Node::create(polska::Operator::PAR, $2); }
+    ;
+
+
 opt_others:
-    T_COMMA declaration
+    T_COMMA typeless_declaration
     |
     ;
 
