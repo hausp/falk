@@ -15,11 +15,16 @@ namespace polska {
         TIMES = '*',
         DIVIDE = '/',
         PAR = '(',
-        ASSIGN = '='
+        ASSIGN = '=',
+        DECLARE = 'v'
     }
 
     struct Node;
+    struct DeclNode;
+    struct InitNode;
+
     using NodePtr = std::unique_ptr<Node>;
+    using InNodePtr = std::unique_ptr<InitNode>;
 
     struct Node {
         enum class Type { OPERAND, OPERATOR };
@@ -28,25 +33,34 @@ namespace polska {
         Type type;
         std::vector<NodePtr> children;
 
+        static NodePtr create() {}
         static NodePtr create(Operator);
 
-        template<typename... Nodes>
-        static NodePtr create(Operator, Nodes...);
+        template<typename, typename... Nodes>
+        static NodePtr create(const std::string&, Nodes&&...);
+
+        static NodePtr create(const std::string&, const std::string&);
 
         template<typename... Nodes>
-        void set_children(NodePtr, size_t);
+        static NodePtr create(Operator, Nodes&&...);
 
         template<typename... Nodes>
-        void set_children(NodePtr, size_t, NodePtr, Nodes...);
+        void set_children(NodePtr);
+        
+        template<typename... Nodes>
+        void set_children(NodePtr, NodePtr, Nodes&&...);
+
+        
+        virtual operator std::string() const;
     };
 
-    inline std::ostream& operator<<(std::ostream& stream, const Node& root) {
-        stream << root.content;
-        for (auto& child : root.children) {
-            stream << child;
-        }
-        return stream;
-    }
+    struct DeclNode : public Node {
+        operator std::string() const override;
+    };
+    
+    struct InitNode : public Node {
+        operator std::string() const override;
+    };
 }
 
 #include "SyntaxTree.ipp"

@@ -79,7 +79,16 @@ command:
     ;
 
 declaration:
-    T_TYPE T_VAR opt_init opt_others { Types::register(T_TYPE); symbols.assign($2, {$1, $3}); }
+    // implement Types and MagicEntity
+    T_TYPE T_VAR opt_init opt_others {
+        Types::register(T_TYPE);
+        symbols.assign($2, {$1, $3});
+        // $$ = polska::Node::create(aux($1), current_children);
+        $$ = std::make_unique<DeclNode>();
+        $$->content = aux($1);
+        $$->children.push_back(polska::Node::create(T_VAR, std::to_string($3)));
+        MagicEntity::register($$); // opt_others must know $$
+    }
     ;
 
 variable:
@@ -90,7 +99,9 @@ assignment:
     variable T_ASSIGN expr { $$ = polska::Node::create(polska::Operator::ASSIGN, $1, $3); }
     ;
 
+// must be a node
 opt_init:
+    // see line 89
     T_ASSIGN T_NUMBER { $$ = $2; }
     | { $$ = 0; }
     ;
@@ -110,6 +121,10 @@ opt_others:
     T_COMMA typeless_declaration
     |
     ;
+
+// use magicentity here
+typeless_declaration:
+    T_VAR opt_init opt_others {  }
 
 %%
 

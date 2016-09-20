@@ -10,3 +10,11 @@ polska::NodePtr polska::Node::create(const std::string& value) {
     node->content = value;
     return node;
 }
+
+NodePtr polska::Node::create(const std::string& var, const std::string& value) {
+	auto node = std::unique_ptr<Node>(new InitNode(2));
+	node->content = static_cast<char>(polska::Operator::ASSIGN);
+	node->children[0].reset(create(var));
+	node->children[1].reset(create(value));
+	return node;
+}
