@@ -1,6 +1,7 @@
 %code requires {
     #include "symbol_map.hpp"
     #include "SyntaxTree.hpp"
+    #include "Stacker.hpp"
 }
 
 %{
@@ -25,7 +26,7 @@ extern void yyerror(const char* s, ...);
     Type type;
     int value;
     char * var;
-    polska::NodePtr node;
+    polska::NodePtr node; // TODO: make this a lot worse to make it work NodePty->Node*
 }
 
 /* token defines our terminal symbols (tokens).
@@ -39,7 +40,7 @@ extern void yyerror(const char* s, ...);
  * Types should match the names used in the union.
  * Example: %type<node> expr
  */
-%type <node> command assignment program lines line expr variable declaration opt_init
+%type <node> command assignment program lines line expr variable declaration opt_init var_decl
 
 /* Operator precedence for mathematical operators
  * The latest it is listed, the highest the precedence
@@ -78,52 +79,55 @@ command:
 
 declaration:
     T_TYPE T_VAR opt_init opt_others {
-        Types::push(T_TYPE);
-        symbols.assign($2, {$1, $3});
-        // $$ = polska::Node::create(aux($1), current_children);
-        $$ = std::make_unique<DeclNode>();
-        $$->content = ttos($1);
-        $$->children.push_back(polska::Node::create(T_VAR, std::to_string($3)));
+        Types::push($1); // TODO: fix this
+        $$ = polska::Node::declaration($1, $2, $3, symbols);
         MagicEntity::push($$); // opt_others must know $$
     }
     ;
 
 variable:
-    T_VAR { $$ = polska::Node::create($1); }
+    T_VAR { $$ = polska::Node::create_literal($1); } // TODO: check if the variable was declared
     ;
 
 assignment:
-    variable T_ASSIGN expr { $$ = polska::Node::create(polska::Operator::ASSIGN, $1, $3); }
+    variable T_ASSIGN expr { $$ = polska::Node::create_operator(polska::Operator::ASSIGN, $1, $3); }
     ;
 
 opt_init:
-    T_ASSIGN T_NUMBER { $$ = polska::Node::create(std::to_string($2)); }
-    | { $$ = polska::Node::create("0"); }
+    T_ASSIGN T_NUMBER { $$ = polska::Node::create_literal($2); }
+    | { $$ = nullptr; }
     ;
 
 expr:
-    T_NUMBER { $$ = polska::Node::create(std::to_string($1)); }
-    | expr T_PLUS expr { $$ = polska::Node::create(polska::Operator::PLUS, $1, $3); }
-    | expr T_MINUS expr { $$ = polska::Node::create(polska::Operator::MINUS, $1, $3); }
-    | expr T_TIMES expr { $$ = polska::Node::create(polska::Operator::TIMES, $1, $3); }
-    | expr T_DIVIDE expr { $$ = polska::Node::create(polska::Operator::DIVIDE, $1, $3); }
-    | T_MINUS expr %prec U_MINUS { $$ = polska::Node::create(polska::Operator::MINUS, $2); }
-    | T_OPAR expr T_CPAR { $$ = polska::Node::create(polska::Operator::PAR, $2); }
+    T_NUMBER { $$ = polska::Node::create_literal($1); }
+    | expr T_PLUS expr { $$ = polska::Node::create_operator(polska::Operator::PLUS, $1, $3); }
+    | expr T_MINUS expr { $$ = polska::Node::create_operator(polska::Operator::MINUS, $1, $3); }
+    | expr T_TIMES expr { $$ = polska::Node::create_operator(polska::Operator::TIMES, $1, $3); }
+    | expr T_DIVIDE expr { $$ = polska::Node::create_operator(polska::Operator::DIVIDE, $1, $3); }
+    | T_MINUS expr %prec U_MINUS { $$ = polska::Node::create_operator(polska::Operator::MINUS, $2); }
+    | T_OPAR expr T_CPAR { $$ = polska::Node::create_operator(polska::Operator::PAR, $2); }
     ;
 
 
 opt_others:
-    T_COMMA typeless_declaration
-    |
+    T_COMMA var_decl
+    | { MagicEntity::clear(); }
     ;
 
-typeless_declaration:
+var_decl:
     T_VAR opt_init opt_others {
         auto type = Types::top();
-        symbols.assign($1, {type, $2});
-        auto node = std::make_unique<DeclNode>();
-        node->content = aux(type);
-        node->children.push_back(polska::Node::create(T_VAR, std::to_string($2)));
+        // $$->aux(type, $1, $2);
+        if (!symbols.declare($1, type)) {
+            utils::error<Error::MULTIPLE_DEFINITION>();
+        }
+
+        NodePtr node;
+        if ($2) {
+            node = polska::Node::create_operator(polska::Operator::ASSIGN, $1, $2);
+        } else {
+            node = polska::Node::create_literal($1);
+        }
         auto parent = MagicEntity::top();
         parent.children.push_back(std::move(node));
     }

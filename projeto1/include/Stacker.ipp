@@ -5,6 +5,11 @@ void Stacker<T>::push(const T& value) {
 }
 
 template<typename T>
-const T& Stacker<T>::top() const {
+const T& Stacker<T>::top() {
     return stack.top();
+}
+
+template<typename T>
+void Stacker<T>::clear() {
+    stack.clear();
 }

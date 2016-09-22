@@ -44,8 +44,9 @@ extern int yydebug;
 
     #include "symbol_map.hpp"
     #include "SyntaxTree.hpp"
+    #include "Stacker.hpp"
 
-#line 49 "include/parser.h" /* yacc.c:1909  */
+#line 50 "include/parser.h" /* yacc.c:1909  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -73,14 +74,14 @@ extern int yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 24 "bison/parser.y" /* yacc.c:1909  */
+#line 25 "bison/parser.y" /* yacc.c:1909  */
 
     Type type;
     int value;
     char * var;
     polska::NodePtr node;
 
-#line 84 "include/parser.h" /* yacc.c:1909  */
+#line 85 "include/parser.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

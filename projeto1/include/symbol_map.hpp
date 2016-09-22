@@ -3,11 +3,11 @@
 
 #include <string>
 #include <unordered_map>
-#include "Types.hpp"
+#include "utils.hpp"
 
 class symbol_map {
 public:
-    void declare(const std::string&, const Type&);
+    bool declare(const std::string&, const Type&);
 
 private:
     std::unordered_map<std::string, Type> vars;

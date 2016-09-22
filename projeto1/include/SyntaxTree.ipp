@@ -1,37 +1,35 @@
 namespace {
     template<typename... Nodes>
-    void aux(DeclNode& node, InNodePtr first, Nodes&&... nodes) {
-        node.children.push_back(first.release());
+    void aux(polska::DeclNode& node, polska::InNodePtr first, Nodes&&... nodes) {
+        node.children.push_back(polska::NodePtr(first.release()));
         aux(node, std::forward<Nodes>(nodes)...);
     }
 }
 
-template<typename... Nodes>
-polska::NodePtr polska::Node::create(Operator op, Nodes&&... children) {
-    constexpr static auto num = sizeof...(children);
-    auto node = std::make_unique<Node>(num);
-    node->type = Type::OPERATOR;
-    node->content = static_cast<char>(op);
-    set_children(*node, std::forward<Nodes>(children)...);
+template<typename T>
+polska::NodePtr polska::Node::create_literal(const T& value) {
+    auto node = std::make_unique<Node>();
+    node->type = Type::OPERAND;
+    node->content = utils::to_string(value);
     return node;
 }
 
-template<typename NodeType, typename... Nodes>
-static NodePtr polska::Node::create(const std::string& type, Nodes&&... children) {
-    constexpr static auto num = sizeof...(children);
-    auto result = std::make_unique<NodeType>(num);
-    result->content = type;
-    aux(*result, std::forward<Nodes>(children)...);
-    return result;
+template<typename... Nodes>
+polska::NodePtr polska::Node::create_operator(Operator op, Nodes&&... child_list) {
+    auto node = std::make_unique<Node>();
+    node->type = Type::OPERATOR;
+    node->content = static_cast<char>(op);
+    node->set_children(std::forward<Nodes>(child_list)...);
+    return node;
 }
 
 template<typename...>
-void polska::Node::set_children(Node&, size_t) {}
+void polska::Node::set_children() {}
 
 template<typename... Nodes>
-void polska::Node::set_children(Node& node, size_t c, NodePtr first, Nodes&&... children) {
-    node.children[c].reset(first);
-    set_children(node, c+1, children...);
+void polska::Node::set_children(NodePtr& first, Nodes&&... child_list) {
+    children.emplace_back(first.release());
+    set_children(std::forward<Nodes>(child_list)...);
 }
 
 inline polska::Node::operator std::string() const {
@@ -57,12 +55,12 @@ inline polska::DeclNode::operator std::string() const {
 }
 
 inline polska::InitNode::operator std::string() const {
-    std::string out(*children[0]);
+    std::string out(*children.front());
     out += " " + content + " ";
-    out += *children[1];
+    out += **std::next(children.begin());
     return out;
 }
 
-inline std::ostream& operator<<(std::ostream& stream, const Node& root) {
+inline std::ostream& operator<<(std::ostream& stream, const polska::Node& root) {
     return stream << std::string(root);
 }

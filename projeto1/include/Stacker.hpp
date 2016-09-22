@@ -1,5 +1,5 @@
-#ifndef TYPES_HPP
-#define TYPES_HPP
+#ifndef STACKER_HPP
+#define STACKER_HPP
 
 #include <stack>
 #include "SyntaxTree.hpp"
@@ -8,11 +8,12 @@
 template<typename T>
 class Stacker {
  public:
-    void push(const T&);
-    const T& top() const;
+    static void push(const T&);
+    static const T& top();
+    static void clear();
 
  private:
-    std::stack<T> stack;
+    static std::stack<T> stack;
 };
 
 using Types = Stacker<Type>;
@@ -20,4 +21,4 @@ using MagicEntity = Stacker<polska::Node>;
 
 #include "Stacker.ipp"
 
-#endif /* TYPES_HPP */
+#endif /* STACKER_HPP */

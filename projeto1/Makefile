@@ -16,6 +16,7 @@ MAKEDIR   :=$(BINDIR) $(SRCDIR) $(HDRDIR)
 CXX       :=clang++
 LDLIBS    :=
 LDFLAGS   :=
+#CXXFLAGS  :=-std=c++14 -Wall
 CXXFLAGS  :=-std=c++14 -fcxx-exceptions -Wno-deprecated-register -Wall\
             -Wno-unused-function -Wno-unneeded-internal-declaration
 INCLUDE   :=-I$(HDRDIR)

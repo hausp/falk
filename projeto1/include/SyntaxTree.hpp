@@ -3,10 +3,13 @@
 #ifndef POLSKA_NODE_HPP
 #define POLSKA_NODE_HPP
 
+#include <list>
 #include <memory>
 #include <ostream>
 #include <string>
-#include <vector>
+#include "utils.hpp"
+
+class symbol_map;
 
 namespace polska {
     enum class Operator : char {
@@ -17,40 +20,36 @@ namespace polska {
         PAR = '(',
         ASSIGN = '=',
         DECLARE = 'v'
-    }
+    };
 
     struct Node;
     struct DeclNode;
     struct InitNode;
 
     using NodePtr = std::unique_ptr<Node>;
+    using DeclNodePtr = std::unique_ptr<DeclNode>;
     using InNodePtr = std::unique_ptr<InitNode>;
 
     struct Node {
         enum class Type { OPERAND, OPERATOR };
-        Node(size_t);
         std::string content;
         Type type;
-        std::vector<NodePtr> children;
+        std::list<NodePtr> children;
 
-        static NodePtr create() {}
-        static NodePtr create(Operator);
-
-        template<typename, typename... Nodes>
-        static NodePtr create(const std::string&, Nodes&&...);
-
-        static NodePtr create(const std::string&, const std::string&);
+        template<typename T>
+        static NodePtr create_literal(const T&);
 
         template<typename... Nodes>
-        static NodePtr create(Operator, Nodes&&...);
+        static NodePtr create_operator(Operator, Nodes&&...);
 
         template<typename... Nodes>
-        void set_children(NodePtr);
+        void set_children();
         
         template<typename... Nodes>
-        void set_children(NodePtr, NodePtr, Nodes&&...);
+        void set_children(NodePtr&, Nodes&&...);
 
-        
+        static DeclNodePtr declaration(::Type, const std::string&, NodePtr, symbol_map&);
+
         virtual operator std::string() const;
     };
 
