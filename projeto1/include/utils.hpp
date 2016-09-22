@@ -27,6 +27,10 @@ namespace utils {
         return value;
     }
 
+    inline std::string to_string(char* value) {
+        return value;
+    }
+
     template<typename T>
     inline void echo(const T& value) {
         std::cout << value << std::endl;

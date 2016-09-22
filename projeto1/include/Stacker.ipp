@@ -1,7 +1,7 @@
 
 template<typename T>
 void Stacker<T>::push(const T& value) {
-    stack.insert(value);
+    stack.push(value);
 }
 
 template<typename T>
@@ -11,5 +11,5 @@ const T& Stacker<T>::top() {
 
 template<typename T>
 void Stacker<T>::clear() {
-    stack.clear();
+    decltype(stack)().swap(stack);
 }

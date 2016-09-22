@@ -122,9 +122,10 @@ var_decl:
             utils::error<Error::MULTIPLE_DEFINITION>();
         }
 
-        NodePtr node;
+        polska::NodePtr node;
         if ($2) {
-            node = polska::Node::create_operator(polska::Operator::ASSIGN, $1, $2);
+            auto var_node = polska::Node::create_literal($1);
+            node = polska::Node::create_operator(polska::Operator::ASSIGN, var_node, $2);
         } else {
             node = polska::Node::create_literal($1);
         }

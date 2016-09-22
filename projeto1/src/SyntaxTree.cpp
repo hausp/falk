@@ -18,7 +18,7 @@
 // }
 
 polska::DeclNodePtr polska::Node::declaration(::Type type, const std::string& var_name,
-                                             polska::NodePtr literal, symbol_map& symbols) {
+                                             polska::NodePtr& literal, symbol_map& symbols) {
     if (!symbols.declare(var_name, type)) {
         utils::error<Error::MULTIPLE_DEFINITION>();
     }

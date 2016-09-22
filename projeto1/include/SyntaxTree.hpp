@@ -48,7 +48,7 @@ namespace polska {
         template<typename... Nodes>
         void set_children(NodePtr&, Nodes&&...);
 
-        static DeclNodePtr declaration(::Type, const std::string&, NodePtr, symbol_map&);
+        static DeclNodePtr declaration(::Type, const std::string&, NodePtr&, symbol_map&);
 
         virtual operator std::string() const;
     };
