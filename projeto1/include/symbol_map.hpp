@@ -3,10 +3,7 @@
 
 #include <string>
 #include <unordered_map>
-
-enum class Type {
-    INT
-};
+#include "Types.hpp"
 
 class symbol_map {
 public:

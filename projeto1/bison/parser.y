@@ -39,9 +39,7 @@ extern void yyerror(const char* s, ...);
  * Types should match the names used in the union.
  * Example: %type<node> expr
  */
-%type <node> expr command assignment program lines line expr variable
-%type <var>  opt_others declaration
-%type <int> opt_init
+%type <node> command assignment program lines line expr variable declaration opt_init
 
 /* Operator precedence for mathematical operators
  * The latest it is listed, the highest the precedence
@@ -79,15 +77,14 @@ command:
     ;
 
 declaration:
-    // implement Types and MagicEntity
     T_TYPE T_VAR opt_init opt_others {
-        Types::register(T_TYPE);
+        Types::push(T_TYPE);
         symbols.assign($2, {$1, $3});
         // $$ = polska::Node::create(aux($1), current_children);
         $$ = std::make_unique<DeclNode>();
-        $$->content = aux($1);
+        $$->content = ttos($1);
         $$->children.push_back(polska::Node::create(T_VAR, std::to_string($3)));
-        MagicEntity::register($$); // opt_others must know $$
+        MagicEntity::push($$); // opt_others must know $$
     }
     ;
 
@@ -99,11 +96,9 @@ assignment:
     variable T_ASSIGN expr { $$ = polska::Node::create(polska::Operator::ASSIGN, $1, $3); }
     ;
 
-// must be a node
 opt_init:
-    // see line 89
-    T_ASSIGN T_NUMBER { $$ = $2; }
-    | { $$ = 0; }
+    T_ASSIGN T_NUMBER { $$ = polska::Node::create(std::to_string($2)); }
+    | { $$ = polska::Node::create("0"); }
     ;
 
 expr:
@@ -122,9 +117,17 @@ opt_others:
     |
     ;
 
-// use magicentity here
 typeless_declaration:
-    T_VAR opt_init opt_others {  }
+    T_VAR opt_init opt_others {
+        auto type = Types::top();
+        symbols.assign($1, {type, $2});
+        auto node = std::make_unique<DeclNode>();
+        node->content = aux(type);
+        node->children.push_back(polska::Node::create(T_VAR, std::to_string($2)));
+        auto parent = MagicEntity::top();
+        parent.children.push_back(std::move(node));
+    }
+    ;
 
 %%
 
