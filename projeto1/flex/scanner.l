@@ -19,8 +19,8 @@ nonacceptable [^-\+\*\\(\)/=\n{num}{var} \t]+
 
 [ \t]               ; //ignores spaces
 {type}				{ yylval.type = Type::INT; return T_TYPE;}
-{var}               { yylval.var = yytext/*Potencial de ruim */; return T_VAR;}
-{num} 				{ yylval.value = std::atof(yytext); return T_NUMBER;}
+{var}               { yylval.var = strdup(yytext); return T_VAR;}
+{num} 				{ yylval.value = std::atof(strdup(yytext)); return T_NUMBER;}
 "+"                 { return T_PLUS;} /* special character with " " */
 "-"					{ return T_MINUS;}
 \*                  { return T_TIMES;} /* special character with \ */

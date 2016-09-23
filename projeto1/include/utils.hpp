@@ -9,7 +9,8 @@ enum class Type {
 };
 
 enum class Error {
-    MULTIPLE_DEFINITION
+    MULTIPLE_DEFINITION,
+    UNDECLARED_VARIABLE
 };
 
 namespace utils {
@@ -37,12 +38,21 @@ namespace utils {
         std::cout << value << std::endl;
     }
 
+    inline std::string error_prefix(const std::string& type, size_t line) {
+        return "[Line " + std::to_string(line) + "] " + type + " error: ";
+    }
+
     template<Error err>
-    inline void error();
+    inline void semantic_error(size_t, const std::string&);
 
     template<>
-    inline void error<Error::MULTIPLE_DEFINITION>() {
-        echo("YOU ARE DUMB AS FUCK");
+    inline void semantic_error<Error::MULTIPLE_DEFINITION>(size_t line, const std::string& name) {
+        echo(error_prefix("semantic", line) + "re-declaration of variable " + name);
+    }
+
+    template<>
+    inline void semantic_error<Error::UNDECLARED_VARIABLE>(size_t line, const std::string& name) {
+        echo(error_prefix("semantic", line) + "undeclared variable " + name);
     }
 }
 

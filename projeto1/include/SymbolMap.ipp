@@ -1,6 +1,6 @@
 
 template<typename T>
-stx::Node* declare(const std::string& name, const T& value) {
+stx::Node* SymbolMap::declare(const std::string& name, const T& value) {
     // TODO: check if value matches with type
     auto node = new stx::Node();
     node->set_content(name);

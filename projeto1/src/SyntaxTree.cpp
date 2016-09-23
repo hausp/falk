@@ -2,8 +2,30 @@
 #include "SyntaxTree.hpp"
 #include "SymbolMap.hpp"
 
-stx::Node::Node(std::unique_ptr<Traversal> traversal)
- : traversal(std::move(traversal)) { }
+const stx::Traversal stx::Node::IN_ORDER = [](const stx::Node& root, const std::string& value) {
+    auto left = root.left_child();
+    auto right = root.right_child();
+    std::string out;
+    if (left) {
+        out = static_cast<std::string>(*left);
+    }
+    out += value;
+    if (right) {
+        out += static_cast<std::string>(*right);
+    }
+    return out;
+};
+
+const stx::Traversal stx::Node::PRE_ORDER = [](const stx::Node& root, const std::string& value) {
+    std::string out = value;
+    for (auto& child : root) {
+        out += static_cast<std::string>(*child);
+    }
+    return out;
+};
+
+stx::Node::Node(const Traversal& traversal)
+ : traversal(traversal) { }
 
 const stx::Node* stx::Node::left_child() const {
     if (children.size() > 0) {
@@ -17,28 +39,6 @@ const stx::Node* stx::Node::right_child() const {
         return children.back().get();
     }
     return nullptr;
-}
-
-std::string stx::InOrderTraversal::operator()(const stx::Node& root) const {
-    std::string out;
-    auto left = root.left_child();
-    auto right = root.right_child();
-    if (left) {
-        out += operator()(*left);
-    }
-    out += root;
-    if (right) {
-        out += operator()(*right);
-    }
-    return out;
-}
-
-std::string stx::PreOrderTraversal::operator()(const stx::Node& root) const {
-    std::string out = root;
-    for (auto& child : root) {
-        out += operator()(*child);
-    }
-    return out;
 }
 
 // stx::DeclNodePtr stx::Node::declaration(::Type type, const std::string& var_name,

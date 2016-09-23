@@ -13,11 +13,13 @@ public:
     // TODO: improve this solution
     stx::Node* declare(const std::string&);
     stx::Node* make_declaration(Type);
-    stx::Node* retrive(const std::string&) const;
+    stx::Node* retrieve(const std::string&) const;
 
 private:
     std::unordered_map<std::string, Type> symbols;
     Type last_type;
 };
+
+#include "SymbolMap.ipp"
 
 #endif /* SYMBOL_MAP_HPP */

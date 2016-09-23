@@ -15,7 +15,7 @@ stx::Node* stx::Node::make_literal(const T& value) {
 
 template<typename... Nodes>
 stx::Node* stx::Node::make_operator(Operator op, Nodes&&... child_list) {
-    auto node = new Node(std::make_unique<PreOrderTraversal>());
+    auto node = new Node(PRE_ORDER);
     node->content = static_cast<char>(op);
     node->set_children(std::forward<Nodes>(child_list)...);
     return node;
@@ -30,16 +30,16 @@ void stx::Node::set_children(NodePtr first, Nodes&&... child_list) {
     set_children(std::forward<Nodes>(child_list)...);
 }
 
-inline std::string stx::Node::traverse() const {
-    return traversal->operator()(*this);
+inline void stx::Node::set_content(const std::string& value) {
+    content = value;
 }
 
 inline stx::Node::operator std::string() const {
-    return content;
+    return traversal(*this, content + " ");
 }
 
 inline std::ostream& operator<<(std::ostream& stream, const stx::Node& root) {
-    return stream << root.traverse();
+    return stream << static_cast<std::string>(root);
 }
 
 // inline stx::DeclNode::operator std::string() const {

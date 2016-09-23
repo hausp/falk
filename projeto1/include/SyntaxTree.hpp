@@ -22,26 +22,17 @@ namespace stx {
 
     class Node;
 
-    struct Traversal {
-        virtual std::string operator()(const Node&) const = 0;
-    };
-
-    struct InOrderTraversal : public Traversal {
-        std::string operator()(const Node&) const override;
-    };
-
-    struct PreOrderTraversal : public Traversal {
-        std::string operator()(const Node&) const override;
-    };
-
     using NodePtr = std::unique_ptr<Node>;
     using Children = std::list<NodePtr>;
-    using TraversalPtr = std::unique_ptr<Traversal>;
+    using Traversal = std::function<std::string(const Node&, const std::string&)>;
+
 
     class Node {
      public:
+        static const Traversal IN_ORDER;
+        static const Traversal PRE_ORDER;
         // struct Mask;
-        Node(std::unique_ptr<Traversal> = std::make_unique<InOrderTraversal>());
+        Node(const Traversal& = IN_ORDER);
 
         // Mask left_children() const;
         // Mask right_children() const;
@@ -68,13 +59,12 @@ namespace stx {
         template<typename T>
         static Node* make_literal(const T&);
 
-        std::string traverse() const;
         operator std::string() const;
 
      private:
         std::string content;
         Children children;
-        TraversalPtr traversal;
+        Traversal traversal;
         // std::list<NodePtr>::const_iterator middle;
         // short middle_counter = 0;
     };

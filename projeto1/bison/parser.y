@@ -70,13 +70,13 @@ line: T_NL             { $$ = nullptr; } /* nullptr treated in lines */
     | assignment T_NL  { $$ = new stx::Node(); $$->set_children(stx::NodePtr($1), stx::NodePtr(stx::Node::make_literal("\n"))); }
     ;
 
-declaration: typenode var_list { $$ = $1, $$->set_children(stx::NodePtr($2)); }
+declaration: typenode var_list { $$ = $1; $$->set_children(stx::NodePtr($2)); }
     ;
 
 typenode: T_TYPE { $$ = symbols.make_declaration($1); }
 
 var_list: var_def { $$ = new stx::Node(); $$->set_children(stx::NodePtr($1)); }
-    |    var_list T_COMMA var_def { $1->set_children(stx::NodePtr(stx::Node::make_literal(", ")), stx::NodePtr($3)); }
+    |    var_list T_COMMA var_def { $1->set_children(stx::NodePtr(stx::Node::make_literal(",")), stx::NodePtr($3)); }
     ;
 
 var_def: T_VAR T_ASSIGN T_NUMBER { $$ = symbols.declare($1, $3); }
@@ -86,18 +86,16 @@ var_def: T_VAR T_ASSIGN T_NUMBER { $$ = symbols.declare($1, $3); }
 assignment: variable T_ASSIGN expr { $$ = stx::Node::make_operator(stx::Operator::ASSIGN, stx::NodePtr($1), stx::NodePtr($3)); }
     ;
 
-variable:
-    T_VAR { $$ = symbols.retrive($1); }
+variable: T_VAR { $$ = symbols.retrieve($1); }
     ;
 
-expr:
-    T_NUMBER { $$ = stx::Node::make_literal($1); }
-    | expr T_PLUS expr { $$ = stx::Node::make_operator(stx::Operator::PLUS, stx::NodePtr($1), stx::NodePtr($3)); }
-    | expr T_MINUS expr { $$ = stx::Node::make_operator(stx::Operator::MINUS, stx::NodePtr($1), stx::NodePtr($3)); }
-    | expr T_TIMES expr { $$ = stx::Node::make_operator(stx::Operator::TIMES, stx::NodePtr($1), stx::NodePtr($3)); }
-    | expr T_DIVIDE expr { $$ = stx::Node::make_operator(stx::Operator::DIVIDE, stx::NodePtr($1), stx::NodePtr($3)); }
+expr: T_NUMBER                   { $$ = stx::Node::make_literal($1); }
+    | expr T_PLUS expr           { $$ = stx::Node::make_operator(stx::Operator::PLUS, stx::NodePtr($1), stx::NodePtr($3)); }
+    | expr T_MINUS expr          { $$ = stx::Node::make_operator(stx::Operator::MINUS, stx::NodePtr($1), stx::NodePtr($3)); }
+    | expr T_TIMES expr          { $$ = stx::Node::make_operator(stx::Operator::TIMES, stx::NodePtr($1), stx::NodePtr($3)); }
+    | expr T_DIVIDE expr         { $$ = stx::Node::make_operator(stx::Operator::DIVIDE, stx::NodePtr($1), stx::NodePtr($3)); }
     | T_MINUS expr %prec U_MINUS { $$ = stx::Node::make_operator(stx::Operator::MINUS, stx::NodePtr($2)); }
-    | T_OPAR expr T_CPAR { $$ = stx::Node::make_operator(stx::Operator::PAR, stx::NodePtr($2)); }
+    | T_OPAR expr T_CPAR         { $$ = stx::Node::make_operator(stx::Operator::PAR, stx::NodePtr($2)); }
     ;
 
 /*
