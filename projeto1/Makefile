@@ -16,7 +16,6 @@ MAKEDIR   :=$(BINDIR) $(SRCDIR) $(HDRDIR)
 CXX       :=clang++
 LDLIBS    :=
 LDFLAGS   :=
-#CXXFLAGS  :=-std=c++14 -Wall
 CXXFLAGS  :=-std=c++14 -fcxx-exceptions -Wno-deprecated-register -Wall\
             -Wno-unused-function -Wno-unneeded-internal-declaration
 INCLUDE   :=-I$(HDRDIR)
@@ -57,7 +56,8 @@ $(BUILDIR)/%.o: %.cpp
 $(DEPDIR)/%.d: %.cpp
 	@echo "[makedep] $< -> .d"
 	@mkdir -p $(DEPDIR)/$(*D)
-	@$(CXX) -MM -MP -MT "$(BUILDIR)/$*.o $@" -MF "$@" $< $(INCLUDE) $(CXXFLAGS)
+	@$(CXX) $< $(INCLUDE) $(CXXFLAGS)\
+	 -MM -MG -MP -MT "$(BUILDIR)/$*.o $@" -MF "$@"
 
 makedir: | $(MAKEDIR)
 

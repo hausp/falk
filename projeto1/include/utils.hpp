@@ -27,7 +27,8 @@ namespace utils {
         return value;
     }
 
-    inline std::string to_string(char* value) {
+
+    inline std::string to_string(const char* value) {
         return value;
     }
 

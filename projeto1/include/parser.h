@@ -42,11 +42,10 @@ extern int yydebug;
 /* "%code requires" blocks.  */
 #line 1 "bison/parser.y" /* yacc.c:1909  */
 
-    #include "symbol_map.hpp"
+    #include "SymbolMap.hpp"
     #include "SyntaxTree.hpp"
-    #include "Stacker.hpp"
 
-#line 50 "include/parser.h" /* yacc.c:1909  */
+#line 49 "include/parser.h" /* yacc.c:1909  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -79,9 +78,9 @@ union YYSTYPE
     Type type;
     int value;
     char * var;
-    polska::NodePtr node; // TODO: make this a lot worse to make it work NodePty->Node*
+    stx::Node* node; // TODO: make this a lot worse to make it work NodePty->Node*
 
-#line 85 "include/parser.h" /* yacc.c:1909  */
+#line 84 "include/parser.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

@@ -17,7 +17,7 @@ class Stacker {
 };
 
 using Types = Stacker<Type>;
-using MagicEntity = Stacker<polska::Node>;
+using MagicEntity = Stacker<stx::Node>;
 
 #include "Stacker.ipp"
 

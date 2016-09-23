@@ -1,7 +1,6 @@
 %code requires {
-    #include "symbol_map.hpp"
+    #include "SymbolMap.hpp"
     #include "SyntaxTree.hpp"
-    #include "Stacker.hpp"
 }
 
 %{
@@ -14,7 +13,8 @@ extern void yyerror(const char* s, ...);
 %}
 
 %code {
-    symbol_map symbols;
+    SymbolMap symbols;
+    std::unique_ptr<stx::Node> root;
 }
 
 %define parse.trace
@@ -26,7 +26,7 @@ extern void yyerror(const char* s, ...);
     Type type;
     int value;
     char * var;
-    polska::NodePtr node; // TODO: make this a lot worse to make it work NodePty->Node*
+    stx::Node* node; // TODO: make this a lot worse to make it work NodePty->Node*
 }
 
 /* token defines our terminal symbols (tokens).
@@ -40,7 +40,7 @@ extern void yyerror(const char* s, ...);
  * Types should match the names used in the union.
  * Example: %type<node> expr
  */
-%type <node> command assignment program lines line expr variable declaration opt_init var_decl
+%type <node> program lines line declaration var_list var_def assignment expr variable typenode
 
 /* Operator precedence for mathematical operators
  * The latest it is listed, the highest the precedence
@@ -58,56 +58,53 @@ extern void yyerror(const char* s, ...);
 
 %%
 
-program: /*use ctrl+d to stop*/
-    lines /*$$ = $1 when nothing is said*/
+program: lines { root.reset($1); }
     ;
 
-lines: 
-    line /*$$ = $1 when nothing is said*/
-    | lines line
+lines: line       { $$ = new stx::Node(); if ($1) $$->set_children(stx::NodePtr($1)); }
+    |  lines line { if ($2) $1->set_children(stx::NodePtr($2)); }
     ;
 
-line: 
-    T_NL { $$ = 0; }
-    | command T_NL
+line: T_NL             { $$ = nullptr; } /* nullptr treated in lines */
+    | declaration T_NL { $$ = new stx::Node(); $$->set_children(stx::NodePtr($1), stx::NodePtr(stx::Node::make_literal("\n"))); }
+    | assignment T_NL  { $$ = new stx::Node(); $$->set_children(stx::NodePtr($1), stx::NodePtr(stx::Node::make_literal("\n"))); }
     ;
 
-command:
-    declaration
-    | assignment
+declaration: typenode var_list { $$ = $1, $$->set_children(stx::NodePtr($2)); }
     ;
 
-declaration:
-    T_TYPE T_VAR opt_init opt_others {
-        Types::push($1); // TODO: fix this
-        $$ = polska::Node::declaration($1, $2, $3, symbols);
-        MagicEntity::push($$); // opt_others must know $$
-    }
+typenode: T_TYPE { $$ = symbols.make_declaration($1); }
+
+var_list: var_def { $$ = new stx::Node(); $$->set_children(stx::NodePtr($1)); }
+    |    var_list T_COMMA var_def { $1->set_children(stx::NodePtr(stx::Node::make_literal(", ")), stx::NodePtr($3)); }
+    ;
+
+var_def: T_VAR T_ASSIGN T_NUMBER { $$ = symbols.declare($1, $3); }
+    |    T_VAR { $$ = symbols.declare($1); }
+    ;
+
+assignment: variable T_ASSIGN expr { $$ = stx::Node::make_operator(stx::Operator::ASSIGN, stx::NodePtr($1), stx::NodePtr($3)); }
     ;
 
 variable:
-    T_VAR { $$ = polska::Node::create_literal($1); } // TODO: check if the variable was declared
-    ;
-
-assignment:
-    variable T_ASSIGN expr { $$ = polska::Node::create_operator(polska::Operator::ASSIGN, $1, $3); }
-    ;
-
-opt_init:
-    T_ASSIGN T_NUMBER { $$ = polska::Node::create_literal($2); }
-    | { $$ = nullptr; }
+    T_VAR { $$ = symbols.retrive($1); }
     ;
 
 expr:
-    T_NUMBER { $$ = polska::Node::create_literal($1); }
-    | expr T_PLUS expr { $$ = polska::Node::create_operator(polska::Operator::PLUS, $1, $3); }
-    | expr T_MINUS expr { $$ = polska::Node::create_operator(polska::Operator::MINUS, $1, $3); }
-    | expr T_TIMES expr { $$ = polska::Node::create_operator(polska::Operator::TIMES, $1, $3); }
-    | expr T_DIVIDE expr { $$ = polska::Node::create_operator(polska::Operator::DIVIDE, $1, $3); }
-    | T_MINUS expr %prec U_MINUS { $$ = polska::Node::create_operator(polska::Operator::MINUS, $2); }
-    | T_OPAR expr T_CPAR { $$ = polska::Node::create_operator(polska::Operator::PAR, $2); }
+    T_NUMBER { $$ = stx::Node::make_literal($1); }
+    | expr T_PLUS expr { $$ = stx::Node::make_operator(stx::Operator::PLUS, stx::NodePtr($1), stx::NodePtr($3)); }
+    | expr T_MINUS expr { $$ = stx::Node::make_operator(stx::Operator::MINUS, stx::NodePtr($1), stx::NodePtr($3)); }
+    | expr T_TIMES expr { $$ = stx::Node::make_operator(stx::Operator::TIMES, stx::NodePtr($1), stx::NodePtr($3)); }
+    | expr T_DIVIDE expr { $$ = stx::Node::make_operator(stx::Operator::DIVIDE, stx::NodePtr($1), stx::NodePtr($3)); }
+    | T_MINUS expr %prec U_MINUS { $$ = stx::Node::make_operator(stx::Operator::MINUS, stx::NodePtr($2)); }
+    | T_OPAR expr T_CPAR { $$ = stx::Node::make_operator(stx::Operator::PAR, stx::NodePtr($2)); }
     ;
 
+/*
+opt_init:
+    T_ASSIGN T_NUMBER { $$ = stx::Node::make_literal($2); }
+    | { $$ = nullptr; }
+    ;
 
 opt_others:
     T_COMMA var_decl
@@ -122,17 +119,17 @@ var_decl:
             utils::error<Error::MULTIPLE_DEFINITION>();
         }
 
-        polska::NodePtr node;
+        stx::NodePtr node;
         if ($2) {
-            auto var_node = polska::Node::create_literal($1);
-            node = polska::Node::create_operator(polska::Operator::ASSIGN, var_node, $2);
+            auto var_node = stx::Node::make_literal($1);
+            node = stx::Node::operator(stx::Operator::ASSIGN, var_node, $2);
         } else {
-            node = polska::Node::create_literal($1);
+            node = stx::Node::make_literal($1);
         }
         auto parent = MagicEntity::top();
         parent.children.push_back(std::move(node));
     }
     ;
-
+*/
 %%
 

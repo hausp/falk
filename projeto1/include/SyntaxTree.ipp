@@ -1,66 +1,65 @@
-namespace {
-    template<typename... Nodes>
-    void aux(polska::DeclNode& node, polska::InNodePtr first, Nodes&&... nodes) {
-        node.children.push_back(polska::NodePtr(first.release()));
-        aux(node, std::forward<Nodes>(nodes)...);
-    }
-}
+// namespace {
+//     template<typename... Nodes>
+//     void aux(stx::DeclNode& node, stx::InNodePtr first, Nodes&&... nodes) {
+//         node.children.push_back(stx::NodePtr(first.release()));
+//         aux(node, std::forward<Nodes>(nodes)...);
+//     }
+// }
 
 template<typename T>
-polska::NodePtr polska::Node::create_literal(const T& value) {
-    auto node = std::make_unique<Node>();
-    node->type = Type::OPERAND;
+stx::Node* stx::Node::make_literal(const T& value) {
+    auto node = new Node();
     node->content = utils::to_string(value);
     return node;
 }
 
 template<typename... Nodes>
-polska::NodePtr polska::Node::create_operator(Operator op, Nodes&&... child_list) {
-    auto node = std::make_unique<Node>();
-    node->type = Type::OPERATOR;
+stx::Node* stx::Node::make_operator(Operator op, Nodes&&... child_list) {
+    auto node = new Node(std::make_unique<PreOrderTraversal>());
     node->content = static_cast<char>(op);
     node->set_children(std::forward<Nodes>(child_list)...);
     return node;
 }
 
 template<typename...>
-void polska::Node::set_children() {}
+void stx::Node::set_children() {}
 
 template<typename... Nodes>
-void polska::Node::set_children(NodePtr& first, Nodes&&... child_list) {
+void stx::Node::set_children(NodePtr first, Nodes&&... child_list) {
     children.emplace_back(first.release());
     set_children(std::forward<Nodes>(child_list)...);
 }
 
-inline polska::Node::operator std::string() const {
-    std::string out(content);
-    for (auto& child : children) {
-        out += *child;
-    }
-    return out;
+inline std::string stx::Node::traverse() const {
+    return traversal->operator()(*this);
 }
 
-inline polska::DeclNode::operator std::string() const {
-    std::string out(content);
-    out += " var: ";
-    size_t i = 0;
-    for (auto& child : children) {
-        if (i > 0) {
-            out += ", ";
-        }
-        out += *child;
-        ++i;
-    }
-    return out;
+inline stx::Node::operator std::string() const {
+    return content;
 }
 
-inline polska::InitNode::operator std::string() const {
-    std::string out(*children.front());
-    out += " " + content + " ";
-    out += **std::next(children.begin());
-    return out;
+inline std::ostream& operator<<(std::ostream& stream, const stx::Node& root) {
+    return stream << root.traverse();
 }
 
-inline std::ostream& operator<<(std::ostream& stream, const polska::Node& root) {
-    return stream << std::string(root);
-}
+// inline stx::DeclNode::operator std::string() const {
+//     std::string out(content);
+//     out += " var: ";
+//     size_t i = 0;
+//     for (auto& child : children) {
+//         if (i > 0) {
+//             out += ", ";
+//         }
+//         out += *child;
+//         ++i;
+//     }
+//     return out;
+// }
+
+// inline stx::InitNode::operator std::string() const {
+//     std::string out(*children.front());
+//     out += " " + content + " ";
+//     out += **std::next(children.begin());
+//     return out;
+// }
+
