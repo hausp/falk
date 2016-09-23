@@ -12,7 +12,7 @@ void yyerror(const char* s, ...);
 type int
 num -?([0-9]+)
 var ([a-zA-Z][a-zA-Z0-9_]*)
-nonacceptable [^-\+\*\\(\)/=\n{num}{var} \t]+
+nonacceptable [^-\+\*\\(\)/=,\n0-9A-Za-z_ \t]+
 
 
 %%
