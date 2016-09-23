@@ -6,6 +6,8 @@
 //     }
 // }
 
+#include "macros.hpp"
+
 template<typename T>
 stx::Node* stx::Node::make_literal(const T& value) {
     auto node = new Node();
@@ -21,11 +23,23 @@ stx::Node* stx::Node::make_operator(Operator op, Nodes&&... child_list) {
     return node;
 }
 
+template<typename... Nodes>
+stx::Node* stx::Node::make_assignment(Nodes&&... child_list) {
+    try {
+        return make_operator(Operator::ASSIGN, std::forward<Nodes>(child_list)...);
+    } catch (utils::error&) {
+        return new Node();
+    }
+}
+
 template<typename...>
 void stx::Node::set_children() {}
 
 template<typename... Nodes>
 void stx::Node::set_children(NodePtr first, Nodes&&... child_list) {
+    if (!first) {
+        throw utils::error();
+    }
     children.emplace_back(first.release());
     set_children(std::forward<Nodes>(child_list)...);
 }

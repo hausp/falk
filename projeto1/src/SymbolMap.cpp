@@ -11,32 +11,32 @@ stx::Node* SymbolMap::make_declaration(Type type) {
     return node;
 }
 
-stx::Node* SymbolMap::retrieve(const std::string& name) const {
-    for (auto& s : symbols) {
-        TRACE(s.first);
-    }
-    TRACE(symbols.size());
+stx::Node* SymbolMap::retrieve(const std::string& name, size_t line) const {
+    // for (auto& s : symbols) {
+    //     TRACE(s.first);
+    // }
+    // TRACE(symbols.size());
     if (symbols.count(name)) {
-        ECHO("Achei o " + name);
+        // ECHO("Achei o " + name);
         auto node = new stx::Node();
         node->set_content(name);
         return node;
     } else {
         // TODO: use of undeclared variable
-        ECHO("Não achei o " + name);
-        utils::semantic_error<Error::UNDECLARED_VARIABLE>(0, name);
+        // ECHO("Não achei o " + name);
+        utils::semantic_error<Error::UNDECLARED_VARIABLE>(line, name);
         return nullptr;
     }
 }
 
-stx::Node* SymbolMap::declare(const std::string& name) {
+stx::Node* SymbolMap::declare(const std::string& name, size_t line) {
     auto node = new stx::Node();
     node->set_content(name);
 
     if (symbols.count(name)) {
         // TODO: return what?
-        utils::semantic_error<Error::MULTIPLE_DEFINITION>(0, name);
-        return nullptr;
+        utils::semantic_error<Error::MULTIPLE_DEFINITION>(line, name);
+        throw utils::error();
     }
     symbols[name] = last_type;
     

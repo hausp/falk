@@ -1,6 +1,7 @@
 %code requires {
     #include "SymbolMap.hpp"
     #include "SyntaxTree.hpp"
+    #include "macros.hpp"
 }
 
 %{
@@ -15,6 +16,7 @@ extern void yyerror(const char* s, ...);
 %code {
     SymbolMap symbols;
     std::unique_ptr<stx::Node> root;
+    size_t line_number = 1;
 }
 
 %define parse.trace
@@ -66,27 +68,34 @@ lines: line       { $$ = new stx::Node(); if ($1) $$->set_children(stx::NodePtr(
     ;
 
 line: T_NL             { $$ = nullptr; } /* nullptr treated in lines */
-    | declaration T_NL { $$ = new stx::Node(); $$->set_children(stx::NodePtr($1), stx::NodePtr(stx::Node::make_literal("\n"))); }
-    | assignment T_NL  { $$ = new stx::Node(); $$->set_children(stx::NodePtr($1), stx::NodePtr(stx::Node::make_literal("\n"))); }
+    | declaration T_NL {
+        $$ = new stx::Node();
+        $$->set_children(stx::NodePtr($1), stx::NodePtr(stx::Node::make_literal("\n")));
+        ++line_number; }
+    | assignment T_NL  {
+        $$ = new stx::Node();
+        $$->set_children(stx::NodePtr($1), stx::NodePtr(stx::Node::make_literal("\n")));
+        ++line_number; }
     ;
 
 declaration: typenode var_list { $$ = $1; $$->set_children(stx::NodePtr($2)); }
     ;
 
 typenode: T_TYPE { $$ = symbols.make_declaration($1); }
+    ;
 
 var_list: var_def { $$ = new stx::Node(); $$->set_children(stx::NodePtr($1)); }
     |    var_list T_COMMA var_def { $1->set_children(stx::NodePtr(stx::Node::make_literal(",")), stx::NodePtr($3)); }
     ;
 
-var_def: T_VAR T_ASSIGN T_NUMBER { $$ = symbols.declare($1, $3); }
-    |    T_VAR { $$ = symbols.declare($1); }
+var_def: T_VAR T_ASSIGN T_NUMBER { $$ = symbols.declare($1, $3, line_number); }
+    |    T_VAR { $$ = symbols.declare($1, line_number); }
     ;
 
-assignment: variable T_ASSIGN expr { $$ = stx::Node::make_operator(stx::Operator::ASSIGN, stx::NodePtr($1), stx::NodePtr($3)); }
+assignment: variable T_ASSIGN expr { $$ = stx::Node::make_assignment(stx::NodePtr($1), stx::NodePtr($3)); }
     ;
 
-variable: T_VAR { $$ = symbols.retrieve($1); }
+variable: T_VAR { $$ = symbols.retrieve($1, line_number); }
     ;
 
 expr: T_NUMBER                   { $$ = stx::Node::make_literal($1); }

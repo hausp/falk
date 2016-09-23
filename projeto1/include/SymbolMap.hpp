@@ -9,11 +9,11 @@
 class SymbolMap {
 public:
     template<typename T>
-    stx::Node* declare(const std::string&, const T&);
+    stx::Node* declare(const std::string&, const T&, size_t);
     // TODO: improve this solution
-    stx::Node* declare(const std::string&);
+    stx::Node* declare(const std::string&, size_t);
+    stx::Node* retrieve(const std::string&, size_t) const;
     stx::Node* make_declaration(Type);
-    stx::Node* retrieve(const std::string&) const;
 
 private:
     std::unordered_map<std::string, Type> symbols;

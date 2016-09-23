@@ -14,6 +14,8 @@ enum class Error {
 };
 
 namespace utils {
+    struct error {};
+
     template<typename T>
     inline std::string to_string(const T& value) {
         return std::to_string(value);

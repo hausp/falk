@@ -56,6 +56,9 @@ namespace stx {
         template<typename... Nodes>
         static Node* make_operator(Operator, Nodes&&...);
 
+        template<typename... Nodes>
+        static Node* make_assignment(Nodes&&...);
+
         template<typename T>
         static Node* make_literal(const T&);
 
