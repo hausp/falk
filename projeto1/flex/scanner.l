@@ -13,8 +13,8 @@ void yyerror(const char* s, ...);
 %option noyywrap nodefault yylineno
 
 type int
-num -?([0-9]+)
-var ([a-zA-Z][a-zA-Z0-9_]*)
+num [0-9]+
+var [a-zA-Z][a-zA-Z0-9_]*
 nonacceptable [^-\+\*\\(\)/=,\n0-9A-Za-z_ \t]+
 
 

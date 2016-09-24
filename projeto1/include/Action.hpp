@@ -73,6 +73,7 @@ class Operation : public TypedAction {
     bool error() const override;
     Type type() const override;
     std::string to_string() const override;
+    virtual std::string op_string() const;
 
  private:
     Operator op;
@@ -92,6 +93,15 @@ class Operation : public TypedAction {
         fail = fail || typed->error();
         children.push_back(action);
         set_children(std::forward<Args>(args)...);
+    }
+};
+
+class UnaryMinus : public Operation {
+ public:
+    UnaryMinus(Action* operand) : Operation(Operator::MINUS, operand) {}
+
+    std::string op_string() const override {
+        return "-u";
     }
 };
 

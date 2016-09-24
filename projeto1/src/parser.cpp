@@ -466,7 +466,7 @@ static const yytype_uint8 yyrline[] =
 {
        0,    62,    62,    66,    67,    71,    72,    73,    77,    81,
       85,    86,    90,    95,   102,   110,   114,   115,   116,   121,
-     126,   131,   136,   140
+     126,   131,   136,   141
 };
 #endif
 
@@ -1359,22 +1359,23 @@ yyreduce:
 #line 136 "bison/parser.y" /* yacc.c:1646  */
     {
             auto body = actions.pop();
-            actions.push(new Operation(Operator::MINUS, body));
+            // actions.push(new Operation(Operator::MINUS, body));
+            actions.push(new UnaryMinus(body));
         }
-#line 1365 "src/parser.cpp" /* yacc.c:1646  */
+#line 1366 "src/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 140 "bison/parser.y" /* yacc.c:1646  */
+#line 141 "bison/parser.y" /* yacc.c:1646  */
     {
             auto body = actions.pop();
             actions.push(new Operation(Operator::PAR, body));
         }
-#line 1374 "src/parser.cpp" /* yacc.c:1646  */
+#line 1375 "src/parser.cpp" /* yacc.c:1646  */
     break;
 
 
-#line 1378 "src/parser.cpp" /* yacc.c:1646  */
+#line 1379 "src/parser.cpp" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1602,6 +1603,6 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 146 "bison/parser.y" /* yacc.c:1906  */
+#line 147 "bison/parser.y" /* yacc.c:1906  */
 
 

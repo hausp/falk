@@ -10,10 +10,14 @@ Type Operation::type() const {
 
 std::string Operation::to_string() const {
     std::string result;
-    result += static_cast<char>(op);
+    result += op_string();
     for (auto child : children) {
         result += " ";
         result += child->to_string();
     }
     return result;
+}
+
+std::string Operation::op_string() const {
+	return std::string(1, static_cast<char>(op));
 }

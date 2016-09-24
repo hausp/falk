@@ -135,7 +135,7 @@ expr:
         }
     | T_MINUS expr %prec U_MINUS {
             auto body = actions.pop();
-            actions.push(new Operation(Operator::MINUS, body));
+            actions.push(new UnaryMinus(body));
         }
     | T_OPAR expr T_CPAR         {
             auto body = actions.pop();
