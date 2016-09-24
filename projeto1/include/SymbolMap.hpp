@@ -10,8 +10,8 @@ public:
     template<typename T>
     bool declare(Type, const std::string&, const T&, size_t);
     bool declare(Type, const std::string&, size_t);
-    void retrieve(Type, const std::string&, size_t) const;
-    void make_declaration(Type);
+    // void retrieve(Type, const std::string&, size_t) const;
+    bool var_exists(const std::string&) const;
 
 private:
     std::unordered_map<std::string, Type> symbols;

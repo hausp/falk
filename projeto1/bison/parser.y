@@ -90,11 +90,10 @@ var_def:
     T_VAR T_ASSIGN T_NUMBER {
             auto name = std::string($1);
             auto value = std::to_string($3);
-            // actions.top()->add(name, value);
             dynamic_cast<Declaration*>(actions.top())->add(name, value);
         }
     | T_VAR {
-            // actions.top()->add(std::string($1));
+            auto name = std::string($1);
             dynamic_cast<Declaration*>(actions.top())->add(std::string($1));
         }
     ;
@@ -112,7 +111,7 @@ variable:
     ;
 
 expr:
-    T_NUMBER                     { actions.push(new IntLiteral(std::to_string($1))); }
+    T_NUMBER                     { actions.push(new Constant(Type::INT, std::to_string($1))); }
     | expr T_PLUS expr           {
             auto right = actions.pop();
             auto left = actions.pop();

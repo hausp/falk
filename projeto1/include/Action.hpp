@@ -10,66 +10,85 @@ namespace {
 }
 
 class Action {
-public:
+ public:
     virtual ~Action() {}
     virtual std::string to_string() const = 0;
 };
 
 
 class Declaration : public Action {
-public:
+ public:
     Declaration(Type);
     void add(const std::string&);
     void add(const std::string&, const std::string&);
     std::string to_string() const override;
 
-private:
+ private:
     Type type;
     std::vector<std::pair<std::string, std::string>> values;
 };
 
 
-class Variable : public Action {
-public:
-    Variable(const std::string& name) : name(name) {}
-    std::string to_string() const override {
-        return name;
-    }
+class TypedAction : public Action {
+ public:
+    virtual bool error() const = 0;
+    virtual Type type() const = 0;
+};
 
-private:
+
+class Variable : public TypedAction {
+ public:
+    Variable(const std::string&);
+    bool error() const override;
+    Type type() const override;
+    std::string to_string() const override;
+
+ private:
     std::string name;
 };
 
 
-class IntLiteral : public Action {
-public:
-    IntLiteral(const std::string& value) : value(value) {}
-    std::string to_string() const override {
-        return value;
-    }
+class Constant : public TypedAction {
+ public:
+    Constant(Type type, const std::string& value);
+    bool error() const override;
+    Type type() const override;
+    std::string to_string() const override;
 
-private:
+ private:
+    Type t;
     std::string value;
 };
 
 
-class Operation : public Action {
-public:
+class Operation : public TypedAction {
+ public:
     template<typename... Args>
-    Operation(Operator op, Args&&... args) : op(op) {
-        set_children(std::forward<Args>(args)...);
+    Operation(Operator op, Action* first, Args&&... args)
+     : op(op), t(dynamic_cast<TypedAction*>(first)->type()) {
+        set_children(first, std::forward<Args>(args)...);
     }
 
+    bool error() const override;
+    Type type() const override;
     std::string to_string() const override;
 
-private:
+ private:
     Operator op;
+    Type t;
+    bool fail = false;
     std::list<Action*> children;
 
     void set_children() {}
 
     template<typename... Args>
     void set_children(Action* action, Args&&... args) {
+        auto typed = dynamic_cast<TypedAction*>(action);
+        if (typed->type() != t) {
+            // TODO: show an error (see v0.2 error reporting)
+            fail = true;
+        }
+        fail = fail || typed->error();
         children.push_back(action);
         set_children(std::forward<Args>(args)...);
     }
@@ -77,11 +96,11 @@ private:
 
 
 class Assignment : public Action {
-public:
+ public:
     Assignment(Variable*, Action*);
     std::string to_string() const override;
 
-private:
+ private:
     Variable* var;
     Action* rhs;
 };

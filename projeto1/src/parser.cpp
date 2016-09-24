@@ -465,8 +465,8 @@ static const yytype_uint8 yytranslate[] =
 static const yytype_uint8 yyrline[] =
 {
        0,    62,    62,    66,    67,    71,    72,    73,    77,    81,
-      85,    86,    90,    96,   103,   111,   115,   116,   121,   126,
-     131,   136,   140
+      85,    86,    90,    95,   102,   110,   114,   115,   120,   125,
+     130,   135,   139
 };
 #endif
 
@@ -1279,103 +1279,102 @@ yyreduce:
     {
             auto name = std::string((yyvsp[-2].var));
             auto value = std::to_string((yyvsp[0].value));
-            // actions.top()->add(name, value);
             dynamic_cast<Declaration*>(actions.top())->add(name, value);
         }
-#line 1286 "src/parser.cpp" /* yacc.c:1646  */
+#line 1285 "src/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 96 "bison/parser.y" /* yacc.c:1646  */
+#line 95 "bison/parser.y" /* yacc.c:1646  */
     {
-            // actions.top()->add(std::string($1));
+            auto name = std::string((yyvsp[0].var));
             dynamic_cast<Declaration*>(actions.top())->add(std::string((yyvsp[0].var)));
         }
-#line 1295 "src/parser.cpp" /* yacc.c:1646  */
+#line 1294 "src/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 103 "bison/parser.y" /* yacc.c:1646  */
+#line 102 "bison/parser.y" /* yacc.c:1646  */
     {
         auto expr = actions.pop();
         auto var = actions.pop();
         actions.push(new Assignment(dynamic_cast<Variable*>(var), expr));
     }
-#line 1305 "src/parser.cpp" /* yacc.c:1646  */
+#line 1304 "src/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 111 "bison/parser.y" /* yacc.c:1646  */
+#line 110 "bison/parser.y" /* yacc.c:1646  */
     { actions.push(new Variable((yyvsp[0].var))); }
-#line 1311 "src/parser.cpp" /* yacc.c:1646  */
+#line 1310 "src/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 115 "bison/parser.y" /* yacc.c:1646  */
-    { actions.push(new IntLiteral(std::to_string((yyvsp[0].value)))); }
-#line 1317 "src/parser.cpp" /* yacc.c:1646  */
+#line 114 "bison/parser.y" /* yacc.c:1646  */
+    { actions.push(new Constant(Type::INT, std::to_string((yyvsp[0].value)))); }
+#line 1316 "src/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 116 "bison/parser.y" /* yacc.c:1646  */
+#line 115 "bison/parser.y" /* yacc.c:1646  */
     {
             auto right = actions.pop();
             auto left = actions.pop();
             actions.push(new Operation(Operator::PLUS, left, right));
         }
-#line 1327 "src/parser.cpp" /* yacc.c:1646  */
+#line 1326 "src/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 121 "bison/parser.y" /* yacc.c:1646  */
+#line 120 "bison/parser.y" /* yacc.c:1646  */
     {
             auto right = actions.pop();
             auto left = actions.pop();
             actions.push(new Operation(Operator::MINUS, left, right));
         }
-#line 1337 "src/parser.cpp" /* yacc.c:1646  */
+#line 1336 "src/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 126 "bison/parser.y" /* yacc.c:1646  */
+#line 125 "bison/parser.y" /* yacc.c:1646  */
     {
             auto right = actions.pop();
             auto left = actions.pop();
             actions.push(new Operation(Operator::TIMES, left, right));
         }
-#line 1347 "src/parser.cpp" /* yacc.c:1646  */
+#line 1346 "src/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 131 "bison/parser.y" /* yacc.c:1646  */
+#line 130 "bison/parser.y" /* yacc.c:1646  */
     {
             auto right = actions.pop();
             auto left = actions.pop();
             actions.push(new Operation(Operator::DIVIDE, left, right));
         }
-#line 1357 "src/parser.cpp" /* yacc.c:1646  */
+#line 1356 "src/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 136 "bison/parser.y" /* yacc.c:1646  */
+#line 135 "bison/parser.y" /* yacc.c:1646  */
     {
             auto body = actions.pop();
             actions.push(new Operation(Operator::MINUS, body));
         }
-#line 1366 "src/parser.cpp" /* yacc.c:1646  */
+#line 1365 "src/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 140 "bison/parser.y" /* yacc.c:1646  */
+#line 139 "bison/parser.y" /* yacc.c:1646  */
     {
             auto body = actions.pop();
             actions.push(new Operation(Operator::PAR, body));
         }
-#line 1375 "src/parser.cpp" /* yacc.c:1646  */
+#line 1374 "src/parser.cpp" /* yacc.c:1646  */
     break;
 
 
-#line 1379 "src/parser.cpp" /* yacc.c:1646  */
+#line 1378 "src/parser.cpp" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1603,6 +1602,6 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 146 "bison/parser.y" /* yacc.c:1906  */
+#line 145 "bison/parser.y" /* yacc.c:1906  */
 
 
