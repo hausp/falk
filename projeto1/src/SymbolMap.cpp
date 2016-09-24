@@ -2,6 +2,11 @@
 #include "SymbolMap.hpp"
 #include "macros.hpp"
 
+SymbolMap& SymbolMap::instance() {
+    static SymbolMap inst;
+    return inst;
+}
+
 bool SymbolMap::declare(Type type, const std::string& name, size_t line) {
     if (symbols.count(name)) {
         // TODO

@@ -7,6 +7,8 @@
 
 class SymbolMap {
 public:
+    static SymbolMap& instance();
+
     template<typename T>
     bool declare(Type, const std::string&, const T&, size_t);
     bool declare(Type, const std::string&, size_t);
@@ -15,6 +17,7 @@ public:
 
 private:
     std::unordered_map<std::string, Type> symbols;
+    SymbolMap() = default;
 };
 
 #include "SymbolMap.ipp"

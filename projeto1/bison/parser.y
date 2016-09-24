@@ -112,6 +112,7 @@ variable:
 
 expr:
     T_NUMBER                     { actions.push(new Constant(Type::INT, std::to_string($1))); }
+    | variable
     | expr T_PLUS expr           {
             auto right = actions.pop();
             auto left = actions.pop();

@@ -6,7 +6,7 @@
 #include "SymbolMap.hpp"
 
 namespace {
-    SymbolMap symbols;
+    auto& symbols = SymbolMap::instance();
 }
 
 class Action {
@@ -44,6 +44,7 @@ class Variable : public TypedAction {
     std::string to_string() const override;
 
  private:
+    bool fail;
     std::string name;
 };
 

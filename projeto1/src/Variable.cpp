@@ -1,13 +1,14 @@
 #include "Action.hpp"
 
-Variable::Variable(const std::string& name) : name(name) {
+Variable::Variable(const std::string& name)
+ : fail(!symbols.var_exists(name)), name(name) {
     if (error()) {
         utils::semantic_error<Error::UNDECLARED_VARIABLE>(0, name);
     }
 }
 
 bool Variable::error() const {
-    return !symbols.var_exists(name);
+    return fail;
 }
 
 Type Variable::type() const {
