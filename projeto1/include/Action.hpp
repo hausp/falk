@@ -45,6 +45,7 @@ class Variable : public TypedAction {
 
  private:
     bool fail;
+    Type t;
     std::string name;
 };
 
@@ -81,7 +82,7 @@ class Operation : public TypedAction {
     Type type() const override;
     std::string to_string() const override;
     virtual std::string op_string() const;
-    void set_error();
+    void set_type(Type);
 
  private:
     Operator op;
@@ -89,15 +90,7 @@ class Operation : public TypedAction {
     bool fail = false;
     std::list<TypedAction*> children;
 
-    void check(TypedAction* action) {
-        auto expected = t;
-        auto actual = action->type();
-        if (actual != expected) {
-            utils::semantic_error<Error::INCOMPATIBLE_OPERANDS>(op, expected, actual);
-            fail = true;
-        }
-    }
-
+    void check(TypedAction*);
     void set_children() {}
 
     template<typename... Args>
@@ -114,6 +107,15 @@ class Operation : public TypedAction {
     }
 };
 
+
+class Comparison : public Operation {
+ public:
+    template<typename... Args>
+    Comparison(Operator op, Args&&... args)
+     : Operation(op, std::forward<Args>(args)...) {
+        set_type(Type::BOOL);
+    }
+};
 
 class BoolOperation : public Operation {
  public:

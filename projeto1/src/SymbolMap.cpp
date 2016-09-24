@@ -9,7 +9,6 @@ SymbolMap& SymbolMap::instance() {
 
 bool SymbolMap::declare(Type type, const std::string& name) {
     if (symbols.count(name)) {
-        // TODO
         utils::semantic_error<Error::MULTIPLE_DEFINITION>(name);
         return false;
     }
@@ -17,20 +16,10 @@ bool SymbolMap::declare(Type type, const std::string& name) {
     return true;
 }
 
-// void SymbolMap::retrieve(Type type, const std::string& name, size_t line) const {
-//     if (symbols.count(name)) {
-//         // TODO
-//         // ECHO("Achei o " + name);
-//         // auto node = new stx::Node();
-//         // node->set_content(name);
-//         // return node;
-//     } else {
-//         // TODO
-//         utils::semantic_error<Error::UNDECLARED_VARIABLE>(line, name);
-//         // return nullptr;
-//     }
-// }
-
 bool SymbolMap::var_exists(const std::string& name) const {
     return symbols.count(name);
+}
+
+Type SymbolMap::typeof(const std::string& name) const {
+    return symbols.at(name);
 }

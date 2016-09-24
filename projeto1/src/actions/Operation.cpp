@@ -26,6 +26,15 @@ std::string Operation::op_string() const {
 	return utils::to_string(op);
 }
 
-void Operation::set_error() {
-    fail = true;
+void Operation::check(TypedAction* action) {
+    auto expected = t;
+    auto actual = action->type();
+    if (actual != expected) {
+        utils::semantic_error<Error::INCOMPATIBLE_OPERANDS>(op, expected, actual);
+        fail = true;
+    }
+}
+
+void Operation::set_type(Type type) {
+    t = type;
 }

@@ -15,7 +15,7 @@ void yyerror(const char* s, ...);
 int_type int
 float_type float
 bool_type bool
-number_literal [0-9]+
+int_literal [0-9]+
 float_literal [0-9]*\.[0-9]+|[0-9]+\.?[0-9]*
 bool_literal true|false
 var [a-zA-Z][a-zA-Z0-9_]*
@@ -25,11 +25,11 @@ nonacceptable [^-\+\*\\(\)/=,\n0-9A-Za-z_ \t]+
 
 [ \t]               ; //ignores spaces
 
-{int_type}          { yylval.type = Type::INT; return T_INT; }
-{float_type}        { yylval.type = Type::FLOAT; return T_FLOAT; }
-{bool_type}         { yylval.type = Type::BOOL; return T_BOOL; }
+{int_type}          { yylval.type = Type::INT; return T_TYPE; }
+{float_type}        { yylval.type = Type::FLOAT; return T_TYPE; }
+{bool_type}         { yylval.type = Type::BOOL; return T_TYPE; }
 
-{number_literal}    { yylval.value = {strdup(yytext), Type::INT}; return T_LITERAL; }
+{int_literal}       { yylval.value = {strdup(yytext), Type::INT}; return T_LITERAL; }
 {float_literal}     { yylval.value = {strdup(yytext), Type::FLOAT}; return T_LITERAL; }
 {bool_literal}      { yylval.value = {strdup(yytext), Type::BOOL}; return T_LITERAL; }
 

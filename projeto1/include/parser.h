@@ -54,25 +54,23 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    T_INT = 258,
-    T_FLOAT = 259,
-    T_BOOL = 260,
-    T_LITERAL = 261,
-    T_VAR = 262,
-    T_PLUS = 263,
-    T_MINUS = 264,
-    T_TIMES = 265,
-    T_DIVIDE = 266,
-    T_COMPARISON = 267,
-    T_AND = 268,
-    T_OR = 269,
-    T_NOT = 270,
-    T_ASSIGN = 271,
-    T_COMMA = 272,
-    T_NL = 273,
-    T_OPAR = 274,
-    T_CPAR = 275,
-    U_MINUS = 276
+    T_TYPE = 258,
+    T_LITERAL = 259,
+    T_VAR = 260,
+    T_PLUS = 261,
+    T_MINUS = 262,
+    T_TIMES = 263,
+    T_DIVIDE = 264,
+    T_COMPARISON = 265,
+    T_AND = 266,
+    T_OR = 267,
+    T_NOT = 268,
+    T_ASSIGN = 269,
+    T_COMMA = 270,
+    T_NL = 271,
+    T_OPAR = 272,
+    T_CPAR = 273,
+    U_MINUS = 274
   };
 #endif
 
@@ -88,7 +86,7 @@ union YYSTYPE
     Operator operation;
     char * var;
 
-#line 92 "include/parser.h" /* yacc.c:1909  */
+#line 90 "include/parser.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

@@ -32,7 +32,7 @@ extern void yyerror(const char* s, ...);
 
 /* token defines our terminal symbols (tokens).
  */
-%token <type> T_INT T_FLOAT T_BOOL
+%token <type> T_TYPE
 %token <value> T_LITERAL
 %token <var> T_VAR
 %token <operation> T_PLUS T_MINUS T_TIMES T_DIVIDE T_COMPARISON
@@ -81,9 +81,7 @@ line        : T_NL             { $$ = 0; ++utils::counter(); }
 declaration : type var_list
             ;
 
-type        : T_INT   { actions.push(new Declaration($1)); }
-            | T_FLOAT { actions.push(new Declaration($1)); }
-            | T_BOOL  { actions.push(new Declaration($1)); }
+type        : T_TYPE   { actions.push(new Declaration($1)); }
             ;
 
 var_list    : var_def
@@ -118,7 +116,7 @@ expr        : literal
             | expr T_COMPARISON expr     {
                 auto right = actions.pop();
                 auto left = actions.pop();
-                actions.push(new Operation($2, left, right));
+                actions.push(new Comparison($2, left, right));
              }
             | expr T_AND expr            {
                 auto right = actions.pop();
@@ -162,7 +160,7 @@ expr        : literal
                 auto body = actions.pop();
                 actions.push(new Parenthesis(body));
              }
-           ;
+            ;
 
 %%
 

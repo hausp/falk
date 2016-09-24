@@ -32,19 +32,30 @@ namespace {
         }
     };
 
+    void run(const std::string& in, const std::string& actual, const std::string& expected) {
+        if (expected != actual) {
+            std::cout << "Failure in: " << std::endl << in << std::endl;
+            std::cout << "Expected: " << std::endl << expected << std::endl;
+            std::cout << "Actual: " << std::endl << actual << std::endl;
+            ASSERT_TRUE(false);
+        }
+    };
+
     void run_tests(const Container& inputs, const Container& outputs) {
         auto out_it = outputs.begin();
         for (auto in_it = inputs.begin(); in_it != inputs.end(); ++in_it) {
             auto& in = *in_it;
-            auto& out = *out_it;
+            auto& expected = *out_it;
             Connection program("./lukacompiler");
             program.send(in);
-            auto output = program.receive();
-            if (output.size() < out.size()) {
-                ASSERT_EQ(output, out); // for proper reporting
+            auto actual = program.receive();
+            if (actual.size() < expected.size()) {
+                run(in, actual, expected);
+                // ASSERT_EQ(actual, expected); // for proper reporting
             } else {
-                auto padded_output = output.substr(0, out.size());
-                ASSERT_EQ(padded_output, out);
+                auto padded_actual = actual.substr(0, expected.size());
+                run(in, padded_actual, expected);
+                // ASSERT_EQ(padded_actual, expected);
             }
             ++out_it;
         }
@@ -54,8 +65,8 @@ namespace {
 TEST_F(LukaTest, v0_1) {
     Container inputs;
     Container outputs;
-    inputs.add("int a&");
-    outputs.add("[Line 1] lexical error: unknown symbol &");
+    inputs.add("int a@");
+    outputs.add("[Line 1] lexical error: unknown symbol @");
 
     inputs.add("int #####a");
     outputs.add("[Line 1] lexical error: unknown symbol #####");
@@ -112,12 +123,27 @@ TEST_F(LukaTest, v0_2) {
     outputs.add("[Line 1] semantic error: attribution operation expected integer but received float");
 
     inputs.add("int a", "a = a + true");
-    outputs.add("int var: a", "[Line 2] semantic error: addition operation expected integer but received boolean");
+    outputs.add("[Line 2] semantic error: addition operation expected integer but received boolean", "int var: a");
 
     run_tests(inputs, outputs);
 }
 
 int main(int argc, char** argv) {
+    constexpr auto min_version = 0.1;
+    constexpr auto max_version = 0.2;
+
     ::testing::InitGoogleTest(&argc, argv);
+    std::string tests;
+    double version = (argc == 1) ? max_version : std::atof(argv[1]);
+    version = std::min(max_version, std::max(min_version, version));
+    bool colon = false;
+    for (auto i = min_version; i <= version; i += 0.1) {
+        if (colon) {
+            tests += ":";
+        }
+        tests += "*_" + std::to_string(static_cast<int>(i * 10));
+        colon = true;
+    }
+    ::testing::GTEST_FLAG(filter) = tests;
     return RUN_ALL_TESTS();
 }

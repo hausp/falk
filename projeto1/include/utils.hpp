@@ -55,7 +55,7 @@ namespace utils {
     const std::unordered_map<Type, std::string> type_table = {
         {Type::INT, "int"},
         {Type::FLOAT, "float"},
-        {Type::BOOL, "boolean"}
+        {Type::BOOL, "bool"}
     };
 
     const std::unordered_map<Operator, std::string> operator_table = {
@@ -72,6 +72,12 @@ namespace utils {
         {Operator::MINUS, "-"},
         {Operator::TIMES, "*"},
         {Operator::DIVIDE, "/"}
+    };
+
+    const std::unordered_map<Type, std::string> printable_type_table = {
+        {Type::INT, "integer"},
+        {Type::FLOAT, "float"},
+        {Type::BOOL, "boolean"}
     };
 
     const std::unordered_map<Operator, std::string> printable_operator_table = {
@@ -127,6 +133,10 @@ namespace utils {
         return operator_table.at(op);
     }
 
+    inline std::string to_printable_string(Type type) {
+        return printable_type_table.at(type);
+    }
+
     inline std::string to_printable_string(Operator op) {
         return printable_operator_table.at(op);
     }
@@ -170,8 +180,8 @@ namespace utils {
     template<>
     inline void semantic_error<Error::INCOMPATIBLE_OPERANDS>(Operator op, Type expected, Type actual) {
         auto op_name = to_printable_string(op);
-        auto expected_str = to_string(expected);
-        auto actual_str = to_string(actual);
+        auto expected_str = to_printable_string(expected);
+        auto actual_str = to_printable_string(actual);
         echo(error_prefix("semantic") + op_name + " operation expected "
             + expected_str + " but received " + actual_str);
     }

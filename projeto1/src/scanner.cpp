@@ -834,17 +834,17 @@ YY_RULE_SETUP
 case 2:
 YY_RULE_SETUP
 #line 28 "flex/scanner.l"
-{ yylval.type = Type::INT; return T_INT; }
+{ yylval.type = Type::INT; return T_TYPE; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
 #line 29 "flex/scanner.l"
-{ yylval.type = Type::FLOAT; return T_FLOAT; }
+{ yylval.type = Type::FLOAT; return T_TYPE; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
 #line 30 "flex/scanner.l"
-{ yylval.type = Type::BOOL; return T_BOOL; }
+{ yylval.type = Type::BOOL; return T_TYPE; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
