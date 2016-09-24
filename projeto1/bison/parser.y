@@ -59,7 +59,7 @@ extern void yyerror(const char* s, ...);
 %%
 
 program:
-    lines { actions.print(); }
+    lines
     ;
 
 lines:

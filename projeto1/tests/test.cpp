@@ -86,6 +86,34 @@ TEST_F(LukaTest, v0_1) {
 
     inputs.add("int a, d = 1", "a = d + 2 * 3");
     outputs.add("int var: a, d = 1", "= a + d * 2 3");
+
+    inputs.add("int a", "int 10b");
+    outputs.add("[Line 2] syntax error", "int var: a");
+
+    run_tests(inputs, outputs);
+}
+
+TEST_F(LukaTest, v0_2) {
+    Container inputs;
+    Container outputs;
+    inputs.add("float f=1.0, g=0., h=.10, i");
+    outputs.add("float var: f = 1.0, g = 0., h = .10, i");
+
+    inputs.add("bool b = true");
+    outputs.add("bool var: b = true");
+
+    inputs.add("float f, g, h, i", "i = -f/2.1");
+    outputs.add("float var: f, g, h, i", "= i / -u f 2.1");
+
+    inputs.add("float i", "bool b", "b = ! i > 0.0 | (i < -2.3)");
+    outputs.add("float var: i", "bool var: b", "= b | ! > i 0.0 < i -u 2.3");
+
+    inputs.add("int a = 1.0");
+    outputs.add("[Line 1] semantic error: attribution operation expected integer but received float");
+
+    inputs.add("int a", "a = a + true");
+    outputs.add("int var: a", "[Line 2] semantic error: addition operation expected integer but received boolean");
+
     run_tests(inputs, outputs);
 }
 

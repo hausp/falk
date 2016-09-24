@@ -34,3 +34,5 @@ bin/
 *.d
 *~
 lukacompiler
+src/parser.cpp
+src/scanner.cpp
