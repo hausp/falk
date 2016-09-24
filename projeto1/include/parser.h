@@ -45,8 +45,9 @@ extern int yydebug;
     #include "Action.hpp"
     #include "ActionStacker.hpp"
     #include "macros.hpp"
+    #include "utils.hpp"
 
-#line 50 "include/parser.h" /* yacc.c:1909  */
+#line 51 "include/parser.h" /* yacc.c:1909  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -80,7 +81,7 @@ union YYSTYPE
     int value;
     char * var;
 
-#line 84 "include/parser.h" /* yacc.c:1909  */
+#line 85 "include/parser.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

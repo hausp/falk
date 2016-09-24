@@ -7,10 +7,10 @@ SymbolMap& SymbolMap::instance() {
     return inst;
 }
 
-bool SymbolMap::declare(Type type, const std::string& name, size_t line) {
+bool SymbolMap::declare(Type type, const std::string& name) {
     if (symbols.count(name)) {
         // TODO
-        utils::semantic_error<Error::MULTIPLE_DEFINITION>(line, name);
+        utils::semantic_error<Error::MULTIPLE_DEFINITION>(name);
         return false;
     }
     symbols[name] = type;

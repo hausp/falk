@@ -2,6 +2,7 @@
     #include "Action.hpp"
     #include "ActionStacker.hpp"
     #include "macros.hpp"
+    #include "utils.hpp"
 }
 
 %{
@@ -15,7 +16,6 @@ extern void yyerror(const char* s, ...);
 
 %code {
     ActionStacker actions;
-    size_t line_number = 1;
 }
 
 %define parse.trace
@@ -68,9 +68,9 @@ lines:
     ;
 
 line:
-    T_NL { $$ = 0; } // bison forced me to do this
-    | declaration T_NL
-    | assignment T_NL
+    T_NL { $$ = 0; ++utils::counter(); } // bison forced me to do this
+    | declaration T_NL { ++utils::counter(); }
+    | assignment T_NL { ++utils::counter(); }
     ;
 
 declaration:
@@ -139,7 +139,7 @@ expr:
         }
     | T_OPAR expr T_CPAR         {
             auto body = actions.pop();
-            actions.push(new Operation(Operator::PAR, body));
+            actions.push(new Parenthesis(body));
         }
     ;
 

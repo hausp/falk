@@ -11,9 +11,13 @@ Type Operation::type() const {
 std::string Operation::to_string() const {
     std::string result;
     result += op_string();
+    bool space = false;
     for (auto child : children) {
-        result += " ";
+        if (space || !result.empty()) {
+            result += " ";
+        }
         result += child->to_string();
+        space = true;
     }
     return result;
 }

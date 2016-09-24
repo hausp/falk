@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include "LineCounter.hpp"
 
 enum class Type {
     INT
@@ -23,7 +24,27 @@ enum class Error {
 };
 
 namespace utils {
-    struct error {};
+    class line_counter {
+     public:
+        static line_counter& instance() {
+            static line_counter inst;
+            return inst;
+        }
+
+        size_t value() const { return val; }
+        line_counter& operator++() {
+            ++val;
+            return *this;
+        }
+
+     private:
+        size_t val = 1;
+        line_counter() = default;
+    };
+
+    inline line_counter& counter() {
+        return line_counter::instance();
+    }
 
     template<typename T>
     inline std::string to_string(const T& value) {
@@ -48,21 +69,22 @@ namespace utils {
         std::cout << value << std::endl;
     }
 
-    inline std::string error_prefix(const std::string& type, size_t line) {
-        return "[Line " + std::to_string(line) + "] " + type + " error: ";
+    inline std::string error_prefix(const std::string& type) {
+        auto line = std::to_string(counter().value());
+        return "[Line " + line + "] " + type + " error: ";
     }
 
     template<Error err>
-    inline void semantic_error(size_t, const std::string&);
+    inline void semantic_error(const std::string&);
 
     template<>
-    inline void semantic_error<Error::MULTIPLE_DEFINITION>(size_t line, const std::string& name) {
-        echo(error_prefix("semantic", line) + "re-declaration of variable " + name);
+    inline void semantic_error<Error::MULTIPLE_DEFINITION>(const std::string& name) {
+        echo(error_prefix("semantic") + "re-declaration of variable " + name);
     }
 
     template<>
-    inline void semantic_error<Error::UNDECLARED_VARIABLE>(size_t line, const std::string& name) {
-        echo(error_prefix("semantic", line) + "undeclared variable " + name);
+    inline void semantic_error<Error::UNDECLARED_VARIABLE>(const std::string& name) {
+        echo(error_prefix("semantic") + "undeclared variable " + name);
     }
 }
 

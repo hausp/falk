@@ -3,13 +3,13 @@
 Declaration::Declaration(Type type) : type(type) {}
 
 void Declaration::add(const std::string& name) {
-    if (symbols.declare(type, name, 0)) {
+    if (symbols.declare(type, name)) {
         values.push_back({name, ""});
     }
 }
 
 void Declaration::add(const std::string& name, const std::string& value) {
-    if (symbols.declare(type, name, value, 0)) {
+    if (symbols.declare(type, name, value)) {
         values.push_back({name, value});
     }
 }

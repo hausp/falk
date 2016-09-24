@@ -3,7 +3,7 @@
 Variable::Variable(const std::string& name)
  : fail(!symbols.var_exists(name)), name(name) {
     if (error()) {
-        utils::semantic_error<Error::UNDECLARED_VARIABLE>(0, name);
+        utils::semantic_error<Error::UNDECLARED_VARIABLE>(name);
     }
 }
 

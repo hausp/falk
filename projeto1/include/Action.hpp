@@ -96,6 +96,16 @@ class Operation : public TypedAction {
     }
 };
 
+
+class Parenthesis : public Operation {
+ public:
+    Parenthesis(Action* operand) : Operation(Operator::PAR, operand) {}
+
+    std::string op_string() const override {
+        return "";
+    }
+};
+
 class UnaryMinus : public Operation {
  public:
     UnaryMinus(Action* operand) : Operation(Operator::MINUS, operand) {}

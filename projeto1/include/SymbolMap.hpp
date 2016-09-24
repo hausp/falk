@@ -10,9 +10,8 @@ public:
     static SymbolMap& instance();
 
     template<typename T>
-    bool declare(Type, const std::string&, const T&, size_t);
-    bool declare(Type, const std::string&, size_t);
-    // void retrieve(Type, const std::string&, size_t) const;
+    bool declare(Type, const std::string&, const T&);
+    bool declare(Type, const std::string&);
     bool var_exists(const std::string&) const;
 
 private:
