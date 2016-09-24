@@ -8,9 +8,10 @@ void Declaration::add(const std::string& name) {
     }
 }
 
-void Declaration::add(const std::string& name, const std::string& value) {
-    if (symbols.declare(type, name, value)) {
-        values.push_back({name, value});
+void Declaration::add(const std::string& name, Action* value) {
+    auto val = dynamic_cast<TypedAction*>(value);
+    if (symbols.declare(type, name, *val)) {
+        values.push_back({name, value->to_string()});
     }
 }
 

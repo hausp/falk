@@ -23,5 +23,9 @@ std::string Operation::to_string() const {
 }
 
 std::string Operation::op_string() const {
-	return std::string(1, static_cast<char>(op));
+	return utils::to_string(op);
+}
+
+void Operation::set_error() {
+    fail = true;
 }

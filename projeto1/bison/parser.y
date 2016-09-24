@@ -25,28 +25,36 @@ extern void yyerror(const char* s, ...);
  */
 %union {
     Type type;
-    int value;
+    utils::literal value;
+    Operator operation;
     char * var;
 }
 
 /* token defines our terminal symbols (tokens).
  */
-%token <type> T_TYPE
+%token <type> T_INT T_FLOAT T_BOOL
+%token <value> T_LITERAL
 %token <var> T_VAR
-%token <value> T_NUMBER
-%token T_PLUS T_TIMES T_DIVIDE T_MINUS T_OPAR T_CPAR T_ASSIGN T_COMMA T_NL
+%token <operation> T_PLUS T_MINUS T_TIMES T_DIVIDE T_COMPARISON
+%token <operation> T_AND T_OR T_NOT
+%token T_ASSIGN T_COMMA T_NL
+%token T_OPAR T_CPAR
 
 /* type defines the type of our nonterminal symbols.
  * Types should match the names used in the union.
  * Example: %type<node> expr
  */
-%type <value> program lines line declaration var_list var_def assignment expr variable typenode
+%type <var> program lines line declaration var_list var_def assignment expr variable type literal
 
 /* Operator precedence for mathematical operators
  * The latest it is listed, the highest the precedence
  * left, right, nonassoc
  */
-//%left T_ASSIGN
+/* TODO: is %left the right choice for comparison operators? */
+/* TODO: check if the precedence order is correct */
+%left T_AND T_OR
+%nonassoc T_NOT
+%left T_COMPARISON
 %left T_PLUS T_MINUS
 %left T_TIMES T_DIVIDE
 %nonassoc T_OPAR T_CPAR
@@ -58,90 +66,103 @@ extern void yyerror(const char* s, ...);
 
 %%
 
-program:
-    lines
-    ;
+program     : lines
+            ;
 
-lines:
-    line
-    | lines line
-    ;
+lines       : line
+            | lines line
+            ;
 
-line:
-    T_NL { $$ = 0; ++utils::counter(); } // bison forced me to do this
-    | declaration T_NL { ++utils::counter(); }
-    | assignment T_NL { ++utils::counter(); }
-    ;
+line        : T_NL             { $$ = 0; ++utils::counter(); }
+            | declaration T_NL { ++utils::counter(); }
+            | assignment T_NL  { ++utils::counter(); }
+            ;
 
-declaration:
-    typenode var_list
-    ;
+declaration : type var_list
+            ;
 
-typenode:
-    T_TYPE { actions.push(new Declaration($1)); }
-    ;
+type        : T_INT   { actions.push(new Declaration($1)); }
+            | T_FLOAT { actions.push(new Declaration($1)); }
+            | T_BOOL  { actions.push(new Declaration($1)); }
+            ;
 
-var_list:
-    var_def
-    | var_list T_COMMA var_def
-    ;
+var_list    : var_def
+            | var_list T_COMMA var_def
+            ;
 
-var_def:
-    T_VAR T_ASSIGN T_NUMBER {
-            auto name = std::string($1);
-            auto value = std::to_string($3);
-            dynamic_cast<Declaration*>(actions.top())->add(name, value);
-        }
-    | T_VAR {
-            auto name = std::string($1);
-            dynamic_cast<Declaration*>(actions.top())->add(std::string($1));
-        }
-    ;
+var_def     : T_VAR T_ASSIGN literal {
+                auto name = std::string($1);
+                auto value = actions.pop();
+                dynamic_cast<Declaration*>(actions.top())->add(name, value);
+             }
+            | T_VAR {
+                auto name = std::string($1);
+                dynamic_cast<Declaration*>(actions.top())->add(std::string($1));
+             }
+            ;
 
-assignment:
-    variable T_ASSIGN expr {
-        auto expr = actions.pop();
-        auto var = actions.pop();
-        actions.push(new Assignment(dynamic_cast<Variable*>(var), expr));
-    }
-    ;
+assignment  : variable T_ASSIGN expr {
+                auto expr = actions.pop();
+                auto var = actions.pop();
+                actions.push(new Assignment(dynamic_cast<Variable*>(var), expr));
+             }
+            ;
 
-variable:
-    T_VAR { actions.push(new Variable($1)); }
-    ;
+variable    : T_VAR { actions.push(new Variable($1)); }
+            ;
 
-expr:
-    T_NUMBER                     { actions.push(new Constant(Type::INT, std::to_string($1))); }
-    | variable
-    | expr T_PLUS expr           {
-            auto right = actions.pop();
-            auto left = actions.pop();
-            actions.push(new Operation(Operator::PLUS, left, right));
-        }
-    | expr T_MINUS expr          {
-            auto right = actions.pop();
-            auto left = actions.pop();
-            actions.push(new Operation(Operator::MINUS, left, right));
-        }
-    | expr T_TIMES expr          {
-            auto right = actions.pop();
-            auto left = actions.pop();
-            actions.push(new Operation(Operator::TIMES, left, right));
-        }
-    | expr T_DIVIDE expr         {
-            auto right = actions.pop();
-            auto left = actions.pop();
-            actions.push(new Operation(Operator::DIVIDE, left, right));
-        }
-    | T_MINUS expr %prec U_MINUS {
-            auto body = actions.pop();
-            actions.push(new UnaryMinus(body));
-        }
-    | T_OPAR expr T_CPAR         {
-            auto body = actions.pop();
-            actions.push(new Parenthesis(body));
-        }
-    ;
+literal     : T_LITERAL { actions.push(new Constant($1.type, std::string($1.value))); }
+
+expr        : literal
+            | variable
+            | expr T_COMPARISON expr     {
+                auto right = actions.pop();
+                auto left = actions.pop();
+                actions.push(new Operation($2, left, right));
+             }
+            | expr T_AND expr            {
+                auto right = actions.pop();
+                auto left = actions.pop();
+                actions.push(new BoolOperation($2, left, right));
+             }
+            | expr T_OR expr             {
+                auto right = actions.pop();
+                auto left = actions.pop();
+                actions.push(new BoolOperation($2, left, right));
+             }
+            | T_NOT expr                 {
+                auto body = actions.pop();
+                actions.push(new BoolOperation(Operator::NOT, body));
+             }
+            | expr T_PLUS expr           {
+                auto right = actions.pop();
+                auto left = actions.pop();
+                actions.push(new Operation(Operator::PLUS, left, right));
+             }
+            | expr T_MINUS expr          {
+                auto right = actions.pop();
+                auto left = actions.pop();
+                actions.push(new Operation(Operator::MINUS, left, right));
+             }
+            | expr T_TIMES expr          {
+                auto right = actions.pop();
+                auto left = actions.pop();
+                actions.push(new Operation(Operator::TIMES, left, right));
+             }
+            | expr T_DIVIDE expr         {
+                auto right = actions.pop();
+                auto left = actions.pop();
+                actions.push(new Operation(Operator::DIVIDE, left, right));
+             }
+            | T_MINUS expr %prec U_MINUS {
+                auto body = actions.pop();
+                actions.push(new UnaryMinus(body));
+             }
+            | T_OPAR expr T_CPAR         {
+                auto body = actions.pop();
+                actions.push(new Parenthesis(body));
+             }
+           ;
 
 %%
 

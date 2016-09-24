@@ -4,7 +4,7 @@
 
 ActionStacker::~ActionStacker() {
     while (!actions.empty()) {
-        popDelete();
+        pop_delete();
     }
 }
 
@@ -12,7 +12,7 @@ void ActionStacker::push(Action* action) {
     actions.push_back(action);
 }
 
-void ActionStacker::popDelete() {
+void ActionStacker::pop_delete() {
     delete top();
     actions.pop_back();
 }

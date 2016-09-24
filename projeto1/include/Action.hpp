@@ -20,7 +20,7 @@ class Declaration : public Action {
  public:
     Declaration(Type);
     void add(const std::string&);
-    void add(const std::string&, const std::string&);
+    void add(const std::string&, Action*);
     std::string to_string() const override;
 
  private:
@@ -65,37 +65,62 @@ class Constant : public TypedAction {
 class Operation : public TypedAction {
  public:
     template<typename... Args>
-    Operation(Operator op, Action* first, Args&&... args)
-     : op(op), t(dynamic_cast<TypedAction*>(first)->type()) {
-        set_children(first, std::forward<Args>(args)...);
+    Operation(Operator op, Action* first, Args&&... args) : op(op) {
+        auto typed = dynamic_cast<TypedAction*>(first);
+        t = typed->type();
+        set_children(typed, std::forward<Args>(args)...);
+    }
+
+    template<typename... Args>
+    Operation(Operator op, Type type, Args&&... args)
+     : op(op), t(type) {
+        set_children(std::forward<Args>(args)...);
     }
 
     bool error() const override;
     Type type() const override;
     std::string to_string() const override;
     virtual std::string op_string() const;
+    void set_error();
 
  private:
     Operator op;
     Type t;
     bool fail = false;
-    std::list<Action*> children;
+    std::list<TypedAction*> children;
+
+    void check(TypedAction* action) {
+        auto expected = t;
+        auto actual = action->type();
+        if (actual != expected) {
+            utils::semantic_error<Error::INCOMPATIBLE_OPERANDS>(op, expected, actual);
+            fail = true;
+        }
+    }
 
     void set_children() {}
 
     template<typename... Args>
-    void set_children(Action* action, Args&&... args) {
-        auto typed = dynamic_cast<TypedAction*>(action);
-        if (typed->type() != t) {
-            // TODO: show an error (see v0.2 error reporting)
-            fail = true;
-        }
-        fail = fail || typed->error();
+    void set_children(TypedAction* action, Args&&... args) {
+        check(action);
+        fail = fail || action->error();
         children.push_back(action);
         set_children(std::forward<Args>(args)...);
     }
+
+    template<typename... Args>
+    void set_children(Action* action, Args&&... args) {
+        set_children(dynamic_cast<TypedAction*>(action), std::forward<Args>(args)...);
+    }
 };
 
+
+class BoolOperation : public Operation {
+ public:
+    template<typename... Args>
+    BoolOperation(Operator op, Args&&... args)
+     : Operation(op, Type::BOOL, std::forward<Args>(args)...) {}
+};
 
 class Parenthesis : public Operation {
  public:
@@ -108,7 +133,7 @@ class Parenthesis : public Operation {
 
 class UnaryMinus : public Operation {
  public:
-    UnaryMinus(Action* operand) : Operation(Operator::MINUS, operand) {}
+    UnaryMinus(Action* operand) : Operation(Operator::UNARY_MINUS, operand) {}
 
     std::string op_string() const override {
         return "-u";
@@ -123,7 +148,8 @@ class Assignment : public Action {
 
  private:
     Variable* var;
-    Action* rhs;
+    TypedAction* rhs;
+    bool fail;
 };
 
 #endif /* ACTION_HPP */

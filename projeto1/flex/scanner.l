@@ -12,35 +12,56 @@ void yyerror(const char* s, ...);
 
 %option noyywrap nodefault yylineno
 
-type int
-num [0-9]+
+int_type int
+float_type float
+bool_type bool
+number_literal [0-9]+
+float_literal [0-9]*\.[0-9]+|[0-9]+\.?[0-9]*
+bool_literal true|false
 var [a-zA-Z][a-zA-Z0-9_]*
 nonacceptable [^-\+\*\\(\)/=,\n0-9A-Za-z_ \t]+
-
 
 %%
 
 [ \t]               ; //ignores spaces
-{type}				{ yylval.type = Type::INT; return T_TYPE; }
+
+{int_type}          { yylval.type = Type::INT; return T_INT; }
+{float_type}        { yylval.type = Type::FLOAT; return T_FLOAT; }
+{bool_type}         { yylval.type = Type::BOOL; return T_BOOL; }
+
+{number_literal}    { yylval.value = {strdup(yytext), Type::INT}; return T_LITERAL; }
+{float_literal}     { yylval.value = {strdup(yytext), Type::FLOAT}; return T_LITERAL; }
+{bool_literal}      { yylval.value = {strdup(yytext), Type::BOOL}; return T_LITERAL; }
+
 {var}               { yylval.var = strdup(yytext); return T_VAR; }
-{num} 				{ yylval.value = std::atof(strdup(yytext)); return T_NUMBER; }
-"+"                 { return T_PLUS; }
-"-"					{ return T_MINUS; }
-"*"                 { return T_TIMES; }
-"/"					{ return T_DIVIDE; }
-"("					{ return T_OPAR; }
-")"					{ return T_CPAR; }
+
+"+"                 { yylval.operation = Operator::PLUS; return T_PLUS; }
+"-"                 { yylval.operation = Operator::MINUS; return T_MINUS; }
+"*"                 { yylval.operation = Operator::TIMES; return T_TIMES; }
+"/"                 { yylval.operation = Operator::DIVIDE; return T_DIVIDE; }
+"=="                { yylval.operation = Operator::EQUAL; return T_COMPARISON; }
+"!="                { yylval.operation = Operator::NOT_EQUAL; return T_COMPARISON; }
+">"                 { yylval.operation = Operator::GREATER_THAN; return T_COMPARISON; }
+"<"                 { yylval.operation = Operator::LESS_THAN; return T_COMPARISON; }
+">="                { yylval.operation = Operator::GREATER_EQUAL_THAN; return T_COMPARISON; }
+"<="                { yylval.operation = Operator::LESS_EQUAL_THAN; return T_COMPARISON; }
+"&"                 { yylval.operation = Operator::AND; return T_AND; }
+"|"                 { yylval.operation = Operator::OR; return T_OR; }
+"!"                 { yylval.operation = Operator::NOT; return T_NOT; }
+
+"("                 { return T_OPAR; }
+")"                 { return T_CPAR; }
 "="                 { return T_ASSIGN; }
-","					{ return T_COMMA;  }
+","                 { return T_COMMA;  }
 \n                  { return T_NL; }
-{nonacceptable}	    { lexical_error("unknown symbol %s\n", strdup(yytext)); }
+{nonacceptable}     { lexical_error("unknown symbol %s\n", strdup(yytext)); }
 
 %%
 
 template<typename... Args>
 void lexical_error(Args... args) {
     std::fprintf(stderr, "[Line %d] lexical error: ", yylineno);
-	std::fprintf(stderr, args...);
+    std::fprintf(stderr, args...);
 }
 
 void yyerror(const char *s, ...){

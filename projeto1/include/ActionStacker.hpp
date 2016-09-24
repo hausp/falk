@@ -11,7 +11,7 @@ class ActionStacker {
  public:
     ~ActionStacker();
     void push(Action*);
-    void popDelete();
+    void pop_delete();
     Action* pop();
     Action* top();
     void print() const;

@@ -54,19 +54,25 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    T_TYPE = 258,
-    T_VAR = 259,
-    T_NUMBER = 260,
-    T_PLUS = 261,
-    T_TIMES = 262,
-    T_DIVIDE = 263,
+    T_INT = 258,
+    T_FLOAT = 259,
+    T_BOOL = 260,
+    T_LITERAL = 261,
+    T_VAR = 262,
+    T_PLUS = 263,
     T_MINUS = 264,
-    T_OPAR = 265,
-    T_CPAR = 266,
-    T_ASSIGN = 267,
-    T_COMMA = 268,
-    T_NL = 269,
-    U_MINUS = 270
+    T_TIMES = 265,
+    T_DIVIDE = 266,
+    T_COMPARISON = 267,
+    T_AND = 268,
+    T_OR = 269,
+    T_NOT = 270,
+    T_ASSIGN = 271,
+    T_COMMA = 272,
+    T_NL = 273,
+    T_OPAR = 274,
+    T_CPAR = 275,
+    U_MINUS = 276
   };
 #endif
 
@@ -78,10 +84,11 @@ union YYSTYPE
 #line 26 "bison/parser.y" /* yacc.c:1909  */
 
     Type type;
-    int value;
+    utils::literal value;
+    Operator operation;
     char * var;
 
-#line 85 "include/parser.h" /* yacc.c:1909  */
+#line 92 "include/parser.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

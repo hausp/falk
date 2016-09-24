@@ -3,27 +3,100 @@
 
 #include <iostream>
 #include <string>
-#include "LineCounter.hpp"
+#include <unordered_map>
 
 enum class Type {
-    INT
+    INT, FLOAT, BOOL
 };
 
-enum class Operator : char {
-    PLUS = '+',
-    MINUS = '-',
-    TIMES = '*',
-    DIVIDE = '/',
-    PAR = '(',
-    DECLARE = 'v'
+enum class Operator {
+    EQUAL,
+    NOT_EQUAL,
+    GREATER_THAN,
+    LESS_THAN,
+    GREATER_EQUAL_THAN,
+    LESS_EQUAL_THAN,
+    AND,
+    OR,
+    NOT,
+    PLUS,
+    MINUS,
+    TIMES,
+    DIVIDE,
+    UNARY_MINUS,
+    ASSIGN,
+    PAR
 };
 
 enum class Error {
     MULTIPLE_DEFINITION,
-    UNDECLARED_VARIABLE
+    UNDECLARED_VARIABLE,
+    INCOMPATIBLE_OPERANDS,
+    INCOMPATIBLE_ASSIGNMENT
 };
 
+namespace std {
+    template<>
+    struct hash<Type> {
+        inline size_t operator()(Type type) const {
+            return static_cast<int>(type);
+        }
+    };
+
+    template<>
+    struct hash<Operator> {
+        inline size_t operator()(Operator op) const {
+            return static_cast<int>(op);
+        }
+    };
+}
+
 namespace utils {
+    const std::unordered_map<Type, std::string> type_table = {
+        {Type::INT, "int"},
+        {Type::FLOAT, "float"},
+        {Type::BOOL, "boolean"}
+    };
+
+    const std::unordered_map<Operator, std::string> operator_table = {
+        {Operator::EQUAL, "=="},
+        {Operator::NOT_EQUAL, "!="},
+        {Operator::GREATER_THAN, ">"},
+        {Operator::LESS_THAN, "<"},
+        {Operator::GREATER_EQUAL_THAN, ">="},
+        {Operator::LESS_EQUAL_THAN, "<="},
+        {Operator::AND, "&"},
+        {Operator::OR, "|"},
+        {Operator::NOT, "!"},
+        {Operator::PLUS, "+"},
+        {Operator::MINUS, "-"},
+        {Operator::TIMES, "*"},
+        {Operator::DIVIDE, "/"}
+    };
+
+    const std::unordered_map<Operator, std::string> printable_operator_table = {
+        {Operator::EQUAL, "equal"},
+        {Operator::NOT_EQUAL, "different"},
+        {Operator::GREATER_THAN, "greater than"},
+        {Operator::LESS_THAN, "less than"},
+        {Operator::GREATER_EQUAL_THAN, "greater or equal than"},
+        {Operator::LESS_EQUAL_THAN, "less or equal than"},
+        {Operator::AND, "and"},
+        {Operator::OR, "or"},
+        {Operator::NOT, "negation"},
+        {Operator::PLUS, "addition"},
+        {Operator::MINUS, "subtraction"},
+        {Operator::TIMES, "multiplication"},
+        {Operator::DIVIDE, "division"},
+        {Operator::UNARY_MINUS, "unary minus"},
+        {Operator::ASSIGN, "attribution"}
+    };
+
+    struct literal {
+        char* value;
+        Type type;
+    };
+
     class line_counter {
      public:
         static line_counter& instance() {
@@ -46,22 +119,25 @@ namespace utils {
         return line_counter::instance();
     }
 
-    template<typename T>
-    inline std::string to_string(const T& value) {
-        return std::to_string(value);
-    }
-
     inline std::string to_string(Type type) {
-        return "int";
+        return type_table.at(type);
     }
 
-    inline std::string to_string(const std::string& value) {
-        return value;
+    inline std::string to_string(Operator op) {
+        return operator_table.at(op);
     }
 
+    inline std::string to_printable_string(Operator op) {
+        return printable_operator_table.at(op);
+    }
 
     inline std::string to_string(const char* value) {
         return value;
+    }
+
+    inline bool type_matches(Type target, Type source) {
+        // TODO: check if there's really no coercion in v0.2
+        return target == source;
     }
 
     template<typename T>
@@ -76,6 +152,10 @@ namespace utils {
 
     template<Error err>
     inline void semantic_error(const std::string&);
+    template<Error err>
+    inline void semantic_error(Type, Type);
+    template<Error err>
+    inline void semantic_error(Operator, Type, Type);
 
     template<>
     inline void semantic_error<Error::MULTIPLE_DEFINITION>(const std::string& name) {
@@ -85,6 +165,20 @@ namespace utils {
     template<>
     inline void semantic_error<Error::UNDECLARED_VARIABLE>(const std::string& name) {
         echo(error_prefix("semantic") + "undeclared variable " + name);
+    }
+
+    template<>
+    inline void semantic_error<Error::INCOMPATIBLE_OPERANDS>(Operator op, Type expected, Type actual) {
+        auto op_name = to_printable_string(op);
+        auto expected_str = to_string(expected);
+        auto actual_str = to_string(actual);
+        echo(error_prefix("semantic") + op_name + " operation expected "
+            + expected_str + " but received " + actual_str);
+    }
+
+    template<>
+    inline void semantic_error<Error::INCOMPATIBLE_ASSIGNMENT>(Type expected, Type actual) {
+        semantic_error<Error::INCOMPATIBLE_OPERANDS>(Operator::ASSIGN, expected, actual);
     }
 }
 
