@@ -32,7 +32,7 @@ extern void yyerror(const char* s, ...);
 
 /* token defines our terminal symbols (tokens).
  */
-%token <type> T_TYPE
+%token <type> T_TYPE T_CAST
 %token <value> T_NUMBER T_BOOL
 %token <var> T_VAR
 %token <operation> T_PLUS T_MINUS T_TIMES T_DIVIDE T_COMPARISON
@@ -53,6 +53,7 @@ extern void yyerror(const char* s, ...);
  */
 /* TODO: is %left the right choice for comparison operators? */
 /* TODO: check if the precedence order is correct */
+%nonassoc T_CAST
 %left T_AND T_OR
 %nonassoc T_NOT
 %left T_COMPARISON
@@ -118,6 +119,10 @@ literal     : pure_literal
 
 expr        : pure_literal
             | variable
+            | T_CAST expr                {
+                auto body = actions.pop();
+                actions.push(new Cast($1, body));
+             }
             | expr T_COMPARISON expr     {
                 auto right = actions.pop();
                 auto left = actions.pop();

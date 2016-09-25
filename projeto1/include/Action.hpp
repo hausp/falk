@@ -88,10 +88,11 @@ class Operation : public TypedAction {
     Operator op;
     Type t;
     bool fail = false;
+    bool needs_coercion = false;
     std::list<TypedAction*> children;
 
     void check(TypedAction*);
-    void set_children() {}
+    void set_children();
 
     template<typename... Args>
     void set_children(TypedAction* action, Args&&... args) {
@@ -142,6 +143,16 @@ class UnaryMinus : public Operation {
     }
 };
 
+class Cast : public Operation {
+ public:
+    Cast(Type type, Action* operand) : Operation(Operator::CAST, operand) {
+        set_type(type);
+    }
+
+    std::string op_string() const override {
+        return "[" + utils::to_string(type()) + "]";
+    }
+};
 
 class Assignment : public Action {
  public:

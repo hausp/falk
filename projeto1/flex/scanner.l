@@ -15,9 +15,11 @@ void yyerror(const char* s, ...);
 int_type int
 float_type float
 bool_type bool
+
 int_literal [0-9]+
 float_literal [0-9]*\.[0-9]+|[0-9]+\.?[0-9]*
 bool_literal true|false
+
 var [a-zA-Z][a-zA-Z0-9_]*
 nonacceptable [^-\+\*\\(\)/=,\n0-9A-Za-z_ \t]+
 
@@ -28,6 +30,10 @@ nonacceptable [^-\+\*\\(\)/=,\n0-9A-Za-z_ \t]+
 {int_type}          { yylval.type = Type::INT; return T_TYPE; }
 {float_type}        { yylval.type = Type::FLOAT; return T_TYPE; }
 {bool_type}         { yylval.type = Type::BOOL; return T_TYPE; }
+
+"["{int_type}"]"    { yylval.type = Type::INT; return T_CAST; }
+"["{float_type}"]"  { yylval.type = Type::FLOAT; return T_CAST; }
+"["{bool_type}"]"   { yylval.type = Type::BOOL; return T_CAST; }
 
 {int_literal}       { yylval.value = {strdup(yytext), Type::INT}; return T_NUMBER; }
 {float_literal}     { yylval.value = {strdup(yytext), Type::FLOAT}; return T_NUMBER; }

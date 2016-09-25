@@ -25,7 +25,8 @@ enum class Operator {
     DIVIDE,
     UNARY_MINUS,
     ASSIGN,
-    PAR
+    PAR,
+    CAST
 };
 
 enum class Error {
@@ -145,8 +146,13 @@ namespace utils {
         return value;
     }
 
+    inline bool needs_coercion(Type target, Type source) {
+        bool involves_int = (target == Type::INT || source == Type::INT);
+        bool involves_float = (target == Type::FLOAT || source == Type::FLOAT);
+        return involves_int && involves_float;
+    }
+
     inline bool type_matches(Type target, Type source) {
-        // TODO: check if there's really no coercion in v0.2
         return target == source;
     }
 

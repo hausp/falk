@@ -134,22 +134,54 @@ TEST_F(LukaTest, v0_2) {
     run_tests(inputs, outputs);
 }
 
+TEST_F(LukaTest, v0_3) {
+    Container inputs;
+    Container outputs;
+    inputs.add("int i, j", "float f", "j = [int] [int] i + f");
+    outputs.add("int var: i, j", "float var: f", "= j [int] [int] + [float] i f");
+
+    inputs.add("int i, j", "i = [int] j");
+    outputs.add("int var: i, j", "= i [int] j");
+
+    inputs.add("float f", "bool b", "b = b & [bool] f");
+    outputs.add("float var: f", "bool var: b", "= b & b [bool] f");
+
+    inputs.add("float f", "bool b", "f = ([float] b) + 0.0");
+    outputs.add("float var: f", "bool var: b", "= f + [float] b 0.0");
+}
+
+TEST_F(LukaTest, v0_4) {
+    Container inputs;
+    Container outputs;
+    inputs.add("int a, b, c", "if a > b", "then {", "if (a > 0)", "then {", "c = 10", "}", "}");
+    outputs.add("int var: a, b, c", "if: > a b", "then:", "  if: > a 0", "  then:", "    = c 10");
+
+    inputs.add("bool b, d", "if b", "then {", "d = true", "} else {", "d = false", "}");
+    outputs.add("bool var: b, d", "if: b", "then:", "  = d true", "else:", "  = d false");
+
+    inputs.add("int a = 0", "if a");
+    outputs.add("[Line 2] semantic error: test operation expected boolean but received integer", "int var: a");
+}
+
 int main(int argc, char** argv) {
     constexpr auto min_version = 0.1;
-    constexpr auto max_version = 0.2;
+    constexpr auto max_version = 0.3;
 
     ::testing::InitGoogleTest(&argc, argv);
-    std::string tests;
-    double version = (argc == 1) ? max_version : std::atof(argv[1]);
-    version = std::min(max_version, std::max(min_version, version));
-    bool colon = false;
-    for (auto i = min_version; i <= version; i += 0.1) {
-        if (colon) {
-            tests += ":";
+    const std::string tests = [&] {
+        std::string result;
+        double version = (argc == 1) ? max_version : std::atof(argv[1]);
+        version = std::min(max_version, std::max(min_version, version));
+        bool colon = false;
+        for (auto i = min_version; i <= version + 0.05; i += 0.1) {
+            if (colon) {
+                result += ":";
+            }
+            result += "*_" + std::to_string(static_cast<int>(i * 10));
+            colon = true;
         }
-        tests += "*_" + std::to_string(static_cast<int>(i * 10));
-        colon = true;
-    }
+        return result;
+    }();
     ::testing::GTEST_FLAG(filter) = tests;
     return RUN_ALL_TESTS();
 }
