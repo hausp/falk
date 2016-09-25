@@ -101,6 +101,12 @@ TEST_F(LukaTest, v0_1) {
     inputs.add("int a", "int 10b");
     outputs.add("[Line 2] syntax error", "int var: a");
 
+    inputs.add("int a = -1");
+    outputs.add("int var: a = -1");
+
+    inputs.add("int a", "a = -2-3");
+    outputs.add("int var: a", "= a - -u 2 3");
+
     run_tests(inputs, outputs);
 }
 

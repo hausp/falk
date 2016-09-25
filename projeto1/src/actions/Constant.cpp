@@ -3,7 +3,7 @@
 Constant::Constant(Type type, const std::string& value) : t(type), value(value) {}
 
 bool Constant::error() const {
-	return false;
+    return false;
 }
 
 Type Constant::type() const {

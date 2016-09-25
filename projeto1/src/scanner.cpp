@@ -849,17 +849,17 @@ YY_RULE_SETUP
 case 5:
 YY_RULE_SETUP
 #line 32 "flex/scanner.l"
-{ yylval.value = {strdup(yytext), Type::INT}; return T_LITERAL; }
+{ yylval.value = {strdup(yytext), Type::INT}; return T_NUMBER; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
 #line 33 "flex/scanner.l"
-{ yylval.value = {strdup(yytext), Type::FLOAT}; return T_LITERAL; }
+{ yylval.value = {strdup(yytext), Type::FLOAT}; return T_NUMBER; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
 #line 34 "flex/scanner.l"
-{ yylval.value = {strdup(yytext), Type::BOOL}; return T_LITERAL; }
+{ yylval.value = {strdup(yytext), Type::BOOL}; return T_BOOL; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP

@@ -29,9 +29,9 @@ nonacceptable [^-\+\*\\(\)/=,\n0-9A-Za-z_ \t]+
 {float_type}        { yylval.type = Type::FLOAT; return T_TYPE; }
 {bool_type}         { yylval.type = Type::BOOL; return T_TYPE; }
 
-{int_literal}       { yylval.value = {strdup(yytext), Type::INT}; return T_LITERAL; }
-{float_literal}     { yylval.value = {strdup(yytext), Type::FLOAT}; return T_LITERAL; }
-{bool_literal}      { yylval.value = {strdup(yytext), Type::BOOL}; return T_LITERAL; }
+{int_literal}       { yylval.value = {strdup(yytext), Type::INT}; return T_NUMBER; }
+{float_literal}     { yylval.value = {strdup(yytext), Type::FLOAT}; return T_NUMBER; }
+{bool_literal}      { yylval.value = {strdup(yytext), Type::BOOL}; return T_BOOL; }
 
 {var}               { yylval.var = strdup(yytext); return T_VAR; }
 

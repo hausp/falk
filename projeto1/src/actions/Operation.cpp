@@ -1,11 +1,11 @@
 #include "Action.hpp"
 
 bool Operation::error() const {
-	return fail;
+    return fail;
 }
 
 Type Operation::type() const {
-	return t;
+    return t;
 }
 
 std::string Operation::to_string() const {
@@ -23,7 +23,7 @@ std::string Operation::to_string() const {
 }
 
 std::string Operation::op_string() const {
-	return utils::to_string(op);
+    return utils::to_string(op);
 }
 
 void Operation::check(TypedAction* action) {
