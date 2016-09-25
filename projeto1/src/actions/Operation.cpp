@@ -30,7 +30,7 @@ void Operation::set_type(Type type) {
     t = type;
 }
 
-void Operation::check(TypedAction* action) {
+void Operation::check(Action* action) {
     auto expected = t;
     auto actual = action->type();
     bool can_coerce = utils::needs_coercion(expected, actual);

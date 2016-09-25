@@ -13,6 +13,8 @@ class Action {
  public:
     virtual ~Action() {}
     virtual std::string to_string() const = 0;
+    virtual bool error() const { return false; }
+    virtual Type type() const = 0;
 };
 
 
@@ -22,21 +24,15 @@ class Declaration : public Action {
     void add(const std::string&);
     void add(const std::string&, Action*);
     std::string to_string() const override;
+    Type type() const override;
 
  private:
-    Type type;
+    Type t;
     std::vector<std::pair<std::string, std::string>> values;
 };
 
 
-class TypedAction : public Action {
- public:
-    virtual bool error() const = 0;
-    virtual Type type() const = 0;
-};
-
-
-class Variable : public TypedAction {
+class Variable : public Action {
  public:
     Variable(const std::string&);
     bool error() const override;
@@ -50,7 +46,7 @@ class Variable : public TypedAction {
 };
 
 
-class Constant : public TypedAction {
+class Constant : public Action {
  public:
     Constant(Type type, const std::string& value);
     bool error() const override;
@@ -63,13 +59,12 @@ class Constant : public TypedAction {
 };
 
 
-class Operation : public TypedAction {
+class Operation : public Action {
  public:
     template<typename... Args>
     Operation(Operator op, Action* first, Args&&... args) : op(op) {
-        auto typed = dynamic_cast<TypedAction*>(first);
-        t = typed->type();
-        set_children(typed, std::forward<Args>(args)...);
+        t = first->type();
+        set_children(first, std::forward<Args>(args)...);
     }
 
     template<typename... Args>
@@ -89,22 +84,17 @@ class Operation : public TypedAction {
     Type t;
     bool fail = false;
     bool needs_coercion = false;
-    std::list<TypedAction*> children;
+    std::list<Action*> children;
 
-    void check(TypedAction*);
+    void check(Action*);
     void set_children();
 
     template<typename... Args>
-    void set_children(TypedAction* action, Args&&... args) {
+    void set_children(Action* action, Args&&... args) {
         check(action);
         fail = fail || action->error();
         children.push_back(action);
         set_children(std::forward<Args>(args)...);
-    }
-
-    template<typename... Args>
-    void set_children(Action* action, Args&&... args) {
-        set_children(dynamic_cast<TypedAction*>(action), std::forward<Args>(args)...);
     }
 };
 
@@ -156,12 +146,13 @@ class Cast : public Operation {
 
 class Assignment : public Action {
  public:
-    Assignment(Variable*, Action*);
+    Assignment(Action*, Action*);
     std::string to_string() const override;
+    Type type() const override;
 
  private:
-    Variable* var;
-    TypedAction* rhs;
+    Action* var;
+    Action* rhs;
     bool fail;
 };
 

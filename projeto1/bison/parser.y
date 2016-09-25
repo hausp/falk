@@ -104,7 +104,7 @@ var_def     : T_VAR T_ASSIGN literal {
 assignment  : variable T_ASSIGN expr {
                 auto expr = actions.pop();
                 auto var = actions.pop();
-                actions.push(new Assignment(dynamic_cast<Variable*>(var), expr));
+                actions.push(new Assignment(var, expr));
              }
             ;
 

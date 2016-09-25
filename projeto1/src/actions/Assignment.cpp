@@ -1,7 +1,7 @@
 #include "Action.hpp"
 
-Assignment::Assignment(Variable* var, Action* action)
- : var(var), rhs(dynamic_cast<TypedAction*>(action)), fail(var->error() || rhs->error()) {
+Assignment::Assignment(Action* var, Action* action)
+ : var(var), rhs(action), fail(var->error() || rhs->error()) {
  	auto var_type = var->type();
  	auto rhs_type = rhs->type();
 
@@ -19,4 +19,8 @@ std::string Assignment::to_string() const {
         result += rhs->to_string();
     }
     return result;
+}
+
+Type Assignment::type() const {
+    return var->type();
 }
