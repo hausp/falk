@@ -17,6 +17,6 @@ Type Variable::type() const {
     return t;
 }
 
-std::string Variable::to_string() const {
+std::string Variable::to_string(unsigned) const {
     return name;
 }

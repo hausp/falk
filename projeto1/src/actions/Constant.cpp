@@ -10,6 +10,6 @@ Type Constant::type() const {
     return t;
 }
 
-std::string Constant::to_string() const {
+std::string Constant::to_string(unsigned) const {
     return value;
 }

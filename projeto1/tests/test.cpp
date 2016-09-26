@@ -148,6 +148,8 @@ TEST_F(LukaTest, v0_3) {
 
     inputs.add("float f", "bool b", "f = ([float] b) + 0.0");
     outputs.add("float var: f", "bool var: b", "= f + [float] b 0.0");
+
+    run_tests(inputs, outputs);
 }
 
 TEST_F(LukaTest, v0_4) {
@@ -161,6 +163,26 @@ TEST_F(LukaTest, v0_4) {
 
     inputs.add("int a = 0", "if a");
     outputs.add("[Line 2] semantic error: test operation expected boolean but received integer", "int var: a");
+
+    run_tests(inputs, outputs);
+}
+
+TEST_F(LukaTest, v0_5) {
+    Container inputs;
+    Container outputs;
+    inputs.add("int i", "for i = 0, i < 10, i = i + 1 {", "float j", "}");
+    outputs.add("int var: i", "for: = i 0, < i 10, = i + i 1", "do:", "  float var: j");
+
+    inputs.add("int i", "for , i < 10, i = i + 2 {", "}");
+    outputs.add("int var: i", "for: , < i 10, = i + i 2", "do:");
+
+    inputs.add("int i", "for , i < 10, {", "}");
+    outputs.add("int var: i", "for: , < i 10,", "do:");
+
+    inputs.add("int i", "for i = 0, , i = i + 1 {", "}");
+    outputs.add("[Line 2] syntax error", "int var: i");
+
+    run_tests(inputs, outputs);
 }
 
 int main(int argc, char** argv) {

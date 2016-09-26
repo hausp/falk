@@ -12,7 +12,7 @@ namespace {
 class Action {
  public:
     virtual ~Action() {}
-    virtual std::string to_string() const = 0;
+    virtual std::string to_string(unsigned = 0) const = 0;
     virtual bool error() const { return false; }
     virtual Type type() const = 0;
 };
@@ -23,7 +23,7 @@ class Declaration : public Action {
     Declaration(Type);
     void add(const std::string&);
     void add(const std::string&, Action*);
-    std::string to_string() const override;
+    std::string to_string(unsigned = 0) const override;
     Type type() const override;
 
  private:
@@ -37,7 +37,7 @@ class Variable : public Action {
     Variable(const std::string&);
     bool error() const override;
     Type type() const override;
-    std::string to_string() const override;
+    std::string to_string(unsigned = 0) const override;
 
  private:
     bool fail;
@@ -51,7 +51,7 @@ class Constant : public Action {
     Constant(Type type, const std::string& value);
     bool error() const override;
     Type type() const override;
-    std::string to_string() const override;
+    std::string to_string(unsigned = 0) const override;
 
  private:
     Type t;
@@ -75,7 +75,7 @@ class Operation : public Action {
 
     bool error() const override;
     Type type() const override;
-    std::string to_string() const override;
+    std::string to_string(unsigned = 0) const override;
     virtual std::string op_string() const;
     void set_type(Type);
 
@@ -147,7 +147,7 @@ class Cast : public Operation {
 class Assignment : public Action {
  public:
     Assignment(Action*, Action*);
-    std::string to_string() const override;
+    std::string to_string(unsigned = 0) const override;
     Type type() const override;
 
  private:

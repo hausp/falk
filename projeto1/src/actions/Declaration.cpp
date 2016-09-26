@@ -14,12 +14,13 @@ void Declaration::add(const std::string& name, Action* value) {
     }
 }
 
-std::string Declaration::to_string() const {
+std::string Declaration::to_string(unsigned indent) const {
     std::string result;
     if (values.empty()) {
         return result;
     }
-    result = utils::to_string(type()) + " var: ";
+    result += std::string(indent, ' ');
+    result += utils::to_string(type()) + " var: ";
     size_t i = 0;
     for (auto& pair : values) {
         if (i > 0) {

@@ -11,9 +11,10 @@ Assignment::Assignment(Action* var, Action* action)
     }
 }
 
-std::string Assignment::to_string() const {
+std::string Assignment::to_string(unsigned indent) const {
     std::string result;
     if (!fail) {
+        result += std::string(indent, ' ');
         result += "= ";
         result += var->to_string() + " ";
         result += rhs->to_string();

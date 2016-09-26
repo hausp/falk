@@ -8,7 +8,7 @@ Type Operation::type() const {
     return t;
 }
 
-std::string Operation::to_string() const {
+std::string Operation::to_string(unsigned) const {
     std::string result;
     result += op_string();
     bool space = false;
