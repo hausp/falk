@@ -173,7 +173,21 @@ class Conditional : public Action {
     Action* condition;
     Action* accepted;
     Action* rejected;
-    bool invalid = false;
+    bool invalid;
+};
+
+class Loop : public Action {
+ public:
+    Loop(Action*, Action*, Action*, Action*);
+    std::to_string to_string(unsigned = 0) const override;
+    Type type() const override { return Type::VOID; }
+    bool error() const override { return fail; }
+ private:
+    Action* init;
+    Action* update;
+    Action* test;
+    Action* code;
+    bool fail;
 };
 
 #endif /* ACTION_HPP */
