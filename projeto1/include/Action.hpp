@@ -17,6 +17,13 @@ class Action {
     virtual Type type() const = 0;
 };
 
+class Nop : public Action {
+ public:
+    std::string to_string(unsigned = 0) const override {
+        return "";
+    }
+    Type type() const override { return Type::VOID; }
+};
 
 class Declaration : public Action {
  public:
@@ -154,6 +161,19 @@ class Assignment : public Action {
     Action* var;
     Action* rhs;
     bool fail;
+};
+
+class Conditional : public Action {
+ public:
+    Conditional(Action*, Action*, Action* = nullptr);
+    std::string to_string(unsigned = 0) const override;
+    Type type() const override { return Type::VOID; }
+    bool error() const override { return invalid; };
+ private:
+    Action* condition;
+    Action* accepted;
+    Action* rejected;
+    bool invalid = false;
 };
 
 #endif /* ACTION_HPP */

@@ -6,7 +6,7 @@
 #include <unordered_map>
 
 enum class Type {
-    INT, FLOAT, BOOL
+    INT, FLOAT, BOOL, VOID
 };
 
 enum class Operator {
@@ -26,14 +26,16 @@ enum class Operator {
     UNARY_MINUS,
     ASSIGN,
     PAR,
-    CAST
+    CAST,
+    TEST,
 };
 
 enum class Error {
     MULTIPLE_DEFINITION,
     UNDECLARED_VARIABLE,
     INCOMPATIBLE_OPERANDS,
-    INCOMPATIBLE_ASSIGNMENT
+    INCOMPATIBLE_ASSIGNMENT,
+    INCOMPATIBLE_TEST,
 };
 
 namespace std {
@@ -56,7 +58,7 @@ namespace utils {
     const std::unordered_map<Type, std::string> type_table = {
         {Type::INT, "int"},
         {Type::FLOAT, "float"},
-        {Type::BOOL, "bool"}
+        {Type::BOOL, "bool"},
     };
 
     const std::unordered_map<Operator, std::string> operator_table = {
@@ -72,13 +74,13 @@ namespace utils {
         {Operator::PLUS, "+"},
         {Operator::MINUS, "-"},
         {Operator::TIMES, "*"},
-        {Operator::DIVIDE, "/"}
+        {Operator::DIVIDE, "/"},
     };
 
     const std::unordered_map<Type, std::string> printable_type_table = {
         {Type::INT, "integer"},
         {Type::FLOAT, "float"},
-        {Type::BOOL, "boolean"}
+        {Type::BOOL, "boolean"},
     };
 
     const std::unordered_map<Operator, std::string> printable_operator_table = {
@@ -96,7 +98,8 @@ namespace utils {
         {Operator::TIMES, "multiplication"},
         {Operator::DIVIDE, "division"},
         {Operator::UNARY_MINUS, "unary minus"},
-        {Operator::ASSIGN, "attribution"}
+        {Operator::ASSIGN, "attribution"},
+        {Operator::TEST, "test"},
     };
 
     struct literal {
@@ -169,9 +172,11 @@ namespace utils {
     template<Error err>
     inline void semantic_error(const std::string&);
     template<Error err>
+    inline void semantic_error(Operator, Type, Type);
+    template<Error err>
     inline void semantic_error(Type, Type);
     template<Error err>
-    inline void semantic_error(Operator, Type, Type);
+    inline void semantic_error(Type);
 
     template<>
     inline void semantic_error<Error::MULTIPLE_DEFINITION>(const std::string& name) {
@@ -195,6 +200,11 @@ namespace utils {
     template<>
     inline void semantic_error<Error::INCOMPATIBLE_ASSIGNMENT>(Type expected, Type actual) {
         semantic_error<Error::INCOMPATIBLE_OPERANDS>(Operator::ASSIGN, expected, actual);
+    }
+
+    template<>
+    inline void semantic_error<Error::INCOMPATIBLE_TEST>(Type received) {
+        semantic_error<Error::INCOMPATIBLE_OPERANDS>(Operator::TEST, Type::BOOL, received);
     }
 }
 
