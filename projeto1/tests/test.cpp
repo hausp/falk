@@ -32,13 +32,22 @@ namespace {
         }
     };
 
-    void run(const std::string& in, const std::string& actual, const std::string& expected) {
+    bool run(const std::string& in, const std::string& actual, const std::string& expected, bool padded) {
+        static constexpr auto restore = "\033[0m";
+        static constexpr auto red = "\033[;31m";
+        static constexpr auto green = "\033[;32m";
+        static constexpr auto blue = "\033[;34m";
         if (expected != actual) {
-            std::cout << "Failure in: " << std::endl << in << std::endl;
-            std::cout << "Expected: " << std::endl << expected << std::endl;
-            std::cout << "Actual: " << std::endl << actual << std::endl;
-            ASSERT_TRUE(false);
+            std::cout << red << "Failure in: " << restore << std::endl << in << std::endl;
+            std::cout << green << "Expected: " << restore << std::endl << expected << std::endl;
+            std::cout << blue << "Actual: " << restore << std::endl << actual;
+            if (padded) {
+                std::cout << green << "(...)" << restore;
+            }
+            std::cout << std::endl;
+            return false;
         }
+        return true;
     };
 
     void run_tests(const Container& inputs, const Container& outputs) {
@@ -49,13 +58,15 @@ namespace {
             Connection program("./lukacompiler");
             program.send(in);
             auto actual = program.receive();
-            if (actual.size() < expected.size()) {
-                run(in, actual, expected);
-                // ASSERT_EQ(actual, expected); // for proper reporting
-            } else {
-                auto padded_actual = actual.substr(0, expected.size());
-                run(in, padded_actual, expected);
-                // ASSERT_EQ(padded_actual, expected);
+
+            bool padded = false;
+            if (actual.size() >= expected.size()) {
+                actual = actual.substr(0, expected.size());
+                padded = true;
+            }
+
+            if (!run(in, actual, expected, padded)) {
+                break;
             }
             ++out_it;
         }
@@ -149,6 +160,9 @@ TEST_F(LukaTest, v0_3) {
     inputs.add("float f", "bool b", "f = ([float] b) + 0.0");
     outputs.add("float var: f", "bool var: b", "= f + [float] b 0.0");
 
+    inputs.add("float k", "k = k + 1", "k = 1 + k");
+    outputs.add("float var: k", "= k + k [float] 1", "= k + [float] 1 k");
+
     run_tests(inputs, outputs);
 }
 
@@ -185,15 +199,31 @@ TEST_F(LukaTest, v0_5) {
     run_tests(inputs, outputs);
 }
 
+TEST_F(LukaTest, v0_6) {
+    Container inputs;
+    Container outputs;
+    inputs.add("int i", "if true", "then {", "  float i = 0.0", "}");
+    outputs.add("int var: i", "if: true", "then:", "  float var: i = 0.0");
+
+    inputs.add("int i", "for i = 0, i < 2, i = i + 2 {", "  int a", "}", "bool a = true");
+    outputs.add("int var: i", "for: = i 0, < i 2, = i + i 2", "do:", "  int var: a", "bool var: a = true");
+
+    inputs.add("if true", "then {", "  int i", "}", "i = 3");
+    outputs.add("[Line 5] semantic error: undeclared variable i", "if: true", "then:", "  int var: i");
+
+    run_tests(inputs, outputs);
+}
+
 int main(int argc, char** argv) {
     constexpr auto min_version = 0.1;
-    constexpr auto max_version = 0.5;
+    constexpr auto latest_stable = 0.5;
 
     ::testing::InitGoogleTest(&argc, argv);
     const std::string tests = [&] {
         std::string result;
-        double version = (argc == 1) ? max_version : std::atof(argv[1]);
-        version = std::min(max_version, std::max(min_version, version));
+        double version = (argc == 1) ? latest_stable : std::atof(argv[1]);
+        // version = std::min(max_version, std::max(min_version, version));
+        version = std::max(min_version, version);
         bool colon = false;
         for (auto i = min_version; i <= version + 0.05; i += 0.1) {
             if (colon) {

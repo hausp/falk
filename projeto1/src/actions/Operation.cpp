@@ -35,7 +35,14 @@ void Operation::set_type(Type type) {
 void Operation::check(Action* action) {
     auto expected = t;
     auto actual = action->type();
-    bool can_coerce = utils::needs_coercion(expected, actual);
+    bool can_coerce = false;
+    if (expected == Type::INT && actual == Type::FLOAT) {
+        t = Type::FLOAT;
+        expected = t;
+        can_coerce = true;
+    } else if (expected == Type::FLOAT && actual == Type::INT) {
+        can_coerce = true;
+    }
     needs_coercion = needs_coercion || can_coerce;
     if (!utils::type_matches(expected, actual) && !can_coerce) {
         utils::semantic_error<Error::INCOMPATIBLE_OPERANDS>(op, expected, actual);
