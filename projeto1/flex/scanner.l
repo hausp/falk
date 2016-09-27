@@ -26,6 +26,8 @@ if_literal if
 then_literal then
 else_literal else
 
+for_literal for
+
 nonacceptable [^-\+\*\\(\)/=,\n0-9A-Za-z_ \t]+
 %%
 
@@ -46,6 +48,8 @@ nonacceptable [^-\+\*\\(\)/=,\n0-9A-Za-z_ \t]+
 {if_literal}        { return T_IF; }
 {then_literal}      { return T_THEN; }
 {else_literal}	 	{ return T_ELSE; }
+
+{for_literal}        { return T_FOR; }
 
 {var}               { yylval.var = strdup(yytext); return T_VAR; }
 

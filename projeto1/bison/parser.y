@@ -37,7 +37,7 @@ extern void yyerror(const char* s, ...);
 %token <var> T_VAR
 %token <operation> T_PLUS T_MINUS T_TIMES T_DIVIDE T_COMPARISON
 %token <operation> T_AND T_OR T_NOT
-%token T_IF T_THEN T_ELSE
+%token T_IF T_THEN T_ELSE T_FOR
 %token T_ASSIGN T_COMMA T_NL
 %token T_OPAR T_CPAR T_OBLOCK T_CBLOCK
 
@@ -47,7 +47,7 @@ extern void yyerror(const char* s, ...);
  */
 %type <var> program lines line declaration var_list var_def assignment expr
 %type <var> variable type literal pure_literal if_clause block new_line opt_nl
-%type <var> opt_lines
+%type <var> opt_lines for_clause
 
 /* Operator precedence for mathematical operators
  * The latest it is listed, the highest the precedence
@@ -82,6 +82,7 @@ line        : new_line { actions.push(new Nop()); }
             | declaration new_line
             | assignment new_line
             | if_clause new_line
+            | for_clause new_line
             ;
 
 if_clause   : T_IF expr opt_nl T_THEN block {
@@ -94,6 +95,36 @@ if_clause   : T_IF expr opt_nl T_THEN block {
                 auto accepted = actions.pop();
                 auto bool_expr = actions.pop();
                 actions.push(new Conditional(bool_expr, accepted, rejected));
+             }
+            ;
+
+for_clause  : T_FOR assignment T_COMMA expr T_COMMA assignment block {
+                auto code = actions.pop();
+                auto update = actions.pop();
+                auto bool_expr = actions.pop();
+                auto init = actions.pop();
+                actions.push(new Loop(init, bool_expr, update, code));
+             }
+            | T_FOR T_COMMA expr T_COMMA assignment block {
+                auto code = actions.pop();
+                auto update = actions.pop();
+                auto bool_expr = actions.pop();
+                auto init = nullptr;
+                actions.push(new Loop(init, bool_expr, update, code));
+             }
+            | T_FOR assignment T_COMMA expr T_COMMA block {
+                auto code = actions.pop();
+                auto update = nullptr;
+                auto bool_expr = actions.pop();
+                auto init = actions.pop();
+                actions.push(new Loop(init, bool_expr, update, code));
+             }
+            | T_FOR T_COMMA expr T_COMMA block {
+                auto code = actions.pop();
+                auto update = nullptr;
+                auto bool_expr = actions.pop();
+                auto init = nullptr;
+                actions.push(new Loop(init, bool_expr, update, code));
              }
             ;
 
