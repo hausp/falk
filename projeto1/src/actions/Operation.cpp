@@ -10,14 +10,16 @@ Type Operation::type() const {
 
 std::string Operation::to_string(unsigned) const {
     std::string result;
-    result += op_string();
-    bool space = false;
-    for (auto child : children) {
-        if (space || !result.empty()) {
-            result += " ";
+    if (!error()) {
+        result += op_string();
+        bool space = false;
+        for (auto child : children) {
+            if (space || !result.empty()) {
+                result += " ";
+            }
+            result += child->to_string();
+            space = true;
         }
-        result += child->to_string();
-        space = true;
     }
     return result;
 }

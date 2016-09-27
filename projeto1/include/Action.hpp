@@ -4,6 +4,7 @@
 #include <list>
 #include <vector>
 #include "SymbolMap.hpp"
+#include "macros.hpp"
 
 namespace {
     auto& symbols = SymbolMap::instance();
@@ -98,8 +99,10 @@ class Operation : public Action {
 
     template<typename... Args>
     void set_children(Action* action, Args&&... args) {
-        check(action);
         fail = fail || action->error();
+        if (!fail) {
+            check(action);
+        }
         children.push_back(action);
         set_children(std::forward<Args>(args)...);
     }
@@ -179,15 +182,15 @@ class Conditional : public Action {
 class Loop : public Action {
  public:
     Loop(Action*, Action*, Action*, Action*);
-    std::to_string to_string(unsigned = 0) const override;
+    std::string to_string(unsigned = 0) const override;
     Type type() const override { return Type::VOID; }
     bool error() const override { return fail; }
  private:
     Action* init;
-    Action* update;
     Action* test;
+    Action* update;
     Action* code;
-    bool fail;
+    bool fail = false;
 };
 
 #endif /* ACTION_HPP */

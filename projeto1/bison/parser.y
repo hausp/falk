@@ -101,30 +101,30 @@ if_clause   : T_IF expr opt_nl T_THEN block {
 for_clause  : T_FOR assignment T_COMMA expr T_COMMA assignment block {
                 auto code = actions.pop();
                 auto update = actions.pop();
-                auto bool_expr = actions.pop();
+                auto test = actions.pop();
                 auto init = actions.pop();
-                actions.push(new Loop(init, bool_expr, update, code));
+                actions.push(new Loop(init, test, update, code));
              }
             | T_FOR T_COMMA expr T_COMMA assignment block {
                 auto code = actions.pop();
                 auto update = actions.pop();
-                auto bool_expr = actions.pop();
+                auto test = actions.pop();
                 auto init = nullptr;
-                actions.push(new Loop(init, bool_expr, update, code));
+                actions.push(new Loop(init, test, update, code));
              }
             | T_FOR assignment T_COMMA expr T_COMMA block {
                 auto code = actions.pop();
                 auto update = nullptr;
-                auto bool_expr = actions.pop();
+                auto test = actions.pop();
                 auto init = actions.pop();
-                actions.push(new Loop(init, bool_expr, update, code));
+                actions.push(new Loop(init, test, update, code));
              }
             | T_FOR T_COMMA expr T_COMMA block {
                 auto code = actions.pop();
                 auto update = nullptr;
-                auto bool_expr = actions.pop();
+                auto test = actions.pop();
                 auto init = nullptr;
-                actions.push(new Loop(init, bool_expr, update, code));
+                actions.push(new Loop(init, test, update, code));
              }
             ;
 
