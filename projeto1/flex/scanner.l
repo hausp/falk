@@ -21,8 +21,12 @@ float_literal [0-9]*\.[0-9]+|[0-9]+\.?[0-9]*
 bool_literal true|false
 
 var [a-zA-Z][a-zA-Z0-9_]*
-nonacceptable [^-\+\*\\(\)/=,\n0-9A-Za-z_ \t]+
 
+if_literal if
+then_literal then
+else_literal else
+
+nonacceptable [^-\+\*\\(\)/=,\n0-9A-Za-z_ \t]+
 %%
 
 [ \t]               ; //ignores spaces
@@ -38,6 +42,10 @@ nonacceptable [^-\+\*\\(\)/=,\n0-9A-Za-z_ \t]+
 {int_literal}       { yylval.value = {strdup(yytext), Type::INT}; return T_NUMBER; }
 {float_literal}     { yylval.value = {strdup(yytext), Type::FLOAT}; return T_NUMBER; }
 {bool_literal}      { yylval.value = {strdup(yytext), Type::BOOL}; return T_BOOL; }
+
+{if_literal}        { return T_IF; }
+{then_literal}      { return T_THEN; }
+{else_literal}	 	{ return T_ELSE; }
 
 {var}               { yylval.var = strdup(yytext); return T_VAR; }
 
@@ -57,6 +65,8 @@ nonacceptable [^-\+\*\\(\)/=,\n0-9A-Za-z_ \t]+
 
 "("                 { return T_OPAR; }
 ")"                 { return T_CPAR; }
+"{"					{ return T_OBLOCK; }
+"}"					{ return T_CBLOCK; }
 "="                 { return T_ASSIGN; }
 ","                 { return T_COMMA;  }
 \n                  { return T_NL; }

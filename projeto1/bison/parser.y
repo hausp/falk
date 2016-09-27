@@ -37,15 +37,17 @@ extern void yyerror(const char* s, ...);
 %token <var> T_VAR
 %token <operation> T_PLUS T_MINUS T_TIMES T_DIVIDE T_COMPARISON
 %token <operation> T_AND T_OR T_NOT
+%token T_IF T_THEN T_ELSE
 %token T_ASSIGN T_COMMA T_NL
-%token T_OPAR T_CPAR
+%token T_OPAR T_CPAR T_OBLOCK T_CBLOCK
 
 /* type defines the type of our nonterminal symbols.
  * Types should match the names used in the union.
  * Example: %type<node> expr
  */
 %type <var> program lines line declaration var_list var_def assignment expr
-%type <var> variable type literal pure_literal
+%type <var> variable type literal pure_literal if_clause block new_line opt_nl
+%type <var> opt_lines
 
 /* Operator precedence for mathematical operators
  * The latest it is listed, the highest the precedence
@@ -69,15 +71,44 @@ extern void yyerror(const char* s, ...);
 %%
 
 program     : lines
+            | { $$ = 0; }
             ;
 
 lines       : line
             | lines line
             ;
 
-line        : T_NL             { $$ = 0; ++utils::counter(); }
-            | declaration T_NL { ++utils::counter(); }
-            | assignment T_NL  { ++utils::counter(); }
+line        : new_line { actions.push(new Nop()); }
+            | declaration new_line
+            | assignment new_line
+            | if_clause new_line
+            ;
+
+if_clause   : T_IF expr opt_nl T_THEN block {
+                auto accepted = actions.pop();
+                auto bool_expr = actions.pop();
+                actions.push(new Conditional(bool_expr, accepted));
+             }
+            | T_IF expr opt_nl T_THEN block T_ELSE block {
+                auto rejected = actions.pop();
+                auto accepted = actions.pop();
+                auto bool_expr = actions.pop();
+                actions.push(new Conditional(bool_expr, accepted, rejected));
+             }
+            ;
+
+block       : T_OBLOCK new_line opt_lines T_CBLOCK { $$ = 0; }
+            ;
+
+opt_lines   : lines
+            | { $$ = 0; actions.push(new Nop()); }
+            ;
+
+new_line    : T_NL { ++utils::counter(); $$ = 0; }
+            ;
+
+opt_nl      : new_line
+            | { $$ = 0; }
             ;
 
 declaration : type var_list

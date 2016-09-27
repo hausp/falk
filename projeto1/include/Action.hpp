@@ -168,12 +168,12 @@ class Conditional : public Action {
     Conditional(Action*, Action*, Action* = nullptr);
     std::string to_string(unsigned = 0) const override;
     Type type() const override { return Type::VOID; }
-    bool error() const override { return invalid; };
+    bool error() const override { return fail; };
  private:
     Action* condition;
     Action* accepted;
     Action* rejected;
-    bool invalid = false;
+    bool fail = false;
 };
 
 #endif /* ACTION_HPP */
