@@ -1,5 +1,6 @@
 #include "ActionStacker.hpp"
 #include "Action.hpp"
+#include "macros.hpp"
 #include "utils.hpp"
 
 ActionStacker::~ActionStacker() {
