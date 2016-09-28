@@ -85,12 +85,12 @@ line        : new_line { actions.push(new Nop()); }
             | for_clause new_line
             ;
 
-if_clause   : T_IF expr opt_nl T_THEN open_block block {
+if_clause   : T_IF expr opt_nl T_THEN block {
                 auto accepted = actions.pop();
                 auto bool_expr = actions.pop();
                 actions.push(new Conditional(bool_expr, accepted));
              }
-            | T_IF expr opt_nl T_THEN open_block block T_ELSE open_block block {
+            | T_IF expr opt_nl T_THEN block T_ELSE block {
                 auto rejected = actions.pop();
                 auto accepted = actions.pop();
                 auto bool_expr = actions.pop();
@@ -98,40 +98,40 @@ if_clause   : T_IF expr opt_nl T_THEN open_block block {
              }
             ;
 
-for_clause  : T_FOR assignment T_COMMA expr T_COMMA assignment open_block block {
+for_clause  : T_FOR assignment T_COMMA expr T_COMMA assignment block {
                 auto code = actions.pop();
                 auto update = actions.pop();
                 auto test = actions.pop();
                 auto init = actions.pop();
                 actions.push(new Loop(init, test, update, code));
              }
-            | T_FOR T_COMMA expr T_COMMA assignment open_block block {
+            | T_FOR T_COMMA expr T_COMMA assignment block {
                 auto code = actions.pop();
                 auto update = actions.pop();
                 auto test = actions.pop();
                 auto init = nullptr;
                 actions.push(new Loop(init, test, update, code));
              }
-            | T_FOR assignment T_COMMA expr T_COMMA open_block block {
+            | T_FOR assignment T_COMMA expr T_COMMA block {
                 auto code = actions.pop();
                 auto update = nullptr;
                 auto test = actions.pop();
                 auto init = actions.pop();
                 actions.push(new Loop(init, test, update, code));
              }
-            | T_FOR T_COMMA expr T_COMMA open_block block {
+            | T_FOR T_COMMA expr T_COMMA block {
                 auto code = actions.pop();
                 auto update = nullptr;
                 auto test = actions.pop();
                 auto init = nullptr;
                 actions.push(new Loop(init, test, update, code));
              }
+            ;
+
+block       : open_block new_line opt_lines close_block { $$ = 0; }
             ;
 
 open_block  : T_OBLOCK { Scope::open(); }
-            ;
-
-block       : new_line opt_lines close_block { $$ = 0; }
             ;
 
 close_block : T_CBLOCK { Scope::close(); }
