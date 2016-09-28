@@ -14,7 +14,7 @@ void yyerror(const char* s, ...);
 
 int_type int
 float_type float
-bool_type bool
+bool_type bool 
 
 int_literal [0-9]+
 float_literal [0-9]*\.[0-9]+|[0-9]+\.?[0-9]*
@@ -27,6 +27,8 @@ then_literal then
 else_literal else
 
 for_literal for
+return_keyword ret
+function_keyword fun
 
 nonacceptable [^-\+\*\\(\)/=,\n0-9A-Za-z_ \t]+
 %%
@@ -49,7 +51,9 @@ nonacceptable [^-\+\*\\(\)/=,\n0-9A-Za-z_ \t]+
 {then_literal}      { return T_THEN; }
 {else_literal}	 	{ return T_ELSE; }
 
-{for_literal}        { return T_FOR; }
+{for_literal}       { return T_FOR; }
+{return_keyword}    { return T_RET; }
+function_keyword    { return T_FUN; }
 
 {var}               { yylval.var = strdup(yytext); return T_VAR; }
 

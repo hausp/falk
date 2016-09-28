@@ -14,17 +14,18 @@ SymbolMap& SymbolMap::instance() {
 
 bool SymbolMap::declare(Type type, const std::string& name) {
     auto& scope = scopes.back();
-    if (scope.count(name)) {
+    auto symbol = Symbol{name, type};
+    if (scope.count(symbol)) {
         utils::semantic_error<Error::MULTIPLE_DEFINITION>(name);
         return false;
     }
-    scope[name] = type;
+    scope.insert(symbol);
     return true;
 }
 
 bool SymbolMap::var_exists(const std::string& name) const {
     for (auto& scope : scopes) {
-        if (scope.count(name)) {
+        if (scope.count({name, Type::ANY})) {
             return true;
         }
     }
@@ -33,8 +34,9 @@ bool SymbolMap::var_exists(const std::string& name) const {
 
 Type SymbolMap::typeof(const std::string& name) const {
     for (auto& scope : scopes) {
-        if (scope.count(name)) {
-            return scope.at(name);
+        auto it = scope.find({name, Type::ANY});
+        if (it != scope.end()) {
+            return it->type;
         }
     }
     return Type::VOID;    

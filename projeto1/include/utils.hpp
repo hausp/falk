@@ -6,7 +6,7 @@
 #include <unordered_map>
 
 enum class Type {
-    INT, FLOAT, BOOL, VOID
+    INT, FLOAT, BOOL, VOID, ANY
 };
 
 enum class Operator {

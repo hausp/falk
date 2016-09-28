@@ -193,6 +193,30 @@ class Loop : public Action {
     bool fail = false;
 };
 
+class ParamList : public Action {
+ public:
+    template<typename... Args>
+    ParamList(Args&&...);
+    std::string to_string(unsigned = 0) const override;
+    Type type() const override { return Type::VOID; }
+ private:
+    std::list<Action*> vars;
+};
+
+// Function
+class Fun : public Action {
+ public:
+    Fun(Type, Action*, Action*);
+    std::string to_string(unsigned = 0) const override;
+    Type type() const override { return ret; }
+    bool error() const override { return fail; }
+ private:
+    Action* params;
+    Action* body;
+    Type ret;
+    bool fail;
+};
+
 struct Scope {
     static void open();
     static void close();

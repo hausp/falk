@@ -40,6 +40,7 @@ extern void yyerror(const char* s, ...);
 %token T_IF T_THEN T_ELSE T_FOR
 %token T_ASSIGN T_COMMA T_NL
 %token T_OPAR T_CPAR T_OBLOCK T_CBLOCK
+%token T_RET T_FUN
 
 /* type defines the type of our nonterminal symbols.
  * Types should match the names used in the union.
