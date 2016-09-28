@@ -89,11 +89,10 @@ clean_all: clean clean_deps
 # Do not include list of dependencies when they are going to be deleted, i.e.,
 # when the target is clean_all or clean_deps
 ifneq ($(MAKECMDGOALS), clean_all)
-ifneq ($(MAKECMDGOALS), clean_deps)
--include $(DEP)
-endif
-endif
-
-ifneq ($(MAKECMDGOALS), tests)
--include $(TSTDEP)
+  ifneq ($(MAKECMDGOALS), clean_deps)
+    -include $(DEP)
+    ifeq ($(MAKECMDGOALS), tests)
+      -include $(TSTDEP)
+    endif
+  endif
 endif

@@ -15,11 +15,8 @@ class ActionStacker {
     Action* pop();
     Action* top();
     void print() const;
-
-    // auto begin() { return actions.begin(); }
-    // auto begin() const { return actions.cbegin(); }
-    // auto end() { return actions.end(); }
-    // auto end() const { return actions.cend(); }
+    void open_scope();
+    void close_scope();
 
  private:
     std::list<Action*> actions;
