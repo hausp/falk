@@ -193,4 +193,17 @@ class Loop : public Action {
     bool fail = false;
 };
 
+struct Scope {
+    static void open();
+    static void close();
+};
+
+inline void Scope::open() {
+    symbols.open_scope();
+}
+
+inline void Scope::close() {
+    symbols.close_scope();
+}
+
 #endif /* ACTION_HPP */

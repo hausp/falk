@@ -1,7 +1,8 @@
 
 template<typename T>
 bool SymbolMap::declare(Type type, const std::string& name, const T& value) {
-    if (symbols.count(name)) {
+    auto& scope = scopes.back();
+    if (scope.count(name)) {
         utils::semantic_error<Error::MULTIPLE_DEFINITION>(name);
         return false;
     }
@@ -9,6 +10,6 @@ bool SymbolMap::declare(Type type, const std::string& name, const T& value) {
     	utils::semantic_error<Error::INCOMPATIBLE_ASSIGNMENT>(type, value.type());
     	return false;
     }
-    symbols[name] = type;
+    scope[name] = type;
     return true;
 }

@@ -46,8 +46,8 @@ extern void yyerror(const char* s, ...);
  * Example: %type<node> expr
  */
 %type <var> program lines line declaration var_list var_def assignment expr
-%type <var> variable type literal pure_literal if_clause block new_line opt_nl
-%type <var> opt_lines for_clause
+%type <var> variable type literal pure_literal if_clause open_block close_block
+%type <var> block new_line opt_nl opt_lines for_clause
 
 /* Operator precedence for mathematical operators
  * The latest it is listed, the highest the precedence
@@ -85,12 +85,12 @@ line        : new_line { actions.push(new Nop()); }
             | for_clause new_line
             ;
 
-if_clause   : T_IF expr opt_nl T_THEN block {
+if_clause   : T_IF expr opt_nl T_THEN open_block block {
                 auto accepted = actions.pop();
                 auto bool_expr = actions.pop();
                 actions.push(new Conditional(bool_expr, accepted));
              }
-            | T_IF expr opt_nl T_THEN block T_ELSE block {
+            | T_IF expr opt_nl T_THEN open_block block T_ELSE open_block block {
                 auto rejected = actions.pop();
                 auto accepted = actions.pop();
                 auto bool_expr = actions.pop();
@@ -98,28 +98,28 @@ if_clause   : T_IF expr opt_nl T_THEN block {
              }
             ;
 
-for_clause  : T_FOR assignment T_COMMA expr T_COMMA assignment block {
+for_clause  : T_FOR assignment T_COMMA expr T_COMMA assignment open_block block {
                 auto code = actions.pop();
                 auto update = actions.pop();
                 auto test = actions.pop();
                 auto init = actions.pop();
                 actions.push(new Loop(init, test, update, code));
              }
-            | T_FOR T_COMMA expr T_COMMA assignment block {
+            | T_FOR T_COMMA expr T_COMMA assignment open_block block {
                 auto code = actions.pop();
                 auto update = actions.pop();
                 auto test = actions.pop();
                 auto init = nullptr;
                 actions.push(new Loop(init, test, update, code));
              }
-            | T_FOR assignment T_COMMA expr T_COMMA block {
+            | T_FOR assignment T_COMMA expr T_COMMA open_block block {
                 auto code = actions.pop();
                 auto update = nullptr;
                 auto test = actions.pop();
                 auto init = actions.pop();
                 actions.push(new Loop(init, test, update, code));
              }
-            | T_FOR T_COMMA expr T_COMMA block {
+            | T_FOR T_COMMA expr T_COMMA open_block block {
                 auto code = actions.pop();
                 auto update = nullptr;
                 auto test = actions.pop();
@@ -128,7 +128,13 @@ for_clause  : T_FOR assignment T_COMMA expr T_COMMA assignment block {
              }
             ;
 
-block       : T_OBLOCK new_line opt_lines T_CBLOCK { $$ = 0; }
+open_block  : T_OBLOCK { Scope::open(); }
+            ;
+
+block       : new_line opt_lines close_block { $$ = 0; }
+            ;
+
+close_block : T_CBLOCK { Scope::close(); }
             ;
 
 opt_lines   : lines
