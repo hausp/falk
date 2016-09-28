@@ -14,12 +14,12 @@ OBJ += $(patsubst %.cpp,$(BUILDIR)/%.o,$(FLEXOUT))
 DEP += $(patsubst %.cpp,$(DEPDIR)/%.d,$(FLEXOUT))
 endif
 
-.PHONY: flexall flexclean
+.PHONY: clean_flex
 
 #################################### RULES ####################################
 $(SRCDIR)/%.cpp: $(FLEXDIR)/%.l
 	@echo "[  $(LEX)  ] $^ -> .cpp"
 	@$(LEX) -o $@ $^
 
-flexclean:
+clean_flex:
 	@$(RM) $(FLEXOUT)

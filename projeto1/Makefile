@@ -21,7 +21,7 @@ CXXFLAGS  :=-std=c++14 -fcxx-exceptions -Wno-deprecated-register -Wall\
 INCLUDE   :=-I$(HDRDIR)
 # MaKefile eXtension variables
 MKXFILES  :=$(wildcard *.mkx)
-MKXCLEAN  :=$(patsubst %.mkx,%clean,$(MKXFILES))
+MKXCLEAN  :=$(patsubst %.mkx,clean_%,$(MKXFILES))
 # Files
 SRC       :=$(shell find $(SRCDIR) -name '*.cpp')
 DEP       :=$(patsubst %.cpp,$(DEPDIR)/%.d,$(SRC))
@@ -91,6 +91,9 @@ clean_all: clean clean_deps
 ifneq ($(MAKECMDGOALS), clean_all)
 ifneq ($(MAKECMDGOALS), clean_deps)
 -include $(DEP)
--include $(TSTDEP)
 endif
+endif
+
+ifneq ($(MAKECMDGOALS), tests)
+-include $(TSTDEP)
 endif

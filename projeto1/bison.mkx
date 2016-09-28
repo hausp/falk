@@ -16,12 +16,12 @@ OBJ += $(patsubst %.cpp,$(BUILDIR)/%.o,$(BISONOUT))
 DEP += $(patsubst %.cpp,$(DEPDIR)/%.d,$(BISONOUT))
 endif
 
-.PHONY: bisonall bisonclean
+.PHONY: clean_bison
 
 #################################### RULES ####################################
 $(SRCDIR)/%.cpp $(HDRDIR)/%.h: $(BISONDIR)/%.y
 	@echo "[ $(BISON) ] $^ -> .h .cpp"
 	@$(BISON) --defines=$(HDRDIR)/$*.h --output=$(SRCDIR)/$*.cpp $^
 
-bisonclean:
+clean_bison:
 	@$(RM) $(BISONOUT) $(BISONDEF)
