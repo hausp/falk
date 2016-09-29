@@ -48,7 +48,8 @@ extern void yyerror(const char* s, ...);
  */
 %type <var> program lines line declaration var_list var_def assignment expr
 %type <var> variable type literal pure_literal if_clause open_block close_block
-%type <var> block new_line opt_nl opt_lines for_clause
+%type <var> block new_line opt_nl opt_lines for_clause fun_decl fun_call
+%type <var> fun_body fun_lines param_list expr_list
 
 /* Operator precedence for mathematical operators
  * The latest it is listed, the highest the precedence
@@ -84,6 +85,8 @@ line        : new_line { actions.push(new Nop()); }
             | assignment new_line
             | if_clause new_line
             | for_clause new_line
+            | fun_decl new_line
+            | fun_call new_line
             ;
 
 if_clause   : T_IF expr opt_nl T_THEN block {
@@ -182,12 +185,84 @@ variable    : T_VAR { actions.push(new Variable($1)); }
 
 pure_literal: T_NUMBER         { actions.push(new Constant($1.type, std::string($1.value))); }
             | T_BOOL           { actions.push(new Constant($1.type, std::string($1.value))); }
+            ;
 
 literal     : pure_literal
             | T_MINUS T_NUMBER { actions.push(new Constant($2.type, "-" + std::string($2.value))); }
+            ;
+
+fun_decl    : fun_sign T_OPAR param_list T_CPAR fun_body {
+                auto body = actions.pop();
+                auto params = actions.pop();
+                auto funct = actions.pop();
+                dynamic_cast<Fun*>(funct)->bind(params, body);
+             }
+            | fun_sign T_OPAR param_list T_CPAR {
+                auto params = actions.pop();
+                auto funct = actions.pop();
+                dynamic_cast<Fun*>(funct)->bind(params);
+             }
+            | fun_sign T_OPAR T_CPAR fun_body {
+                auto body = actions.pop();
+                auto funct = actions.pop();
+                dynamic_cast<Fun*>(funct)->bind(new ParamList(), body);
+             }
+            | fun_sign T_OPAR T_CPAR {
+                auto funct = actions.pop();
+                dynamic_cast<Fun*>(funct)->bind(new ParamList());
+             }
+            ;
+
+fun_sign    : T_TYPE T_FUN T_VAR {
+                auto name = std::string($3);
+                actions.push(new Fun($1, name));
+             }
+            ;
+
+fun_body    : open_block fun_lines close_block
+            ;
+
+fun_lines   : lines fun_lines
+            | T_RET expr new_line {
+                auto expression = actions.pop();
+                actions.push(new Return(expression));
+            }
+            ;
+
+param_list  : T_TYPE T_VAR {
+                auto list = new ParamList();
+                actions.push(list);
+                auto name = std::string($2);
+                list->add($1, name);
+             }
+            | param_list T_COMMA T_TYPE T_VAR {
+                auto name = std::string($4);
+                dynamic_cast<ParamList*>(actions.top())->add($3, name);
+             }
+            ;
+
+fun_call    : T_VAR T_OPAR expr_list T_CPAR {
+                auto name = std::string($1);
+                auto expr_list = actions.pop();
+                actions.push(new FunCall(name, expr_list));
+             }
+            ;
+
+expr_list   : expr {
+                auto body = actions.pop();
+                auto expr_list = new ExpressionList();
+                actions.push(expr_list);
+                expr_list->add(body);
+             }
+            | expr_list T_COMMA expr {
+                auto body = actions.pop();
+                dynamic_cast<ExpressionList*>(actions.top())->add(body);
+             }
+            ;
 
 expr        : pure_literal
             | variable
+            | fun_call
             | T_CAST expr                {
                 auto body = actions.pop();
                 actions.push(new Cast($1, body));

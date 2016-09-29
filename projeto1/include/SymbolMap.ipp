@@ -1,12 +1,12 @@
 
-template<typename... Params>
-bool SymbolMap::declare_function(Type type, const std::string& name, Params&&... params) {
-    static constexpr auto size = sizeof...(params);
-    auto funct = Function<size>();
-    funct.name = name;
-    funct.type = type;
-    funct.params = {{params.type...}};
-}
+// template<typename... Params>
+// bool SymbolMap::declare_function(Type type, const std::string& name, Params&&... params) {
+//     static constexpr auto size = sizeof...(params);
+//     auto funct = Function<size>();
+//     funct.name = name;
+//     funct.type = type;
+//     funct.params = {{params.type...}};
+// }
 
 template<typename T>
 bool SymbolMap::declare(Type type, const std::string& name, const T& value) {

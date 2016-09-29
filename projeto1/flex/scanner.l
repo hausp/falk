@@ -53,7 +53,7 @@ nonacceptable [^-\+\*\\(\)/=,\n0-9A-Za-z_ \t]+
 
 {for_literal}       { return T_FOR; }
 {return_keyword}    { return T_RET; }
-function_keyword    { return T_FUN; }
+{function_keyword}  { return T_FUN; }
 
 {var}               { yylval.var = strdup(yytext); return T_VAR; }
 

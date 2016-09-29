@@ -154,6 +154,7 @@ class Cast : public Operation {
     }
 };
 
+
 class Assignment : public Action {
  public:
     Assignment(Action*, Action*);
@@ -195,27 +196,75 @@ class Loop : public Action {
 
 class ParamList : public Action {
  public:
-    template<typename... Args>
-    ParamList(Args&&...);
+    void add(Type, const std::string&);
     std::string to_string(unsigned = 0) const override;
     Type type() const override { return Type::VOID; }
  private:
-    std::list<Action*> vars;
+    std::list<std::pair<Type, std::string>> vars;
 };
 
 // Function
 class Fun : public Action {
  public:
-    Fun(Type, Action*, Action*);
+    Fun(Type, const std::string&);
+    void bind(Action*, Action* = nullptr);
     std::string to_string(unsigned = 0) const override;
     Type type() const override { return ret; }
     bool error() const override { return fail; }
  private:
+    std::string name;
     Action* params;
     Action* body;
     Type ret;
     bool fail;
 };
+
+
+class ExpressionList : public Action {
+ public:
+    void add(Action*);
+    size_t size() const { return expressions.size(); }
+    std::string to_string(unsigned = 0) const override;
+    Type type() const override { return Type::VOID; }
+    bool error() const override { return fail; }
+
+    auto begin() const { return expressions.cbegin(); }
+    auto begin() { return expressions.begin(); }
+    auto end() const { return expressions.cend(); }
+    auto end() { return expressions.end(); }
+
+ private:
+    std::list<Action*> expressions;
+    bool fail;
+};
+
+
+class FunCall : public Action {
+ public:
+    FunCall(const std::string&, Action*);
+    std::string to_string(unsigned = 0) const override;
+    Type type() const override;
+    bool error() const override { return fail; }
+
+ private:
+    std::string name;
+    ExpressionList* args;
+    bool fail;
+};
+
+
+class Return : public Action {
+ public:
+    Return(Action*);
+    std::string to_string(unsigned = 0) const override;
+    Type type() const override;
+    bool error() const override { return fail; }
+
+ private:
+    Action* operand;
+    bool fail;
+};
+
 
 struct Scope {
     static void open();

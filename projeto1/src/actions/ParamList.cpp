@@ -1,5 +1,9 @@
 #include "Action.hpp"
 
+void ParamList::add(Type type, const std::string& var) {
+    vars.emplace_back(type, var);
+}
+
 std::string ParamList::to_string(unsigned) const {
     std::string out;
     auto first = true;
@@ -9,8 +13,8 @@ std::string ParamList::to_string(unsigned) const {
         } else {
             out += ",";
         }
-        out += utils::to_string(action->type());
-        out += " " + action->to_string();
+        out += utils::to_string(action.first);
+        out += " " + action.second;
     }
     return out;
 }

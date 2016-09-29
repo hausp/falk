@@ -1,4 +1,5 @@
 
+#include "Action.hpp"
 #include "SymbolMap.hpp"
 #include "macros.hpp"
 
@@ -48,4 +49,17 @@ void SymbolMap::open_scope() {
 
 void SymbolMap::close_scope() {
     scopes.pop_back();
+}
+
+bool SymbolMap::declare_function(Type type,
+                                 const std::string& name,
+                                 ParamList* params) {
+    return true;
+}
+
+bool SymbolMap::define_function(Type type,
+                                const std::string& name,
+                                ParamList* params,
+                                Action* body) {
+    return true;
 }
