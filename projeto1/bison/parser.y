@@ -219,7 +219,7 @@ fun_sign    : T_TYPE T_FUN T_VAR {
              }
             ;
 
-fun_body    : open_block fun_lines close_block
+fun_body    : open_block T_NL fun_lines close_block
             ;
 
 fun_lines   : lines fun_lines
