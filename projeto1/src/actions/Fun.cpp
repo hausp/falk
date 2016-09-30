@@ -1,7 +1,7 @@
 #include "Action.hpp"
 
 Fun::Fun(Type type, const std::string& name)
- : name(name), ret(type), fail(symbols.var_exists(name)) {
+ : name(name), ret(type), fail(symbols.exists(name)) {
 }
 
 void Fun::bind(Action* args, Action* content) {

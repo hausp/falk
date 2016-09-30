@@ -208,6 +208,11 @@ class ParamList : public Action {
     void add(Type, const std::string&);
     std::string to_string(unsigned = 0) const override;
     Type type() const override { return Type::VOID; }
+
+    auto begin() const { return vars.cbegin(); }
+    auto begin() { return vars.begin(); }
+    auto end() const { return vars.cend(); }
+    auto end() { return vars.end(); }
  private:
     std::list<std::pair<Type, std::string>> vars;
 };

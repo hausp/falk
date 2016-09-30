@@ -13,7 +13,13 @@ class Action;
 struct Symbol {
     std::string name;
     Type type;
-    bool is_fun;
+};
+
+struct Function : public Symbol {
+    Function(const std::string& name, Type type)
+     : Symbol{name, type} { }
+    std::list<Symbol> params;
+    bool defined = false;
 };
 
 inline bool operator==(const Symbol& lhs, const Symbol& rhs) {
@@ -28,10 +34,21 @@ namespace std {
             return secret_hash(symbol.name);
         }
     };
+
+    template<>
+    struct hash<Function> {
+        inline auto operator()(Function fn) const {
+            return hash<Symbol>()(fn);
+        }
+    };
 }
 
 class SymbolMap {
-    using Table = std::unordered_set<Symbol>;
+    struct Table {
+        std::unordered_set<Symbol> vars;
+        std::unordered_set<Function> functions;
+        size_t count(const Symbol&) const;
+    };
 public:
     static SymbolMap& instance();
 
@@ -40,7 +57,7 @@ public:
     template<typename T>
     bool declare(Type, const std::string&, const T&);
     bool declare(Type, const std::string&);
-    bool var_exists(const std::string&) const;
+    bool exists(const std::string&) const;
     Type typeof(const std::string&) const;
     void open_scope();
     void close_scope();
@@ -48,14 +65,8 @@ public:
 
 private:
     std::list<Table> scopes;
-    std::stack<Type> fun_types;
     SymbolMap() = default;
 
-};
-
-struct Function : public Symbol {
-    std::list<Symbol> params;
-    bool defined = false;
 };
 
 #include "SymbolMap.ipp"

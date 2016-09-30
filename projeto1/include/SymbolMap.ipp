@@ -20,6 +20,6 @@ bool SymbolMap::declare(Type type, const std::string& name, const T& value) {
     	utils::semantic_error<Error::INCOMPATIBLE_ASSIGNMENT>(type, value.type());
     	return false;
     }
-    scope.insert(symbol);
+    scope.vars.insert(symbol);
     return true;
 }
