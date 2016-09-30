@@ -4,13 +4,17 @@ Declaration::Declaration(Type type) : t(type) {}
 
 void Declaration::add(const std::string& name) {
     if (symbols.declare(type(), name)) {
-        values.push_back({name, ""});
+        values.push_back({name, nullptr});
     }
 }
 
 void Declaration::add(const std::string& name, Action* value) {
+    if (utils::can_coerce(type(), value->type())) {
+        value = new Cast(type(), value);
+    }
+
     if (symbols.declare(type(), name, *value)) {
-        values.push_back({name, value->to_string()});
+        values.push_back({name, value});
     }
 }
 
@@ -27,14 +31,10 @@ std::string Declaration::to_string(unsigned indent) const {
             result += ", ";
         }
         result += pair.first;
-        if (!pair.second.empty()) {
-            result += " = " + pair.second;
+        if (pair.second != nullptr) {
+            result += " = " + pair.second->to_string();
         }
         ++i;
     }
     return result;
-}
-
-Type Declaration::type() const {
-    return t;
 }

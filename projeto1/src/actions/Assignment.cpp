@@ -5,6 +5,11 @@ Assignment::Assignment(Action* var, Action* action)
     auto var_type = var->type();
     auto rhs_type = rhs->type();
 
+    if (utils::can_coerce(var_type, rhs_type)) {
+        rhs = new Cast(var_type, rhs);
+        rhs_type = var_type;
+    }
+
     if (!fail && !utils::type_matches(var_type, rhs_type)) {
         utils::semantic_error<Error::INCOMPATIBLE_ASSIGNMENT>(var_type, rhs_type);
         fail = true;

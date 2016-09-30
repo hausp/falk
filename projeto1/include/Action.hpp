@@ -32,11 +32,11 @@ class Declaration : public Action {
     void add(const std::string&);
     void add(const std::string&, Action*);
     std::string to_string(unsigned = 0) const override;
-    Type type() const override;
+    Type type() const override { return t; }
 
  private:
     Type t;
-    std::vector<std::pair<std::string, std::string>> values;
+    std::vector<std::pair<std::string, Action*>> values;
 };
 
 

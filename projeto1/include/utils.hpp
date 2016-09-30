@@ -149,6 +149,10 @@ namespace utils {
         return value;
     }
 
+    inline bool can_coerce(Type target, Type source) {
+        return target == Type::FLOAT && source == Type::INT;
+    }
+
     inline bool type_matches(Type target, Type source) {
         return target == source;
     }
