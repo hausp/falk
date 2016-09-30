@@ -86,7 +86,7 @@ lines       : line
 
 line        : new_line { actions.push(new Nop()); }
             | command new_line { 
-                auto act = actions.pop(); 
+                auto act = actions.pop();
                 dynamic_cast<Block*>(actions.top())->add(act);
              }
             ;
@@ -155,7 +155,7 @@ close_block : T_CBLOCK { Scope::close(); }
             ;
 
 opt_lines   : lines
-            | { $$ = 0; actions.push(new Nop()); }
+            | { $$ = 0; dynamic_cast<Block*>(actions.top())->add(new Nop()); }
             ;
 
 new_line    : T_NL { ++utils::counter(); $$ = 0; }
@@ -207,21 +207,21 @@ literal     : pure_literal
 fun_decl    : fun_sign T_OPAR param_list T_CPAR fun_body {
                 auto body = actions.pop();
                 auto params = actions.pop();
-                auto funct = actions.pop();
+                auto funct = actions.top();
                 dynamic_cast<Fun*>(funct)->bind(params, body);
              }
             | fun_sign T_OPAR param_list T_CPAR {
                 auto params = actions.pop();
-                auto funct = actions.pop();
+                auto funct = actions.top();
                 dynamic_cast<Fun*>(funct)->bind(params);
              }
             | fun_sign T_OPAR T_CPAR fun_body {
                 auto body = actions.pop();
-                auto funct = actions.pop();
+                auto funct = actions.top();
                 dynamic_cast<Fun*>(funct)->bind(new ParamList(), body);
              }
             | fun_sign T_OPAR T_CPAR {
-                auto funct = actions.pop();
+                auto funct = actions.top();
                 dynamic_cast<Fun*>(funct)->bind(new ParamList());
              }
             ;
@@ -238,7 +238,7 @@ fun_body    : open_block new_line fun_lines close_block
 fun_lines   : lines fun_lines
             | T_RET expr new_line {
                 auto expression = actions.pop();
-                actions.push(new Return(expression));
+                dynamic_cast<Block*>(actions.top())->add(new Return(expression));
             }
             ;
 

@@ -11,7 +11,7 @@ std::string ParamList::to_string(unsigned) const {
         if (first) {
             first = false;
         } else {
-            out += ",";
+            out += ", ";
         }
         out += utils::to_string(action.first);
         out += " " + action.second;
