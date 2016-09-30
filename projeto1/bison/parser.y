@@ -49,7 +49,7 @@ extern void yyerror(const char* s, ...);
 %type <var> program lines line declaration var_list var_def assignment expr
 %type <var> variable type literal pure_literal if_clause open_block close_block
 %type <var> block new_line opt_nl opt_lines for_clause fun_decl fun_call
-%type <var> fun_body fun_lines param_list expr_list
+%type <var> fun_body fun_lines param_list expr_list command setup
 
 /* Operator precedence for mathematical operators
  * The latest it is listed, the highest the precedence
@@ -72,8 +72,12 @@ extern void yyerror(const char* s, ...);
 
 %%
 
-program     : lines
+
+program     : setup lines
             | { $$ = 0; }
+            ;
+
+setup       : { $$ = 0; actions.push(new Block()); }
             ;
 
 lines       : line
@@ -81,12 +85,18 @@ lines       : line
             ;
 
 line        : new_line { actions.push(new Nop()); }
-            | declaration new_line
-            | assignment new_line
-            | if_clause new_line
-            | for_clause new_line
-            | fun_decl new_line
-            | fun_call new_line
+            | command new_line { 
+                auto act = actions.pop(); 
+                dynamic_cast<Block*>(actions.top())->add(act);
+             }
+            ;
+
+command     : declaration 
+            | assignment
+            | if_clause
+            | for_clause
+            | fun_decl
+            | fun_call
             ;
 
 if_clause   : T_IF expr opt_nl T_THEN block {
@@ -135,7 +145,10 @@ for_clause  : T_FOR assignment T_COMMA expr T_COMMA assignment block {
 block       : open_block new_line opt_lines close_block { $$ = 0; }
             ;
 
-open_block  : T_OBLOCK { Scope::open(); }
+open_block  : T_OBLOCK { 
+                Scope::open(); 
+                actions.push(new Block());
+             }
             ;
 
 close_block : T_CBLOCK { Scope::close(); }
@@ -219,7 +232,7 @@ fun_sign    : T_TYPE T_FUN T_VAR {
              }
             ;
 
-fun_body    : open_block T_NL fun_lines close_block
+fun_body    : open_block new_line fun_lines close_block
             ;
 
 fun_lines   : lines fun_lines
