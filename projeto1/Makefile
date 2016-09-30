@@ -14,8 +14,7 @@ DEPDIR    :=.deps
 MAKEDIR   :=$(BINDIR) $(SRCDIR) $(HDRDIR)
 # Compiler & linker flags
 CXX       :=clang++
-LDLIBS    :=
-#-lgtest -pthread
+LDLIBS    :=-lgtest -pthread
 LDFLAGS   :=
 CXXFLAGS  :=-std=c++14 -fcxx-exceptions -Wno-deprecated-register -Wall\
             -Wno-unused-function -Wno-unneeded-internal-declaration

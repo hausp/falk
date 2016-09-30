@@ -214,9 +214,126 @@ TEST_F(LukaTest, v0_6) {
     run_tests(inputs, outputs);
 }
 
+TEST_F(LukaTest, v0_7) {
+    Container inputs;
+    Container outputs;
+    inputs.add("bool fun f()", "bool fun f() {", "  ret false", "}");
+    outputs.add("bool fun: f (params: )", "  ret false");
+
+    inputs.add("bool fun f() {",
+               "  ret true",
+               "}",
+               "if f()",
+               "then {",
+               "  int a = 0",
+               "  int fun f2(int x) {",
+               "    int a",
+               "    a = x + 1",
+               "    ret a"
+               "  }"
+               "  a = f2(a)",
+               "}");
+    outputs.add("bool fun: f (params: )",
+                "  ret true"
+                "if: f[0 params]",
+                "then:",
+                "  int var: a = 0",
+                "  int fun: f2 (params: int x)",
+                "    int var: a",
+                "    = a + x 1",
+                "    ret a",
+                "  = a f2[1 params] a");
+
+    inputs.add("bool fun f() {", "}");
+    outputs.add("[Line 2] syntax error");
+
+    inputs.add("bool fun f() {", "ret false", "int a = 0", "}");
+    outputs.add("[Line 2] syntax error");
+
+    inputs.add("int fun f()");
+    outputs.add("[Line 2] semantic error: function f is declared but never defined");
+
+    // TODO: check re-definition
+
+    inputs.add("int fun f(int x, int y) {", "ret 2", "}", "int a", "a = f(0.0, 0)");
+    outputs.add("int fun: f (params: int x, int y)",
+                "  ret 2",
+                "int var: a",
+                "[Line 4] semantic error: parameter x expected integer but received float");
+
+    inputs.add("bool fun x(int a)", "bool b", "b = x()");
+    outputs.add("[Line 3] semantic error: function x expects 1 parameters but received 0");
+
+    run_tests(inputs, outputs);
+}
+
+TEST_F(LukaTest, v0_8) {
+    Container inputs;
+    Container outputs;
+    inputs.add("int a(10)",
+               "bool p(10)",
+               "int i",
+               "for i = 0, i < 10, i = i + 1 {",
+               "  a(i) = i",
+               "  if a(i) / 2 == 0",
+               "  then {",
+               "    p(i) = true",
+               "  } else {",
+               "    p(i) = false",
+               "  }"
+               "}");
+    outputs.add("int array: a (size: 10)",
+                "bool array: p (size: 10)",
+                "int var: i",
+                "for: = i 0, < i 10, = i + i 1",
+                "do:",
+                "  = [index] a i i",
+                "  if: == / [index] a i 2 0",
+                "  then:",
+                "    = [index] p i true",
+                "  else:",
+                "    = [index] p i false");
+
+    inputs.add("int a(10)", "a(false) = 1");
+    outputs.add("int array: a (size: 10)",
+        "[Line 2] semantic error: index operator expects integer but received boolean");
+
+    inputs.add("int a(1.5)");
+    outputs.add("[Line 1] syntax error");
+
+    run_tests(inputs, outputs);
+}
+
+TEST_F(LukaTest, v1_0) {
+    Container inputs;
+    Container outputs;
+    inputs.add("int i", "int ref p", "p = addr i", "i = ref p + 1");
+    outputs.add("int var: i", "int ref var: p", "= p [addr] i", "= i + [ref] p 1");
+
+    inputs.add("int i", "int ref p(2)", "p(0) = addr i", "p(1) = addr i",
+        "int ref ref p2", "p2 = addr p(0)");
+    outputs.add("int var: i", "int ref var: p (size: 2)",
+        "= [index] p 0 [addr] i", "= [index] p 1 [addr] i",
+        "int ref ref var: p2", "= p2 [addr] [index] p 0");
+
+    inputs.add("int i = 0", "int ref p", "p = i");
+    outputs.add("int var: i = 0", "int ref var: p",
+        "[Line 3] semantic error: attribution operation expects integer pointer but received integer");
+
+    inputs.add("int i", "i = ref i");
+    outputs.add("int var: i",
+        "[Line 2] semantic error: reference operation expects a pointer");
+
+    inputs.add("bool ref b", "b = addr true");
+    outputs.add("bool ref var: b",
+        "[Line 2] semantic error: address operation expects a variable of array item");
+
+    run_tests(inputs, outputs);
+}
+
 int main(int argc, char** argv) {
     constexpr auto min_version = 0.1;
-    constexpr auto latest_stable = 0.5;
+    constexpr auto latest_stable = 0.7;
 
     ::testing::InitGoogleTest(&argc, argv);
     const std::string tests = [&] {
