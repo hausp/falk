@@ -167,6 +167,15 @@ class Assignment : public Action {
     bool fail;
 };
 
+class Block : public Action {
+ public:
+    void add(Action*);
+    std::string to_string(unsigned = 0) const override;
+    Type type() const override { return Type::VOID; }
+ private:
+    std::list<Action*> lines;
+};
+
 class Conditional : public Action {
  public:
     Conditional(Action*, Action*, Action* = nullptr);
