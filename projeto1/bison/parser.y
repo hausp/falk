@@ -259,6 +259,11 @@ fun_call    : T_VAR T_OPAR expr_list T_CPAR {
                 auto expr_list = actions.pop();
                 actions.push(new FunCall(name, expr_list));
              }
+            | T_VAR T_OPAR T_CPAR {
+                auto name = std::string($1);
+                auto expr_list = new ExpressionList();
+                actions.push(new FunCall(name, expr_list));
+             }
             ;
 
 expr_list   : expr {
