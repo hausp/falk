@@ -12,8 +12,9 @@ std::string Block::to_string(unsigned indent) const {
     size_t i = 0;
     for (auto& line : lines) {
         if (line) {
-            out += line->to_string(indent);
-            if (i < lines.size() - 1) {
+            auto content = line->to_string(indent);
+            out += content;
+            if (i < lines.size() - 1 && !content.empty()) {
                 out += "\n";
             }
         }

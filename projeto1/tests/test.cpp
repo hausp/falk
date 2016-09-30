@@ -229,12 +229,12 @@ TEST_F(LukaTest, v0_7) {
                "  int fun f2(int x) {",
                "    int a",
                "    a = x + 1",
-               "    ret a"
-               "  }"
+               "    ret a",
+               "  }",
                "  a = f2(a)",
                "}");
     outputs.add("bool fun: f (params: )",
-                "  ret true"
+                "  ret true",
                 "if: f[0 params]",
                 "then:",
                 "  int var: a = 0",
@@ -333,7 +333,7 @@ TEST_F(LukaTest, v1_0) {
 
 int main(int argc, char** argv) {
     constexpr auto min_version = 0.1;
-    constexpr auto latest_stable = 0.7;
+    constexpr auto latest_stable = 0.6;
 
     ::testing::InitGoogleTest(&argc, argv);
     const std::string tests = [&] {

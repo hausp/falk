@@ -230,7 +230,7 @@ class Fun : public Action {
     Action* params;
     Action* body;
     Type ret;
-    bool fail;
+    bool fail = false;
 };
 
 
