@@ -258,13 +258,14 @@ class FunCall : public Action {
  public:
     FunCall(const std::string&, Action*);
     std::string to_string(unsigned = 0) const override;
-    Type type() const override;
+    Type type() const override { return t; }
     bool error() const override { return fail; }
 
  private:
     std::string name;
     ExpressionList* args;
     bool fail;
+    Type t;
 };
 
 

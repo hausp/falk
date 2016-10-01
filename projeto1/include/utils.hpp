@@ -36,6 +36,10 @@ enum class Error {
     INCOMPATIBLE_OPERANDS,
     INCOMPATIBLE_ASSIGNMENT,
     INCOMPATIBLE_TEST,
+    DECLARED_BUT_NEVER_DEFINED,
+    MULTIPLE_DEFINITION_FN,
+    WRONG_PARAM_COUNT,
+    INCOMPATIBLE_PARAM,
 };
 
 namespace std {
@@ -175,10 +179,19 @@ namespace utils {
     inline void semantic_error(Type, Type);
     template<Error err>
     inline void semantic_error(Type);
+    template<Error err>
+    inline void semantic_error(const std::string&, size_t, size_t);
+    template<Error err>
+    inline void semantic_error(const std::string&, Type, Type);
 
     template<>
     inline void semantic_error<Error::MULTIPLE_DEFINITION>(const std::string& name) {
         echo(error_prefix("semantic") + "re-declaration of variable " + name);
+    }
+
+    template<>
+    inline void semantic_error<Error::MULTIPLE_DEFINITION_FN>(const std::string& name) {
+        echo(error_prefix("semantic") + "re-declaration of function " + name);
     }
 
     template<>
@@ -203,6 +216,29 @@ namespace utils {
     template<>
     inline void semantic_error<Error::INCOMPATIBLE_TEST>(Type received) {
         semantic_error<Error::INCOMPATIBLE_OPERANDS>(Operator::TEST, Type::BOOL, received);
+    }
+
+    template<>
+    inline void semantic_error<Error::DECLARED_BUT_NEVER_DEFINED>(const std::string& name) {
+        echo(error_prefix("semantic") + "function " + name + " is declared but never defined");
+    }
+
+    template<>
+    inline void semantic_error<Error::WRONG_PARAM_COUNT>(const std::string& name,
+                                                         size_t expected,
+                                                         size_t actual) {
+        echo(error_prefix("semantic") + "function " + name + " expects "
+            + std::to_string(expected) + " parameters but received " + std::to_string(actual));
+    }
+
+    template<>
+    inline void semantic_error<Error::INCOMPATIBLE_PARAM>(const std::string& name,
+                                                          Type expected,
+                                                          Type actual) {
+        auto expected_str = to_printable_string(expected);
+        auto actual_str = to_printable_string(actual);
+        echo(error_prefix("semantic") + "parameter " + name + " expected "
+            + expected_str + " but received " + actual_str);
     }
 }
 

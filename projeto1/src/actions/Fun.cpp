@@ -19,7 +19,7 @@ void Fun::bind(Action* args, Action* content) {
     if (content == nullptr) {
         fail = fail || !symbols.declare_function(ret, name, param_list);
     } else {
-        fail = fail || !symbols.define_function(ret, name, param_list, content);
+        fail = fail || !symbols.define_function(ret, name, param_list);
     }
 
     if (!fail) {

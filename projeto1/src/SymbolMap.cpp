@@ -45,12 +45,12 @@ size_t SymbolMap::Table::count(const Symbol& sym) const {
 }
 
 SymbolMap& SymbolMap::instance() {
-    static auto defined = false;
+    // static auto defined = false;
     static SymbolMap inst;
-    if (!defined) {
-        inst.open_scope();
-        defined = true;
-    }
+    // if (!defined) {
+    //     inst.open_scope();
+    //     defined = true;
+    // }
     return inst;
 }
 
@@ -88,11 +88,28 @@ Type SymbolMap::typeof(const std::string& name) const {
     return Type::VOID;
 }
 
+std::list<Symbol> SymbolMap::params(const std::string& name) const {
+    for (auto& scope : scopes) {
+        auto fn_it = scope.functions.find({name, Type::ANY});
+        if (fn_it != scope.functions.end()) {
+            return fn_it->params;
+        }
+    }
+    return std::list<Symbol>();
+}
+
 void SymbolMap::open_scope() {
     scopes.emplace_back();
 }
 
 void SymbolMap::close_scope() {
+    auto& scope = scopes.back();
+    auto& functions = scope.functions;
+    for (auto& fn : functions) {
+        if (!fn.defined) {
+            utils::semantic_error<Error::DECLARED_BUT_NEVER_DEFINED>(fn.name);
+        }
+    }
     scopes.pop_back();
 }
 
@@ -108,21 +125,31 @@ bool SymbolMap::declare_function(Type type,
         scope.functions.insert(funct);
         return true;
     }
+    utils::semantic_error<Error::MULTIPLE_DEFINITION_FN>(name);
     return false;
 }
 
 bool SymbolMap::define_function(Type type,
                                 const std::string& name,
-                                ParamList* params,Action*) {
+                                ParamList* params) {
     auto& scope = scopes.back();
     auto it = scope.functions.find({name, Type::ANY});
     auto funct = Function(name, type);
+    for (auto& pair : *params) {
+        funct.params.push_back({pair.second, pair.first});
+    }
+
     if (it == scope.functions.end()) {
-        for (auto& pair : *params) {
-            funct.params.push_back({pair.second, pair.first});
-        }
+        funct.defined = true;
+        scope.functions.insert(funct);
         return true;
     }
 
-    return is_equal(*it, funct) && !it->defined;
+    bool ok = is_equal(*it, funct) && !it->defined;
+    if (ok) {
+        it->defined = true;
+    } else {
+        utils::semantic_error<Error::MULTIPLE_DEFINITION_FN>(name);
+    }
+    return ok;
 }

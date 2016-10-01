@@ -49,7 +49,7 @@ extern void yyerror(const char* s, ...);
 %type <var> program lines line declaration var_list var_def assignment expr
 %type <var> variable type literal pure_literal if_clause open_block close_block
 %type <var> block new_line opt_nl opt_lines for_clause fun_decl fun_call
-%type <var> fun_body fun_lines param_list expr_list command setup
+%type <var> fun_body fun_lines param_list expr_list command setup finish
 
 /* Operator precedence for mathematical operators
  * The latest it is listed, the highest the precedence
@@ -73,12 +73,15 @@ extern void yyerror(const char* s, ...);
 %%
 
 
-program     : setup lines
+program     : setup lines finish
             | { $$ = 0; }
             ;
 
-setup       : { actions.push(new Block()); }
+setup       : { Scope::open();
+                actions.push(new Block()); }
             ;
+
+finish      : { Scope::close(); }
 
 lines       : line
             | lines line

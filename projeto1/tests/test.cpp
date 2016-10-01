@@ -248,21 +248,25 @@ TEST_F(LukaTest, v0_7) {
     outputs.add("[Line 2] syntax error");
 
     inputs.add("bool fun f() {", "ret false", "int a = 0", "}");
-    outputs.add("[Line 2] syntax error");
+    outputs.add("[Line 3] syntax error");
 
     inputs.add("int fun f()");
     outputs.add("[Line 2] semantic error: function f is declared but never defined");
 
-    // TODO: check re-definition
+    inputs.add("int fun f()", "int fun f()");
+    outputs.add("[Line 2] semantic error: re-declaration of function f");
 
     inputs.add("int fun f(int x, int y) {", "ret 2", "}", "int a", "a = f(0.0, 0)");
-    outputs.add("int fun: f (params: int x, int y)",
+    outputs.add("[Line 5] semantic error: parameter x expected integer but received float",
+                "int fun: f (params: int x, int y)",
                 "  ret 2",
-                "int var: a",
-                "[Line 4] semantic error: parameter x expected integer but received float");
+                "int var: a");
 
     inputs.add("bool fun x(int a)", "bool b", "b = x()");
     outputs.add("[Line 3] semantic error: function x expects 1 parameters but received 0");
+
+    inputs.add("int fun f()", "int fun f(int x) {", "  ret x", "}");
+    outputs.add("[Line 4] semantic error: re-declaration of function f");
 
     run_tests(inputs, outputs);
 }

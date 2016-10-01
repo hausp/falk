@@ -19,7 +19,7 @@ struct Function : public Symbol {
     Function(const std::string& name, Type type)
      : Symbol{name, type} { }
     std::list<Symbol> params;
-    bool defined = false;
+    mutable bool defined = false;
 };
 
 inline bool operator==(const Symbol& lhs, const Symbol& rhs) {
@@ -53,12 +53,13 @@ public:
     static SymbolMap& instance();
 
     bool declare_function(Type, const std::string&, ParamList*);
-    bool define_function(Type, const std::string&, ParamList*, Action*);
+    bool define_function(Type, const std::string&, ParamList*);
     template<typename T>
     bool declare(Type, const std::string&, const T&);
     bool declare(Type, const std::string&);
     bool exists(const std::string&) const;
     Type typeof(const std::string&) const;
+    std::list<Symbol> params(const std::string&) const;
     void open_scope();
     void close_scope();
     Type last_fun_type() const;
