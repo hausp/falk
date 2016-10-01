@@ -221,6 +221,7 @@ class ParamList : public Action {
 class Fun : public Action {
  public:
     Fun(Type, const std::string&);
+    void inject(Action*);
     void bind(Action*, Action* = nullptr);
     std::string to_string(unsigned = 0) const override;
     Type type() const override { return ret; }

@@ -4,6 +4,13 @@ Fun::Fun(Type type, const std::string& name)
  : name(name), ret(type) {
 }
 
+void Fun::inject(Action* params) {
+    auto param_list = dynamic_cast<ParamList*>(params);
+    for (auto& pair : *param_list) {
+        symbols.declare(pair.first, pair.second);
+    }
+}
+
 void Fun::bind(Action* args, Action* content) {
     params = args;
     fail = fail || params->error();

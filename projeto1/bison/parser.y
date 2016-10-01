@@ -204,7 +204,7 @@ literal     : pure_literal
             | T_MINUS T_NUMBER { actions.push(new Constant($2.type, "-" + std::string($2.value))); }
             ;
 
-fun_decl    : fun_sign T_OPAR param_list T_CPAR fun_body {
+fun_decl    : fun_head fun_lines close_block {
                 auto body = actions.pop();
                 auto params = actions.pop();
                 auto funct = actions.top();
@@ -225,6 +225,15 @@ fun_decl    : fun_sign T_OPAR param_list T_CPAR fun_body {
                 dynamic_cast<Fun*>(funct)->bind(new ParamList());
              }
             ;
+
+fun_head    : fun_sign T_OPAR param_list T_CPAR open_block new_line {
+                auto block = actions.pop();
+                auto params = actions.pop();
+                auto funct = actions.top();
+                dynamic_cast<Fun*>(funct)->inject(params);
+                actions.push(params);
+                actions.push(block);
+             }
 
 fun_sign    : T_TYPE T_FUN T_VAR {
                 auto name = std::string($3);

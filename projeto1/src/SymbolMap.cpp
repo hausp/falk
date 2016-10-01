@@ -85,7 +85,7 @@ Type SymbolMap::typeof(const std::string& name) const {
             return fn_it->type;
         }
     }
-    return Type::VOID;    
+    return Type::VOID;
 }
 
 void SymbolMap::open_scope() {
