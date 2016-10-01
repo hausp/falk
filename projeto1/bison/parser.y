@@ -77,15 +77,14 @@ program     : setup lines
             | { $$ = 0; }
             ;
 
-setup       : { $$ = 0; actions.push(new Block()); }
+setup       : { actions.push(new Block()); }
             ;
 
 lines       : line
             | lines line
             ;
 
-line        : new_line { actions.push(new Nop()); }
-            | command new_line { 
+line        : command new_line {
                 auto act = actions.pop();
                 dynamic_cast<Block*>(actions.top())->add(act);
              }
@@ -97,6 +96,7 @@ command     : declaration
             | for_clause
             | fun_decl
             | fun_call
+            | { actions.push(new Nop()); }
             ;
 
 if_clause   : T_IF expr opt_nl T_THEN block {
@@ -155,10 +155,10 @@ close_block : T_CBLOCK { Scope::close(); }
             ;
 
 opt_lines   : lines
-            | { $$ = 0; dynamic_cast<Block*>(actions.top())->add(new Nop()); }
+            | { dynamic_cast<Block*>(actions.top())->add(new Nop()); }
             ;
 
-new_line    : T_NL { ++utils::counter(); $$ = 0; }
+new_line    : T_NL { ++utils::counter(); }
             ;
 
 opt_nl      : new_line

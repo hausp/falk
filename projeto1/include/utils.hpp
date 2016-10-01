@@ -159,7 +159,7 @@ namespace utils {
 
     template<typename T>
     inline void echo(const T& value) {
-        std::cout << value << std::endl;
+        std::cerr << value << std::endl;
     }
 
     inline std::string error_prefix(const std::string& type) {
