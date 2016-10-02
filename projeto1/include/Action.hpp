@@ -28,14 +28,16 @@ class Nop : public Action {
 
 class Declaration : public Action {
  public:
-    Declaration(Type);
+    Declaration(Type, const std::string& = "var");
     void add(const std::string&);
     void add(const std::string&, Action*);
+    void set_symbol_type(const std::string& id) { id_type = id; }
     std::string to_string(unsigned = 0) const override;
     Type type() const override { return t; }
 
  private:
     Type t;
+    std::string id_type;
     std::vector<std::pair<std::string, Action*>> values;
 };
 

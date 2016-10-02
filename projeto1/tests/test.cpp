@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 #include <list>
-#include "Connection.hpp"
+#include "aux/Connection.hpp"
 
 class LukaTest : public ::testing::Test {};
 

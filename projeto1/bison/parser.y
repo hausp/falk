@@ -48,8 +48,8 @@ extern void yyerror(const char* s, ...);
  */
 %type <var> program lines line declaration var_list var_def assignment expr
 %type <var> variable type literal pure_literal if_clause open_block close_block
-%type <var> block new_line opt_nl opt_lines for_clause fun_decl fun_call
-%type <var> fun_body fun_lines param_list expr_list command setup finish
+%type <var> block new_line opt_nl opt_lines for_clause fun_decl fun_call arr_list
+%type <var> fun_body fun_lines param_list expr_list command setup finish arr_def
 
 /* Operator precedence for mathematical operators
  * The latest it is listed, the highest the precedence
@@ -168,7 +168,12 @@ opt_nl      : new_line
             | { $$ = 0; }
             ;
 
-declaration : type var_list
+declaration : type var_list {
+                dynamic_cast<Declaration*>(actions.top())->set_symbol_type("var");
+             }
+            | type arr_list {
+                dynamic_cast<Declaration*>(actions.top())->set_symbol_type("array");  
+             }
             ;
 
 type        : T_TYPE   { actions.push(new Declaration($1)); }
@@ -176,6 +181,10 @@ type        : T_TYPE   { actions.push(new Declaration($1)); }
 
 var_list    : var_def
             | var_list T_COMMA var_def
+            ;
+
+arr_list    : arr_def
+            | arr_list T_COMMA arr_def
             ;
 
 var_def     : T_VAR T_ASSIGN literal {
@@ -186,6 +195,12 @@ var_def     : T_VAR T_ASSIGN literal {
             | T_VAR {
                 auto name = std::string($1);
                 dynamic_cast<Declaration*>(actions.top())->add(name);
+             }
+            ;
+
+arr_def     : T_VAR T_OPAR T_TYPE T_CPAR {
+                // TODO: array creation
+                // TODO: support in SymbolMap
              }
             ;
 

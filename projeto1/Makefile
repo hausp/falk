@@ -5,49 +5,56 @@
 
 ################################## VARIABLES ##################################
 # Directories
-SRCDIR    :=src
-HDRDIR    :=include
-BUILDIR   :=build
-BINDIR    :=.
-TESTDIR   :=tests
-DEPDIR    :=.deps
-MAKEDIR   :=$(BINDIR) $(SRCDIR) $(HDRDIR)
+SRCDIR   :=src
+HDRDIR   :=include
+OBJDIR   :=build
+BINDIR   :=.
+TESTDIR  :=tests
+DEPDIR   :=.deps
+MAKEDIR  :=$(BINDIR) $(SRCDIR) $(HDRDIR)
 # Compiler & linker flags
 CXX       :=clang++
 LDLIBS    :=-lgtest -pthread
 LDFLAGS   :=
 CXXFLAGS  :=-std=c++14 -fcxx-exceptions -Wno-deprecated-register -Wall\
             -Wno-unused-function -Wno-unneeded-internal-declaration
-INCLUDE   :=-I$(HDRDIR)
+INCLUDE  :=-I$(HDRDIR)
 # MaKefile eXtension variables
-MKXFILES  :=$(wildcard *.mkx)
-MKXCLEAN  :=$(patsubst %.mkx,clean_%,$(MKXFILES))
+MKXFILES :=$(wildcard *.mkx)
+MKXCLEAN :=$(patsubst %.mkx,clean_%,$(MKXFILES))
 # Files
-SRC       :=$(shell find $(SRCDIR) -name '*.cpp')
-DEP       :=$(patsubst %.cpp,$(DEPDIR)/%.d,$(SRC))
-OBJ       :=$(patsubst %.cpp,$(BUILDIR)/%.o,$(SRC))
-MAIN      :=main
-EXEC      :=$(BINDIR)/lukacompiler
-PUREOBJ   :=$(filter-out $(BUILDIR)/$(SRCDIR)/$(MAIN).o,$(OBJ))
-TSTFILE   :=$(shell find $(TESTDIR) -name '*.cpp' 2> /dev/null)
-TSTDEP    :=$(patsubst %.cpp,$(DEPDIR)/%.d,$(TSTFILE))
-TSTOBJ    :=$(patsubst %.cpp,$(BUILDIR)/%.o,$(TSTFILE))
-TSTEXEC   :=$(patsubst $(TESTDIR)/%.cpp,$(BINDIR)/%,$(TSTFILE))
+SRC      :=$(shell find $(SRCDIR) -name '*.cpp')
+DEP      :=$(patsubst %.cpp,$(DEPDIR)/%.d,$(SRC))
+OBJ      :=$(patsubst %.cpp,$(OBJDIR)/%.o,$(SRC))
+MAIN     :=main
+EXEC     :=$(BINDIR)/execute_me
+# Test files
+PUREOBJ  :=$(filter-out $(OBJDIR)/$(SRCDIR)/$(MAIN).o,$(OBJ))
+TSRC     :=$(shell find $(TESTDIR) -name '*.cpp' 2> /dev/null)
+TMAIN    :=$(wildcard $(TESTDIR)/*.cpp)
+TDEP     :=$(patsubst %.cpp,$(DEPDIR)/%.d,$(TSRC))
+TOBJ     :=$(patsubst %.cpp,$(OBJDIR)/%.o,$(TSRC))
+TPUREOBJ :=$(filter-out $(patsubst %.cpp,$(OBJDIR)/%.o,$(TMAIN)),$(TOBJ))
+TEXEC    :=$(patsubst $(TESTDIR)/%.cpp,$(BINDIR)/%,$(TMAIN))
+TCALL    :=$(patsubst %.cpp,%,$(notdir $(TMAIN)))
 
-.PHONY: all makedir clean clean_deps clean_all tests
+.PHONY: all makedir clean clean_deps clean_all tests shit
 
 ################################# MAIN RULES ##################################
 all: makedir $(EXEC)
+	@echo $(TEXEC)
+	@echo $(TCALL)
+	@echo $(TPUREOBJ)
 
 -include $(MKXFILES)
 
 $(EXEC): $(OBJ)
 	@echo "[linking] $@"
-	@$(CXX) $^ -o $@ $(LDLIBS) $(LDFLAGS)
+	@$(CXX) $(OBJ) -o $@ $(LDLIBS) $(LDFLAGS)
 
-$(BUILDIR)/%.o: %.cpp
+$(OBJDIR)/%.o: %.cpp
 	@echo "[$(CXX)] $< -> .o"
-	@mkdir -p $(BUILDIR)/$(*D)
+	@mkdir -p $(OBJDIR)/$(*D)
 	@$(CXX) $(CXXFLAGS) $(INCLUDE) -c $< -o $@
 
 # For each .cpp file, creates a .d file with all dependencies of .cpp,
@@ -56,8 +63,7 @@ $(BUILDIR)/%.o: %.cpp
 $(DEPDIR)/%.d: %.cpp
 	@echo "[makedep] $< -> .d"
 	@mkdir -p $(DEPDIR)/$(*D)
-	@$(CXX) $< $(INCLUDE) $(CXXFLAGS)\
-	 -MM -MG -MP -MT "$(BUILDIR)/$*.o $@" -MF "$@"
+	@$(CXX) -MM -MP -MT "$(OBJDIR)/$*.o $@" -MF "$@" $< $(INCLUDE) $(CXXFLAGS)
 
 makedir: | $(MAKEDIR)
 
@@ -66,33 +72,32 @@ $(MAKEDIR):
 	@mkdir -p $@
 
 ################################ TESTS RULES ##################################
-tests: makedir $(TSTEXEC)
+tests: makedir $(TCALL)
 
-$(TSTEXEC): $(PUREOBJ) $(TSTOBJ)
+#$(foreach t,$(TCALL),$(t): $(OBJDIR)/$(TESTDIR)/$(t).o $(BINDIR)/$(t))
+$(foreach t,$(TCALL),$(BINDIR)/$(t): $(OBJDIR)/$(TESTDIR)/$(t).o)
+
+$(TEXEC): $(PUREOBJ) $(TPUREOBJ)
 	@echo "[linking] $@"
-	@$(CXX) $(PUREOBJ) $(BUILDIR)/$(TESTDIR)/$(@F).o -o $@ $(LDLIBS) $(LDFLAGS)
+	@$(CXX) $(PUREOBJ) $(TPUREOBJ) $(OBJDIR)/$(TESTDIR)/$(@F).o \
+	-o $@ $(LDLIBS) $(LDFLAGS)
 
 ################################ CLEAN RULES ##################################
 # Only remove object files
 clean: $(MKXCLEAN)
-	@$(RM) -r $(BUILDIR)
-
-# Only remove dependency files
-clean_deps: $(MKXCLEAN_DEPS)
-	@$(RM) -r $(DEPDIR)
+	@$(RM) -r $(OBJDIR)
 
 # Remove object, binary and dependency files
-clean_all: clean clean_deps
-	@$(RM) $(EXEC) $(TSTEXEC)
+clean_all: clean
+	@$(RM) $(EXEC) $(TEXEC)
+	@$(RM) -r $(DEPDIR)
 
 ################################ PREREQUISITES ################################
 # Do not include list of dependencies when they are going to be deleted, i.e.,
-# when the target is clean_all or clean_deps
+# when the target is clean_all
 ifneq ($(MAKECMDGOALS), clean_all)
-  ifneq ($(MAKECMDGOALS), clean_deps)
-    -include $(DEP)
-    ifeq ($(MAKECMDGOALS), tests)
-      -include $(TSTDEP)
-    endif
+  -include $(DEP)
+  ifeq ($(MAKECMDGOALS), tests)
+    -include $(TDEP)
   endif
 endif

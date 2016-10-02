@@ -1,6 +1,7 @@
 #include "Action.hpp"
 
-Declaration::Declaration(Type type) : t(type) {}
+Declaration::Declaration(Type type, const std::string& id_type)
+: t(type), id_type(id_type) {}
 
 void Declaration::add(const std::string& name) {
     if (symbols.declare(type(), name)) {
@@ -24,7 +25,7 @@ std::string Declaration::to_string(unsigned indent) const {
         return result;
     }
     result += std::string(indent, ' ');
-    result += utils::to_string(type()) + " var: ";
+    result += utils::to_string(type()) + " "+ id_type + ": ";
     size_t i = 0;
     for (auto& pair : values) {
         if (i > 0) {
