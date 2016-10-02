@@ -33,7 +33,7 @@ extern void yyerror(const char* s, ...);
 /* token defines our terminal symbols (tokens).
  */
 %token <type> T_TYPE T_CAST
-%token <value> T_NUMBER T_BOOL
+%token <value> T_INT T_FLOAT T_BOOL
 %token <var> T_VAR
 %token <operation> T_PLUS T_MINUS T_TIMES T_DIVIDE T_COMPARISON
 %token <operation> T_AND T_OR T_NOT
@@ -50,6 +50,7 @@ extern void yyerror(const char* s, ...);
 %type <var> variable type literal pure_literal if_clause open_block close_block
 %type <var> block new_line opt_nl opt_lines for_clause fun_decl fun_call arr_list
 %type <var> fun_body fun_lines param_list expr_list command setup finish arr_def
+%type <value> number
 
 /* Operator precedence for mathematical operators
  * The latest it is listed, the highest the precedence
@@ -198,9 +199,9 @@ var_def     : T_VAR T_ASSIGN literal {
              }
             ;
 
-arr_def     : T_VAR T_OPAR T_TYPE T_CPAR {
-                // TODO: array creation
-                // TODO: support in SymbolMap
+arr_def     : T_VAR T_OPAR T_INT T_CPAR {
+                auto name = std::string($1);
+                dynamic_cast<Declaration*>(actions.top())->add(name, $3);
              }
             ;
 
@@ -214,12 +215,16 @@ assignment  : variable T_ASSIGN expr {
 variable    : T_VAR { actions.push(new Variable($1)); }
             ;
 
-pure_literal: T_NUMBER         { actions.push(new Constant($1.type, std::string($1.value))); }
+pure_literal: number           { actions.push(new Constant($1.type, std::string($1.value))); }
             | T_BOOL           { actions.push(new Constant($1.type, std::string($1.value))); }
             ;
 
 literal     : pure_literal
-            | T_MINUS T_NUMBER { actions.push(new Constant($2.type, "-" + std::string($2.value))); }
+            | T_MINUS number   { actions.push(new Constant($2.type, "-" + std::string($2.value))); }
+            ;
+
+number      : T_INT
+            | T_FLOAT
             ;
 
 fun_decl    : fun_head fun_lines close_block {

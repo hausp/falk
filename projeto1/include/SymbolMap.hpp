@@ -18,8 +18,16 @@ struct Symbol {
 struct Function : public Symbol {
     Function(const std::string& name, Type type)
      : Symbol{name, type} { }
+     Function(const Symbol& sym) : Symbol(sym) { }
     std::list<Symbol> params;
     mutable bool defined = false;
+};
+
+struct Array : public Symbol {
+    Array(const std::string& name, Type type, const std::string& size)
+     : Symbol{name, type}, size(size) { }
+    Array(const Symbol& sym) : Symbol(sym) { }
+     std::string size;
 };
 
 inline bool operator==(const Symbol& lhs, const Symbol& rhs) {
@@ -41,12 +49,20 @@ namespace std {
             return hash<Symbol>()(fn);
         }
     };
+
+    template<>
+    struct hash<Array> {
+        inline auto operator()(Array arr) const {
+            return hash<Symbol>()(arr);
+        }
+    };
 }
 
 class SymbolMap {
-    struct Table {
+    struct Scope {
         std::unordered_set<Symbol> vars;
         std::unordered_set<Function> functions;
+        std::unordered_set<Array> arrays;
         size_t count(const Symbol&) const;
     };
 public:
@@ -54,6 +70,7 @@ public:
 
     bool declare_function(Type, const std::string&, ParamList*);
     bool define_function(Type, const std::string&, ParamList*);
+    bool declare_array(Type, const std::string&, const std::string&);
     template<typename T>
     bool declare(Type, const std::string&, const T&);
     bool declare(Type, const std::string&);
@@ -65,7 +82,7 @@ public:
     Type last_fun_type() const;
 
 private:
-    std::list<Table> scopes;
+    std::list<Scope> scopes;
     SymbolMap() = default;
 
 };

@@ -31,14 +31,39 @@ class Declaration : public Action {
     Declaration(Type, const std::string& = "var");
     void add(const std::string&);
     void add(const std::string&, Action*);
-    void set_symbol_type(const std::string& id) { id_type = id; }
+    void add(const std::string&, const utils::literal&);
+    void set_symbol_type(const std::string& id) { symbol_type = id; }
     std::string to_string(unsigned = 0) const override;
     Type type() const override { return t; }
 
  private:
     Type t;
-    std::string id_type;
-    std::vector<std::pair<std::string, Action*>> values;
+    std::string symbol_type;
+    std::list<Action*> declarations;
+};
+
+class VarDecl : public Action {
+ public:
+    VarDecl(Type, const std::string&, Action* = nullptr);
+    std::string to_string(unsigned = 0) const override;
+    Type type() const override { return t; }
+
+ private:
+    Type t;
+    std::string name;
+    Action* value;
+};
+
+class ArrayDecl : public Action {
+ public:
+    ArrayDecl(Type, const std::string&, const std::string&);
+    std::string to_string(unsigned = 0) const override;
+    Type type() const override { return t; }
+
+ private:
+    Type t;
+    std::string name;
+    std::string size;
 };
 
 

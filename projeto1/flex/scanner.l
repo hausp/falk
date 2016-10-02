@@ -43,8 +43,8 @@ nonacceptable [^-\+\*\\(\)/=,\n0-9A-Za-z_ \t]+
 "["{float_type}"]"  { yylval.type = Type::FLOAT; return T_CAST; }
 "["{bool_type}"]"   { yylval.type = Type::BOOL; return T_CAST; }
 
-{int_literal}       { yylval.value = {strdup(yytext), Type::INT}; return T_NUMBER; }
-{float_literal}     { yylval.value = {strdup(yytext), Type::FLOAT}; return T_NUMBER; }
+{int_literal}       { yylval.value = {strdup(yytext), Type::INT}; return T_INT; }
+{float_literal}     { yylval.value = {strdup(yytext), Type::FLOAT}; return T_FLOAT; }
 {bool_literal}      { yylval.value = {strdup(yytext), Type::BOOL}; return T_BOOL; }
 
 {if_literal}        { return T_IF; }

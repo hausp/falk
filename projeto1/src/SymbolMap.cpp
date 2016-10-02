@@ -18,39 +18,12 @@ namespace {
     }
 }
 
-// auto SymbolMap::Table::find(const Symbol& sym) {
-//     auto it = vars.find(sym);
-//     if (it != vars.end()) return it;
-//     it = functions.find(sym);
-//     return it;
-// }
-
-// auto SymbolMap::Table::insert(const Symbol& sym) {
-//     if (!functions.count(sym)) {
-//         return vars.insert(sym);
-//     }
-//     return functions.insert(sym);
-// }
-
-// auto SymbolMap::Table::insert(const Function& fun) {
-//     if (!vars.count(fun)) {
-//         return functions.insert(fun);
-//     }
-//     return vars.insert(fun);
-// }
-
-size_t SymbolMap::Table::count(const Symbol& sym) const {
-    auto funct = Function(sym.name, sym.type);
-    return vars.count(sym) + functions.count(funct);
+size_t SymbolMap::Scope::count(const Symbol& sym) const {
+    return vars.count(sym) + functions.count(sym) + arrays.count(sym);
 }
 
 SymbolMap& SymbolMap::instance() {
-    // static auto defined = false;
     static SymbolMap inst;
-    // if (!defined) {
-    //     inst.open_scope();
-    //     defined = true;
-    // }
     return inst;
 }
 
@@ -62,6 +35,19 @@ bool SymbolMap::declare(Type type, const std::string& name) {
         return false;
     }
     scope.vars.insert(symbol);
+    return true;
+}
+
+bool SymbolMap::declare_array(Type type,
+                        const std::string& name,
+                        const std::string& size) {
+    auto& scope = scopes.back();
+    auto array = Array(name, type, size);
+    if (scope.count(array)) {
+        utils::semantic_error<Error::MULTIPLE_DEFINITION>(name);
+        return false;
+    }
+    scope.arrays.insert(array);
     return true;
 }
 

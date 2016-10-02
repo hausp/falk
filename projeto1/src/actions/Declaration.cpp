@@ -1,11 +1,12 @@
 #include "Action.hpp"
 
-Declaration::Declaration(Type type, const std::string& id_type)
-: t(type), id_type(id_type) {}
+Declaration::Declaration(Type type, const std::string& symbol_type)
+: t(type), symbol_type(symbol_type) {}
 
 void Declaration::add(const std::string& name) {
     if (symbols.declare(type(), name)) {
-        values.push_back({name, nullptr});
+        auto decl = new VarDecl(type(), name);
+        declarations.push_back(decl);
     }
 }
 
@@ -15,26 +16,31 @@ void Declaration::add(const std::string& name, Action* value) {
     }
 
     if (symbols.declare(type(), name, *value)) {
-        values.push_back({name, value});
+        auto decl = new VarDecl(type(), name, value);
+        declarations.push_back(decl);
+    }
+}
+
+void Declaration::add(const std::string& name, const utils::literal& literal) {
+    if (symbols.declare_array(type(), name, literal.value)) {
+        auto decl = new ArrayDecl(type(), name, literal.value);
+        declarations.push_back(decl);
     }
 }
 
 std::string Declaration::to_string(unsigned indent) const {
     std::string result;
-    if (values.empty()) {
+    if (declarations.empty()) {
         return result;
     }
     result += std::string(indent, ' ');
-    result += utils::to_string(type()) + " "+ id_type + ": ";
+    result += utils::to_string(type()) + " "+ symbol_type + ": ";
     size_t i = 0;
-    for (auto& pair : values) {
+    for (auto& decl : declarations) {
         if (i > 0) {
             result += ", ";
         }
-        result += pair.first;
-        if (pair.second != nullptr) {
-            result += " = " + pair.second->to_string();
-        }
+        result += decl->to_string();
         ++i;
     }
     return result;
