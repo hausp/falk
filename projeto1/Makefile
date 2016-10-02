@@ -27,7 +27,7 @@ SRC      :=$(shell find $(SRCDIR) -name '*.cpp')
 DEP      :=$(patsubst %.cpp,$(DEPDIR)/%.d,$(SRC))
 OBJ      :=$(patsubst %.cpp,$(OBJDIR)/%.o,$(SRC))
 MAIN     :=main
-EXEC     :=$(BINDIR)/execute_me
+EXEC     :=$(BINDIR)/lukacompiler
 # Test files
 PUREOBJ  :=$(filter-out $(OBJDIR)/$(SRCDIR)/$(MAIN).o,$(OBJ))
 TSRC     :=$(shell find $(TESTDIR) -name '*.cpp' 2> /dev/null)
