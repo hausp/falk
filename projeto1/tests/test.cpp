@@ -299,8 +299,9 @@ TEST_F(LukaTest, v0_8) {
                 "    = [index] p i false");
 
     inputs.add("int a(10)", "a(false) = 1");
-    outputs.add("int array: a (size: 10)",
-        "[Line 2] semantic error: index operator expects integer but received boolean");
+    outputs.add(
+        "[Line 2] semantic error: index operator expects integer but received boolean",
+        "int array: a (size: 10)");
 
     inputs.add("int a(1.5)");
     outputs.add("[Line 1] syntax error");
@@ -321,23 +322,26 @@ TEST_F(LukaTest, v1_0) {
         "int ref ref var: p2", "= p2 [addr] [index] p 0");
 
     inputs.add("int i = 0", "int ref p", "p = i");
-    outputs.add("int var: i = 0", "int ref var: p",
-        "[Line 3] semantic error: attribution operation expects integer pointer but received integer");
+    outputs.add(
+        "[Line 3] semantic error: attribution operation expects integer pointer but received integer",
+        "int var: i = 0", "int ref var: p");
 
     inputs.add("int i", "i = ref i");
-    outputs.add("int var: i",
-        "[Line 2] semantic error: reference operation expects a pointer");
+    outputs.add(
+        "[Line 2] semantic error: reference operation expects a pointer",
+        "int var: i");
 
     inputs.add("bool ref b", "b = addr true");
-    outputs.add("bool ref var: b",
-        "[Line 2] semantic error: address operation expects a variable of array item");
+    outputs.add(
+        "[Line 2] semantic error: address operation expects a variable or array item",
+        "bool ref var: b");
 
     run_tests(inputs, outputs);
 }
 
 int main(int argc, char** argv) {
     constexpr auto min_version = 0.1;
-    constexpr auto latest_stable = 0.6;
+    constexpr auto latest_stable = 0.7;
 
     ::testing::InitGoogleTest(&argc, argv);
     const std::string tests = [&] {
@@ -350,7 +354,7 @@ int main(int argc, char** argv) {
             if (colon) {
                 result += ":";
             }
-            result += "*_" + std::to_string(static_cast<int>(i * 10));
+            result += "*_" + std::to_string(static_cast<int>((i + 0.05) * 10));
             colon = true;
         }
         return result;
