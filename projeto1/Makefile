@@ -42,9 +42,6 @@ TCALL    :=$(patsubst %.cpp,%,$(notdir $(TMAIN)))
 
 ################################# MAIN RULES ##################################
 all: makedir $(EXEC)
-	@echo $(TEXEC)
-	@echo $(TCALL)
-	@echo $(TPUREOBJ)
 
 -include $(MKXFILES)
 
