@@ -1,3 +1,15 @@
+/* Copyright 2016 Marleson Graf <aszdrick@gmail.com>
+   Ghabriel Nunes <ghabriel.nunes@gmail.com> 
+   Vinicius Marino Calvo Torres de Freitas <vinimmbb@gmail.com> */
+
+/* 
+ * Utilities File.
+ *      This file contains type, error, literal and operator 
+ * definitions, error reports, hash definitions, translation tables 
+ * and the line counter for the compiler error report.
+ *
+ */
+
 #ifndef UTILS_HPP
 #define UTILS_HPP
 
