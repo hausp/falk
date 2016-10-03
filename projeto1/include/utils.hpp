@@ -40,6 +40,8 @@ enum class Error {
     MULTIPLE_DEFINITION_FN,
     WRONG_PARAM_COUNT,
     INCOMPATIBLE_PARAM,
+    INCOMPATIBLE_INDEX,
+    NON_ARRAY_INDEX,
 };
 
 namespace std {
@@ -183,6 +185,8 @@ namespace utils {
     inline void semantic_error(const std::string&, size_t, size_t);
     template<Error err>
     inline void semantic_error(const std::string&, Type, Type);
+    template<Error err>
+    inline void semantic_error();
 
     template<>
     inline void semantic_error<Error::MULTIPLE_DEFINITION>(const std::string& name) {
@@ -239,6 +243,20 @@ namespace utils {
         auto actual_str = to_printable_string(actual);
         echo(error_prefix("semantic") + "parameter " + name + " expected "
             + expected_str + " but received " + actual_str);
+    }
+
+    template<>
+    inline void semantic_error<Error::INCOMPATIBLE_INDEX>(Type expected,
+                                                          Type actual) {
+        auto expected_str = to_printable_string(expected);
+        auto actual_str = to_printable_string(actual);
+        echo(error_prefix("semantic") + "index operator expects "
+            + expected_str + " but received " + actual_str);
+    }
+
+    template<>
+    inline void semantic_error<Error::NON_ARRAY_INDEX>() {
+        echo(error_prefix("semantic") + "index operator expects an array");
     }
 }
 

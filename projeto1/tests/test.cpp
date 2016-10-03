@@ -284,7 +284,7 @@ TEST_F(LukaTest, v0_8) {
                "    p(i) = true",
                "  } else {",
                "    p(i) = false",
-               "  }"
+               "  }",
                "}");
     outputs.add("int array: a (size: 10)",
                 "bool array: p (size: 10)",

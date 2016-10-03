@@ -4,12 +4,12 @@ ArrayIndex::ArrayIndex(const std::string& name, Action* i)
  : t(symbols.typeof(name)), name(name), index(i), fail(i->error()) {
     if (!symbols.is_array(name)) {
         fail = true;
-        // TODO: print error
+        utils::semantic_error<Error::NON_ARRAY_INDEX>();
     }
 
     if (i->type() != Type::INT) {
         fail = true;
-        // TODO: print error (expected integer)
+        utils::semantic_error<Error::INCOMPATIBLE_INDEX>(Type::INT, i->type());
     }
 }
 
