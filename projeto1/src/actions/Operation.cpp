@@ -38,7 +38,7 @@ void Operation::check(Action* action) {
     bool can_coerce = false;
     if (action->type().ptr_count > 0) {
         fail = true;
-        utils::semantic_error<Error::POINTER_ARITHMETIC>();
+        utils::semantic_error<Error::TYPE_ERROR>();
     }
 
     if (expected == PrimitiveType::INT && actual == PrimitiveType::FLOAT) {

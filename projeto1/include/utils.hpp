@@ -43,7 +43,7 @@ enum class Error {
     INCOMPATIBLE_INDEX,
     NON_ARRAY_INDEX,
     NOT_A_POINTER,
-    POINTER_ARITHMETIC,
+    TYPE_ERROR,
 };
 
 struct Type {
@@ -307,8 +307,8 @@ namespace utils {
     }
 
     template<>
-    inline void semantic_error<Error::POINTER_ARITHMETIC>() {
-        echo(error_prefix("semantic") + "pointer arithmetics is forbidden");
+    inline void semantic_error<Error::TYPE_ERROR>() {
+        echo(error_prefix("semantic") + "invalid operand type");
     }
 }
 
