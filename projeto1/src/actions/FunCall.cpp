@@ -6,7 +6,6 @@ FunCall::FunCall(const std::string& name, Action* args_list)
 
     if (!symbols.is_function(name)) {
         fail = true;
-        // TODO: should we create a specific message for undefined functions?
         utils::semantic_error<Error::UNDECLARED_VARIABLE>(name);
         return;
     }
