@@ -36,6 +36,11 @@ void Operation::check(Action* action) {
     auto expected = t;
     auto actual = action->type();
     bool can_coerce = false;
+    if (action->type().ptr_count > 0) {
+        fail = true;
+        utils::semantic_error<Error::POINTER_ARITHMETIC>();
+    }
+
     if (expected == PrimitiveType::INT && actual == PrimitiveType::FLOAT) {
         t = PrimitiveType::FLOAT;
         expected = t;

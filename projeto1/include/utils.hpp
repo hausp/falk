@@ -43,6 +43,7 @@ enum class Error {
     INCOMPATIBLE_INDEX,
     NON_ARRAY_INDEX,
     NOT_A_POINTER,
+    POINTER_ARITHMETIC,
 };
 
 struct Type {
@@ -303,6 +304,11 @@ namespace utils {
     template<>
     inline void semantic_error<Error::NOT_A_POINTER>() {
         echo(error_prefix("semantic") + "reference operation expects a pointer");
+    }
+
+    template<>
+    inline void semantic_error<Error::POINTER_ARITHMETIC>() {
+        echo(error_prefix("semantic") + "pointer arithmetics is forbidden");
     }
 }
 
