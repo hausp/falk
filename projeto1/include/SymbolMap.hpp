@@ -1,3 +1,26 @@
+/* Copyright 2016 Marleson Graf <aszdrick@gmail.com>
+   Ghabriel Nunes <ghabriel.nunes@gmail.com> 
+   Vinicius Marino Calvo Torres de Freitas <vinimmbb@gmail.com> */
+
+/* 
+ * Symbol related definitions
+ *      This file defines structs to contain logical information about
+ * declared symbols like variables, arrays and functions.
+ *      The SymbolMap class acts as the symbols table of the compiler,
+ * keeping track of declared symbols and notifying errors when redeclarations
+ * are attempted.
+ *      To achieve multiple scopes, it mantains a list of tables, each one
+ * referencing a different scope. When a scope is opened, it creates a new table
+ * on the back of the list, allowing redeclaration of symbols, since it
+ * only considers the last scope when declaring symbols.
+ *      On other hand, to verify the existence of a symbol, it iterates
+ * over all scopes, stopping as soon as find the requested indentifier.
+ * This way, a reference to a symbol will always match the declaration made
+ * on the closest scope to the current one.
+ *      The SymbolMap also allows to retrieve the type of a declared symbol,
+ * as well verify if it is a variable, array or function. 
+ */
+
 #ifndef SYMBOL_MAP_HPP
 #define SYMBOL_MAP_HPP
 

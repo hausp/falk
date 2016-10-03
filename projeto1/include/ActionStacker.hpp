@@ -1,3 +1,14 @@
+/* Copyright 2016 Marleson Graf <aszdrick@gmail.com>
+   Ghabriel Nunes <ghabriel.nunes@gmail.com> 
+   Vinicius Marino Calvo Torres de Freitas <vinimmbb@gmail.com> */
+
+/*
+ * Action Stacker Class Definition
+ *      This is a stack of actions, basically a stack manager for the
+ *  compiler. It's coherence must be kept by the grammar's (parser.y) 
+ *  semantic actions.
+ */
+
 #ifndef ACTION_STACKER_HPP
 #define ACTION_STACKER_HPP
 

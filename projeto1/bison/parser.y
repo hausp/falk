@@ -59,8 +59,6 @@ extern void yyerror(const char* s, ...);
  * The latest it is listed, the highest the precedence
  * left, right, nonassoc
  */
-/* TODO: is %left the right choice for comparison operators? */
-/* TODO: check if the precedence order is correct */
 %nonassoc T_CAST
 %left T_AND T_OR
 %nonassoc T_NOT
@@ -76,6 +74,12 @@ extern void yyerror(const char* s, ...);
 
 %%
 
+/*
+ * The language syntax grammar. Pushes actions into the action stacker
+ * which are then popped when aggregate actions need them. When the program
+ * finishes, the action stacker iterates over all stored actions and prints
+ * them sequentially, granting that the output of the compiler is shown correctly.
+ */
 
 program     : setup lines finish
             | { $$ = 0; }

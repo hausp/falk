@@ -1,3 +1,18 @@
+/* Copyright 2016 Marleson Graf <aszdrick@gmail.com>
+   Ghabriel Nunes <ghabriel.nunes@gmail.com> 
+   Vinicius Marino Calvo Torres de Freitas <vinimmbb@gmail.com> */
+
+/*
+ * Action classes definitions
+ *      Actions are translation units that convert basic structures from
+ *  the input language to its corresponding representation in the output
+ *  language.
+ *      The superclass Action derives into multiple definitions, each one 
+ *  responsible for a different part of the code syntax.
+ *      Actions trigger errors when they are missused, for instance undeclared
+ *  variables or incompatible types being used in arithmetic operations.
+ */
+
 #ifndef ACTION_HPP
 #define ACTION_HPP
 
@@ -18,6 +33,13 @@ class Action {
     virtual Type type() const = 0;
 };
 
+/*
+ * No-Operation Action
+ *      Nop is a non-operative action, which means it does nothing at all.
+ *  It is used to keep the coherence of the action stack (read ActionStacker's 
+ *  description) when some piece of code should be there, but isn't like an empty
+ *  block.
+ */
 class Nop : public Action {
  public:
     std::string to_string(unsigned = 0) const override {
@@ -26,6 +48,11 @@ class Nop : public Action {
     Type type() const override { return PrimitiveType::VOID; }
 };
 
+/*
+ * Declaration Action
+ *      Declaration agregates different symbol declarations. This can be a 
+ *  variable declaration (VarDecl) or an array declaration (ArrayDecl).
+ */
 class Declaration : public Action {
  public:
     Declaration(Type, const std::string& = "var");
@@ -75,7 +102,10 @@ class ArrayDecl : public Action {
     std::string size;
 };
 
-
+/*
+ * Variable Action
+ *      Represents the use of a variable.
+ */
 class Variable : public Action {
  public:
     Variable(const std::string&);
@@ -89,7 +119,10 @@ class Variable : public Action {
     std::string name;
 };
 
-
+/*
+ * Constant Action
+ *      Represents the use of a constant value, such as "1" or "2".
+ */
 class Constant : public Action {
  public:
     Constant(Type type, const std::string& value);
@@ -102,7 +135,11 @@ class Constant : public Action {
     std::string value;
 };
 
-
+/*
+ * Operation Action
+ *      Operations is a superclass for all operation types.
+ *  It represents operands as children of a node: 'n' children are supported. 
+ */
 class Operation : public Action {
  public:
     template<typename... Args>
@@ -151,7 +188,6 @@ class Operation : public Action {
     }
 };
 
-
 class Comparison : public Operation {
  public:
     template<typename... Args>
@@ -197,7 +233,11 @@ class Cast : public Operation {
     }
 };
 
-
+/*
+ * Assignment Action
+ *      Represents an assignment. Stores info about variables in a Symbol Map
+ *  (read SymbolMap's description).
+ */
 class Assignment : public Action {
  public:
     Assignment(Action*, Action*);
@@ -214,6 +254,10 @@ class Assignment : public Action {
     bool fail;
 };
 
+/*
+ * Block Action
+ *      Represents a group of lines of code.
+ */
 class Block : public Action {
  public:
     void add(Action*);
@@ -229,6 +273,10 @@ class Block : public Action {
     std::list<Action*> lines;
 };
 
+/*
+ * Conditional Action
+ *      Represents "if then else" constructions in the language.
+ */
 class Conditional : public Action {
  public:
     Conditional(Action*, Action*, Action* = nullptr);
@@ -247,6 +295,10 @@ class Conditional : public Action {
     bool fail;
 };
 
+/*
+ * Loop Action
+ *      Represents "for loop" constructions in the language.
+ */
 class Loop : public Action {
  public:
     Loop(Action*, Action*, Action*, Action*);
@@ -267,6 +319,11 @@ class Loop : public Action {
     bool fail = false;
 };
 
+/*
+ * Parameter List Action
+ *      This action contains parameters for a function declaration
+ *  or a function call.
+ */
 class ParamList : public Action {
  public:
     void add(Type, const std::string&);
@@ -281,7 +338,10 @@ class ParamList : public Action {
     std::list<std::pair<Type, std::string>> vars;
 };
 
-// Function
+/*
+ * Function Action
+ *      Represents a function declaration and/or definition.
+ */
 class Fun : public Action {
  public:
     Fun(Type, const std::string&);
@@ -302,6 +362,10 @@ class Fun : public Action {
     bool fail = false;
 };
 
+/*
+ * Expression List Action
+ *      Represents a list of expressions used in function calls.
+ */
 class ExpressionList : public Action {
  public:
     ~ExpressionList() {
@@ -326,6 +390,10 @@ class ExpressionList : public Action {
     bool fail;
 };
 
+/*
+ * Function Call Action
+ *      Represents a function call. Contains an expression list internally.
+ */
 class FunCall : public Action {
  public:
     FunCall(const std::string&, Action*);
@@ -343,6 +411,10 @@ class FunCall : public Action {
     Type t;
 };
 
+/*
+ * Return Action
+ *      Represents a ret statement, used in function bodies.
+ */
 class Return : public Action {
  public:
     Return(Action*);
@@ -358,6 +430,10 @@ class Return : public Action {
     bool fail;
 };
 
+/*
+ * Array Index Action
+ *      Represents the application of the index operator in an array.
+ */
 class ArrayIndex : public Action {
  public:
     ArrayIndex(const std::string&, Action*);
@@ -374,6 +450,10 @@ class ArrayIndex : public Action {
     bool fail;
 };
 
+/*
+ * Address Action
+ *      Represents the application of the addr operator in an lvalue.
+ */
 class Address : public Action {
  public:
     Address(Action*);
@@ -389,6 +469,10 @@ class Address : public Action {
     bool fail;
 };
 
+/*
+ * Reference Action
+ *      Represents the application of the ref operator in an lvalue.
+ */
 class Reference : public Action {
  public:
     Reference(Action*);
