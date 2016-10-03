@@ -317,13 +317,13 @@ TEST_F(LukaTest, v10) {
 
     inputs.add("int i", "int ref p(2)", "p(0) = addr i", "p(1) = addr i",
         "int ref ref p2", "p2 = addr p(0)");
-    outputs.add("int var: i", "int ref var: p (size: 2)",
+    outputs.add("int var: i", "int ref array: p (size: 2)",
         "= [index] p 0 [addr] i", "= [index] p 1 [addr] i",
         "int ref ref var: p2", "= p2 [addr] [index] p 0");
 
     inputs.add("int i = 0", "int ref p", "p = i");
     outputs.add(
-        "[Line 3] semantic error: attribution operation expects integer pointer but received integer",
+        "[Line 3] semantic error: attribution operation expected integer pointer but received integer",
         "int var: i = 0", "int ref var: p");
 
     inputs.add("int i", "i = ref i");
@@ -333,8 +333,7 @@ TEST_F(LukaTest, v10) {
 
     inputs.add("bool ref b", "b = addr true");
     outputs.add(
-        "[Line 2] semantic error: address operation expects a variable or array item",
-        "bool ref var: b");
+        "[Line 2] syntax error");
 
     run_tests(inputs, outputs);
 }

@@ -42,6 +42,7 @@ enum class Error {
     INCOMPATIBLE_PARAM,
     INCOMPATIBLE_INDEX,
     NON_ARRAY_INDEX,
+    NOT_A_POINTER,
 };
 
 struct Type {
@@ -165,7 +166,9 @@ namespace utils {
 
     inline std::string to_string(const Type& type) {
         auto base = to_string(type.base);
-        // TODO: append "pointer" like there's no tomorrow
+        for (auto i = 0; i < type.ptr_count; i++) {
+            base += " ref";
+        }
         return base;
     }
 
@@ -183,7 +186,9 @@ namespace utils {
 
     inline std::string to_printable_string(const Type& type) {
         auto base = to_printable_string(type.base);
-        // TODO: append "pointer" like there's no tomorrow
+        for (auto i = 0; i < type.ptr_count; i++) {
+            base += " pointer";
+        }
         return base;
     }
 
@@ -293,6 +298,11 @@ namespace utils {
     template<>
     inline void semantic_error<Error::NON_ARRAY_INDEX>() {
         echo(error_prefix("semantic") + "index operator expects an array");
+    }
+
+    template<>
+    inline void semantic_error<Error::NOT_A_POINTER>() {
+        echo(error_prefix("semantic") + "reference operation expects a pointer");
     }
 }
 

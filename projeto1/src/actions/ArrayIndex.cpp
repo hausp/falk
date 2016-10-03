@@ -14,10 +14,13 @@ ArrayIndex::ArrayIndex(const std::string& name, Action* i)
 }
 
 std::string ArrayIndex::to_string(unsigned indent) const {
-    auto out = std::string(indent, ' ');
-    out += "[index] ";
-    out += name;
-    out += " " + index->to_string();
+    std::string out; 
+    if (!error()) {
+        out += std::string(indent, ' ');
+        out += "[index] ";
+        out += name;
+        out += " " + index->to_string();
+    }
     return out;
 }
 

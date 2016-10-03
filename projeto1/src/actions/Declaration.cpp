@@ -35,9 +35,6 @@ std::string Declaration::to_string(unsigned indent) const {
     }
     result += std::string(indent, ' ');
     result += utils::to_string(type());
-    for (auto i = 0; i < t.ptr_count; i++) {
-        result += " ref";
-    }
     result += " " + symbol_type + ": ";
     size_t i = 0;
     for (auto& decl : declarations) {

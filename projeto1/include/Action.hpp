@@ -29,6 +29,12 @@ class Nop : public Action {
 class Declaration : public Action {
  public:
     Declaration(Type, const std::string& = "var");
+    ~Declaration() {
+        while (!declarations.empty()) {
+            delete declarations.back();
+            declarations.pop_back();
+        }
+    }
     void add(const std::string&);
     void add(const std::string&, Action*);
     void add(const std::string&, const utils::literal&);
@@ -45,6 +51,9 @@ class Declaration : public Action {
 class VarDecl : public Action {
  public:
     VarDecl(Type, const std::string&, Action* = nullptr);
+    ~VarDecl() {
+        delete value;
+    }
     std::string to_string(unsigned = 0) const override;
     Type type() const override { return t; }
 
@@ -106,6 +115,13 @@ class Operation : public Action {
     Operation(Operator op, Type type, Args&&... args)
      : op(op), t(type) {
         set_children(std::forward<Args>(args)...);
+    }
+
+    ~Operation() {
+        while (!children.empty()) {
+            delete children.back();
+            children.pop_back();
+        }
     }
 
     bool error() const override;
@@ -185,6 +201,10 @@ class Cast : public Operation {
 class Assignment : public Action {
  public:
     Assignment(Action*, Action*);
+    ~Assignment() {
+        delete var;
+        delete rhs;
+    }
     std::string to_string(unsigned = 0) const override;
     Type type() const override;
 
@@ -197,6 +217,12 @@ class Assignment : public Action {
 class Block : public Action {
  public:
     void add(Action*);
+    ~Block() {
+        while (!lines.empty()) {
+            delete lines.back();
+            lines.pop_back();
+        }
+    }
     std::string to_string(unsigned = 0) const override;
     Type type() const override { return PrimitiveType::VOID; }
  private:
@@ -206,6 +232,11 @@ class Block : public Action {
 class Conditional : public Action {
  public:
     Conditional(Action*, Action*, Action* = nullptr);
+    ~Conditional() {
+        delete condition;
+        delete accepted;
+        delete rejected;
+    }
     std::string to_string(unsigned = 0) const override;
     Type type() const override { return PrimitiveType::VOID; }
     bool error() const override { return fail; };
@@ -219,6 +250,12 @@ class Conditional : public Action {
 class Loop : public Action {
  public:
     Loop(Action*, Action*, Action*, Action*);
+    ~Loop() {
+        delete init;
+        delete test;
+        delete update;
+        delete code;
+    }
     std::string to_string(unsigned = 0) const override;
     Type type() const override { return PrimitiveType::VOID; }
     bool error() const override { return fail; }
@@ -248,6 +285,10 @@ class ParamList : public Action {
 class Fun : public Action {
  public:
     Fun(Type, const std::string&);
+    ~Fun() {
+        delete params;
+        delete body;
+    }
     void inject(Action*);
     void bind(Action*, Action* = nullptr);
     std::string to_string(unsigned = 0) const override;
@@ -263,6 +304,12 @@ class Fun : public Action {
 
 class ExpressionList : public Action {
  public:
+    ~ExpressionList() {
+        while (!expressions.empty()) {
+            delete expressions.back();
+            expressions.pop_back();
+        }
+    }
     void add(Action*);
     size_t size() const { return expressions.size(); }
     std::string to_string(unsigned = 0) const override;
@@ -282,6 +329,9 @@ class ExpressionList : public Action {
 class FunCall : public Action {
  public:
     FunCall(const std::string&, Action*);
+    ~FunCall() {
+        delete args;
+    }
     std::string to_string(unsigned = 0) const override;
     Type type() const override { return t; }
     bool error() const override { return fail; }
@@ -296,6 +346,9 @@ class FunCall : public Action {
 class Return : public Action {
  public:
     Return(Action*);
+    ~Return() {
+        delete operand;
+    }
     std::string to_string(unsigned = 0) const override;
     Type type() const override;
     bool error() const override { return fail; }
@@ -308,6 +361,9 @@ class Return : public Action {
 class ArrayIndex : public Action {
  public:
     ArrayIndex(const std::string&, Action*);
+    ~ArrayIndex() {
+        delete index;
+    }
     std::string to_string(unsigned = 0) const override;
     Type type() const override { return t; }
     bool error() const override { return fail; }
@@ -315,6 +371,36 @@ class ArrayIndex : public Action {
     Type t;
     std::string name;
     Action* index;
+    bool fail;
+};
+
+class Address : public Action {
+ public:
+    Address(Action*);
+    ~Address() {
+        delete lvalue;
+    }
+    std::string to_string(unsigned = 0) const override;
+    Type type() const override { return t; }
+    bool error() const override { return fail; }
+ private:
+    Type t;
+    Action* lvalue;
+    bool fail;
+};
+
+class Reference : public Action {
+ public:
+    Reference(Action*);
+    ~Reference() {
+        delete lvalue;
+    }
+    std::string to_string(unsigned = 0) const override;
+    Type type() const override { return t; }
+    bool error() const override { return fail; }
+ private:
+    Type t;
+    Action* lvalue;
     bool fail;
 };
 

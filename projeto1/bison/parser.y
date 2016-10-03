@@ -363,6 +363,14 @@ expr        : pure_literal
                 auto body = actions.pop();
                 actions.push(new Cast($1, body));
              }
+            | T_ADDR lvalue {
+                auto value = actions.pop();
+                actions.push(new Address(value));
+             }
+            | T_REF lvalue {
+                auto value = actions.pop();
+                actions.push(new Reference(value));
+             }
             | expr T_COMPARISON expr     {
                 auto right = actions.pop();
                 auto left = actions.pop();
