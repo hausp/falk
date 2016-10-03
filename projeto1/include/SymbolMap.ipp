@@ -7,6 +7,7 @@
 //     funct.type = type;
 //     funct.params = {{params.type...}};
 // }
+#include "macros.hpp"
 
 template<typename T>
 bool SymbolMap::declare(Type type, const std::string& name, const T& value) {
@@ -22,4 +23,31 @@ bool SymbolMap::declare(Type type, const std::string& name, const T& value) {
     }
     scope.vars.insert(symbol);
     return true;
+}
+
+inline bool SymbolMap::is_array(const std::string& name) const {
+    for (auto& scope : scopes) {
+        if (scope.arrays.count(Array(name, Type::ANY))) {
+            return true;
+        }
+    }
+    return false;
+}
+
+inline bool SymbolMap::is_function(const std::string& name) const {
+    for (auto& scope : scopes) {
+        if (scope.functions.count(Array(name, Type::ANY))) {
+            return true;
+        }
+    }
+    return false;
+}
+
+inline bool SymbolMap::is_variable(const std::string& name) const {
+    for (auto& scope : scopes) {
+        if (scope.vars.count(Array(name, Type::ANY))) {
+            return true;
+        }
+    }
+    return false;
 }

@@ -24,7 +24,7 @@ struct Function : public Symbol {
 };
 
 struct Array : public Symbol {
-    Array(const std::string& name, Type type, const std::string& size)
+    Array(const std::string& name, Type type, const std::string& size = "0")
      : Symbol{name, type}, size(size) { }
     Array(const Symbol& sym) : Symbol(sym) { }
      std::string size;
@@ -75,6 +75,9 @@ public:
     bool declare(Type, const std::string&, const T&);
     bool declare(Type, const std::string&);
     bool exists(const std::string&) const;
+    bool is_array(const std::string&) const;
+    bool is_function(const std::string&) const;
+    bool is_variable(const std::string&) const;
     Type typeof(const std::string&) const;
     std::list<Symbol> params(const std::string&) const;
     void open_scope();

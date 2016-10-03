@@ -48,8 +48,9 @@ extern void yyerror(const char* s, ...);
  */
 %type <var> program lines line declaration var_list var_def assignment expr
 %type <var> variable type literal pure_literal if_clause open_block close_block
-%type <var> block new_line opt_nl opt_lines for_clause fun_decl fun_call arr_list
+%type <var> block new_line opt_nl opt_lines for_clause fun_decl call arr_list
 %type <var> fun_body fun_lines param_list expr_list command setup finish arr_def
+%type <var> lvalue arr_access
 %type <value> number
 
 /* Operator precedence for mathematical operators
@@ -78,11 +79,11 @@ program     : setup lines finish
             | { $$ = 0; }
             ;
 
-setup       : { Scope::open();
+setup       : { symbols.open_scope();
                 actions.push(new Block()); }
             ;
 
-finish      : { Scope::close(); }
+finish      : { symbols.close_scope(); }
 
 lines       : line
             | lines line
@@ -99,7 +100,7 @@ command     : declaration
             | if_clause
             | for_clause
             | fun_decl
-            | fun_call
+            | call
             | { actions.push(new Nop()); }
             ;
 
@@ -150,12 +151,12 @@ block       : open_block new_line opt_lines close_block { $$ = 0; }
             ;
 
 open_block  : T_OBLOCK { 
-                Scope::open(); 
+                symbols.open_scope();
                 actions.push(new Block());
              }
             ;
 
-close_block : T_CBLOCK { Scope::close(); }
+close_block : T_CBLOCK { symbols.close_scope(); }
             ;
 
 opt_lines   : lines
@@ -205,14 +206,25 @@ arr_def     : T_VAR T_OPAR T_INT T_CPAR {
              }
             ;
 
-assignment  : variable T_ASSIGN expr {
+assignment  : lvalue T_ASSIGN expr {
                 auto expr = actions.pop();
                 auto var = actions.pop();
                 actions.push(new Assignment(var, expr));
              }
             ;
 
+lvalue      : variable
+            | arr_access
+            ;
+
 variable    : T_VAR { actions.push(new Variable($1)); }
+            ;
+
+arr_access  : T_VAR T_OPAR expr T_CPAR {
+                auto name = std::string($1);
+                auto expression = actions.pop();
+                actions.push(new ArrayIndex(name, expression));
+             }
             ;
 
 pure_literal: number           { actions.push(new Constant($1.type, std::string($1.value))); }
@@ -286,10 +298,21 @@ param_list  : T_TYPE T_VAR {
              }
             ;
 
-fun_call    : T_VAR T_OPAR expr_list T_CPAR {
+call        : T_VAR T_OPAR expr_list T_CPAR {
                 auto name = std::string($1);
                 auto expr_list = actions.pop();
                 actions.push(new FunCall(name, expr_list));
+             }
+            | T_VAR T_OPAR expr T_CPAR {
+                auto name = std::string($1);
+                auto expression = actions.pop();
+                if (symbols.is_array(name)) {
+                    actions.push(new ArrayIndex(name, expression));
+                } else {
+                    auto expr_list = new ExpressionList();
+                    expr_list->add(expression);
+                    actions.push(new FunCall(name, expr_list));
+                }
              }
             | T_VAR T_OPAR T_CPAR {
                 auto name = std::string($1);
@@ -298,11 +321,13 @@ fun_call    : T_VAR T_OPAR expr_list T_CPAR {
              }
             ;
 
-expr_list   : expr {
-                auto body = actions.pop();
+expr_list   : expr T_COMMA expr {
+                auto right = actions.pop();
+                auto left = actions.pop();
                 auto expr_list = new ExpressionList();
+                expr_list->add(left);
+                expr_list->add(right);
                 actions.push(expr_list);
-                expr_list->add(body);
              }
             | expr_list T_COMMA expr {
                 auto body = actions.pop();
@@ -312,7 +337,7 @@ expr_list   : expr {
 
 expr        : pure_literal
             | variable
-            | fun_call
+            | call
             | T_CAST expr                {
                 auto body = actions.pop();
                 actions.push(new Cast($1, body));

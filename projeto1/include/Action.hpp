@@ -261,7 +261,6 @@ class Fun : public Action {
     bool fail = false;
 };
 
-
 class ExpressionList : public Action {
  public:
     void add(Action*);
@@ -280,7 +279,6 @@ class ExpressionList : public Action {
     bool fail;
 };
 
-
 class FunCall : public Action {
  public:
     FunCall(const std::string&, Action*);
@@ -295,7 +293,6 @@ class FunCall : public Action {
     Type t;
 };
 
-
 class Return : public Action {
  public:
     Return(Action*);
@@ -308,18 +305,17 @@ class Return : public Action {
     bool fail;
 };
 
-
-struct Scope {
-    static void open();
-    static void close();
+class ArrayIndex : public Action {
+ public:
+    ArrayIndex(const std::string&, Action*);
+    std::string to_string(unsigned = 0) const override;
+    Type type() const override { return t; }
+    bool error() const override { return fail; }
+ private:
+    Type t;
+    std::string name;
+    Action* index;
+    bool fail;
 };
-
-inline void Scope::open() {
-    symbols.open_scope();
-}
-
-inline void Scope::close() {
-    symbols.close_scope();
-}
 
 #endif /* ACTION_HPP */

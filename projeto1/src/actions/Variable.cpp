@@ -1,7 +1,7 @@
 #include "Action.hpp"
 
 Variable::Variable(const std::string& name)
- : fail(!symbols.exists(name)), name(name) {
+ : fail(!symbols.is_variable(name)), name(name) {
     if (error()) {
         utils::semantic_error<Error::UNDECLARED_VARIABLE>(name);
     } else {

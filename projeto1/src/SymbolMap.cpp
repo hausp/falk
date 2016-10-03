@@ -62,13 +62,13 @@ bool SymbolMap::exists(const std::string& name) const {
 
 Type SymbolMap::typeof(const std::string& name) const {
     for (auto& scope : scopes) {
-        auto var_it = scope.vars.find({name, Type::ANY});
-        if (var_it != scope.vars.end()) {
-            return var_it->type;
-        }
-        auto fn_it = scope.functions.find({name, Type::ANY});
-        if (fn_it != scope.functions.end()) {
-            return fn_it->type;
+        auto symbol = Symbol{name, Type::ANY};
+        if (scope.vars.count(symbol)) {
+            return scope.vars.find(symbol)->type;
+        } else if (scope.functions.count(symbol)) {
+            return scope.functions.find(symbol)->type;
+        } else if (scope.arrays.count(symbol)) {
+            return scope.arrays.find(symbol)->type;
         }
     }
     return Type::VOID;

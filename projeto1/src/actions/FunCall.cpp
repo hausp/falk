@@ -4,7 +4,7 @@ FunCall::FunCall(const std::string& name, Action* args_list)
  : name(name), args(dynamic_cast<ExpressionList*>(args_list)),
    fail(args->error()) {
 
-    if (!symbols.exists(name)) {
+    if (!symbols.is_function(name)) {
         fail = true;
         // TODO: should we create a specific message for undefined functions?
         utils::semantic_error<Error::UNDECLARED_VARIABLE>(name);
