@@ -28,6 +28,7 @@ extern void yyerror(const char* s, ...);
     utils::literal value;
     Operator operation;
     char * var;
+    unsigned counter;
 }
 
 /* token defines our terminal symbols (tokens).
@@ -40,7 +41,7 @@ extern void yyerror(const char* s, ...);
 %token T_IF T_THEN T_ELSE T_FOR
 %token T_ASSIGN T_COMMA T_NL
 %token T_OPAR T_CPAR T_OBLOCK T_CBLOCK
-%token T_RET T_FUN
+%token T_RET T_FUN T_REF T_ADDR
 
 /* type defines the type of our nonterminal symbols.
  * Types should match the names used in the union.
@@ -52,6 +53,7 @@ extern void yyerror(const char* s, ...);
 %type <var> fun_body fun_lines param_list expr_list command setup finish arr_def
 %type <var> lvalue arr_access
 %type <value> number
+%type <counter> ref_level ref_count
 
 /* Operator precedence for mathematical operators
  * The latest it is listed, the highest the precedence
@@ -178,7 +180,20 @@ declaration : type var_list {
              }
             ;
 
-type        : T_TYPE   { actions.push(new Declaration($1)); }
+type        : T_TYPE ref_level {
+                $1.ptr_count = $2;
+                actions.push(new Declaration($1));
+            }
+            | T_TYPE {
+                actions.push(new Declaration($1));
+            }
+            ;
+
+ref_level   : ref_count { $$ = $1; }
+            ;
+
+ref_count   : T_REF           { $$ = 1; }
+            | ref_level T_REF { $$ = $$ + 1; }
             ;
 
 var_list    : var_def
@@ -227,12 +242,18 @@ arr_access  : T_VAR T_OPAR expr T_CPAR {
              }
             ;
 
-pure_literal: number           { actions.push(new Constant($1.type, std::string($1.value))); }
-            | T_BOOL           { actions.push(new Constant($1.type, std::string($1.value))); }
+pure_literal: number           {
+                actions.push(new Constant($1.type, std::string($1.value)));
+             }
+            | T_BOOL           {
+                actions.push(new Constant($1.type, std::string($1.value)));
+             }
             ;
 
 literal     : pure_literal
-            | T_MINUS number   { actions.push(new Constant($2.type, "-" + std::string($2.value))); }
+            | T_MINUS number   {
+                actions.push(new Constant($2.type, "-" + std::string($2.value)));
+             }
             ;
 
 number      : T_INT

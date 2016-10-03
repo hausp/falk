@@ -27,8 +27,6 @@ then_literal then
 else_literal else
 
 for_literal for
-return_keyword ret
-function_keyword fun
 
 nonacceptable [^-\+\*\\(\)/=,\n0-9A-Za-z_ \t]+
 %%
@@ -52,8 +50,11 @@ nonacceptable [^-\+\*\\(\)/=,\n0-9A-Za-z_ \t]+
 {else_literal}	 	{ return T_ELSE; }
 
 {for_literal}       { return T_FOR; }
-{return_keyword}    { return T_RET; }
-{function_keyword}  { return T_FUN; }
+ret                 { return T_RET; }
+fun                 { return T_FUN; }
+
+ref                 { return T_REF; }
+addr                { return T_ADDR; }
 
 {var}               { yylval.var = strdup(yytext); return T_VAR; }
 
