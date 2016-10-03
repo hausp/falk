@@ -5,7 +5,7 @@
 #include <stack>
 
 class Action;
-enum class Type;
+struct Type;
 
 class ActionStacker {
  public:

@@ -7,7 +7,7 @@ Loop::Loop(Action* init, Action* bool_expr, Action* update, Action* code)
 	fail = fail || (bool_expr != nullptr && bool_expr->error());
 	fail = fail || (update != nullptr && update->error());
     auto test_type = bool_expr->type();
-    if (test_type != Type::BOOL) {
+    if (test_type != PrimitiveType::BOOL) {
         utils::semantic_error<Error::INCOMPATIBLE_TEST>(test_type);
         fail = true;
     } else {

@@ -73,7 +73,7 @@ namespace {
     }
 }
 
-TEST_F(LukaTest, v0_1) {
+TEST_F(LukaTest, v1) {
     Container inputs;
     Container outputs;
     inputs.add("int a@");
@@ -121,7 +121,7 @@ TEST_F(LukaTest, v0_1) {
     run_tests(inputs, outputs);
 }
 
-TEST_F(LukaTest, v0_2) {
+TEST_F(LukaTest, v2) {
     Container inputs;
     Container outputs;
     inputs.add("float f=1.0, g=0., h=.10, i");
@@ -145,7 +145,7 @@ TEST_F(LukaTest, v0_2) {
     run_tests(inputs, outputs);
 }
 
-TEST_F(LukaTest, v0_3) {
+TEST_F(LukaTest, v3) {
     Container inputs;
     Container outputs;
     inputs.add("int i, j", "float f", "j = [int] [int] i + f");
@@ -166,7 +166,7 @@ TEST_F(LukaTest, v0_3) {
     run_tests(inputs, outputs);
 }
 
-TEST_F(LukaTest, v0_4) {
+TEST_F(LukaTest, v4) {
     Container inputs;
     Container outputs;
     inputs.add("int a, b, c", "if a > b", "then {", "if (a > 0)", "then {", "c = 10", "}", "}");
@@ -181,7 +181,7 @@ TEST_F(LukaTest, v0_4) {
     run_tests(inputs, outputs);
 }
 
-TEST_F(LukaTest, v0_5) {
+TEST_F(LukaTest, v5) {
     Container inputs;
     Container outputs;
     inputs.add("int i", "for i = 0, i < 10, i = i + 1 {", "float j", "}");
@@ -199,7 +199,7 @@ TEST_F(LukaTest, v0_5) {
     run_tests(inputs, outputs);
 }
 
-TEST_F(LukaTest, v0_6) {
+TEST_F(LukaTest, v6) {
     Container inputs;
     Container outputs;
     inputs.add("int i", "if true", "then {", "  float i = 0.0", "}");
@@ -214,7 +214,7 @@ TEST_F(LukaTest, v0_6) {
     run_tests(inputs, outputs);
 }
 
-TEST_F(LukaTest, v0_7) {
+TEST_F(LukaTest, v7) {
     Container inputs;
     Container outputs;
     inputs.add("bool fun f()", "bool fun f() {", "  ret false", "}");
@@ -271,7 +271,7 @@ TEST_F(LukaTest, v0_7) {
     run_tests(inputs, outputs);
 }
 
-TEST_F(LukaTest, v0_8) {
+TEST_F(LukaTest, v8) {
     Container inputs;
     Container outputs;
     inputs.add("int a(10)",
@@ -309,7 +309,7 @@ TEST_F(LukaTest, v0_8) {
     run_tests(inputs, outputs);
 }
 
-TEST_F(LukaTest, v1_0) {
+TEST_F(LukaTest, v10) {
     Container inputs;
     Container outputs;
     inputs.add("int i", "int ref p", "p = addr i", "i = ref p + 1");
@@ -341,7 +341,7 @@ TEST_F(LukaTest, v1_0) {
 
 int main(int argc, char** argv) {
     constexpr auto min_version = 0.1;
-    constexpr auto latest_stable = 0.7;
+    constexpr auto latest_stable = 0.8;
 
     ::testing::InitGoogleTest(&argc, argv);
     const std::string tests = [&] {
@@ -354,7 +354,7 @@ int main(int argc, char** argv) {
             if (colon) {
                 result += ":";
             }
-            result += "*_" + std::to_string(static_cast<int>((i + 0.05) * 10));
+            result += "*v" + std::to_string(static_cast<int>((i + 0.05) * 10));
             colon = true;
         }
         return result;

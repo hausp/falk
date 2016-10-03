@@ -35,17 +35,17 @@ nonacceptable [^-\+\*\\(\)/=,\n0-9A-Za-z_ \t]+
 
 [ \t]               ; //ignores spaces
 
-{int_type}          { yylval.type = Type::INT; return T_TYPE; }
-{float_type}        { yylval.type = Type::FLOAT; return T_TYPE; }
-{bool_type}         { yylval.type = Type::BOOL; return T_TYPE; }
+{int_type}          { Type type(PrimitiveType::INT); yylval.type = type; return T_TYPE; }
+{float_type}        { Type type(PrimitiveType::FLOAT); yylval.type = type; return T_TYPE; }
+{bool_type}         { Type type(PrimitiveType::BOOL); yylval.type = type; return T_TYPE; }
 
-"["{int_type}"]"    { yylval.type = Type::INT; return T_CAST; }
-"["{float_type}"]"  { yylval.type = Type::FLOAT; return T_CAST; }
-"["{bool_type}"]"   { yylval.type = Type::BOOL; return T_CAST; }
+"["{int_type}"]"    { Type type(PrimitiveType::INT); yylval.type = type; return T_CAST; }
+"["{float_type}"]"  { Type type(PrimitiveType::FLOAT); yylval.type = type; return T_CAST; }
+"["{bool_type}"]"   { Type type(PrimitiveType::BOOL); yylval.type = type; return T_CAST; }
 
-{int_literal}       { yylval.value = {strdup(yytext), Type::INT}; return T_INT; }
-{float_literal}     { yylval.value = {strdup(yytext), Type::FLOAT}; return T_FLOAT; }
-{bool_literal}      { yylval.value = {strdup(yytext), Type::BOOL}; return T_BOOL; }
+{int_literal}       { Type type(PrimitiveType::INT); yylval.value = {strdup(yytext), type}; return T_INT; }
+{float_literal}     { Type type(PrimitiveType::FLOAT); yylval.value = {strdup(yytext), type}; return T_FLOAT; }
+{bool_literal}      { Type type(PrimitiveType::BOOL); yylval.value = {strdup(yytext), type}; return T_BOOL; }
 
 {if_literal}        { return T_IF; }
 {then_literal}      { return T_THEN; }

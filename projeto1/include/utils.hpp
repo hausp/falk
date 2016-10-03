@@ -5,7 +5,7 @@
 #include <string>
 #include <unordered_map>
 
-enum class Type {
+enum class PrimitiveType {
     INT, FLOAT, BOOL, VOID, ANY
 };
 
@@ -44,10 +44,34 @@ enum class Error {
     NON_ARRAY_INDEX,
 };
 
+struct Type {
+    PrimitiveType base;
+    size_t ptr_count;
+
+    Type() = default;
+    Type(PrimitiveType t) : base(t), ptr_count(0) {}
+};
+
+inline bool operator==(const Type& lhs, const PrimitiveType& rhs) {
+    return lhs.base == rhs && lhs.ptr_count == 0;
+}
+
+inline bool operator!=(const Type& lhs, const PrimitiveType& rhs) {
+    return !(lhs == rhs);
+}
+
+inline bool operator==(const Type& lhs, const Type& rhs) {
+    return lhs.base == rhs.base && lhs.ptr_count == rhs.ptr_count;
+}
+
+inline bool operator!=(const Type& lhs, const Type& rhs) {
+    return !(lhs == rhs);
+}
+
 namespace std {
     template<>
-    struct hash<Type> {
-        inline size_t operator()(Type type) const {
+    struct hash<PrimitiveType> {
+        inline size_t operator()(PrimitiveType type) const {
             return static_cast<int>(type);
         }
     };
@@ -61,10 +85,10 @@ namespace std {
 }
 
 namespace utils {
-    const std::unordered_map<Type, std::string> type_table = {
-        {Type::INT, "int"},
-        {Type::FLOAT, "float"},
-        {Type::BOOL, "bool"},
+    const std::unordered_map<PrimitiveType, std::string> type_table = {
+        {PrimitiveType::INT, "int"},
+        {PrimitiveType::FLOAT, "float"},
+        {PrimitiveType::BOOL, "bool"},
     };
 
     const std::unordered_map<Operator, std::string> operator_table = {
@@ -83,10 +107,10 @@ namespace utils {
         {Operator::DIVIDE, "/"},
     };
 
-    const std::unordered_map<Type, std::string> printable_type_table = {
-        {Type::INT, "integer"},
-        {Type::FLOAT, "float"},
-        {Type::BOOL, "boolean"},
+    const std::unordered_map<PrimitiveType, std::string> printable_type_table = {
+        {PrimitiveType::INT, "integer"},
+        {PrimitiveType::FLOAT, "float"},
+        {PrimitiveType::BOOL, "boolean"},
     };
 
     const std::unordered_map<Operator, std::string> printable_operator_table = {
@@ -135,15 +159,21 @@ namespace utils {
         return line_counter::instance();
     }
 
-    inline std::string to_string(Type type) {
+    inline std::string to_string(PrimitiveType type) {
         return type_table.at(type);
+    }
+
+    inline std::string to_string(const Type& type) {
+        auto base = to_string(type.base);
+        // TODO: append "pointer" like there's no tomorrow
+        return base;
     }
 
     inline std::string to_string(Operator op) {
         return operator_table.at(op);
     }
 
-    inline std::string to_printable_string(Type type) {
+    inline std::string to_printable_string(PrimitiveType type) {
         return printable_type_table.at(type);
     }
 
@@ -151,12 +181,18 @@ namespace utils {
         return printable_operator_table.at(op);
     }
 
+    inline std::string to_printable_string(const Type& type) {
+        auto base = to_printable_string(type.base);
+        // TODO: append "pointer" like there's no tomorrow
+        return base;
+    }
+
     inline std::string to_string(const char* value) {
         return value;
     }
 
     inline bool can_coerce(Type target, Type source) {
-        return target == Type::FLOAT && source == Type::INT;
+        return target == PrimitiveType::FLOAT && source == PrimitiveType::INT;
     }
 
     inline bool type_matches(Type target, Type source) {
@@ -219,7 +255,7 @@ namespace utils {
 
     template<>
     inline void semantic_error<Error::INCOMPATIBLE_TEST>(Type received) {
-        semantic_error<Error::INCOMPATIBLE_OPERANDS>(Operator::TEST, Type::BOOL, received);
+        semantic_error<Error::INCOMPATIBLE_OPERANDS>(Operator::TEST, PrimitiveType::BOOL, received);
     }
 
     template<>

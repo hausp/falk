@@ -23,7 +23,7 @@ class Nop : public Action {
     std::string to_string(unsigned = 0) const override {
         return "";
     }
-    Type type() const override { return Type::VOID; }
+    Type type() const override { return PrimitiveType::VOID; }
 };
 
 class Declaration : public Action {
@@ -141,7 +141,7 @@ class Comparison : public Operation {
     template<typename... Args>
     Comparison(Operator op, Args&&... args)
      : Operation(op, std::forward<Args>(args)...) {
-        set_type(Type::BOOL);
+        set_type(PrimitiveType::BOOL);
     }
 };
 
@@ -149,7 +149,7 @@ class BoolOperation : public Operation {
  public:
     template<typename... Args>
     BoolOperation(Operator op, Args&&... args)
-     : Operation(op, Type::BOOL, std::forward<Args>(args)...) {}
+     : Operation(op, PrimitiveType::BOOL, std::forward<Args>(args)...) {}
 };
 
 class Parenthesis : public Operation {
@@ -198,7 +198,7 @@ class Block : public Action {
  public:
     void add(Action*);
     std::string to_string(unsigned = 0) const override;
-    Type type() const override { return Type::VOID; }
+    Type type() const override { return PrimitiveType::VOID; }
  private:
     std::list<Action*> lines;
 };
@@ -207,7 +207,7 @@ class Conditional : public Action {
  public:
     Conditional(Action*, Action*, Action* = nullptr);
     std::string to_string(unsigned = 0) const override;
-    Type type() const override { return Type::VOID; }
+    Type type() const override { return PrimitiveType::VOID; }
     bool error() const override { return fail; };
  private:
     Action* condition;
@@ -220,7 +220,7 @@ class Loop : public Action {
  public:
     Loop(Action*, Action*, Action*, Action*);
     std::string to_string(unsigned = 0) const override;
-    Type type() const override { return Type::VOID; }
+    Type type() const override { return PrimitiveType::VOID; }
     bool error() const override { return fail; }
  private:
     Action* init;
@@ -234,7 +234,7 @@ class ParamList : public Action {
  public:
     void add(Type, const std::string&);
     std::string to_string(unsigned = 0) const override;
-    Type type() const override { return Type::VOID; }
+    Type type() const override { return PrimitiveType::VOID; }
 
     auto begin() const { return vars.cbegin(); }
     auto begin() { return vars.begin(); }
@@ -266,7 +266,7 @@ class ExpressionList : public Action {
     void add(Action*);
     size_t size() const { return expressions.size(); }
     std::string to_string(unsigned = 0) const override;
-    Type type() const override { return Type::VOID; }
+    Type type() const override { return PrimitiveType::VOID; }
     bool error() const override { return fail; }
 
     auto begin() const { return expressions.cbegin(); }

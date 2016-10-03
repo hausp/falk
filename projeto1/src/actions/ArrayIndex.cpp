@@ -7,9 +7,9 @@ ArrayIndex::ArrayIndex(const std::string& name, Action* i)
         utils::semantic_error<Error::NON_ARRAY_INDEX>();
     }
 
-    if (i->type() != Type::INT) {
+    if (i->type() != PrimitiveType::INT) {
         fail = true;
-        utils::semantic_error<Error::INCOMPATIBLE_INDEX>(Type::INT, i->type());
+        utils::semantic_error<Error::INCOMPATIBLE_INDEX>(PrimitiveType::INT, i->type());
     }
 }
 

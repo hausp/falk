@@ -53,7 +53,7 @@ bool SymbolMap::declare_array(Type type,
 
 bool SymbolMap::exists(const std::string& name) const {
     for (auto& scope : scopes) {
-        if (scope.count({name, Type::ANY})) {
+        if (scope.count({name, PrimitiveType::ANY})) {
             return true;
         }
     }
@@ -62,7 +62,7 @@ bool SymbolMap::exists(const std::string& name) const {
 
 Type SymbolMap::typeof(const std::string& name) const {
     for (auto& scope : scopes) {
-        auto symbol = Symbol{name, Type::ANY};
+        auto symbol = Symbol{name, PrimitiveType::ANY};
         if (scope.vars.count(symbol)) {
             return scope.vars.find(symbol)->type;
         } else if (scope.functions.count(symbol)) {
@@ -71,12 +71,12 @@ Type SymbolMap::typeof(const std::string& name) const {
             return scope.arrays.find(symbol)->type;
         }
     }
-    return Type::VOID;
+    return PrimitiveType::VOID;
 }
 
 std::list<Symbol> SymbolMap::params(const std::string& name) const {
     for (auto& scope : scopes) {
-        auto fn_it = scope.functions.find({name, Type::ANY});
+        auto fn_it = scope.functions.find({name, PrimitiveType::ANY});
         if (fn_it != scope.functions.end()) {
             return fn_it->params;
         }
@@ -103,7 +103,7 @@ bool SymbolMap::declare_function(Type type,
                                  const std::string& name,
                                  ParamList* params) {
     auto& scope = scopes.back();
-    if (!scope.count({name, Type::ANY})) {
+    if (!scope.count({name, PrimitiveType::ANY})) {
         auto funct = Function(name, type);
         for (auto& pair : *params) {
             funct.params.push_back({pair.second, pair.first});
@@ -119,7 +119,7 @@ bool SymbolMap::define_function(Type type,
                                 const std::string& name,
                                 ParamList* params) {
     auto& scope = scopes.back();
-    auto it = scope.functions.find({name, Type::ANY});
+    auto it = scope.functions.find({name, PrimitiveType::ANY});
     auto funct = Function(name, type);
     for (auto& pair : *params) {
         funct.params.push_back({pair.second, pair.first});

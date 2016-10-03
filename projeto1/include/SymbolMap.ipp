@@ -27,7 +27,7 @@ bool SymbolMap::declare(Type type, const std::string& name, const T& value) {
 
 inline bool SymbolMap::is_array(const std::string& name) const {
     for (auto& scope : scopes) {
-        if (scope.arrays.count(Array(name, Type::ANY))) {
+        if (scope.arrays.count(Array(name, PrimitiveType::ANY))) {
             return true;
         }
     }
@@ -36,7 +36,7 @@ inline bool SymbolMap::is_array(const std::string& name) const {
 
 inline bool SymbolMap::is_function(const std::string& name) const {
     for (auto& scope : scopes) {
-        if (scope.functions.count(Array(name, Type::ANY))) {
+        if (scope.functions.count(Array(name, PrimitiveType::ANY))) {
             return true;
         }
     }
@@ -45,7 +45,7 @@ inline bool SymbolMap::is_function(const std::string& name) const {
 
 inline bool SymbolMap::is_variable(const std::string& name) const {
     for (auto& scope : scopes) {
-        if (scope.vars.count(Array(name, Type::ANY))) {
+        if (scope.vars.count(Array(name, PrimitiveType::ANY))) {
             return true;
         }
     }

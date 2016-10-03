@@ -36,11 +36,11 @@ void Operation::check(Action* action) {
     auto expected = t;
     auto actual = action->type();
     bool can_coerce = false;
-    if (expected == Type::INT && actual == Type::FLOAT) {
-        t = Type::FLOAT;
+    if (expected == PrimitiveType::INT && actual == PrimitiveType::FLOAT) {
+        t = PrimitiveType::FLOAT;
         expected = t;
         can_coerce = true;
-    } else if (expected == Type::FLOAT && actual == Type::INT) {
+    } else if (expected == PrimitiveType::FLOAT && actual == PrimitiveType::INT) {
         can_coerce = true;
     }
     needs_coercion = needs_coercion || can_coerce;
@@ -53,8 +53,8 @@ void Operation::check(Action* action) {
 void Operation::set_children() {
     if (needs_coercion) {
         for (auto& child : children) {
-            if (child->type() == Type::INT) {
-                child = new Cast(Type::FLOAT, child);
+            if (child->type() == PrimitiveType::INT) {
+                child = new Cast(PrimitiveType::FLOAT, child);
             }
         }
     }

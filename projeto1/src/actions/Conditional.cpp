@@ -6,7 +6,7 @@ Conditional::Conditional(Action* cond,
                          Action* rejected)
  : accepted(accepted), rejected(rejected), fail(cond->error()) {
     auto type = cond->type();
-    if (type != Type::BOOL) {
+    if (type != PrimitiveType::BOOL) {
         utils::semantic_error<Error::INCOMPATIBLE_TEST>(type);
         fail = true;
     } else {
