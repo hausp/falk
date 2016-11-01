@@ -1,0 +1,25 @@
+###############################################################################
+######################## Copyright 2016 Marleson Graf #########################
+############################ <aszdrick@gmail.com> #############################
+###############################################################################
+
+################################## VARIABLES ##################################
+FLEXDIR   :=flex
+FLEXIN    :=$(shell find $(FLEXDIR) -name '*.l' 2> /dev/null)
+FLEXOUT   :=$(patsubst $(FLEXDIR)/%.l,$(SRCDIR)/%.cpp,$(FLEXIN))
+MAKEDIR   +=$(FLEXDIR)
+
+ifneq ($(filter $(FLEXOUT),$(SRC)), $(FLEXOUT))
+OBJ += $(patsubst %.cpp,$(BUILDIR)/%.o,$(FLEXOUT))
+DEP += $(patsubst %.cpp,$(DEPDIR)/%.d,$(FLEXOUT))
+endif
+
+.PHONY: clean_flex
+
+#################################### RULES ####################################
+$(SRCDIR)/%.cpp: $(FLEXDIR)/%.l
+	@echo "[  $(LEX)  ] $^ -> .cpp"
+	@$(LEX) -o $@ $^
+
+clean_flex:
+	@$(RM) $(FLEXOUT)

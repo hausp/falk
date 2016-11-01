@@ -53,7 +53,7 @@ in 					{ return T_IN; }
 return              { return T_RET; }
 function            { return T_FUN; }
 
-{name}              { yylval.var = strdup(yytext); return T_VAR; }
+{name}              { yylval.var = strdup(yytext); return T_ID; }
 
 typeof				{ return T_TYPEOF; }
 
