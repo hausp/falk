@@ -80,12 +80,6 @@ typeof				{ return T_TYPEOF; }
 ":"					{ return T_OBLOCK; }
 "."					{ return T_CBLOCK; }
 "="                 { return T_ASSIGN; }
-"+="                { return T_ASSIGN_PLUS; }
-"-="                { return T_ASSIGN_MINUS; }
-"*="                { return T_ASSIGN_TIMES; }
-"/="                { return T_ASSIGN_DIVIDE; }
-"**="               { return T_ASSIGN_POWER; }
-"%="                { return T_ASSIGN_MOD; }
 ","                 { return T_COMMA; }
 {end_of_command}	{ return T_EOC; }
 

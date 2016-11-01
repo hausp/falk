@@ -1,44 +1,59 @@
-%code requires {} // TODO
+%code requires {
+    #include "types.hpp"
+}
 
-%{} // TODO
+%{
+#include <cmath>
+#include <iostream>
+#include <unordered_map>
 
-%code {} // TODO
+extern int yylex();
+extern void yyerror(const char* s, ...);
+%}
+
+%code {
+}
 
 %define parse.trace
 
 /* yylval == %union
  * union informs the different ways we can store data
  */
-%union {} // TODO
+%union {
+    falk::complex complex;
+    falk::real real;
+    // TODO
+}
 
 /* token defines our terminal symbols (tokens).
  */
-%token <type> T_TYPE T_CAST
-%token <value> T_INT T_FLOAT T_BOOL
-%token <var> T_VAR
-%token <operation> T_PLUS T_MINUS T_TIMES T_DIVIDE T_COMPARISON
+%token <type> T_TYPE
+%token <value> T_REAL T_COMPLEX T_BOOL T_TYPEOF
+%token <var> T_VAR T_ARRAY T_MATRIX T_ID
+%token <operation> T_PLUS T_MINUS T_TIMES T_DIVIDE T_POWER T_MOD T_COMPARISON
 %token <operation> T_AND T_OR T_NOT
-%token T_IF T_THEN T_ELSE T_FOR
-%token T_ASSIGN T_COMMA T_NL
-%token T_OPAR T_CPAR T_OBLOCK T_CBLOCK
-%token T_RET T_FUN T_REF T_ADDR
+%token T_IF T_THEN T_ELSE T_FOR T_WHILE T_IN T_RET T_FUN
+%token T_ASSIGN T_COMMA T_EOC
+%token T_OPAR T_CPAR T_OBLOCK T_CBLOCK T_OINDEX T_CINDEX
 
 /* type defines the type of our nonterminal symbols.
  * Types should match the names used in the union.
  * Example: %type<node> expr
  */
-%type <var> program lines line declaration
+%type <var> program setup finish commands command var_decl
+%type <var> assignment rvalue arr_size mat_size simple_id id index
+%type <var> expr op real_expr complex_expr
 
 /* Operator precedence for mathematical operators
  * The latest it is listed, the highest the precedence
  * left, right, nonassoc
  */
-%nonassoc T_CAST
 %left T_AND T_OR
 %nonassoc T_NOT
 %left T_COMPARISON
 %left T_PLUS T_MINUS
-%left T_TIMES T_DIVIDE
+%left T_TIMES T_DIVIDE T_MOD
+%left T_POWER
 %nonassoc T_OPAR T_CPAR
 %nonassoc U_MINUS
 
@@ -84,6 +99,7 @@ var_decl    : T_VAR T_ID
 
 assignment  : id T_ASSIGN rvalue
             | id op T_ASSIGN rvalue
+            ;
 
 rvalue      : expr
             ;
