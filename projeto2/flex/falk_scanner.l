@@ -57,21 +57,21 @@ function            { return T_FUN; }
 
 typeof				{ return T_TYPEOF; }
 
-"+"                 { yylval.arithmetical = falk::operator::Arithmetical::ADD; return T_PLUS; }
-"-"                 { yylval.arithmetical = falk::operator::Arithmetical::SUB; return T_MINUS; }
-"*"                 { yylval.arithmetical = falk::operator::Arithmetical::MULT; return T_TIMES; }
-"/"                 { yylval.arithmetical = falk::operator::Arithmetical::DIV; return T_DIVIDE; }
-"**"                { yylval.arithmetical = falk::operator::Arithmetical::POW; return T_POWER; }
-"%"                 { yylval.arithmetical = falk::operator::Arithmetical::MOD; return T_MOD; }
-"=="                { yylval.comparison = falk::operator::Comparison::EQ; return T_COMPARISON; }
-"!="                { yylval.comparison = falk::operator::Comparison::NE; return T_COMPARISON; }
-">"                 { yylval.comparison = falk::operator::Comparison::GT; return T_COMPARISON; }
-"<"                 { yylval.comparison = falk::operator::Comparison::LT; return T_COMPARISON; }
-">="                { yylval.comparison = falk::operator::Comparison::GE; return T_COMPARISON; }
-"<="                { yylval.comparison = falk::operator::Comparison::LE; return T_COMPARISON; }
-"&"                 { yylval.logical = falk::operator::Logical::AND; return T_AND; }
-"|"                 { yylval.logical = falk::operator::Logical::OR; return T_OR; }
-"!"                 { yylval.logical = falk::operator::Logical::NOT; return T_NOT; }
+"+"                 { yylval.arithmetical = falk::op::Arithmetical::ADD; return T_PLUS; }
+"-"                 { yylval.arithmetical = falk::op::Arithmetical::SUB; return T_MINUS; }
+"*"                 { yylval.arithmetical = falk::op::Arithmetical::MULT; return T_TIMES; }
+"/"                 { yylval.arithmetical = falk::op::Arithmetical::DIV; return T_DIVIDE; }
+"**"                { yylval.arithmetical = falk::op::Arithmetical::POW; return T_POWER; }
+"%"                 { yylval.arithmetical = falk::op::Arithmetical::MOD; return T_MOD; }
+"=="                { yylval.comparison = falk::op::Comparison::EQ; return T_COMPARISON; }
+"!="                { yylval.comparison = falk::op::Comparison::NE; return T_COMPARISON; }
+">"                 { yylval.comparison = falk::op::Comparison::GT; return T_COMPARISON; }
+"<"                 { yylval.comparison = falk::op::Comparison::LT; return T_COMPARISON; }
+">="                { yylval.comparison = falk::op::Comparison::GE; return T_COMPARISON; }
+"<="                { yylval.comparison = falk::op::Comparison::LE; return T_COMPARISON; }
+"&"                 { yylval.logical = falk::op::Logical::AND; return T_AND; }
+"|"                 { yylval.logical = falk::op::Logical::OR; return T_OR; }
+"!"                 { yylval.logical = falk::op::Logical::NOT; return T_NOT; }
 
 "("                 { return T_OPAR; }
 ")"                 { return T_CPAR; }

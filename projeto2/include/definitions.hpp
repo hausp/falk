@@ -15,7 +15,7 @@ namespace falk {
         COMPLEX,
     }
 
-    namespace operator {
+    namespace op {
         enum class Arithmetical {
             ADD,
             SUB,
