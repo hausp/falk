@@ -3,6 +3,11 @@
 #define FALK_INTERPRETER_REAL_HPP
 
 #include <cmath>
+#include <complex>
+
+namespace {
+	using complex = std::complex<double>;
+}
 
 namespace falk {
 	// As Ghabriel wishes
@@ -10,7 +15,7 @@ namespace falk {
 		return std::pow(d1, d2);
 	}
 
-	std::complex pow<std::complex>(const std::complex& c1, const std::complex& c2) {
+	complex pow<complex>(const complex& c1, const complex& c2) {
 		return std::pow(c1, c2);
 	}
 }
