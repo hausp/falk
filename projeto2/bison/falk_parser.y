@@ -22,6 +22,9 @@ extern void yyerror(const char* s, ...);
 %union {
     falk::complex complex;
     falk::real real;
+    falk::operator::Arithmetical arithmetical;
+    falk::operator::Comparison comparison;
+    falk::operator::Logical logical;
     // TODO
 }
 
@@ -171,7 +174,7 @@ real_expr   : id {
                   $$ = $1 / $3;
             }
             | real_expr T_POWER real_expr           {
-                  $$ = falk::pow($1, $3);
+                  $$ = falk::real::pow($1, $3);
             }
             | real_expr T_MOD real_expr             {
                   $$ = $1 % $3;
@@ -212,7 +215,7 @@ complex_expr: id {
                   $$ = $1 / $3;
             }
             | complex_expr T_POWER complex_expr           {
-                  $$ = falk::pow($1, $3);
+                  $$ = falk::complex::pow($1, $3);
             }
             | complex_expr T_MOD complex_expr             {
                   $$ = $1 % $3;

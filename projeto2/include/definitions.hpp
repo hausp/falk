@@ -3,6 +3,7 @@
 #define FALK_DEFINITIONS_HPP
 
 #include "interpreter/complex.hpp"
+#include "interpreter/real.hpp"
 
 namespace falk {
     using real = double;

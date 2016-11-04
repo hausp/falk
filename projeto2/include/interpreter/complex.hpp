@@ -22,6 +22,9 @@ namespace falk {
         complex_t conjugate() const;
 
         double norm() const;
+
+        // TODO
+        static complex_t pow(complex_t, complex_t);
     };
 
     inline complex_t complex_t::operator+(const complex_t& c) const {
