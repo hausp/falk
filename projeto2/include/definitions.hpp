@@ -21,7 +21,7 @@ namespace falk {
             SUB,
             DIV,
             MULT,
-            POWER,
+            POW,
             MOD,
         };
 
