@@ -2,12 +2,12 @@
 #ifndef FALK_DEFINITIONS_HPP
 #define FALK_DEFINITIONS_HPP
 
-#include "interpreter/complex.hpp"
-#include "interpreter/real.hpp"
+#include <complex>
+#include "interpreter/base.hpp"
 
 namespace falk {
     using real = double;
-    using complex = complex_t;
+    using complex = std::complex<double>;
 
     enum class Types {
         UNDEFINED,
@@ -40,6 +40,9 @@ namespace falk {
             NOT,
         };
     }
+
+    template<typename T>
+    T pow(const T&, const T&);
 }
 
 #endif /* FALK_DEFINITIONS_HPP */
