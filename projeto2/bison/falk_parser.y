@@ -74,10 +74,10 @@ program     : setup commands finish
             | {} // TODO
             ;
 
-setup       : {} // TODO
+setup       : {} // TODO: open global scope
             ;
 
-finish      : {} // TODO
+finish      : {} // TODO: close global scope
 
 commands    : command
             | commands command
@@ -123,8 +123,12 @@ index       : simple_id
             | T_REAL
             ;
 
-expr        : real_expr
-            | complex_expr
+expr        : real_expr {
+                  $$ = $1;
+            }
+            | complex_expr {
+                  $$ = $1;
+            }
             ;
 
 op          : T_COMPARISON
@@ -139,34 +143,86 @@ op          : T_COMPARISON
             | T_MOD
             ;
 
-real_expr   : id
-            | real_expr T_COMPARISON real_expr      {} // TODO
-            | real_expr T_AND real_expr             {} // TODO
-            | real_expr T_OR real_expr              {} // TODO
-            | T_NOT real_expr                       {} // TODO
-            | real_expr T_PLUS real_expr            {} // TODO
-            | real_expr T_MINUS real_expr           {} // TODO
-            | real_expr T_TIMES real_expr           {} // TODO
-            | real_expr T_DIVIDE real_expr          {} // TODO
-            | real_expr T_POWER real_expr           {} // TODO
-            | real_expr T_MOD real_expr             {} // TODO
-            | T_MINUS real_expr %prec U_MINUS       {} // TODO
-            | T_OPAR real_expr T_CPAR               {} // TODO
+real_expr   : id {
+                  $$ = $1;
+            }
+            | real_expr T_COMPARISON real_expr      {
+                  // TODO: use $2.operation
+            }
+            | real_expr T_AND real_expr             {
+                  $$ = $1 && $3;
+            }
+            | real_expr T_OR real_expr              {
+                  $$ = $1 || $3;
+            }
+            | T_NOT real_expr                       {
+                  $$ = !$2;
+            }
+            | real_expr T_PLUS real_expr            {
+                  $$ = $1 + $3;
+            }
+            | real_expr T_MINUS real_expr           {
+                  $$ = $1 - $3;
+            }
+            | real_expr T_TIMES real_expr           {
+                  $$ = $1 * $3;
+            }
+            | real_expr T_DIVIDE real_expr          {
+                  $$ = $1 / $3;
+            }
+            | real_expr T_POWER real_expr           {
+                  $$ = falk::pow($1, $3);
+            }
+            | real_expr T_MOD real_expr             {
+                  $$ = $1 % $3;
+            }
+            | T_MINUS real_expr %prec U_MINUS       {
+                  $$ = -$2;
+            }
+            | T_OPAR real_expr T_CPAR               {
+                  $$ = $2;
+            }
             ;
 
-complex_expr: id
-            | complex_expr T_COMPARISON complex_expr      {} // TODO
-            | complex_expr T_AND complex_expr             {} // TODO
-            | complex_expr T_OR complex_expr              {} // TODO
-            | T_NOT complex_expr                          {} // TODO
-            | complex_expr T_PLUS complex_expr            {} // TODO
-            | complex_expr T_MINUS complex_expr           {} // TODO
-            | complex_expr T_TIMES complex_expr           {} // TODO
-            | complex_expr T_DIVIDE complex_expr          {} // TODO
-            | complex_expr T_POWER complex_expr           {} // TODO
-            | complex_expr T_MOD complex_expr             {} // TODO
-            | T_MINUS complex_expr %prec U_MINUS          {} // TODO
-            | T_OPAR complex_expr T_CPAR                  {} // TODO
+complex_expr: id {
+                  $$ = $1;
+            }
+            | complex_expr T_COMPARISON complex_expr      {
+                  // TODO: use $2.operation
+            }
+            | complex_expr T_AND complex_expr             {
+                  $$ = $1 && $3;
+            }
+            | complex_expr T_OR complex_expr              {
+                  $$ = $1 || $3;
+            }
+            | T_NOT complex_expr                          {
+                  $$ = !$2;
+            }
+            | complex_expr T_PLUS complex_expr            {
+                  $$ = $1 + $3;
+            }
+            | complex_expr T_MINUS complex_expr           {
+                  $$ = $1 - $3;
+            }
+            | complex_expr T_TIMES complex_expr           {
+                  $$ = $1 * $3;
+            }
+            | complex_expr T_DIVIDE complex_expr          {
+                  $$ = $1 / $3;
+            }
+            | complex_expr T_POWER complex_expr           {
+                  $$ = falk::pow($1, $3);
+            }
+            | complex_expr T_MOD complex_expr             {
+                  $$ = $1 % $3;
+            }
+            | T_MINUS complex_expr %prec U_MINUS          {
+                  $$ = -$2;
+            }
+            | T_OPAR complex_expr T_CPAR                  {
+                  $$ = $2;
+            }
             ;
 
 %%

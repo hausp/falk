@@ -14,7 +14,7 @@ namespace falk {
         COMPLEX,
     }
 
-    namespace operators {
+    namespace operator {
         enum class Arithmetical {
             ADD,
             SUB,
@@ -36,6 +36,7 @@ namespace falk {
         enum class Logical {
             AND,
             OR,
+            NOT,
         };
     }
 }
