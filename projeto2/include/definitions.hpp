@@ -7,8 +7,8 @@
 #include "type.hpp"
 
 namespace falk {
-    using real = double;
-    using complex = std::complex<double>;
+    using real = interpreter::real;
+    using complex = interpreter::complex;
 }
 
 #endif /* FALK_DEFINITIONS_HPP */

@@ -1,5 +1,5 @@
 
-#include FALK_OPERATORS_HPP
+#ifndef FALK_OPERATORS_HPP
 #define FALK_OPERATORS_HPP
 
 namespace falk {

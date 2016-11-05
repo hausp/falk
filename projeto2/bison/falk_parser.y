@@ -1,5 +1,5 @@
 %code requires {
-    #include "types.hpp"
+    #include "definitions.hpp"
 }
 
 %{

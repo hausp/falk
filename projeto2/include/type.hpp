@@ -7,7 +7,7 @@ namespace falk {
         UNDEFINED,
         REAL,
         COMPLEX,
-    }
+    };
 
     // TODO: struct Type
 }

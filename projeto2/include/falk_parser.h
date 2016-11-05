@@ -42,7 +42,7 @@ extern int yydebug;
 /* "%code requires" blocks.  */
 #line 1 "bison/falk_parser.y" /* yacc.c:1909  */
 
-    #include "types.hpp"
+    #include "definitions.hpp"
 
 #line 48 "include/falk_parser.h" /* yacc.c:1909  */
 
@@ -98,7 +98,14 @@ union YYSTYPE
 {
 #line 22 "bison/falk_parser.y" /* yacc.c:1909  */
 
-#line 102 "include/falk_parser.h" /* yacc.c:1909  */
+    falk::complex complex;
+    falk::real real;
+    falk::op::Arithmetical arithmetical;
+    falk::op::Comparison comparison;
+    falk::op::Logical logical;
+    // TODO
+
+#line 109 "include/falk_parser.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
