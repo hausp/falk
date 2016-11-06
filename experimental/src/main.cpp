@@ -27,8 +27,8 @@
  */
 
 #include <iostream>
-#include "Scanner.h"
-#include "parser.hpp"
+#include "Scanner.hpp"
+#include "Parser.hpp"
 #include "Driver.hpp"
 
 int main(int argc, char **argv) {

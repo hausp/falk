@@ -22,7 +22,7 @@
 #define YY_DECL falk::Parser::symbol_type falk::Scanner::get_next_token()
 
 // this is needed for symbol_type
-#include "parser.hpp"
+#include "Parser.hpp"
 
 namespace falk {
     class Driver;

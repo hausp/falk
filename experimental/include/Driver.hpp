@@ -2,8 +2,8 @@
 #ifndef FALK_DRIVER_HPP
 #define FALK_DRIVER_HPP
 
-#include "Scanner.h"
-#include "parser.hpp"
+#include "Scanner.hpp"
+#include "Parser.hpp"
 
 namespace falk {
     class Driver {
@@ -16,7 +16,7 @@ namespace falk {
             
             void switchInputStream(std::istream*);
 
-            friend class parser;
+            friend class Parser;
             friend class Scanner;
             
         private:            
