@@ -7,10 +7,10 @@
 #include "types.hpp"
 
 namespace falk {
-
-    using Analyser = Evaluator;
-    using real = Analyser::real;
-    using complex = Analyser::complex;
+    using Analyser = ev::Evaluator;
+    using numeric = Analyser::numeric;
+    // using real = Analyser::real;
+    // using complex = Analyser::complex;
     using boolean = Analyser::boolean;
 }
 

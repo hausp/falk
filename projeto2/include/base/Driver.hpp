@@ -15,7 +15,7 @@ namespace falk {
 
         int parse();
         void clear();
-        
+
         void switch_input_stream(std::istream*);
      private:
         Analyser analyser;

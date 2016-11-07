@@ -42,10 +42,9 @@
 
 %define api.token.prefix {TOKEN_}
 
-%token<std::string> ID "container identifier";
-%token <falk::Type> TYPE "primitive type";
-%token <falk::real> REAL "real value";
-%token <falk::complex> COMPLEX "complex value";
+%token<std::string> ID "variable identifier";
+%token <falk::Type> TYPE "type identifier";
+%token <falk::numeric> NUMERIC "numeric value";
 %token <falk::boolean> BOOL "boolean value";
 
 %token VAR    "var keyword";
@@ -54,10 +53,22 @@
 %token TYPEOF "typeof operator";
 %token SEMICOLON "semicolon";
 %token NL "new line";
-%token IF THEN ELSE FOR WHILE IN RET FUN
-%token ASSIGN COMMA
-%token OPAR CPAR OBLOCK CBLOCK OINDEX CINDEX
-
+%token IF "if keyword";
+%token THEN "then keyword";
+%token ELSE "else keyword";
+%token FOR "for keyword";
+%token WHILE "while keyword";
+%token IN "in keyword";
+%token RET "return keyword";
+%token FUN "function keyword";
+%token ASSIGN "=";
+%token COMMA ";";
+%token OPAR "("
+%token CPAR ")"
+%token OBLOCK ":"
+%token CBLOCK "."
+%token OINDEX "["
+%token CINDEX "]"
 %token EOF 0 "end of file"
 
 %token <falk::op::Arithmetical> ADD SUB MULT DIV POW MOD
@@ -68,8 +79,8 @@
 // %type<int> eoc opt_nl
 %type<int> program line lines command commands new_line
 // %type <int> assignment arr_size mat_size simple_id id index op
-%type <falk::real> real_expr real_calc
-%type <falk::complex> complex_expr complex_calc
+%type <falk::numeric> numeric_expr single_calc
+// %type <falk::complex> complex_expr complex_calc
 // %type <falk::rvalue> rvalue expr
 
 /* Operator precedence for mathematical operators
@@ -107,8 +118,8 @@ commands    : command
             ;
 
 command     :              { $$ = 0; }
-            | real_calc    { $$ = 0; }
-            | complex_calc { $$ = 0; }
+            | single_calc  { $$ = 0; }
+            // | complex_calc { $$ = 0; }
             ;
 
 // var_decl    : VAR ID
@@ -124,26 +135,13 @@ command     :              { $$ = 0; }
 //             | id op ASSIGN rvalue
 //             ;
 
-real_calc      : real_expr {
-                    analyser.real_calculus($1);
+single_calc     : numeric_expr {
+                    analyser.single_calculus($1);
                     $$ = $1;
                 }
                ;
 
-complex_calc   : complex_expr {
-                    analyser.complex_calculus($1);
-                    $$ = $1;
-                }
-               ;
-
-// eoc         : NL               { $$ = 0; }
-//             | SEMICOLON opt_nl { $$ = 0; }
-//             ;
-
-// opt_nl      :    { $$ = 0; }
-//             | NL { $$ = 0; }
-
-// rvalue      : real_expr { $$ = $1; }
+// rvalue      : expr { $$ = $1; }
 //             ;
 
 // arr_size    : OINDEX REAL CINDEX
@@ -177,29 +175,29 @@ complex_calc   : complex_expr {
 //             | MOD
 //             ;
 
-real_expr   : REAL                           { $$ = $1; }
-            | real_expr COMPARISON real_expr { /* TODO: use $2.operation */ }
-            | real_expr ADD real_expr        { $$ = $1 + $3; }
-            | real_expr SUB real_expr        { $$ = $1 - $3; }
-            | real_expr MULT real_expr       { $$ = $1 * $3; }
-            | real_expr DIV real_expr        { $$ = $1 / $3; }
-            | real_expr POW real_expr        { /* $$ = falk::pow($1, $3); */ }
-            | real_expr MOD real_expr        { /* $$ = $1 % $3; */ }
-            | SUB real_expr %prec U_SUB      { $$ = -$2; }
-            | OPAR real_expr CPAR            { $$ = $2; }
+numeric_expr: NUMERIC                              { $$ = $1; }
+            | numeric_expr COMPARISON numeric_expr { /* TODO: use $2.operation */ }
+            | numeric_expr ADD numeric_expr        { $$ = $1 + $3; }
+            | numeric_expr SUB numeric_expr        { $$ = $1 - $3; }
+            | numeric_expr MULT numeric_expr       { $$ = $1 * $3; }
+            | numeric_expr DIV numeric_expr        { $$ = $1 / $3; }
+            | numeric_expr POW numeric_expr        { /* $$ = falk::pow($1, $3); */ }
+            | numeric_expr MOD numeric_expr        { /* $$ = $1 % $3; */ }
+            | SUB numeric_expr %prec U_SUB         { $$ = -$2; }
+            | OPAR numeric_expr CPAR               { $$ = $2; }
             ;
 
-complex_expr: COMPLEX                              { $$ = $1; }
-            | complex_expr COMPARISON complex_expr { /* TODO: use $2.operation */ }
-            | complex_expr ADD complex_expr        { $$ = $1 + $3; }
-            | complex_expr SUB complex_expr        { $$ = $1 - $3; }
-            | complex_expr MULT complex_expr       { $$ = $1 * $3; }
-            | complex_expr DIV complex_expr        { $$ = $1 / $3; }
-            | complex_expr POW complex_expr        { /* $$ = falk::pow($1, $3); */ }
-            | complex_expr MOD complex_expr        { /* $$ = $1 % $3; */ }
-            | SUB complex_expr %prec U_SUB         { $$ = -$2; }
-            | OPAR complex_expr CPAR               { $$ = $2; }
-            ;
+// complex_expr: COMPLEX                              { $$ = $1; }
+//             | complex_expr COMPARISON complex_expr { /* TODO: use $2.operation */ }
+//             | complex_expr ADD complex_expr        { $$ = $1 + $3; }
+//             | complex_expr SUB complex_expr        { $$ = $1 - $3; }
+//             | complex_expr MULT complex_expr       { $$ = $1 * $3; }
+//             | complex_expr DIV complex_expr        { $$ = $1 / $3; }
+//             | complex_expr POW complex_expr        { /* $$ = falk::pow($1, $3); */ }
+//             | complex_expr MOD complex_expr        { /* $$ = $1 % $3; */ }
+//             | SUB complex_expr %prec U_SUB         { $$ = -$2; }
+//             | OPAR complex_expr CPAR               { $$ = $2; }
+//             ;
 %%
 
 void falk::Parser::error(const location &loc , const std::string &message) {
