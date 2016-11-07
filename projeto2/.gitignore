@@ -29,11 +29,16 @@
 *.app
 
 # Extra
+build/
 bin/
 .deps/
+
 *.d
 *~
-lukacompiler
-include/parser.h
-src/parser.cpp
-src/scanner.cpp
+
+include/Parser.hpp
+include/location.hh
+include/position.hh
+include/stack.hh
+src/Parser.cpp
+src/Scanner.cpp

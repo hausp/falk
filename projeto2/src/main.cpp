@@ -1,7 +1,8 @@
 
-#include "interpreter/complex.hpp"
+#include <iostream>
+#include "base/Driver.hpp"
 
-int main(int argc, char** argv) {
-
+int main(int, char **) {
+    falk::Driver driver;
+    return driver.parse();
 }
-
