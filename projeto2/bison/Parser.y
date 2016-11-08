@@ -78,7 +78,7 @@
 
 
 // %type<int> eoc opt_nl
-%type <int> program line lines command commands new_line
+%type <int> program line lines command commands new_line eoc
 %type <int> assignment arr_size mat_size simple_id id index op
 %type <falk::value> expr single_calc rvalue
 
@@ -99,26 +99,32 @@
 
 %%
 
-program     : %empty        { $$ = 0; }
-            | program lines { $$ = 0; }
-            // | program function 
+program     : %empty           { $$ = 0; }
+            | program new_line { $$ = 0; }
+            | program command eoc { $$ = 0; }
+            // | program function
             ;
 
-lines       : line       { /* TODO: create lines with line */ }
-            | lines line { /* TODO: add line to lines */ }
+eoc         : SEMICOLON { $$ = 0; }
+            | new_line  { $$ = 0; }
 
-line        : new_line
-            | commands new_line
+// lines       : line       { /* TODO: create lines with line */ }
+//             | lines line { /* TODO: add line to lines */ }
+
+// line        : new_line
+//             | commands new_line
 
 new_line    : NL { analyser.new_line(); }
-
-commands    : command
-            | commands SEMICOLON command
             ;
 
-command     : %empty       { $$ = 0; }
+// commands    : command
+//             | commands SEMICOLON command
+//             ;
+
+command     : SEMICOLON    { $$ = 0; }
             | single_calc  { $$ = 0; }
             | var_decl     { /* TODO */ }
+            | assignment   { /* TODO */ }
             ;
 
 var_decl    : VAR ID
@@ -134,7 +140,7 @@ assignment  : id ASSIGN rvalue
             | id op ASSIGN rvalue
             ;
 
-single_calc : expr {
+single_calc : expr { /* TODO: this + {expr -> id} = conflicts */ 
                 analyser.single_calculus($1);
                 $$ = $1;
              }
@@ -177,6 +183,7 @@ op          : COMPARISON { $$ = 0; /* TODO */ }
 expr        : REAL                 { $$ = $1; }
             | COMPLEX              { $$ = $1; }
             | BOOL                 { $$ = $1; }
+            | id                   { $$ = falk::ev::TRUE; /* TODO */ }
             | expr COMPARISON expr { $$ = falk::ev::TRUE; /* TODO: use $2.operation */ }
             | expr PLUS expr       { $$ = $1 + $3; }
             | expr MINUS expr      { $$ = $1 - $3; }
