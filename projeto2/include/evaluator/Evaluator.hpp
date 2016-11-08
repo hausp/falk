@@ -8,7 +8,7 @@
 
 #include "base/operators.hpp"
 #include "base/types.hpp"
-#include "numeric.hpp"
+#include "value.hpp"
 
 namespace falk {
     namespace ev {
@@ -20,40 +20,40 @@ namespace falk {
             // using real = double;
             // using complex = std::complex<double>;
             using boolean = bool;
-            using numeric = ev::numeric;
+            using value = ev::value;
         public:
-            numeric make_real(const std::string& yytext) {
+            value make_real(const std::string& yytext) {
                 return {Type::REAL, std::stod(yytext), 0};
             }
 
-            numeric make_complex(const std::string& yytext) {
+            value make_complex(const std::string& yytext) {
                 // TODO
-                return numeric{Type::COMPLEX};
+                return value{Type::COMPLEX};
             }
 
-            boolean make_boolean(const std::string& yytext) {
+            value make_boolean(const std::string& yytext) {
                 if (yytext == "true") {
-                    return true;
+                    return TRUE;
                 }
-                return false;
+                return FALSE;
             }
 
             void new_line() {
                 std::cout << "falk> ";
             }
 
-            void single_calculus(numeric value) {
+            void single_calculus(value value) {
                 std::cout << "res = " << value << std::endl;
             }
 
-            static numeric pow(const numeric& lhs, const numeric& rhs) {
+            static value pow(const value& lhs, const value& rhs) {
                 auto type = falk::resolve_types(lhs.type, rhs.type);
                 if (type == Type::REAL) {
                     // TODO
                 } else {
                     // TODO
                 }
-                return numeric{};
+                return value{};
             }
          private:
             std::stack<double> real_values;

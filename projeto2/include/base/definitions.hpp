@@ -8,7 +8,7 @@
 
 namespace falk {
     using Analyser = ev::Evaluator;
-    using numeric = Analyser::numeric;
+    using value = Analyser::value;
     // using real = Analyser::real;
     // using complex = Analyser::complex;
     using boolean = Analyser::boolean;

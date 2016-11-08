@@ -44,8 +44,9 @@
 
 %token<std::string> ID "variable identifier";
 %token <falk::Type> TYPE "type identifier";
-%token <falk::numeric> NUMERIC "numeric value";
-%token <falk::boolean> BOOL "boolean value";
+%token <falk::value> REAL "real value";
+%token <falk::value> COMPLEX "complex value";
+%token <falk::value> BOOL "boolean value";
 
 %token VAR    "var keyword";
 %token ARRAY  "array keyword";
@@ -77,24 +78,22 @@
 
 
 // %type<int> eoc opt_nl
-%type<int> program line lines command commands new_line
-// %type <int> assignment arr_size mat_size simple_id id index op
-%type <falk::numeric> numeric_expr single_calc
-// %type <falk::complex> complex_expr complex_calc
-// %type <falk::rvalue> rvalue expr
+%type <int> program line lines command commands new_line
+%type <int> assignment arr_size mat_size simple_id id index op
+%type <falk::value> expr single_calc rvalue
 
 /* Operator precedence for mathematical operators
  * The latest it is listed, the highest the precedence
  * left, right, nonassoc
  */
-%left T_AND T_OR
-%nonassoc T_NOT
-%left T_COMPARISON
-%left T_PLUS T_MINUS
-%left T_TIMES T_DIVIDE T_MOD
-%left T_POWER
+%left AND OR
+%nonassoc NOT
+%left COMPARISON
+%left PLUS MINUS
+%left TIMES DIVIDE MOD
+%left POWER
 %nonassoc U_MINUS
-%nonassoc T_OPAR T_CPAR
+%nonassoc OPAR CPAR
 
 %start program
 
@@ -119,71 +118,74 @@ commands    : command
 
 command     : %empty       { $$ = 0; }
             | single_calc  { $$ = 0; }
+            | var_decl     { /* TODO */ }
             ;
 
-// var_decl    : VAR ID
-//             | VAR ID COLON TYPE /* Aqui pode dar ruim */
-//             | VAR ID ASSIGN rvalue
-//             | ARRAY arr_size ID
-//             | ARRAY ID ASSIGN rvalue
-//             | MATRIX mat_size ID
-//             | MATRIX ID ASSIGN rvalue
-//             ;
+var_decl    : VAR ID
+            | VAR ID COLON TYPE /* Aqui pode dar ruim */
+            | VAR ID ASSIGN rvalue
+            | ARRAY arr_size ID
+            | ARRAY ID ASSIGN rvalue
+            | MATRIX mat_size ID
+            | MATRIX ID ASSIGN rvalue
+            ;
 
-// assignment  : id ASSIGN rvalue
-//             | id op ASSIGN rvalue
-//             ;
+assignment  : id ASSIGN rvalue
+            | id op ASSIGN rvalue
+            ;
 
-single_calc     : numeric_expr {
-                    analyser.single_calculus($1);
-                    $$ = $1;
-                }
-               ;
+single_calc : expr {
+                analyser.single_calculus($1);
+                $$ = $1;
+             }
+            ;
 
-// rvalue      : expr { $$ = $1; }
-//             ;
+rvalue      : expr { $$ = $1; }
+            ;
 
-// arr_size    : OBRACKET REAL CBRACKET
-//             ;
+arr_size    : OBRACKET REAL CBRACKET { $$ = 0; /* TODO */ }
+            ;
 
-// mat_size    : OBRACKET REAL COMMA REAL CBRACKET
-//             ;
+mat_size    : OBRACKET REAL COMMA REAL CBRACKET { $$ = 0; /* TODO */ }
+            ;
 
-// simple_id   : ID
-//             | ID OBRACKET index CBRACKET
-//             | ID OBRACKET index COMMA index CBRACKET
-//             ;
+simple_id   : ID { $$ = 0; /* TODO */ }
+            | ID OBRACKET index CBRACKET { $$ = 0; /* TODO */ }
+            | ID OBRACKET index COMMA index CBRACKET { $$ = 0; /* TODO */ }
+            ;
 
-// id          : simple_id
-//             | ID OBRACKET COMMA index CBRACKET
-//             ;
+id          : simple_id { $$ = 0; /* TODO */ }
+            | ID OBRACKET COMMA index CBRACKET { $$ = 0; /* TODO */ }
+            ;
 
-// index       : simple_id
-//             | REAL
-//             ;
+index       : simple_id { $$ = 0; /* TODO */ }
+            | REAL { $$ = 0; /* TODO */ }
+            ;
 
-// op          : COMPARISON
-//             | AND
-//             | OR
-//             | NOT
-//             | PLUS
-//             | MINUS
-//             | TIMES
-//             | DIVIDE
-//             | POWER
-//             | MOD
-//             ;
+op          : COMPARISON { $$ = 0; /* TODO */ }
+            | AND { $$ = 0; /* TODO */ }
+            | OR { $$ = 0; /* TODO */ }
+            | NOT { $$ = 0; /* TODO */ }
+            | PLUS { $$ = 0; /* TODO */ }
+            | MINUS { $$ = 0; /* TODO */ }
+            | TIMES { $$ = 0; /* TODO */ }
+            | DIVIDE { $$ = 0; /* TODO */ }
+            | POWER { $$ = 0; /* TODO */ }
+            | MOD { $$ = 0; /* TODO */ }
+            ;
 
-numeric_expr: NUMERIC                              { $$ = $1; }
-            | numeric_expr COMPARISON numeric_expr { /* TODO: use $2.operation */ }
-            | numeric_expr PLUS numeric_expr       { $$ = $1 + $3; }
-            | numeric_expr MINUS numeric_expr      { $$ = $1 - $3; }
-            | numeric_expr TIMES numeric_expr      { $$ = $1 * $3; }
-            | numeric_expr DIVIDE numeric_expr     { $$ = $1 / $3; }
-            | numeric_expr POWER numeric_expr      { $$ = Analyser::pow($1, $3); }
-            | numeric_expr MOD numeric_expr        { $$ = $1 % $3; }
-            | MINUS numeric_expr %prec U_MINUS     { $$ = -$2; }
-            | OPAR numeric_expr CPAR               { $$ = $2; }
+expr        : REAL                 { $$ = $1; }
+            | COMPLEX              { $$ = $1; }
+            | BOOL                 { $$ = $1; }
+            | expr COMPARISON expr { $$ = falk::ev::TRUE; /* TODO: use $2.operation */ }
+            | expr PLUS expr       { $$ = $1 + $3; }
+            | expr MINUS expr      { $$ = $1 - $3; }
+            | expr TIMES expr      { $$ = $1 * $3; }
+            | expr DIVIDE expr     { $$ = $1 / $3; }
+            | expr POWER expr      { $$ = Analyser::pow($1, $3); }
+            | expr MOD expr        { $$ = $1 % $3; }
+            | MINUS expr %prec U_MINUS     { $$ = -$2; }
+            | OPAR expr CPAR               { $$ = $2; }
             ;
 %%
 

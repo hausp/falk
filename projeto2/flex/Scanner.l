@@ -96,14 +96,14 @@ nonacceptable ©
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
     auto rvalue = analyser.make_real(yytext);
-    return falk::Parser::make_NUMERIC(std::move(rvalue), falk::location());
+    return falk::Parser::make_REAL(std::move(rvalue), falk::location());
 }
 
 {complex} {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
     auto rvalue = analyser.make_complex(yytext);
-    return falk::Parser::make_NUMERIC(std::move(rvalue), falk::location());
+    return falk::Parser::make_COMPLEX(std::move(rvalue), falk::location());
 }
 
 {bool_literal} {
