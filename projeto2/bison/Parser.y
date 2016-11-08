@@ -78,8 +78,8 @@
 
 
 // %type<int> eoc opt_nl
-%type <int> program line lines command commands new_line eoc
-%type <int> assignment arr_size mat_size simple_id id index op
+%type <int> program command new_line eoc
+%type <int> assignment arr_size mat_size simple_id id index
 %type <falk::value> expr single_calc rvalue
 
 /* Operator precedence for mathematical operators
@@ -107,6 +107,7 @@ program     : %empty           { $$ = 0; }
 
 eoc         : SEMICOLON { $$ = 0; }
             | new_line  { $$ = 0; }
+            ;
 
 // lines       : line       { /* TODO: create lines with line */ }
 //             | lines line { /* TODO: add line to lines */ }
@@ -137,10 +138,10 @@ var_decl    : VAR ID
             ;
 
 assignment  : id ASSIGN rvalue
-            | id op ASSIGN rvalue
+            // | id op ASSIGN rvalue /* TODO: find a way to allow this without conflicts */
             ;
 
-single_calc : expr { /* TODO: this + {expr -> id} = conflicts */ 
+single_calc : expr {
                 analyser.single_calculus($1);
                 $$ = $1;
              }
@@ -165,34 +166,34 @@ id          : simple_id { $$ = 0; /* TODO */ }
             ;
 
 index       : simple_id { $$ = 0; /* TODO */ }
-            | REAL { $$ = 0; /* TODO */ }
+            | REAL      { $$ = 0; /* TODO */ }
             ;
 
-op          : COMPARISON { $$ = 0; /* TODO */ }
-            | AND { $$ = 0; /* TODO */ }
-            | OR { $$ = 0; /* TODO */ }
-            | NOT { $$ = 0; /* TODO */ }
-            | PLUS { $$ = 0; /* TODO */ }
-            | MINUS { $$ = 0; /* TODO */ }
-            | TIMES { $$ = 0; /* TODO */ }
-            | DIVIDE { $$ = 0; /* TODO */ }
-            | POWER { $$ = 0; /* TODO */ }
-            | MOD { $$ = 0; /* TODO */ }
-            ;
+// op          : COMPARISON    { $$ = 0; /* TODO */ }
+//             | AND           { $$ = 0; /* TODO */ }
+//             | OR            { $$ = 0; /* TODO */ }
+//             | NOT           { $$ = 0; /* TODO */ }
+//             | PLUS          { $$ = 0; /* TODO */ }
+//             | MINUS         { $$ = 0; /* TODO */ }
+//             | TIMES         { $$ = 0; /* TODO */ }
+//             | DIVIDE        { $$ = 0; /* TODO */ }
+//             | POWER         { $$ = 0; /* TODO */ }
+//             | MOD           { $$ = 0; /* TODO */ }
+//             ;
 
-expr        : REAL                 { $$ = $1; }
-            | COMPLEX              { $$ = $1; }
-            | BOOL                 { $$ = $1; }
-            | id                   { $$ = falk::ev::TRUE; /* TODO */ }
-            | expr COMPARISON expr { $$ = falk::ev::TRUE; /* TODO: use $2.operation */ }
-            | expr PLUS expr       { $$ = $1 + $3; }
-            | expr MINUS expr      { $$ = $1 - $3; }
-            | expr TIMES expr      { $$ = $1 * $3; }
-            | expr DIVIDE expr     { $$ = $1 / $3; }
-            | expr POWER expr      { $$ = Analyser::pow($1, $3); }
-            | expr MOD expr        { $$ = $1 % $3; }
-            | MINUS expr %prec U_MINUS     { $$ = -$2; }
-            | OPAR expr CPAR               { $$ = $2; }
+expr        : REAL                      { $$ = $1; }
+            | COMPLEX                   { $$ = $1; }
+            | BOOL                      { $$ = $1; }
+            | id                        { $$ = falk::ev::TRUE; /* TODO */ }
+            | expr COMPARISON expr      { $$ = falk::ev::TRUE; /* TODO: use $2.operation */ }
+            | expr PLUS expr            { $$ = $1 + $3; }
+            | expr MINUS expr           { $$ = $1 - $3; }
+            | expr TIMES expr           { $$ = $1 * $3; }
+            | expr DIVIDE expr          { $$ = $1 / $3; }
+            | expr POWER expr           { $$ = Analyser::pow($1, $3); }
+            | expr MOD expr             { $$ = $1 % $3; }
+            | MINUS expr %prec U_MINUS  { $$ = -$2; }
+            | OPAR expr CPAR            { $$ = $2; }
             ;
 %%
 
