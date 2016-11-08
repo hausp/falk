@@ -45,6 +45,16 @@ namespace falk {
             void single_calculus(numeric value) {
                 std::cout << "res = " << value << std::endl;
             }
+
+            static numeric pow(const numeric& lhs, const numeric& rhs) {
+                auto type = falk::resolve_types(lhs.type, rhs.type);
+                if (type == Type::REAL) {
+                    // TODO
+                } else {
+                    // TODO
+                }
+                return numeric{};
+            }
          private:
             std::stack<double> real_values;
             std::stack<std::complex<double>> complex_values;

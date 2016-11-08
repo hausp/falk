@@ -170,31 +170,31 @@ function {
 "+"  {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::Parser::make_ADD(falk::op::Arithmetical::ADD, falk::location());
+    return falk::Parser::make_PLUS(falk::op::Arithmetical::ADD, falk::location());
  }
 
 "-"  {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::Parser::make_SUB(falk::op::Arithmetical::SUB, falk::location());
+    return falk::Parser::make_MINUS(falk::op::Arithmetical::SUB, falk::location());
  }
 
 "*"  {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::Parser::make_MULT(falk::op::Arithmetical::MULT, falk::location());
+    return falk::Parser::make_TIMES(falk::op::Arithmetical::MULT, falk::location());
  }
 
 "/"  {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::Parser::make_DIV(falk::op::Arithmetical::DIV, falk::location());
+    return falk::Parser::make_DIVIDE(falk::op::Arithmetical::DIV, falk::location());
  }
 
 "**" {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::Parser::make_POW(falk::op::Arithmetical::POW, falk::location());
+    return falk::Parser::make_POWER(falk::op::Arithmetical::POW, falk::location());
  }
 
 "%"  {
@@ -272,25 +272,25 @@ function {
 "["  {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::Parser::make_OINDEX(falk::location());
+    return falk::Parser::make_OBRACKET(falk::location());
 }
 
 "]"  {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::Parser::make_CINDEX(falk::location());
+    return falk::Parser::make_CBRACKET(falk::location());
 }
 
 ":"  {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::Parser::make_OBLOCK(falk::location());
+    return falk::Parser::make_COLON(falk::location());
 }
 
 "."  {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::Parser::make_CBLOCK(falk::location());
+    return falk::Parser::make_DOT(falk::location());
 }
 
 "="  {

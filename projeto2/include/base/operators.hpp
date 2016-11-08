@@ -28,9 +28,6 @@ namespace falk {
             NOT,
         };
     }
-
-    template<typename T>
-    T pow(const T&, const T&);
 }
 
 #endif /* FALK_OPERATORS_HPP */

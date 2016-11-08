@@ -65,13 +65,13 @@
 %token COMMA ";";
 %token OPAR "("
 %token CPAR ")"
-%token OBLOCK ":"
-%token CBLOCK "."
-%token OINDEX "["
-%token CINDEX "]"
+%token COLON ":"
+%token DOT "."
+%token OBRACKET "["
+%token CBRACKET "]"
 %token EOF 0 "end of file"
 
-%token <falk::op::Arithmetical> ADD SUB MULT DIV POW MOD
+%token <falk::op::Arithmetical> PLUS MINUS TIMES DIVIDE POWER MOD
 %token <falk::op::Comparison> COMPARISON
 %token <falk::op::Logical> AND OR NOT
 
@@ -90,17 +90,17 @@
 %left T_AND T_OR
 %nonassoc T_NOT
 %left T_COMPARISON
-%left T_ADD T_SUB
-%left T_MULT T_DIV T_MOD
-%left T_POW
-%nonassoc U_SUB
+%left T_PLUS T_MINUS
+%left T_TIMES T_DIVIDE T_MOD
+%left T_POWER
+%nonassoc U_MINUS
 %nonassoc T_OPAR T_CPAR
 
 %start program
 
 %%
 
-program     :               { $$ = 0; }
+program     : %empty        { $$ = 0; }
             | program lines { $$ = 0; }
             // | program function 
             ;
@@ -117,13 +117,12 @@ commands    : command
             | commands SEMICOLON command
             ;
 
-command     :              { $$ = 0; }
+command     : %empty       { $$ = 0; }
             | single_calc  { $$ = 0; }
-            // | complex_calc { $$ = 0; }
             ;
 
 // var_decl    : VAR ID
-//             | VAR ID OBLOCK TYPE /* Aqui pode dar ruim */
+//             | VAR ID COLON TYPE /* Aqui pode dar ruim */
 //             | VAR ID ASSIGN rvalue
 //             | ARRAY arr_size ID
 //             | ARRAY ID ASSIGN rvalue
@@ -144,19 +143,19 @@ single_calc     : numeric_expr {
 // rvalue      : expr { $$ = $1; }
 //             ;
 
-// arr_size    : OINDEX REAL CINDEX
+// arr_size    : OBRACKET REAL CBRACKET
 //             ;
 
-// mat_size    : OINDEX REAL COMMA REAL CINDEX
+// mat_size    : OBRACKET REAL COMMA REAL CBRACKET
 //             ;
 
 // simple_id   : ID
-//             | ID OINDEX index CINDEX
-//             | ID OINDEX index COMMA index CINDEX
+//             | ID OBRACKET index CBRACKET
+//             | ID OBRACKET index COMMA index CBRACKET
 //             ;
 
 // id          : simple_id
-//             | ID OINDEX COMMA index CINDEX
+//             | ID OBRACKET COMMA index CBRACKET
 //             ;
 
 // index       : simple_id
@@ -167,37 +166,25 @@ single_calc     : numeric_expr {
 //             | AND
 //             | OR
 //             | NOT
-//             | ADD
-//             | SUB
-//             | MULT
-//             | DIV
-//             | POW
+//             | PLUS
+//             | MINUS
+//             | TIMES
+//             | DIVIDE
+//             | POWER
 //             | MOD
 //             ;
 
 numeric_expr: NUMERIC                              { $$ = $1; }
             | numeric_expr COMPARISON numeric_expr { /* TODO: use $2.operation */ }
-            | numeric_expr ADD numeric_expr        { $$ = $1 + $3; }
-            | numeric_expr SUB numeric_expr        { $$ = $1 - $3; }
-            | numeric_expr MULT numeric_expr       { $$ = $1 * $3; }
-            | numeric_expr DIV numeric_expr        { $$ = $1 / $3; }
-            | numeric_expr POW numeric_expr        { /* $$ = falk::pow($1, $3); */ }
-            | numeric_expr MOD numeric_expr        { /* $$ = $1 % $3; */ }
-            | SUB numeric_expr %prec U_SUB         { $$ = -$2; }
+            | numeric_expr PLUS numeric_expr       { $$ = $1 + $3; }
+            | numeric_expr MINUS numeric_expr      { $$ = $1 - $3; }
+            | numeric_expr TIMES numeric_expr      { $$ = $1 * $3; }
+            | numeric_expr DIVIDE numeric_expr     { $$ = $1 / $3; }
+            | numeric_expr POWER numeric_expr      { $$ = Analyser::pow($1, $3); }
+            | numeric_expr MOD numeric_expr        { $$ = $1 % $3; }
+            | MINUS numeric_expr %prec U_MINUS     { $$ = -$2; }
             | OPAR numeric_expr CPAR               { $$ = $2; }
             ;
-
-// complex_expr: COMPLEX                              { $$ = $1; }
-//             | complex_expr COMPARISON complex_expr { /* TODO: use $2.operation */ }
-//             | complex_expr ADD complex_expr        { $$ = $1 + $3; }
-//             | complex_expr SUB complex_expr        { $$ = $1 - $3; }
-//             | complex_expr MULT complex_expr       { $$ = $1 * $3; }
-//             | complex_expr DIV complex_expr        { $$ = $1 / $3; }
-//             | complex_expr POW complex_expr        { /* $$ = falk::pow($1, $3); */ }
-//             | complex_expr MOD complex_expr        { /* $$ = $1 % $3; */ }
-//             | SUB complex_expr %prec U_SUB         { $$ = -$2; }
-//             | OPAR complex_expr CPAR               { $$ = $2; }
-//             ;
 %%
 
 void falk::Parser::error(const location &loc , const std::string &message) {

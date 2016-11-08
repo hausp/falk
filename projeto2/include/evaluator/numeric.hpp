@@ -38,7 +38,8 @@ namespace falk {
         inline numeric operator*(const numeric& lhs, const numeric& rhs) {
             auto type = falk::resolve_types(lhs.type, rhs.type);
             if (type == Type::COMPLEX) {
-
+                // TODO
+                return numeric{};
             } else {
                 return {type, lhs.real * rhs.real};
             }
@@ -47,9 +48,26 @@ namespace falk {
         inline numeric operator/(const numeric& lhs, const numeric& rhs) {
             auto type = falk::resolve_types(lhs.type, rhs.type);
             if (type == Type::COMPLEX) {
-
+                // TODO
+                return numeric{};
             } else {
                 return {type, lhs.real / rhs.real};
+            }
+        }
+
+        inline numeric operator%(const numeric& lhs, const numeric& rhs) {
+            auto type = falk::resolve_types(lhs.type, rhs.type);
+            if (type == Type::COMPLEX) {
+                // TODO
+                return numeric{};
+            } else {
+                // TODO: is this real?
+                return {
+                    type,
+                    static_cast<double>(
+                        static_cast<long>(lhs.real) % static_cast<long>(rhs.real)
+                    )
+                };
             }
         }
 
