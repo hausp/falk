@@ -73,6 +73,7 @@
 %token EOF 0 "end of file"
 
 %token <falk::op::Arithmetical> PLUS MINUS TIMES DIVIDE POWER MOD
+%token <falk::op::Arithmetical> ASSIGNOP
 %token <falk::op::Comparison> COMPARISON
 %token <falk::op::Logical> AND OR NOT
 
@@ -138,7 +139,7 @@ var_decl    : VAR ID
             ;
 
 assignment  : id ASSIGN rvalue
-            // | id op ASSIGN rvalue /* TODO: find a way to allow this without conflicts */
+            | id ASSIGNOP rvalue /* TODO: find a way to allow this without conflicts */
             ;
 
 single_calc : expr {
