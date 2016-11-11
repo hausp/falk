@@ -8,6 +8,8 @@
 	#include "Parser.hpp"
 	#include "location.hh"
 
+    #define YY_INTERACTIVE
+
 	#define yyterminate() falk::Parser::make_EOF(falk::location());
 
     // Updates location based in token length
