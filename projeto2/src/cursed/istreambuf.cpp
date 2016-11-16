@@ -1,10 +1,10 @@
 
 #include <ncurses.h>
-#include "cursed/basic_terminal.hpp"
-#include "cursed/istream.hpp"
+#include "cursed/istreambuf.hpp"
+#include "cursed/terminal.hpp"
 
-cursed::istreambuf::istreambuf(basic_terminal& terminal):
- terminal{terminal} { }
+cursed::istreambuf::istreambuf(cursed::terminal& term):
+ terminal{term} { }
 
 cursed::istreambuf::int_type cursed::istreambuf::underflow() {
     if (current == line.size()) {
@@ -31,20 +31,3 @@ cursed::istreambuf::int_type cursed::istreambuf::pbackfail(int_type ch) {
 std::streamsize cursed::istreambuf::showmanyc() {
     return line.size() - current;
 }
-
-
-cursed::istream<true>::istream(basic_terminal& terminal, std::istream& in):
- std::istream{&buffer},
- buffer{terminal},
- source{in},
- source_buffer{in.rdbuf()} {
-    in.rdbuf(rdbuf());
-}
-
-cursed::istream<true>::~istream() {
-    source.rdbuf(source_buffer);
-}
-
-cursed::istream<false>::istream(basic_terminal& terminal):
- std::istream{&buffer},
- buffer{terminal} { }

@@ -1,14 +1,14 @@
 
 #include <iostream>
-#include "base/Driver.hpp"
-#include "cursed/terminal.hpp"
+#include "base/definitions.hpp"
+#include "cursed/overterm.hpp"
+#include "lpi/lpa_context.hpp"
+#include "scanner.hpp"
 
 int main(int, char **) {
-    // Damned be all living beings?
-    constexpr auto damn_it_all = true;
-    cursed::terminal<damn_it_all> terminal;
+    cursed::overterm<true> terminal;
+
+    lpi::lpa_context<falk::scanner, falk::parser, falk::analyser> context;
     
-    falk::Driver driver;
-    
-    return driver.parse();
+    return context.run();
 }

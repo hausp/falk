@@ -2,34 +2,47 @@
 #ifndef CURSED_TERMINAL_HPP
 #define CURSED_TERMINAL_HPP
 
+#include <istream>
 #include <list>
-#include <string>
-#include "basic_terminal.hpp"
-#include "istream.hpp"
-#include "ostream.hpp"
+#include <ostream>
+#include "istreambuf.hpp"
+#include "ostreambuf.hpp"
 
 namespace cursed {
-    template<bool Override>
-    class terminal : public basic_terminal {
+    class terminal {
+        using Buffer = std::list<std::string>;
      public:
         terminal();
         ~terminal();
 
+        std::istream& istream();
         std::ostream& ostream();
-
-        std::string get_line() override;
+        std::string get_line();
      private:
-        cursed::ostream<Override> output;
-        cursed::istream<Override> input;
-        std::list<std::string> buffer;
+        istreambuf inbuffer;
+        ostreambuf outbuffer;
+        std::istream input;
+        std::ostream output;
+        Buffer buffer;
+        Buffer::const_iterator buffer_it;        
         std::string current_input;
         std::string unsaved_input;
         unsigned o_cursor_x = 0;
         unsigned cursor_x = 0;
         unsigned cursor_y = 0;
+
+        void delete_pressed();
+        void up_pressed();
+        void down_pressed();
+        void left_pressed();
+        void right_pressed();
+        void backspace_pressed();
+        void home_pressed();
+        void end_pressed();
+        void page_up_pressed();
+        void page_down_pressed();
+        void save_character(int);
     };
 }
-
-#include "terminal.ipp"
 
 #endif /* CURSED_TERMINAL_HPP */
