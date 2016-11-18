@@ -60,15 +60,18 @@ namespace falk {
             // identifier retrieve_identifier(const std::string&, array_index) { return identifier{}; }
             // identifier retrieve_identifier(const std::string&, matrix_index) { return identifier{}; }
 
-            void analyse(real) { }
-            void analyse(complex) { }
-            void analyse(boolean) { }
-            void analyse(operation<op::Arithmetical, 2>, std::array<node_ptr, 2>&) { }
-            void analyse(operation<op::Arithmetical, 1>, std::array<node_ptr, 1>&) { }
+            void analyse(real);
+            void analyse(complex);
+            void analyse(boolean);
+            void analyse(operation<op::Arithmetical, 2>, std::array<node_ptr, 2>&);
+            void analyse(operation<op::Arithmetical, 1>, std::array<node_ptr, 1>&);
 
             value single_calculation(value value);
          private:
             symbol_mapper mapper;
+            std::stack<real> real_stack;
+            std::stack<complex> complex_stack;
+            std::stack<boolean> boolean_stack;
 
          public:
             static const operation<op::Arithmetical, 2> ADD;

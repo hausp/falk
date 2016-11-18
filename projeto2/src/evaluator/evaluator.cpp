@@ -35,6 +35,35 @@ const auto falk::ev::evaluator::MOD_ASSIGN =
 const auto falk::ev::evaluator::UNARY_SUB =
     operation<op::Arithmetical, 1>{op::Arithmetical::SUB};
 
+void falk::ev::evaluator::analyse(real value) {
+    real_stack.push(value);
+}
+
+void falk::ev::evaluator::analyse(complex value) {
+    complex_stack.push(value);
+}
+
+void falk::ev::evaluator::analyse(boolean value) {
+    boolean_stack.push(value);
+}
+
+void falk::ev::evaluator::analyse(operation<op::Arithmetical, 2> op, std::array<node_ptr, 2>& operands) {
+    using callback = std::function<void(evaluator&)>;
+    static const std::unordered_map<decltype(op), callback> functions = {
+        {ADD, [](evaluator& instance) {
+
+        }}
+    }
+
+    // auto fn = functions[op];
+}
+
+void falk::ev::evaluator::analyse(operation<op::Arithmetical, 1> op, std::array<node_ptr, 1>& operand) {
+    switch (op) {
+        // TODO
+    }
+}
+
 // falk::ev::evaluator::program falk::ev::evaluator::append(program, command) {
 // 	return program{};
 // }
