@@ -79,13 +79,13 @@ $(MAKEDIR):
 	@mkdir -p $@
 
 ################################ TESTS RULES ##################################
-tests: makedir $(TCALL)
+tests: makedir $(TCALL) $(TEXEC)
 
-$(foreach t,$(TCALL),$(t): $(OBJDIR)/$(TESTDIR)/$(t).o $(BINDIR)/$(t))
+$(foreach t,$(TCALL),$(t): $(PUREOBJ) $(TPUREOBJ) $(OBJDIR)/$(TESTDIR)/$(t).o)
 
 $(TEXEC): LDFLAGS+=-lgtest 
 
-$(TEXEC): $(PUREOBJ) $(TPUREOBJ)
+$(TEXEC): $(PUREOBJ) $(TPUREOBJ) $(TMAIN)
 	@echo "[linking] $@"
 	@$(CXX) $(PUREOBJ) $(TOBJ) -o $@ $(LDLIBS) $(LDFLAGS)
 

@@ -27,7 +27,7 @@ namespace falk {
             using boolean = bool;
 
             // Alias to define semantic abstraction for values.
-            using value = ev::value;
+            using value = sma::value<evaluator>;
 
             // Methods
             // assignment assign(identifier, value);
@@ -57,9 +57,36 @@ namespace falk {
             // identifier retrieve_identifier(const std::string&, array_index) { return identifier{}; }
             // identifier retrieve_identifier(const std::string&, matrix_index) { return identifier{}; }
 
+            void analyse(real);
+            void analyse(complex);
+            void analyse(boolean);
+            void analyse(operation<op::Arithmetical, 2>, std::array<node_ptr, 2>&);
+            void analyse(operation<op::Arithmetical, 1>, std::array<node_ptr, 1>&);
+
             value single_calculation(value value);
          private:
             symbol_mapper mapper;
+            std::stack<value> stacker;
+
+            void calc(const std::function<value(value, value)>&);
+
+         public:
+            static const operation<op::Arithmetical, 2> ADD;
+            static const operation<op::Arithmetical, 2> SUB;
+            static const operation<op::Arithmetical, 2> MULT;
+            static const operation<op::Arithmetical, 2> DIV;
+            static const operation<op::Arithmetical, 2> POW;
+            static const operation<op::Arithmetical, 2> MOD;
+            static const operation<op::Logical, 2> AND;
+            static const operation<op::Logical, 2> OR;
+            static const operation<op::Logical, 2> NOT;
+            static const operation<op::Arithmetical, 2> ADD_ASSIGN;
+            static const operation<op::Arithmetical, 2> SUB_ASSIGN;
+            static const operation<op::Arithmetical, 2> MULT_ASSIGN;
+            static const operation<op::Arithmetical, 2> DIV_ASSIGN;
+            static const operation<op::Arithmetical, 2> POW_ASSIGN;
+            static const operation<op::Arithmetical, 2> MOD_ASSIGN;
+            static const operation<op::Arithmetical, 1> UNARY_SUB;
         };
 
 
@@ -82,7 +109,7 @@ namespace falk {
         }
 
         inline evaluator::value evaluator::single_calculation(value value) {
-            std::cout << "res = " << value << std::endl;
+            // std::cout << "res = " << value << std::endl;
             return value;
         }
     }

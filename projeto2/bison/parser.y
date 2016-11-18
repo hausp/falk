@@ -94,7 +94,7 @@
 %type<int> assignment;
 %type<int> declaration;
 %type<int> index rvalue;
-%type<int> init_list; // CHANGE THIS
+%type<int> init_list; // CHANGE THIS!!!!!!
 %type<int> new_line eoc;
 
 /* Operator precedence for mathematical operators
@@ -235,6 +235,7 @@ index :
 //             ;
 
 expr :
+    // TODO: handle literal arrays/matrices
     REAL {
         $$ = $1;
     }

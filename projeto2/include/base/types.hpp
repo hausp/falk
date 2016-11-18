@@ -22,6 +22,8 @@ namespace falk {
             } else if (t1 == Type::COMPLEX || t2 == Type::COMPLEX) {
                 return Type::COMPLEX;
             }
+            // TODO: mensagem de erro
+            return Type::UNDEFINED;
         }
         return t1;
     }
