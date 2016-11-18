@@ -45,9 +45,9 @@
 
 %token<std::string> ID      "variable identifier";
 %token<falk::Type>  TYPE    "type identifier";
-%token<falk::generic> REAL    "real value";
-%token<falk::generic> COMPLEX "complex value";
-%token<falk::generic> BOOL    "boolean value";
+%token<falk::real>  REAL    "real value";
+%token<falk::complex> COMPLEX "complex value";
+%token<falk::boolean> BOOL    "boolean value";
 
 %token VAR       "var keyword";
 %token ARRAY     "array keyword";
@@ -92,10 +92,10 @@
 %type<falk::generic> new_line eoc;
 %type<falk::generic> declaration;
 %type<falk::generic> assignment;
-%type<falk::identifier> identifier;
+%type<falk::value> identifier;
 %type<falk::array_index> arr_size;
 %type<falk::matrix_index> mat_size;
-%type<falk::generic> expr single_calc;
+%type<falk::value> expr single_calc;
 %type<falk::generic> index rvalue;
 %type<falk::generic> init_list; // CHANGE THIS
 

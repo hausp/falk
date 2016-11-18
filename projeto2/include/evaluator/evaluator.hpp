@@ -21,20 +21,36 @@ namespace falk {
         class evaluator {
          public:
             using Type = Type;
-            
-            static constexpr auto ADD = op::Arithmetical::ADD;
-            static constexpr auto SUB = op::Arithmetical::SUB;
-            static constexpr auto MULT = op::Arithmetical::MULT;
-            static constexpr auto DIV = op::Arithmetical::DIV;
-            static constexpr auto POW = op::Arithmetical::POW;
-            static constexpr auto AND = op::Logical::AND;
-            static constexpr auto OR = op::Logical::OR;
+
+            static constexpr auto ADD = 
+                operation<op::Arithmetical, 2>{op::Arithmetical::ADD};
+            static constexpr auto SUB =
+                operation<op::Arithmetical, 2>{op::Arithmetical::SUB};
+            static constexpr auto MULT =
+                operation<op::Arithmetical, 2>{op::Arithmetical::MULT};
+            static constexpr auto DIV =
+                operation<op::Arithmetical, 2>{op::Arithmetical::DIV};
+            static constexpr auto POW =
+                operation<op::Arithmetical, 2>{op::Arithmetical::POW};
+            static constexpr auto MOD =
+                operation<op::Arithmetical, 2>{op::Arithmetical::MOD};
+            static constexpr auto AND =
+                operation<op::Logical, 2>{op::Logical::AND};
+            static constexpr auto OR =
+                operation<op::Logical, 2>{op::Logical::OR};
             static constexpr auto NOT = op::Logical::NOT;
-            static constexpr auto ADD_ASSIGN = op::Arithmetical::ADD_ASSIGN;
-            static constexpr auto SUB_ASSIGN = op::Arithmetical::SUB_ASSIGN;
-            static constexpr auto MULT_ASSIGN = op::Arithmetical::MULT_ASSIGN;
-            static constexpr auto DIV_ASSIGN = op::Arithmetical::DIV_ASSIGN;
-            static constexpr auto POW_ASSIGN = op::Arithmetical::POW_ASSIGN;
+            static constexpr auto ADD_ASSIGN =
+                operation<op::Arithmetical, 2>{op::Arithmetical::ADD_ASSIGN};
+            static constexpr auto SUB_ASSIGN =
+                operation<op::Arithmetical, 2>{op::Arithmetical::SUB_ASSIGN};
+            static constexpr auto MULT_ASSIGN =
+                operation<op::Arithmetical, 2>{op::Arithmetical::MULT_ASSIGN};
+            static constexpr auto DIV_ASSIGN =
+                operation<op::Arithmetical, 2>{op::Arithmetical::DIV_ASSIGN};
+            static constexpr auto POW_ASSIGN =
+                operation<op::Arithmetical, 2>{op::Arithmetical::POW_ASSIGN};
+            static constexpr auto MOD_ASSIGN =
+                operation<op::Arithmetical, 2>{op::Arithmetical::MOD_ASSIGN};
 
             // Definitions for parser
             using generic = ev::value;
@@ -74,9 +90,9 @@ namespace falk {
             declaration declare_matrix(const std::string&, matrix_index);
             declaration declare_matrix(const std::string&, init_list);
 
-            value make_real(const std::string& text);
-            value make_complex(const std::string& text);
-            value make_boolean(const std::string& yytext);
+            real make_real(const std::string& text);
+            complex make_complex(const std::string& text);
+            boolean make_boolean(const std::string& yytext);
 
             matrix_index make_matrix_index(value);
             matrix_index make_matrix_index(value, value);
@@ -96,20 +112,17 @@ namespace falk {
         };
 
 
-        inline evaluator::value evaluator::make_real(const std::string& text) {
-            return {Type::REAL, std::stod(text), 0};
+        inline evaluator::real evaluator::make_real(const std::string& text) {
+            return std::stod(text);
         }
 
-        inline evaluator::value evaluator::make_complex(const std::string& text) {
+        inline evaluator::complex evaluator::make_complex(const std::string& text) {
             // TODO
-            return value{Type::COMPLEX};
+            return std::complex<double>{};
         }
 
-        inline evaluator::value evaluator::make_boolean(const std::string& text) {
-            if (text == "true") {
-                return TRUE;
-            }
-            return FALSE;
+        inline evaluator::boolean evaluator::make_boolean(const std::string& text) {
+            return text == "true";
         }
 
         inline evaluator::control evaluator::new_line() {

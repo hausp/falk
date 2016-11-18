@@ -2,6 +2,8 @@
 #ifndef FALK_DEFINITIONS_HPP
 #define FALK_DEFINITIONS_HPP
 
+#include <complex>
+
 #include "evaluator/evaluator.hpp"
 #include "operators.hpp"
 #include "sma/value.hpp"
@@ -10,11 +12,13 @@
 namespace falk {
     using analyser = ev::evaluator;
     
-    // using program = analyser::program;
-    // using command = analyser::command;
-    // using control = analyser::control;
-    // using declaration = analyser::declaration;
-    // using assignment = analyser::assignment;
+    using real = analyser::real;
+    using complex = analyser::complex;
+    using boolean = analyser::boolean;
+
+    using value = value<analyser>;
+
+
     using identifier = analyser::identifier;
     using array_index = analyser::array_index;
     using matrix_index = analyser::matrix_index;

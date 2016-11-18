@@ -65,7 +65,7 @@ nonacceptable ©
 
 {complex_type} {
     // std::cout << "scanner scanning: " << yytext << std::endl;
-    // TODO: pass real location of token, not an empty one
+    // TODO: pass real location of token, 
     return falk::parser::make_TYPE(falk::Type::COMPLEX, falk::location());
 }
 

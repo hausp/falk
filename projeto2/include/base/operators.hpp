@@ -36,6 +36,13 @@ namespace falk {
             OR_ASSIGN,
         };
     }
+
+    template<typename Action, size_t Arity>
+    struct operation {
+        constexpr size_t arity() {return Arity; }
+        
+        Action action;
+    };
 }
 
 #endif /* FALK_OPERATORS_HPP */
