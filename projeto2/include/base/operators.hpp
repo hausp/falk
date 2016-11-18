@@ -11,6 +11,12 @@ namespace falk {
             MULT,
             POW,
             MOD,
+            ADD_ASSIGN,
+            SUB_ASSIGN,
+            DIV_ASSIGN,
+            MULT_ASSIGN,
+            POW_ASSIGN,
+            MOD_ASSIGN,
         };
 
         enum class Comparison {
@@ -21,11 +27,13 @@ namespace falk {
             EQ,
             NE,
         };
-        
+
         enum class Logical {
             AND,
             OR,
             NOT,
+            AND_ASSIGN,
+            OR_ASSIGN,
         };
     }
 }
