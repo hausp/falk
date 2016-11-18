@@ -39,6 +39,11 @@ namespace sma {
             return *this;
         }
 
+        value<Analyser>& operator%=(value<Analyser>& rhs) {
+            op_assign(rhs, Analyser::MOD_ASSIGN);
+            return *this;
+        }
+
         value<Analyser>& operator&=(value<Analyser>& rhs) {
             op_assign(rhs, Analyser::AND_ASSIGN);
             return *this;
@@ -51,6 +56,11 @@ namespace sma {
 
         value<Analyser> operator!() {
             return op(*this, Analyser::NOT);
+        }
+
+        value<Analyser>& pow_assign(value<Analyser>& rhs) {
+            op_assign(rhs, Analyser::POW_ASSIGN);
+            return *this;
         }
 
         value<Analyser> pow(value<Analyser>& rhs) {
@@ -101,6 +111,41 @@ namespace sma {
     template<typename Analyser>
     value<Analyser> operator/(value<Analyser>& lhs, value<Analyser>& rhs) {
         return op(lhs, rhs, Analyser::DIV);
+    }
+
+    template<typename Analyser>
+    value<Analyser> operator%(value<Analyser>& lhs, value<Analyser>& rhs) {
+        return op(lhs, rhs, Analyser::MOD);
+    }
+
+    template<typename Analyser>
+    value<Analyser> operator<(value<Analyser>& lhs, value<Analyser>& rhs) {
+        return op(lhs, rhs, Analyser::LT);
+    }
+
+    template<typename Analyser>
+    value<Analyser> operator>(value<Analyser>& lhs, value<Analyser>& rhs) {
+        return op(lhs, rhs, Analyser::GT);
+    }
+
+    template<typename Analyser>
+    value<Analyser> operator<=(value<Analyser>& lhs, value<Analyser>& rhs) {
+        return op(lhs, rhs, Analyser::LE);
+    }
+
+    template<typename Analyser>
+    value<Analyser> operator>=(value<Analyser>& lhs, value<Analyser>& rhs) {
+        return op(lhs, rhs, Analyser::GE);
+    }
+
+    template<typename Analyser>
+    value<Analyser> operator==(value<Analyser>& lhs, value<Analyser>& rhs) {
+        return op(lhs, rhs, Analyser::EQ);
+    }
+
+    template<typename Analyser>
+    value<Analyser> operator!=(value<Analyser>& lhs, value<Analyser>& rhs) {
+        return op(lhs, rhs, Analyser::NE);
     }
 
     template<typename Analyser>
