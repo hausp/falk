@@ -9,7 +9,7 @@ namespace falk {
         class identifier {
          public:
             // TODO
-            operator value();
+            operator value() { }
          private:
             // TODO
         };

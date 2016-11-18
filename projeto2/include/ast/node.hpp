@@ -2,89 +2,66 @@
 #ifndef FALK_AST_NODE_HPP
 #define FALK_AST_NODE_HPP
 
-#include <array>
-#include <list>
 #include <memory>
+#include <type_traits>
+#include "asz/utilities.hpp"
 
-namespace falk {
-    namespace ast {
-        template<typename Analyser>
-        class node {
-         public:
-            virtual ~node();
-            virtual void traverse(Analyser&) = 0;
-        };
+namespace ast {
+    // Magic taken from here:
+    // http://stackoverflow.com/questions/1005476/how-to-detect-whether-there-is-a-specific-member-variable-in-class
+    template<typename T> struct has_arity {
+        struct Fallback { int arity; };
+        struct Derived : T, Fallback { };
 
-        template<typename Analyser>
-        class tnode {
-            friend Analyser;
-         public:
-            tnode(typename Analyser::Type);
-            virtual ~tnode();
-            virtual void traverse(Analyser&) = 0;
-         private:
-            typename Analyser::Type type;
-        };
+        template<typename C, C> struct ChT;
 
-        template<typename Analyser>
+        template<typename C>
+        static constexpr char (&f(ChT<int Fallback::*, &C::arity>*))[1];
+        
+        template<typename C>
+        static constexpr char (&f(...))[2];
+
+        static constexpr auto value = sizeof(f<Derived>(0)) == 2;
+    }; 
+
+    template<typename Analyser>
+    class node {
+     public:
+        virtual void traverse(Analyser&) = 0;
+        virtual void add_subnode(std::unique_ptr<node<Analyser>>) = 0;
+    };
+
+    template<typename Analyser, typename T, bool = has_arity<T>::value>
+    class model;
+
+    template<typename Analyser, typename T>
+    class model<Analyser, T, false> : public node<Analyser> {
+     public:
+        model(T d) : data{std::move(d)} { }
+        void traverse(Analyser& analyser) override {
+            analyser.analyse(data);
+        }
+        void add_subnode(std::unique_ptr<node<Analyser>>) override { }
+     private:
+        T data;
+    };
+
+    template<typename Analyser, typename T>
+    class model<Analyser, T, true> : public node<Analyser> {
         using node_ptr = std::unique_ptr<node<Analyser>>;
-
-        template<typename Analyser>
-        using tnode_ptr = std::unique_ptr<tnode<Analyser>>;
-
-        template<typename Analyser>
-        class lnode : public node<Analyser> {
-            friend Analyser;
-         public:
-            virtual void traverse(Analyser&);
-            virtual void insert(node_ptr<Analyser>);
-         private:
-            std::list<node_ptr<Analyser>> nodes;
-        };
-
-        template<typename Analyser>
-        class tlnode : public tnode<Analyser> {
-            friend Analyser;
-         public:
-            tlnode(typename Analyser::Type);
-            virtual void traverse(Analyser&);
-            virtual void insert(node_ptr<Analyser>);
-         private:
-            std::list<tnode_ptr<Analyser>> nodes;
-        };
-
-        template<size_t Size, typename Analyser>
-        class dnode : public node<Analyser> {
-            friend Analyser;
-            template<typename... Args>
-            using enable = std::enable_if_t<sizeof...(Args) == Size, int>;
-         public:
-            template<typename... Args, enable<Args...> = 0>
-            dnode(Args...);
-            virtual void traverse(Analyser&);
-            virtual void insert(node_ptr<Analyser>);
-         private:
-            std::array<tnode_ptr<Analyser>, Size> nodes;
-            size_t size = 0;
-        };
-
-        template<size_t Size, typename Analyser>
-        class tdnode : public tnode<Analyser> {
-            friend Analyser;
-            template<typename... Args>
-            using enable = std::enable_if_t<sizeof...(Args) == Size, int>;
-         public:
-            template<typename... Args, enable<Args...> = 0>
-            tdnode(typename Analyser::Type, Args...);
-            virtual void traverse(Analyser&);
-            virtual void insert(node_ptr<Analyser>);
-         private:
-            std::array<tnode_ptr<Analyser>, Size> nodes;
-            size_t size = 0;
-        };
-    }
+        using holder = aut::value_holder<node_ptr, T::arity()>;
+     public:
+        model(T d) : data{std::move(d)} { }
+        void traverse(Analyser& analyser) override {
+            analyser.analyse(data, operands.container);
+        }
+        void add_subnode(std::unique_ptr<node<Analyser>> node) override {
+            operands.add(std::move(node));
+        }
+     private:
+        T data;
+        holder operands;
+    };
 }
-
-#include "node.ipp"
 
 #endif /* FALK_AST_NODE_HPP */

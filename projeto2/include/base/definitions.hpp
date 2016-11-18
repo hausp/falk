@@ -4,6 +4,7 @@
 
 #include "evaluator/evaluator.hpp"
 #include "operators.hpp"
+#include "sma/value.hpp"
 #include "types.hpp"
 
 namespace falk {
