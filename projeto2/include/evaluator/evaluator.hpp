@@ -31,33 +31,32 @@ namespace falk {
             using value = sma::value<evaluator>;
 
             // Methods
-            assignment assign(identifier, value);
-            assignment assign(identifier, value, falk::op::Arithmetical);
+            // assignment assign(identifier, value);
+            // assignment assign(identifier, value, falk::op::Arithmetical);
             
-            program create_program();
+            int create_program() { return 0; }
             
-            declaration declare_array(const std::string&);
-            declaration declare_array(const std::string&, value&);
-            declaration declare_array(const std::string&, value&);
+            // declaration declare_array(const std::string&);
+            // declaration declare_array(const std::string&, value&);
+            // declaration declare_array(const std::string&, value&);
             
-            declaration declare_variable(const std::string&);
-            declaration declare_variable(const std::string&, Type);
-            declaration declare_variable(const std::string&, value);
+            // declaration declare_variable(const std::string&);
+            // declaration declare_variable(const std::string&, Type);
+            // declaration declare_variable(const std::string&, value);
             
-            declaration declare_matrix(const std::string&);
-            declaration declare_matrix(const std::string&, matrix_index);
-            declaration declare_matrix(const std::string&, init_list);
+            // declaration declare_matrix(const std::string&);
+            // declaration declare_matrix(const std::string&, matrix_index);
+            // declaration declare_matrix(const std::string&, init_list);
 
             real make_real(const std::string& text);
             complex make_complex(const std::string& text);
             boolean make_boolean(const std::string& yytext);
 
-            control new_line();
-            control semicolon();
+            int new_line();
 
-            identifier retrieve_identifier(const std::string&) { return identifier{}; }
-            identifier retrieve_identifier(const std::string&, array_index) { return identifier{}; }
-            identifier retrieve_identifier(const std::string&, matrix_index) { return identifier{}; }
+            // identifier retrieve_identifier(const std::string&) { return identifier{}; }
+            // identifier retrieve_identifier(const std::string&, array_index) { return identifier{}; }
+            // identifier retrieve_identifier(const std::string&, matrix_index) { return identifier{}; }
 
             value single_calculation(value value);
          private:
@@ -112,13 +111,13 @@ namespace falk {
             return text == "true";
         }
 
-        inline evaluator::control evaluator::new_line() {
+        inline int evaluator::new_line() {
             std::cout << "falk> ";
-            return control{};
+            return 0;
         }
 
-        inline ev::value evaluator::single_calculation(ev::value value) {
-            std::cout << "res = " << value << std::endl;
+        inline evaluator::value evaluator::single_calculation(value value) {
+            // std::cout << "res = " << value << std::endl;
             return value;
         }
     }

@@ -22,7 +22,12 @@ namespace sma {
         value(T data):
           object{new ast::model<Analyser, T>{std::move(data)}} { }
 
-        node* get_node() { return object.get(); }
+        value(const value& v):
+          object{std::move(v.object)} { }
+
+        value<Analyser>& operator=(const value& v) {
+            object = std::move(v.object);
+        }
     
         value<Analyser>& operator+=(value<Analyser>& rhs) {
             op_assign(rhs, Analyser::ADD_ASSIGN);
@@ -106,10 +111,10 @@ namespace sma {
                 return sma::empty<Analyser>{};
             }
             
-            auto value = sma::value<Analyser>{op};
-            value.object.add_subnode(std::move(object));
-            value.object.add_subnode(std::move(rhs.object));
-            return value;
+            auto v = sma::value<Analyser>{op};
+            v.object.add_subnode(std::move(object));
+            v.object.add_subnode(std::move(rhs.object));
+            return v;
         }
 
         template<typename T>
@@ -119,9 +124,9 @@ namespace sma {
                 return sma::empty<Analyser>{};
             }
 
-            auto value = value<Analyser>{op};
-            value.object.add_subnode(std::move(object));
-            return value;
+            auto v = value<Analyser>{op};
+            v.object.add_subnode(std::move(object));
+            return v;
         }
     };
 

@@ -91,10 +91,10 @@
 %type<falk::value> command;
 %type<falk::value> identifier arr_size mat_size;
 %type<falk::value> expr single_calc;
-%type<falk::generic> assignment;
-%type<falk::generic> declaration;
-%type<falk::generic> index rvalue;
-%type<falk::generic> init_list; // CHANGE THIS
+%type<int> assignment;
+%type<int> declaration;
+%type<int> index rvalue;
+%type<int> init_list; // CHANGE THIS
 %type<int> new_line eoc;
 
 /* Operator precedence for mathematical operators
@@ -124,7 +124,7 @@ program :
     }
     | program command eoc {
         $$ = $1;
-        $$ += $2;
+        // $$ += $2;
     };
     // | program function
 
@@ -132,95 +132,94 @@ eoc : SEMICOLON
     | new_line
     ;
 
-new_line :
-    NL { $$ = analyser.new_line(); };
+new_line : NL { analyser.new_line(); };
 
 command :
-    SEMICOLON { $$ = analyser.empty_command(); }
-    | single_calc { $$ = $1; }
-    | declaration { $$ = $1; }
-    | assignment  { $$ = $1; };
+    SEMICOLON { /*$$ = analyser.empty_command();*/ }
+    | single_calc { $$ = std::move($1); }
+    | declaration { /*$$ = $1;*/ }
+    | assignment  { /*$$ = $1;*/ };
 
 declaration :
     VAR ID {
-        $$ = analyser.declare_variable($2);
+        // $$ = analyser.declare_variable($2);
     }
     | VAR ID COLON TYPE { /* Aqui pode dar ruim */
-        $$ = analyser.declare_variable($2, $4);
+        // $$ = analyser.declare_variable($2, $4);
     }
     | VAR ID ASSIGN rvalue {
-        $$ = analyser.declare_variable($2, $4);
+        // $$ = analyser.declare_variable($2, $4);
     }
     | ARRAY arr_size ID {
-        $$ = analyser.declare_array($3, $2);
+        // $$ = analyser.declare_array($3, $2);
     }
     | ARRAY ID ASSIGN rvalue {
-        $$ = analyser.declare_array($2, $4);
+        // $$ = analyser.declare_array($2, $4);
     }
     | MATRIX mat_size ID {
-        $$ = analyser.declare_matrix($3, $2);
+        // $$ = analyser.declare_matrix($3, $2);
     }
     | MATRIX ID ASSIGN rvalue { // TODO: init_list or something different?
-        $$ = analyser.declare_matrix($2, $4);   
+        // $$ = analyser.declare_matrix($2, $4);   
     };
 
 init_list: %empty // TODO
 
 assignment :
     identifier ASSIGN rvalue {
-        $$ = analyser.assign($1, $3);
+        // $$ = analyser.assign($1, $3);
     }
     | identifier ASSIGNOP rvalue {
         /* TODO: find a way to allow this without conflicts */
-        $$ = analyser.assign($1, $3, $2);
+        // $$ = analyser.assign($1, $3, $2);
     };
 
 single_calc :
     expr {
-        $$ = analyser.single_calculation($1);
+        $$ = std::move(analyser.single_calculation(std::move($1)));
     };
 
 rvalue :
     expr {
-        $$ = $1;
+        // $$ = $1;
     }
     | init_list // TODO
     ;
 
 arr_size :
     OBRACKET REAL CBRACKET {
-        $$ = analyser.make_array_index($2);
+        // $$ = analyser.make_array_index($2);
     };
 
 mat_size :
     OBRACKET REAL COMMA REAL CBRACKET {
-        $$ = analyser.make_matrix_index($2, $4);
+        // $$ = analyser.make_matrix_index($2, $4);
     };
 
 identifier :
     ID {
-        $$ = analyser.retrieve_identifier($1);
+        // $$ = analyser.retrieve_identifier($1);
     }
     | ID OBRACKET index CBRACKET {
-        auto index = analyser.make_array_index($3);
-        $$ = analyser.retrieve_identifier($1, index);
+        // auto index = analyser.make_array_index($3);
+        // $$ = analyser.retrieve_identifier($1, index);
     }
     | ID OBRACKET index COMMA index CBRACKET {
-        auto index = analyser.make_matrix_index($3, $5);
-        $$ = analyser.retrieve_identifier($1, index);
+        // auto index = analyser.make_matrix_index($3, $5);
+        // $$ = analyser.retrieve_identifier($1, index);
     }
     | ID OBRACKET COMMA index CBRACKET {
-        auto index = analyser.make_matrix_index($4);
-        $$ = analyser.retrieve_identifier($1, index);
+        // auto index = analyser.make_matrix_index($4);
+        // $$ = analyser.retrieve_identifier($1, index);
     };
     
 
 index :
     identifier {
-        $$ = $1;
+        // $$ = $1;
     }
     | REAL {
-        $$ = $1;
+        // $$ = $1;
     };
 
 // op          : COMPARISON    { $$ = 0; /* TODO */ }
@@ -264,7 +263,7 @@ expr :
         $$ = $1 / $3;
     }
     | expr POWER expr {
-        $$ = analyser.pow($1, $3);
+        $$ = $1.pow($3);
     }
     | expr MOD expr {
         $$ = $1 % $3;
@@ -273,7 +272,7 @@ expr :
         $$ = -$2;
     }
     | OPAR expr CPAR {
-        $$ = $2;
+        $$ = std::move($2);
     };
 %%
 
