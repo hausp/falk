@@ -21,6 +21,8 @@ namespace falk {
     namespace ev {
         // Responsible for all semantic actions in 'interpreted mode'
         class evaluator {
+            using node = ast::node<evaluator>;
+            using node_ptr = std::shared_ptr<node>;
          public:
             // Aliases to define semantical types (objects).
             using real = double;
@@ -58,43 +60,33 @@ namespace falk {
             // identifier retrieve_identifier(const std::string&, array_index) { return identifier{}; }
             // identifier retrieve_identifier(const std::string&, matrix_index) { return identifier{}; }
 
+            void analyse(real) { }
+            void analyse(complex) { }
+            void analyse(boolean) { }
+            void analyse(operation<op::Arithmetical, 2>, std::array<node_ptr, 2>&) { }
+            void analyse(operation<op::Arithmetical, 1>, std::array<node_ptr, 1>&) { }
+
             value single_calculation(value value);
          private:
             symbol_mapper mapper;
 
          public:
-            static constexpr auto ADD = 
-                operation<op::Arithmetical, 2>{op::Arithmetical::ADD};
-            static constexpr auto SUB =
-                operation<op::Arithmetical, 2>{op::Arithmetical::SUB};
-            static constexpr auto MULT =
-                operation<op::Arithmetical, 2>{op::Arithmetical::MULT};
-            static constexpr auto DIV =
-                operation<op::Arithmetical, 2>{op::Arithmetical::DIV};
-            static constexpr auto POW =
-                operation<op::Arithmetical, 2>{op::Arithmetical::POW};
-            static constexpr auto MOD =
-                operation<op::Arithmetical, 2>{op::Arithmetical::MOD};
-            static constexpr auto AND =
-                operation<op::Logical, 2>{op::Logical::AND};
-            static constexpr auto OR =
-                operation<op::Logical, 2>{op::Logical::OR};
-            static constexpr auto NOT =
-                operation<op::Logical, 2>{op::Logical::NOT};
-            static constexpr auto ADD_ASSIGN =
-                operation<op::Arithmetical, 2>{op::Arithmetical::ADD_ASSIGN};
-            static constexpr auto SUB_ASSIGN =
-                operation<op::Arithmetical, 2>{op::Arithmetical::SUB_ASSIGN};
-            static constexpr auto MULT_ASSIGN =
-                operation<op::Arithmetical, 2>{op::Arithmetical::MULT_ASSIGN};
-            static constexpr auto DIV_ASSIGN =
-                operation<op::Arithmetical, 2>{op::Arithmetical::DIV_ASSIGN};
-            static constexpr auto POW_ASSIGN =
-                operation<op::Arithmetical, 2>{op::Arithmetical::POW_ASSIGN};
-            static constexpr auto MOD_ASSIGN =
-                operation<op::Arithmetical, 2>{op::Arithmetical::MOD_ASSIGN};
-            static constexpr auto UNARY_SUB =
-                operation<op::Arithmetical, 1>{op::Arithmetical::SUB};
+            static const operation<op::Arithmetical, 2> ADD;
+            static const operation<op::Arithmetical, 2> SUB;
+            static const operation<op::Arithmetical, 2> MULT;
+            static const operation<op::Arithmetical, 2> DIV;
+            static const operation<op::Arithmetical, 2> POW;
+            static const operation<op::Arithmetical, 2> MOD;
+            static const operation<op::Logical, 2> AND;
+            static const operation<op::Logical, 2> OR;
+            static const operation<op::Logical, 2> NOT;
+            static const operation<op::Arithmetical, 2> ADD_ASSIGN;
+            static const operation<op::Arithmetical, 2> SUB_ASSIGN;
+            static const operation<op::Arithmetical, 2> MULT_ASSIGN;
+            static const operation<op::Arithmetical, 2> DIV_ASSIGN;
+            static const operation<op::Arithmetical, 2> POW_ASSIGN;
+            static const operation<op::Arithmetical, 2> MOD_ASSIGN;
+            static const operation<op::Arithmetical, 1> UNARY_SUB;
         };
 
 

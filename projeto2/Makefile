@@ -83,7 +83,9 @@ tests: makedir $(TCALL)
 
 $(foreach t,$(TCALL),$(t): $(OBJDIR)/$(TESTDIR)/$(t).o $(BINDIR)/$(t))
 
-$(TEXEC): $(PUREOBJ) $(TPUREOBJ) LDFLAGS+=-lgtest
+$(TEXEC): LDFLAGS+=-lgtest
+
+$(TEXEC): $(PUREOBJ) $(TPUREOBJ)
 	@echo "[linking] $@"
 	@$(CXX) $(PUREOBJ) $(OBJDIR)/$(TESTDIR)/$(@F).o -o $@ $(LDLIBS) $(LDFLAGS)
 

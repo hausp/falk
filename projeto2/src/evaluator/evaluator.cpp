@@ -1,6 +1,39 @@
 
-// #include "evaluator/evaluator.hpp"
-// #include "evaluator/expr.hpp"
+#include "evaluator/evaluator.hpp"
+#include "evaluator/expr.hpp"
+
+const auto falk::ev::evaluator::ADD = 
+    operation<op::Arithmetical, 2>{op::Arithmetical::ADD};
+const auto falk::ev::evaluator::SUB =
+    operation<op::Arithmetical, 2>{op::Arithmetical::SUB};
+const auto falk::ev::evaluator::MULT =
+    operation<op::Arithmetical, 2>{op::Arithmetical::MULT};
+const auto falk::ev::evaluator::DIV =
+    operation<op::Arithmetical, 2>{op::Arithmetical::DIV};
+const auto falk::ev::evaluator::POW =
+    operation<op::Arithmetical, 2>{op::Arithmetical::POW};
+const auto falk::ev::evaluator::MOD =
+    operation<op::Arithmetical, 2>{op::Arithmetical::MOD};
+const auto falk::ev::evaluator::AND =
+    operation<op::Logical, 2>{op::Logical::AND};
+const auto falk::ev::evaluator::OR =
+    operation<op::Logical, 2>{op::Logical::OR};
+const auto falk::ev::evaluator::NOT =
+    operation<op::Logical, 2>{op::Logical::NOT};
+const auto falk::ev::evaluator::ADD_ASSIGN =
+    operation<op::Arithmetical, 2>{op::Arithmetical::ADD_ASSIGN};
+const auto falk::ev::evaluator::SUB_ASSIGN =
+    operation<op::Arithmetical, 2>{op::Arithmetical::SUB_ASSIGN};
+const auto falk::ev::evaluator::MULT_ASSIGN =
+    operation<op::Arithmetical, 2>{op::Arithmetical::MULT_ASSIGN};
+const auto falk::ev::evaluator::DIV_ASSIGN =
+    operation<op::Arithmetical, 2>{op::Arithmetical::DIV_ASSIGN};
+const auto falk::ev::evaluator::POW_ASSIGN =
+    operation<op::Arithmetical, 2>{op::Arithmetical::POW_ASSIGN};
+const auto falk::ev::evaluator::MOD_ASSIGN =
+    operation<op::Arithmetical, 2>{op::Arithmetical::MOD_ASSIGN};
+const auto falk::ev::evaluator::UNARY_SUB =
+    operation<op::Arithmetical, 1>{op::Arithmetical::SUB};
 
 // falk::ev::evaluator::program falk::ev::evaluator::append(program, command) {
 // 	return program{};

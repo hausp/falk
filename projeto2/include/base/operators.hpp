@@ -39,7 +39,7 @@ namespace falk {
 
     template<typename Action, size_t Arity>
     struct operation {
-        constexpr size_t arity() {return Arity; }
+        static constexpr size_t arity() {return Arity; }
         
         Action action;
     };

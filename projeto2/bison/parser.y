@@ -176,7 +176,7 @@ assignment :
 
 single_calc :
     expr {
-        $$ = std::move(analyser.single_calculation(std::move($1)));
+        $$ = analyser.single_calculation(std::move($1));
     };
 
 rvalue :
@@ -245,10 +245,10 @@ expr :
         $$ = $1;
     }
     | identifier {
-        $$ = falk::ev::TRUE; /* TODO */
+        $$ = true; /* TODO */
     }
     | expr COMPARISON expr {
-        $$ = falk::ev::TRUE; /* TODO: use $2.operation */
+        $$ = true; /* TODO: use $2.operation */
     }
     | expr PLUS expr {
         $$ = $1 + $3;
