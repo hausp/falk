@@ -36,9 +36,9 @@ bin/
 *.d
 *~
 
-include/Parser.hpp
+include/parser.hpp
 include/location.hh
 include/position.hh
 include/stack.hh
-src/Parser.cpp
-src/Scanner.cpp
+src/parser.cpp
+src/scanner.cpp
