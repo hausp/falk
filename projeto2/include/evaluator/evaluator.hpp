@@ -21,6 +21,21 @@ namespace falk {
         class evaluator {
          public:
             using Type = Type;
+            
+            static constexpr auto ADD = op::Arithmetical::ADD;
+            static constexpr auto SUB = op::Arithmetical::SUB;
+            static constexpr auto MULT = op::Arithmetical::MULT;
+            static constexpr auto DIV = op::Arithmetical::DIV;
+            static constexpr auto POW = op::Arithmetical::POW;
+            static constexpr auto AND = op::Logical::AND;
+            static constexpr auto OR = op::Logical::OR;
+            static constexpr auto NOT = op::Logical::NOT;
+            static constexpr auto ADD_ASSIGN = op::Arithmetical::ADD_ASSIGN;
+            static constexpr auto SUB_ASSIGN = op::Arithmetical::SUB_ASSIGN;
+            static constexpr auto MULT_ASSIGN = op::Arithmetical::MULT_ASSIGN;
+            static constexpr auto DIV_ASSIGN = op::Arithmetical::DIV_ASSIGN;
+            static constexpr auto POW_ASSIGN = op::Arithmetical::POW_ASSIGN;
+
             // Definitions for parser
             using generic = ev::value;
 
