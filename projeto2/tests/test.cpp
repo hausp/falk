@@ -95,7 +95,7 @@ TEST_F(FalkTest, interpreter_v1) {
     outputs.add("res = 0");
 
     inputs.add("40 % 6");
-    outputs.add("res = 2");
+    outputs.add("res = 4");
 
     inputs.add("2 + 2 * 2 + 2");
     outputs.add("res = 8");

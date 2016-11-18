@@ -70,23 +70,24 @@ namespace sma {
      private:
         node_ptr object;
 
-        void op_assign(value<Analyser>& rhs, typename Analyser::binary_operation op) {
+        template<typename T>
+        void op_assign(value<Analyser>& rhs, const T& op) {
             auto n = std::make_unique<node>(op);
             n.add_subnode(std::move(object));
             n.add_subnode(std::move(rhs.object));
             object = n;
         }
 
-        value<Analyser> op(value<Analyser>& lhs,
-                           value<Analyser>& rhs,
-                           typename Analyser::binary_operation op) {
+        template<typename T>
+        value<Analyser> op(value<Analyser>& lhs, value<Analyser>& rhs, const T& op) {
             auto n = std::make_unique<node>(op);
             n.add_subnode(std::move(object));
             n.add_subnode(std::move(rhs.object));
             return n;
         }
 
-        value<Analyser> op(value<Analyser>& lhs, typename Analyser::unary_operation op) {
+        template<typename T>
+        value<Analyser> op(value<Analyser>& lhs, const T& op) {
             auto n = std::make_unique<node>(op);
             n.add_subnode(std::move(object));
             return n;
