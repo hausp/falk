@@ -87,17 +87,15 @@
 %token<falk::op::Logical> OR  "|";
 %token<falk::op::Logical> NOT "!";
 
-%type<falk::generic> program;
-%type<falk::generic> command;
-%type<falk::generic> new_line eoc;
-%type<falk::generic> declaration;
-%type<falk::generic> assignment;
-%type<falk::value> identifier;
-%type<falk::array_index> arr_size;
-%type<falk::matrix_index> mat_size;
+%type<int> program;
+%type<falk::value> command;
+%type<falk::value> identifier arr_size mat_size;
 %type<falk::value> expr single_calc;
+%type<falk::generic> assignment;
+%type<falk::generic> declaration;
 %type<falk::generic> index rvalue;
 %type<falk::generic> init_list; // CHANGE THIS
+%type<int> new_line eoc;
 
 /* Operator precedence for mathematical operators
  * The latest it is listed, the highest the precedence
@@ -121,21 +119,18 @@ program :
         $$ = analyser.create_program();
     }
     | program new_line {
-        $$ = analyser.append($1, $2);
+        $$ = $1;
+        $$ += $2;
     }
     | program command eoc {
-        $$ = analyser.append($1, $2);
-        $$ = analyser.append($$, $3);
+        $$ = $1;
+        $$ += $2;
     };
     // | program function
 
-eoc :
-    SEMICOLON {
-        $$ = analyser.semicolon();
-    }
-    | new_line {
-        $$ = $1;
-    };
+eoc : SEMICOLON
+    | new_line
+    ;
 
 new_line :
     NL { $$ = analyser.new_line(); };
@@ -144,7 +139,7 @@ command :
     SEMICOLON { $$ = analyser.empty_command(); }
     | single_calc { $$ = $1; }
     | declaration { $$ = $1; }
-    | assignment { $$ = $1; };
+    | assignment  { $$ = $1; };
 
 declaration :
     VAR ID {

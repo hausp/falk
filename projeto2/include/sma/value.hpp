@@ -3,13 +3,18 @@
 #define SMA_VALUE_HPP
 
 #include "ast/node.hpp"
-#include "base/operators.hpp"
 
 // Semantical Abstractions
 namespace sma {
+    // Empty node
+    template<typename Analyser>
+    class empty;
+
     // Abstraction for lvalues and rvalues.
     template<typename Analyser>
     class value {
+        friend class empty<Analyser>;
+
         using node = ast::node<Analyser>;
         using node_ptr = std::unique_ptr<node>;
      public:
@@ -70,27 +75,53 @@ namespace sma {
      private:
         node_ptr object;
 
+        value() = default;
+
         template<typename T>
         void op_assign(value<Analyser>& rhs, const T& op) {
-            auto n = std::make_unique<node>(op);
-            n.add_subnode(std::move(object));
-            n.add_subnode(std::move(rhs.object));
-            object = n;
+            if (rhs.object.empty()) {
+                object = std::move(rhs.object);
+            } else if (!object.empty()) {
+                auto n = std::make_unique<node>(op);
+                n.add_subnode(std::move(object));
+                n.add_subnode(std::move(rhs.object));
+                object = n;
+            } else {
+                rhs.object.reset(new ast::empty_node<Analyser>);
+            }
         }
 
         template<typename T>
         value<Analyser> op(value<Analyser>& lhs, value<Analyser>& rhs, const T& op) {
-            auto n = std::make_unique<node>(op);
-            n.add_subnode(std::move(object));
-            n.add_subnode(std::move(rhs.object));
-            return n;
+            if (rhs.object.empty()) {
+                lhs.object.reset(new ast::empty_node<Analyser>);
+                auto value = sma::value{};
+                value.object.reset(new ast::empty_node<Analyser>);
+                return value;
+            }
+            
+            if(lhs.object.empty()) {
+                rhs.object.reset(new ast::empty_node<Analyser>);
+                // a error here
+                return sma::empty{};
+            }
+            
+            auto value = value<Analyser>{op};
+            value.object.add_subnode(std::move(object));
+            value.object.add_subnode(std::move(rhs.object));
+            return value;
         }
 
         template<typename T>
         value<Analyser> op(value<Analyser>& lhs, const T& op) {
-            auto n = std::make_unique<node>(op);
-            n.add_subnode(std::move(object));
-            return n;
+            if(lhs.object.empty()) {
+                rhs.object.reset(new ast::empty_node<Analyser>);
+                return sma::empty{};
+            }
+
+            auto value = value<Analyser>{op};
+            value.object.add_subnode(std::move(object));
+            return value;
         }
     };
 

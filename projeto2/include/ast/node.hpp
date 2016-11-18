@@ -29,6 +29,7 @@ namespace ast {
      public:
         virtual void traverse(Analyser&) = 0;
         virtual void add_subnode(std::unique_ptr<node<Analyser>>) = 0;
+        virtual bool empty() { return false; }
     };
 
     template<typename Analyser, typename T, bool = has_arity<T>::value>
@@ -62,6 +63,14 @@ namespace ast {
         T data;
         holder operands;
     };
+
+    template<typename Analyser>
+    class empty_node : public node<Analyser> {
+     public:
+        void traverse(Analyser&) { };
+        void add_subnode(std::unique_ptr<node<Analyser>>) { };
+        bool empty() { return true; }
+    }
 }
 
 #endif /* FALK_AST_NODE_HPP */
