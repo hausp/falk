@@ -95,7 +95,7 @@ namespace sma {
         value<Analyser> op(value<Analyser>& lhs, value<Analyser>& rhs, const T& op) {
             if (rhs.object.empty()) {
                 lhs.object.reset(new ast::empty_node<Analyser>);
-                auto value = sma::value{};
+                auto value = sma::value<Analyser>{};
                 value.object.reset(new ast::empty_node<Analyser>);
                 return value;
             }
@@ -103,10 +103,10 @@ namespace sma {
             if(lhs.object.empty()) {
                 rhs.object.reset(new ast::empty_node<Analyser>);
                 // a error here
-                return sma::empty{};
+                return sma::empty<Analyser>{};
             }
             
-            auto value = value<Analyser>{op};
+            auto value = sma::value<Analyser>{op};
             value.object.add_subnode(std::move(object));
             value.object.add_subnode(std::move(rhs.object));
             return value;
@@ -115,8 +115,8 @@ namespace sma {
         template<typename T>
         value<Analyser> op(value<Analyser>& lhs, const T& op) {
             if(lhs.object.empty()) {
-                rhs.object.reset(new ast::empty_node<Analyser>);
-                return sma::empty{};
+                lhs.object.reset(new ast::empty_node<Analyser>);
+                return sma::empty<Analyser>{};
             }
 
             auto value = value<Analyser>{op};
@@ -133,6 +133,11 @@ namespace sma {
     template<typename Analyser>
     value<Analyser> operator-(value<Analyser>& lhs, value<Analyser>& rhs) {
         return op(lhs, rhs, Analyser::SUB);   
+    }
+
+    template<typename Analyser>
+    value<Analyser> operator-(value<Analyser>& rhs) {
+        return op(rhs, Analyser::UNARY_SUB);   
     }
 
     template<typename Analyser>

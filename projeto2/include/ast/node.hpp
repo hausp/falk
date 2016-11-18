@@ -70,7 +70,7 @@ namespace ast {
         void traverse(Analyser&) { };
         void add_subnode(std::unique_ptr<node<Analyser>>) { };
         bool empty() { return true; }
-    }
+    };
 }
 
 #endif /* FALK_AST_NODE_HPP */
