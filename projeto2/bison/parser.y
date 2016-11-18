@@ -43,9 +43,9 @@
 
 %define api.token.prefix {TOKEN_}
 
-%token<std::string> ID      "variable identifier";
-%token<falk::Type>  TYPE    "type identifier";
-%token<falk::real>  REAL    "real value";
+%token<std::string> ID        "variable identifier";
+%token<falk::Type>  TYPE      "type identifier";
+%token<falk::real>  REAL      "real value";
 %token<falk::complex> COMPLEX "complex value";
 %token<falk::boolean> BOOL    "boolean value";
 

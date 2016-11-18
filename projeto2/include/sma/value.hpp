@@ -23,13 +23,6 @@ namespace sma {
         template<typename T>
         value(T data):
           object{new ast::model<Analyser, T>{std::move(data)}} { }
-
-        // value(const value& v):
-        //   object{std::move(v.object)} { }
-
-        // value<Analyser>& operator=(const value& v) {
-        //     object = std::move(v.object);
-        // }
     
         value<Analyser>& operator+=(value<Analyser>& rhs) {
             op_assign(rhs, Analyser::ADD_ASSIGN);
