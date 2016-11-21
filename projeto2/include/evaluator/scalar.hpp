@@ -13,6 +13,7 @@ namespace falk {
         class scalar {
          public:
             scalar(double);
+            scalar(int);
             scalar(std::complex<double>);
             scalar(falk::type = falk::type::UNDEFINED, double = 0, double = 0);
             scalar(bool);
@@ -29,7 +30,30 @@ namespace falk {
             operator long() const;
 
             scalar pow(const scalar&);
-            scalar pow_assign(const scalar&);
+            scalar pow_assign(const scalar&) {
+                return scalar{};
+            }
+
+            scalar operator+=(const scalar&) {
+                return scalar{};
+            }
+
+            scalar operator-=(const scalar&) {
+                return scalar{};
+            }
+
+            scalar operator*=(const scalar&) {
+                return scalar{};
+            }
+
+            scalar operator/=(const scalar&) {
+                return scalar{};
+            }
+
+            scalar operator%=(const scalar&) {
+                return scalar{};
+            }
+
          private:
             falk::fundamental::type _type;
             double _real = 0;
@@ -51,6 +75,9 @@ namespace falk {
         // class scalar methods
         inline scalar::scalar(double v):
           _type{falk::type::REAL}, _real{v} { }
+
+        inline scalar::scalar(int v):
+          _type{falk::type::REAL}, _real{static_cast<double>(v)} { }
         
         inline scalar::scalar(std::complex<double> v):
           _type{falk::type::COMPLEX}, _real{v.real()}, _imag{v.imag()} { }

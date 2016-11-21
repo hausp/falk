@@ -62,7 +62,7 @@ namespace falk {
             // identifier retrieve_identifier(const std::string&, array_index) { return identifier{}; }
             // identifier retrieve_identifier(const std::string&, matrix_index) { return identifier{}; }
 
-            void analyse(rvalue);
+            void analyse(scalar);
             void analyse(op::ADD, std::array<node_ptr, 2>&);
             void analyse(op::SUB, std::array<node_ptr, 2>&);
             void analyse(op::MULT, std::array<node_ptr, 2>&);
@@ -82,7 +82,7 @@ namespace falk {
             rvalue single_calculation(rvalue value);
          private:
             symbol_mapper mapper;
-            std::stack<rvalue> var_stacker;
+            std::stack<scalar> var_stacker;
             std::stack<array> array_stacker;
             std::stack<matrix> matrix_stacker;
             std::stack<structural::type> types_stacker;
@@ -99,24 +99,27 @@ namespace falk {
                 if (t1 == t2) {
                     switch (t1) {
                         case structural::type::VARIABLE: {
-                            auto lhs = aut::pop(var_stacker);
                             auto rhs = aut::pop(var_stacker);
+                            auto lhs = aut::pop(var_stacker);
                             auto result = callback(lhs, rhs);
                             var_stacker.push(result);
+                            types_stacker.push(structural::type::VARIABLE);
                             break;
                         }
                         case structural::type::ARRAY: {
-                            auto lhs = aut::pop(array_stacker);
                             auto rhs = aut::pop(array_stacker);
+                            auto lhs = aut::pop(array_stacker);
                             auto result = callback(lhs, rhs);
                             array_stacker.push(result);
+                            types_stacker.push(structural::type::ARRAY);
                             break;
                         }
                         case structural::type::MATRIX: {
-                            auto lhs = aut::pop(matrix_stacker);
                             auto rhs = aut::pop(matrix_stacker);
+                            auto lhs = aut::pop(matrix_stacker);
                             auto result = callback(lhs, rhs);
                             matrix_stacker.push(result);
+                            types_stacker.push(structural::type::MATRIX);
                             break;
                         }
                     }
@@ -135,22 +138,22 @@ namespace falk {
                 if (t1 == t2) {
                     switch (t1) {
                         case structural::type::VARIABLE: {
-                            auto lhs = aut::pop(var_stacker);
                             auto rhs = aut::pop(var_stacker);
+                            auto lhs = aut::pop(var_stacker);
                             auto result = callback(lhs, rhs);
                             // TODO
                             break;
                         }
                         case structural::type::ARRAY: {
-                            auto lhs = aut::pop(array_stacker);
                             auto rhs = aut::pop(array_stacker);
+                            auto lhs = aut::pop(array_stacker);
                             auto result = callback(lhs, rhs);
                             // TODO
                             break;
                         }
                         case structural::type::MATRIX: {
-                            auto lhs = aut::pop(matrix_stacker);
                             auto rhs = aut::pop(matrix_stacker);
+                            auto lhs = aut::pop(matrix_stacker);
                             auto result = callback(lhs, rhs);
                             // TODO
                             break;
@@ -166,8 +169,8 @@ namespace falk {
         }
 
         inline ast_evaluator::complex ast_evaluator::make_complex(const std::string& text) {
-            // TODO
-            return std::complex<double>{};
+            auto clean_text = text.substr(0, text.size() - 2);
+            return std::complex<double>{0, std::stod(text)};
         }
 
         inline ast_evaluator::boolean ast_evaluator::make_boolean(const std::string& text) {
@@ -180,8 +183,25 @@ namespace falk {
         }
 
         inline ast_evaluator::rvalue ast_evaluator::single_calculation(rvalue value) {
-            rvalue->traverse(*this);
-            // std::cout << "res = " << value << std::endl;
+            value.traverse(*this);
+            auto type = aut::pop(types_stacker);
+            switch (type) {
+                case structural::type::VARIABLE: {
+                    auto v = aut::pop(var_stacker);
+                    std::cout << "res = " << v << std::endl;
+                    break;
+                }
+                case structural::type::ARRAY: {
+                    auto v = aut::pop(array_stacker);
+                    // std::cout << "res = " << v << std::endl;
+                    break;
+                }
+                case structural::type::MATRIX: {
+                    auto v = aut::pop(matrix_stacker);
+                    // std::cout << "res = " << v << std::endl;
+                    break;
+                }
+            }
             return value;
         }
     }

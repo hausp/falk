@@ -1,7 +1,7 @@
 
 #include "evaluator/ast_evaluator.hpp"
 
-void falk::ev::ast_evaluator::analyse(rvalue value) {
+void falk::ev::ast_evaluator::analyse(scalar value) {
     var_stacker.push(value);
     types_stacker.push(structural::type::VARIABLE);
 }

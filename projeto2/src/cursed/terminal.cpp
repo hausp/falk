@@ -90,7 +90,11 @@ std::string cursed::terminal::get_line() {
         buffer.push_back(current_input);
     }
     current_input.push_back(ch);
-    mvprintw(cursor_y, o_cursor_x, current_input.c_str());
+
+    wmove(stdscr, cursor_y, o_cursor_x);
+    for (auto& c : current_input) {
+        waddch(stdscr, c);
+    }
     return current_input;
 }
 
@@ -184,7 +188,11 @@ void cursed::terminal::page_down_pressed() {
 void cursed::terminal::save_character(int ch) {
     if (isprint(ch)) {
         current_input.insert(cursor_x - o_cursor_x, 1, ch);
-        mvwprintw(stdscr, cursor_y, o_cursor_x, current_input.c_str());
+
+        wmove(stdscr, cursor_y, o_cursor_x);
+        for (auto& c : current_input) {
+            waddch(stdscr, c);
+        }
         ++cursor_x;
         wmove(stdscr, cursor_y, cursor_x);
     }
