@@ -44,7 +44,7 @@
 %define api.token.prefix {TOKEN_}
 
 %token<std::string> ID        "variable identifier";
-%token<falk::Type>  TYPE      "type identifier";
+%token<falk::type>  TYPE      "type identifier";
 %token<falk::real>  REAL      "real value";
 %token<falk::complex> COMPLEX "complex value";
 %token<falk::boolean> BOOL    "boolean value";
@@ -73,24 +73,24 @@
 %token CBRACKET  "]";
 %token EOF 0     "end of file";
 
-%token<falk::op::Arithmetical> PLUS     "+";
-%token<falk::op::Arithmetical> MINUS    "-";
-%token<falk::op::Arithmetical> TIMES    "*";
-%token<falk::op::Arithmetical> DIVIDE   "/";
-%token<falk::op::Arithmetical> POWER    "**";
-%token<falk::op::Arithmetical> MOD      "%";
-%token<falk::op::Arithmetical> ASSIGNOP; // TODO: description?
+%token<falk::op::arithmetic> PLUS     "+";
+%token<falk::op::arithmetic> MINUS    "-";
+%token<falk::op::arithmetic> TIMES    "*";
+%token<falk::op::arithmetic> DIVIDE   "/";
+%token<falk::op::arithmetic> POWER    "**";
+%token<falk::op::arithmetic> MOD      "%";
+%token<falk::op::arithmetic> ASSIGNOP; // TODO: description?
 
-%token<falk::op::Comparison> COMPARISON; // TODO: description?
+%token<falk::op::comparison> COMPARISON; // TODO: description?
 
-%token<falk::op::Logical> AND "&";
-%token<falk::op::Logical> OR  "|";
-%token<falk::op::Logical> NOT "!";
+%token<falk::op::logic> AND "&";
+%token<falk::op::logic> OR  "|";
+%token<falk::op::logic> NOT "!";
 
 %type<int> program;
-%type<falk::value> command;
-%type<falk::value> identifier arr_size mat_size;
-%type<falk::value> expr single_calc;
+%type<falk::rvalue> command;
+%type<falk::rvalue> identifier arr_size mat_size;
+%type<falk::rvalue> expr single_calc;
 %type<int> assignment;
 %type<int> declaration;
 %type<int> index rvalue;
@@ -124,7 +124,7 @@ program :
     }
     | program command eoc {
         $$ = $1;
-        // $$ += $2;
+        $$ += $2;
     };
     // | program function
 

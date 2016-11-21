@@ -8,22 +8,34 @@ namespace falk {
     template<typename T>
     struct definitions;
 
-    enum class Type {
-        UNDEFINED,
-        REAL,
-        COMPLEX,
-        BOOL,
-    };
+    namespace fundamental {
+        enum class type {
+            UNDEFINED,
+            REAL,
+            COMPLEX,
+            BOOL,
+        };
+    }
 
-    inline Type resolve_types(Type t1, Type t2) {
+    namespace structural {
+        enum class type {
+            VARIABLE,
+            ARRAY,
+            MATRIX,
+        };
+    }
+
+    using type = fundamental::type;
+
+    inline type resolve_types(type t1, type t2) {
         if (t1 != t2) {
-            if (t1 == Type::BOOL || t2 == Type::BOOL) {
+            if (t1 == type::BOOL || t2 == type::BOOL) {
                 // TODO
-            } else if (t1 == Type::COMPLEX || t2 == Type::COMPLEX) {
-                return Type::COMPLEX;
+            } else if (t1 == type::COMPLEX || t2 == type::COMPLEX) {
+                return type::COMPLEX;
             }
             // TODO: mensagem de erro
-            return Type::UNDEFINED;
+            return type::UNDEFINED;
         }
         return t1;
     }

@@ -3,37 +3,37 @@
 #include "evaluator/expr.hpp"
 
 const auto falk::ev::evaluator::ADD = 
-    operation<op::Arithmetical, 2>{op::Arithmetical::ADD};
+    operation<op::arithmetic, 2>{op::arithmetic::ADD};
 const auto falk::ev::evaluator::SUB =
-    operation<op::Arithmetical, 2>{op::Arithmetical::SUB};
+    operation<op::arithmetic, 2>{op::arithmetic::SUB};
 const auto falk::ev::evaluator::MULT =
-    operation<op::Arithmetical, 2>{op::Arithmetical::MULT};
+    operation<op::arithmetic, 2>{op::arithmetic::MULT};
 const auto falk::ev::evaluator::DIV =
-    operation<op::Arithmetical, 2>{op::Arithmetical::DIV};
+    operation<op::arithmetic, 2>{op::arithmetic::DIV};
 const auto falk::ev::evaluator::POW =
-    operation<op::Arithmetical, 2>{op::Arithmetical::POW};
+    operation<op::arithmetic, 2>{op::arithmetic::POW};
 const auto falk::ev::evaluator::MOD =
-    operation<op::Arithmetical, 2>{op::Arithmetical::MOD};
+    operation<op::arithmetic, 2>{op::arithmetic::MOD};
 const auto falk::ev::evaluator::AND =
-    operation<op::Logical, 2>{op::Logical::AND};
+    operation<op::logic, 2>{op::logic::AND};
 const auto falk::ev::evaluator::OR =
-    operation<op::Logical, 2>{op::Logical::OR};
+    operation<op::logic, 2>{op::logic::OR};
 const auto falk::ev::evaluator::NOT =
-    operation<op::Logical, 2>{op::Logical::NOT};
+    operation<op::logic, 2>{op::logic::NOT};
 const auto falk::ev::evaluator::ADD_ASSIGN =
-    operation<op::Arithmetical, 2>{op::Arithmetical::ADD_ASSIGN};
+    operation<op::arithmetic, 2>{op::arithmetic::ADD_ASSIGN};
 const auto falk::ev::evaluator::SUB_ASSIGN =
-    operation<op::Arithmetical, 2>{op::Arithmetical::SUB_ASSIGN};
+    operation<op::arithmetic, 2>{op::arithmetic::SUB_ASSIGN};
 const auto falk::ev::evaluator::MULT_ASSIGN =
-    operation<op::Arithmetical, 2>{op::Arithmetical::MULT_ASSIGN};
+    operation<op::arithmetic, 2>{op::arithmetic::MULT_ASSIGN};
 const auto falk::ev::evaluator::DIV_ASSIGN =
-    operation<op::Arithmetical, 2>{op::Arithmetical::DIV_ASSIGN};
+    operation<op::arithmetic, 2>{op::arithmetic::DIV_ASSIGN};
 const auto falk::ev::evaluator::POW_ASSIGN =
-    operation<op::Arithmetical, 2>{op::Arithmetical::POW_ASSIGN};
+    operation<op::arithmetic, 2>{op::arithmetic::POW_ASSIGN};
 const auto falk::ev::evaluator::MOD_ASSIGN =
-    operation<op::Arithmetical, 2>{op::Arithmetical::MOD_ASSIGN};
+    operation<op::arithmetic, 2>{op::arithmetic::MOD_ASSIGN};
 const auto falk::ev::evaluator::UNARY_SUB =
-    operation<op::Arithmetical, 1>{op::Arithmetical::SUB};
+    operation<op::arithmetic, 1>{op::arithmetic::SUB};
 
 void falk::ev::evaluator::analyse(real value) {
     real_stack.push(value);
@@ -50,7 +50,7 @@ void falk::ev::evaluator::analyse(boolean value) {
     types_stack.push(Type::BOOL);
 }
 
-void falk::ev::evaluator::analyse(operation<op::Arithmetical, 2> op, std::array<node_ptr, 2>& operands) {
+void falk::ev::evaluator::analyse(operation<op::arithmetic, 2> op, std::array<node_ptr, 2>& operands) {
     using callback = std::function<void(evaluator&)>;
     static const std::unordered_map<decltype(op), callback> functions = {
         {ADD, [](evaluator& instance) {
@@ -114,7 +114,7 @@ void falk::ev::evaluator::analyse(operation<op::Arithmetical, 2> op, std::array<
     auto fn = functions.at(op);
 }
 
-void falk::ev::evaluator::analyse(operation<op::Arithmetical, 1> op, std::array<node_ptr, 1>& operand) {
+void falk::ev::evaluator::analyse(operation<op::arithmetic, 1> op, std::array<node_ptr, 1>& operand) {
     switch (op) {
         // TODO
     }
@@ -146,7 +146,7 @@ void falk::ev::evaluator::calc(const std::function<value(value, value)>& fn) {
 //  return val; // é ou não - GRAF, Merlseson. 2016.
 // }
 
-// falk::ev::evaluator::assignment falk::ev::evaluator::assign(identifier id, value val, op::Arithmetical op) {
+// falk::ev::evaluator::assignment falk::ev::evaluator::assign(identifier id, value val, op::arithmetic op) {
 //  auto curr_value = mapper.get(id);
 //  // TODO: apply op(curr_value, val)
 //  // mapper.assign(id, ??);

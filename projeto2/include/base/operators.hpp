@@ -4,7 +4,7 @@
 
 namespace falk {
     namespace op {
-        enum class Arithmetical {
+        enum class arithmetic {
             ADD,
             SUB,
             DIV,
@@ -19,7 +19,7 @@ namespace falk {
             MOD_ASSIGN,
         };
 
-        enum class Comparison {
+        enum class comparison {
             LT,
             GT,
             LE,
@@ -28,7 +28,7 @@ namespace falk {
             NE,
         };
 
-        enum class Logical {
+        enum class logic {
             AND,
             OR,
             NOT,

@@ -10,38 +10,36 @@
 #include "base/types.hpp"
 #include "function.hpp"
 #include "symbol_mapper.hpp"
-#include "value.hpp"
-
-#include "sma/value.hpp"
+#include "lvalue.hpp"
+#include "rvalue.hpp"
 
 namespace falk {
     namespace ev {
         // Responsible for all semantic actions in 'interpreted mode'
         class evaluator {
-            using node = ast::node<evaluator>;
-            using node_ptr = std::shared_ptr<node>;
          public:
             // Aliases to define semantical types (objects).
             using real = double;
             using complex = std::complex<double>;
             using boolean = bool;
 
-            // Alias to define semantic abstraction for values.
-            using value = ev::value;
+            // Alias to define semantic abstraction for rvalues.
+            using lvalue = ev::lvalue;
+            using rvalue = ev::rvalue;
 
             // Methods
-            // assignment assign(identifier, value);
-            // assignment assign(identifier, value, falk::op::Arithmetical);
+            // assignment assign(identifier, rvalue);
+            // assignment assign(identifier, rvalue, falk::op::arithmetic);
             
             int create_program() { return 0; }
             
             // declaration declare_array(const std::string&);
-            // declaration declare_array(const std::string&, value&);
-            // declaration declare_array(const std::string&, value&);
+            // declaration declare_array(const std::string&, rvalue&);
+            // declaration declare_array(const std::string&, rvalue&);
             
             // declaration declare_variable(const std::string&);
             // declaration declare_variable(const std::string&, Type);
-            // declaration declare_variable(const std::string&, value);
+            // declaration declare_variable(const std::string&, rvalue);
             
             // declaration declare_matrix(const std::string&);
             // declaration declare_matrix(const std::string&, matrix_index);
@@ -57,7 +55,7 @@ namespace falk {
             // identifier retrieve_identifier(const std::string&, array_index) { return identifier{}; }
             // identifier retrieve_identifier(const std::string&, matrix_index) { return identifier{}; }
 
-            value single_calculation(value value);
+            rvalue single_calculation(rvalue rvalue);
          private:
             symbol_mapper mapper;
         };
@@ -68,8 +66,8 @@ namespace falk {
         }
 
         inline evaluator::complex evaluator::make_complex(const std::string& text) {
-            // TODO
-            return std::complex<double>{};
+            auto clean_text = text.substr(0, text.size() - 2);
+            return std::complex<double>{0, std::stod(text)};
         }
 
         inline evaluator::boolean evaluator::make_boolean(const std::string& text) {
@@ -81,9 +79,9 @@ namespace falk {
             return 0;
         }
 
-        inline evaluator::value evaluator::single_calculation(value value) {
-            std::cout << "res = " << value << std::endl;
-            return value;
+        inline evaluator::rvalue evaluator::single_calculation(rvalue rvalue) {
+            std::cout << "res = " << rvalue << std::endl;
+            return rvalue;
         }
     }
 }

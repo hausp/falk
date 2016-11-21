@@ -31,7 +31,7 @@ namespace falk {
 
             // Methods
             // assignment assign(identifier, value);
-            // assignment assign(identifier, value, falk::op::Arithmetical);
+            // assignment assign(identifier, value, falk::op::arithmetic);
             
             int create_program() { return 0; }
             
@@ -60,8 +60,8 @@ namespace falk {
             void analyse(real);
             void analyse(complex);
             void analyse(boolean);
-            void analyse(operation<op::Arithmetical, 2>, std::array<node_ptr, 2>&);
-            void analyse(operation<op::Arithmetical, 1>, std::array<node_ptr, 1>&);
+            void analyse(operation<op::arithmetic, 2>, std::array<node_ptr, 2>&);
+            void analyse(operation<op::arithmetic, 1>, std::array<node_ptr, 1>&);
 
             value single_calculation(value value);
          private:
@@ -71,22 +71,22 @@ namespace falk {
             void calc(const std::function<value(value, value)>&);
 
          public:
-            static const operation<op::Arithmetical, 2> ADD;
-            static const operation<op::Arithmetical, 2> SUB;
-            static const operation<op::Arithmetical, 2> MULT;
-            static const operation<op::Arithmetical, 2> DIV;
-            static const operation<op::Arithmetical, 2> POW;
-            static const operation<op::Arithmetical, 2> MOD;
-            static const operation<op::Logical, 2> AND;
-            static const operation<op::Logical, 2> OR;
-            static const operation<op::Logical, 2> NOT;
-            static const operation<op::Arithmetical, 2> ADD_ASSIGN;
-            static const operation<op::Arithmetical, 2> SUB_ASSIGN;
-            static const operation<op::Arithmetical, 2> MULT_ASSIGN;
-            static const operation<op::Arithmetical, 2> DIV_ASSIGN;
-            static const operation<op::Arithmetical, 2> POW_ASSIGN;
-            static const operation<op::Arithmetical, 2> MOD_ASSIGN;
-            static const operation<op::Arithmetical, 1> UNARY_SUB;
+            static const operation<op::arithmetic, 2> ADD;
+            static const operation<op::arithmetic, 2> SUB;
+            static const operation<op::arithmetic, 2> MULT;
+            static const operation<op::arithmetic, 2> DIV;
+            static const operation<op::arithmetic, 2> POW;
+            static const operation<op::arithmetic, 2> MOD;
+            static const operation<op::logic, 2> AND;
+            static const operation<op::logic, 2> OR;
+            static const operation<op::logic, 2> NOT;
+            static const operation<op::arithmetic, 2> ADD_ASSIGN;
+            static const operation<op::arithmetic, 2> SUB_ASSIGN;
+            static const operation<op::arithmetic, 2> MULT_ASSIGN;
+            static const operation<op::arithmetic, 2> DIV_ASSIGN;
+            static const operation<op::arithmetic, 2> POW_ASSIGN;
+            static const operation<op::arithmetic, 2> MOD_ASSIGN;
+            static const operation<op::arithmetic, 1> UNARY_SUB;
         };
 
 

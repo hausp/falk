@@ -1,6 +1,5 @@
 
 #include "evaluator/evaluator.hpp"
-#include "evaluator/expr.hpp"
 
 // falk::ev::evaluator::program falk::ev::evaluator::append(program, command) {
 // 	return program{};
@@ -15,7 +14,7 @@
 // 	return val; // é ou não - GRAF, Merlseson. 2016.
 // }
 
-// falk::ev::evaluator::assignment falk::ev::evaluator::assign(identifier id, value val, op::Arithmetical op) {
+// falk::ev::evaluator::assignment falk::ev::evaluator::assign(identifier id, value val, op::arithmetic op) {
 // 	auto curr_value = mapper.get(id);
 // 	// TODO: apply op(curr_value, val)
 // 	// mapper.assign(id, ??);
