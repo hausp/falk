@@ -107,6 +107,7 @@
 %left TIMES DIVIDE MOD
 %left POWER
 %nonassoc U_MINUS
+%nonassoc U_PLUS
 %nonassoc OPAR CPAR
 
 %start program
@@ -270,6 +271,9 @@ expr :
     }
     | MINUS expr %prec U_MINUS {
         $$ = -$2;
+    }
+    | PLUS expr %prec U_PLUS {
+        $$ = $2;
     }
     | OPAR expr CPAR {
         $$ = std::move($2);

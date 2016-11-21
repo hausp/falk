@@ -1,5 +1,6 @@
 /* created by Ghabriel Nunes <ghabriel.nunes@gmail.com> [2016] */
 #include "Connection.hpp"
+#include <iostream>
 
 Connection::Connection(Connection&& other) {
     writable = other.writable;

@@ -56,9 +56,11 @@ namespace {
             auto& in = *in_it;
             auto& expected = *out_it;
             Connection program("./bin/execute_me");
-            program.send(in);
+            program.send(in + "\n hello darkness my old friend");
             auto actual = program.receive();
+
             // std::cout << "satan: [" << actual << "]" << std::endl;
+            actual = actual.substr(6);
 
             bool padded = false;
             if (actual.size() >= expected.size()) {
@@ -109,6 +111,12 @@ TEST_F(FalkTest, interpreter_v1) {
 
     inputs.add("0/0");
     outputs.add("res = -nan");
+
+    inputs.add("2 + -1");
+    outputs.add("res = 1");
+
+    inputs.add("2 - +1");
+    outputs.add("res = 1");
 
     inputs.add("--1");
     outputs.add("res = 1");

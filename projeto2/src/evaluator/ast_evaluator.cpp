@@ -88,18 +88,21 @@ void falk::ev::ast_evaluator::analyse(op::SUB_UNARY, std::array<node_ptr, 1>& op
             auto lhs = aut::pop(var_stacker);
             auto result = -lhs;
             var_stacker.push(result);
+            types_stacker.push(structural::type::VARIABLE);
             break;
         }
         case structural::type::ARRAY: {
             auto lhs = aut::pop(array_stacker);
             auto result = -lhs;
             array_stacker.push(result);
+            types_stacker.push(structural::type::ARRAY);
             break;
         }
         case structural::type::MATRIX: {
             auto lhs = aut::pop(matrix_stacker);
             auto result = -lhs;
             matrix_stacker.push(result);
+            types_stacker.push(structural::type::MATRIX);
             break;
         }
     }
