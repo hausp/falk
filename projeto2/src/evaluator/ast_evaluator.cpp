@@ -1,58 +1,109 @@
 
 #include "evaluator/ast_evaluator.hpp"
 
-void falk::ev::ast_evaluator::analyse(real value) {
-    real_stack.push(value);
-    types_stack.push(Type::REAL);
+void falk::ev::ast_evaluator::analyse(rvalue value) {
+    var_stacker.push(value);
+    types_stacker.push(structural::type::VARIABLE);
 }
 
-void falk::ev::ast_evaluator::analyse(complex value) {
-    complex_stack.push(value);
-    types_stack.push(Type::COMPLEX);
+void falk::ev::ast_evaluator::analyse(op::ADD, std::array<node_ptr, 2>& operands) {
+    calc(operands, [=](auto& lhs, auto& rhs) {
+        return lhs + rhs;
+    });
 }
 
-void falk::ev::ast_evaluator::analyse(boolean value) {
-    boolean_stack.push(value);
-    types_stack.push(Type::BOOL);
+void falk::ev::ast_evaluator::analyse(op::SUB, std::array<node_ptr, 2>& operands) {
+    calc(operands, [=](auto& lhs, auto& rhs) {
+        return lhs - rhs;
+    });
 }
 
-void falk::ev::ast_evaluator::analyse(ADD op, std::array<node_ptr, 2>& operands) {
-    for (auto& op : operands) {
-        op->traverse(*this);
+void falk::ev::ast_evaluator::analyse(op::MULT, std::array<node_ptr, 2>& operands) {
+    calc(operands, [=](auto& lhs, auto& rhs) {
+        return lhs * rhs;
+    });
+}
+
+void falk::ev::ast_evaluator::analyse(op::DIV, std::array<node_ptr, 2>& operands) {
+    calc(operands, [=](auto& lhs, auto& rhs) {
+        return lhs / rhs;
+    });
+}
+
+void falk::ev::ast_evaluator::analyse(op::POW, std::array<node_ptr, 2>& operands) {
+    calc(operands, [=](auto& lhs, auto& rhs) {
+        return lhs.pow(rhs);
+    });
+}
+
+void falk::ev::ast_evaluator::analyse(op::MOD, std::array<node_ptr, 2>& operands) {
+    calc(operands, [=](auto& lhs, auto& rhs) {
+        return lhs % rhs;
+    });
+}
+
+void falk::ev::ast_evaluator::analyse(op::ADD_ASSIGN, std::array<node_ptr, 2>& operands) {
+    calc_assign(operands, [=](auto& lhs, auto& rhs) {
+        return lhs += rhs;
+    });
+}
+
+void falk::ev::ast_evaluator::analyse(op::SUB_ASSIGN, std::array<node_ptr, 2>& operands) {
+    calc_assign(operands, [=](auto& lhs, auto& rhs) {
+        return lhs -= rhs;
+    });
+}
+
+void falk::ev::ast_evaluator::analyse(op::MULT_ASSIGN, std::array<node_ptr, 2>& operands) {
+    calc_assign(operands, [=](auto& lhs, auto& rhs) {
+        return lhs *= rhs;
+    });
+}
+
+void falk::ev::ast_evaluator::analyse(op::DIV_ASSIGN, std::array<node_ptr, 2>& operands) {
+    calc_assign(operands, [=](auto& lhs, auto& rhs) {
+        return lhs /= rhs;
+    });
+}
+
+void falk::ev::ast_evaluator::analyse(op::POW_ASSIGN, std::array<node_ptr, 2>& operands) {
+    calc_assign(operands, [=](auto& lhs, auto& rhs) {
+        return lhs.pow_assign(rhs);
+    });
+}
+
+void falk::ev::ast_evaluator::analyse(op::MOD_ASSIGN, std::array<node_ptr, 2>& operands) {
+    calc_assign(operands, [=](auto& lhs, auto& rhs) {
+        return lhs %= rhs;
+    });
+}
+
+void falk::ev::ast_evaluator::analyse(op::SUB_UNARY, std::array<node_ptr, 1>& operand) {
+    operand[0]->traverse(*this);
+
+    auto t1 = aut::pop(types_stacker);
+
+    switch (t1) {
+        case structural::type::VARIABLE: {
+            auto lhs = aut::pop(var_stacker);
+            auto result = -lhs;
+            var_stacker.push(result);
+            break;
+        }
+        case structural::type::ARRAY: {
+            auto lhs = aut::pop(array_stacker);
+            auto result = -lhs;
+            array_stacker.push(result);
+            break;
+        }
+        case structural::type::MATRIX: {
+            auto lhs = aut::pop(matrix_stacker);
+            auto result = -lhs;
+            matrix_stacker.push(result);
+            break;
+        }
     }
-
-    auto t1 = types.top();
-    types.pop();
-    auto t2 = types.top();
-    types.pop();
-
-    if (t1 == structural::type::MATRIX && t1 == t2) {
-        auto m1 = matrices.top();
-        matrices.pop():
-        auto m2 = matrices.top();
-        matrices.pop():
-        result = m1 + m2;
-    }
 }
-
-void falk::ev::ast_evaluator::analyse(operation<op::arithmetic, 1> op, std::array<node_ptr, 1>& operand) {
-    switch (op) {
-        // TODO
-    }
-}
-
-void falk::ev::ast_evaluator::calc(const std::function<value(value, value)>& fn) {
-    auto lhs = stacker.top();
-    stacker.pop();
-    auto rhs = stacker.top();
-    stacker.pop();
-
-    auto result_type = resolve_types(lhs.type, rhs.type);
-    // TODO: what if result_type == Type::UNDEFINED?
-
-    stacker.push(fn(lhs, rhs));
-};
-
 
 // falk::ev::ast_evaluator::program falk::ev::ast_evaluator::append(program, command) {
 //  return program{};

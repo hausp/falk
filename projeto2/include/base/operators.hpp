@@ -3,10 +3,10 @@
 #define FALK_OPERATORS_HPP
 
 namespace falk {
-    template<typename Type, Type Op>
+    template<typename Type, Type Op, size_t Arity = 2>
     struct operation;
 
-    namespace op {
+    struct op {
         enum class arithmetic {
             ADD,
             SUB,
@@ -46,6 +46,8 @@ namespace falk {
         using POW  = operation<op::arithmetic, op::arithmetic::POW>;
         using MOD  = operation<op::arithmetic, op::arithmetic::MOD>;
 
+        using SUB_UNARY  = operation<op::arithmetic, op::arithmetic::SUB, 1>;
+
         using ADD_ASSIGN  = operation<op::arithmetic, op::arithmetic::ADD_ASSIGN>;
         using SUB_ASSIGN  = operation<op::arithmetic, op::arithmetic::SUB_ASSIGN>;
         using MULT_ASSIGN = operation<op::arithmetic, op::arithmetic::MULT_ASSIGN>;
@@ -65,22 +67,22 @@ namespace falk {
         using NOT = operation<op::logic, op::logic::NOT>;
 
         using AND_ASSIGN = operation<op::logic, op::logic::AND_ASSIGN>;
-        using OR_ASSIGN  = operation<op::logic, op::comparison::OR_ASSIGN>;
-    }
-
-    template<op::arithmetic Op>
-    struct operation<op::arithmetic, Op> {
-        static constexpr size_t arity() { return 2; }
+        using OR_ASSIGN  = operation<op::logic, op::logic::OR_ASSIGN>;
     };
 
-    template<op::comparison Op>
-    struct operation<op::comparison, Op> {
-        static constexpr size_t arity() { return 2; }
+    template<op::arithmetic Op, size_t Arity>
+    struct operation<op::arithmetic, Op, Arity> {
+        static constexpr size_t arity() { return Arity; }
     };
 
-    template<op::logic Op>
-    struct operation<op::logic, Op> {
-        static constexpr size_t arity() { return 2; }
+    template<op::comparison Op, size_t Arity>
+    struct operation<op::comparison, Op, Arity> {
+        static constexpr size_t arity() { return Arity; }
+    };
+
+    template<op::logic Op, size_t Arity>
+    struct operation<op::logic, Op, Arity> {
+        static constexpr size_t arity() { return Arity; }
     };
 }
 

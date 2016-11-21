@@ -6,80 +6,75 @@
 
 // Semantical Abstractions
 namespace sma {
-    // Empty node
-    template<typename Analyser>
-    class empty;
-
     // Abstraction for lvalues and rvalues.
-    template<typename Analyser>
+    template<typename Analyser, typename Operation>
     class value {
-        friend class empty<Analyser>;
-
         using node = ast::node<Analyser>;
         using node_ptr = std::shared_ptr<node>;
      public:
-        value() = default;
+        value():
+          object{new ast::empty_node<Analyser>{}} { }
 
         template<typename T>
         value(T data):
           object{new ast::model<Analyser, T>{std::move(data)}} { }
     
-        value<Analyser>& operator+=(value<Analyser>& rhs) {
-            op_assign(rhs, Analyser::ADD_ASSIGN);
+        value<Analyser, Operation>& operator+=(value<Analyser, Operation>& rhs) {
+            op_assign(rhs, typename Operation::ADD_ASSIGN());
             return *this;
         }
 
-        value<Analyser>& operator-=(value<Analyser>& rhs) {
-            op_assign(rhs, Analyser::SUB_ASSIGN);
+        value<Analyser, Operation>& operator-=(value<Analyser, Operation>& rhs) {
+            op_assign(rhs, typename Operation::SUB_ASSIGN());
             return *this;
         }
 
-        value<Analyser>& operator*=(value<Analyser>& rhs) {
-            op_assign(rhs, Analyser::MULT_ASSIGN);
+        value<Analyser, Operation>& operator*=(value<Analyser, Operation>& rhs) {
+            op_assign(rhs, typename Operation::MULT_ASSIGN());
             return *this;
         }
 
-        value<Analyser>& operator/=(value<Analyser>& rhs) {
-            op_assign(rhs, Analyser::DIV_ASSIGN);
+        value<Analyser, Operation>& operator/=(value<Analyser, Operation>& rhs) {
+            op_assign(rhs, typename Operation::DIV_ASSIGN());
             return *this;
         }
 
-        value<Analyser>& operator%=(value<Analyser>& rhs) {
-            op_assign(rhs, Analyser::MOD_ASSIGN);
+        value<Analyser, Operation>& operator%=(value<Analyser, Operation>& rhs) {
+            op_assign(rhs, typename Operation::MOD_ASSIGN());
             return *this;
         }
 
-        value<Analyser>& operator&=(value<Analyser>& rhs) {
-            op_assign(rhs, Analyser::AND_ASSIGN);
+        value<Analyser, Operation>& operator&=(value<Analyser, Operation>& rhs) {
+            op_assign(rhs, typename Operation::AND_ASSIGN());
             return *this;
         }
 
-        value<Analyser>& operator|=(value<Analyser>& rhs) {
-            op_assign(rhs, Analyser::OR_ASSIGN);
+        value<Analyser, Operation>& operator|=(value<Analyser, Operation>& rhs) {
+            op_assign(rhs, typename Operation::OR_ASSIGN());
             return *this;
         }
 
-        value<Analyser> operator!() {
-            return op(Analyser::NOT);
+        value<Analyser, Operation> operator!() {
+            return op(typename Operation::NOT());
         }
 
-        value<Analyser>& pow_assign(value<Analyser>& rhs) {
-            op_assign(rhs, Analyser::POW_ASSIGN);
+        value<Analyser, Operation>& pow_assign(value<Analyser, Operation>& rhs) {
+            op_assign(rhs, typename Operation::POW_ASSIGN());
             return *this;
         }
 
-        value<Analyser> pow(value<Analyser>& rhs) {
-            return op(rhs, Analyser::POW);
+        value<Analyser, Operation> pow(value<Analyser, Operation>& rhs) {
+            return op(rhs, typename Operation::POW());
         }
 
         template<typename T>
-        void op_assign(value<Analyser>& rhs, const T& op) {
+        void op_assign(value<Analyser, Operation>& rhs, const T& op) {
             if (rhs.object->empty()) {
                 object = std::move(rhs.object);
             } else if (!object->empty()) {
-                auto n = std::make_unique<node>(op);
-                n.add_subnode(std::move(object));
-                n.add_subnode(std::move(rhs.object));
+                auto n = std::make_shared<ast::model<Analyser, T>>(op);
+                n->add_subnode(std::move(object));
+                n->add_subnode(std::move(rhs.object));
                 object = n;
             } else {
                 rhs.object.reset(new ast::empty_node<Analyser>);
@@ -87,37 +82,37 @@ namespace sma {
         }
 
         template<typename T>
-        value<Analyser> op(value<Analyser>& rhs, const T& op) {
+        value<Analyser, Operation> op(value<Analyser, Operation>& rhs, const T& op) {
             if (rhs.object->empty()) {
                 object.reset(new ast::empty_node<Analyser>);
-                auto value = sma::value<Analyser>{};
+                auto value = sma::value<Analyser, Operation>{};
                 value.object.reset(new ast::empty_node<Analyser>);
                 return value;
             }
             
             if(object->empty()) {
                 rhs.object.reset(new ast::empty_node<Analyser>);
-                auto value = sma::value<Analyser>{};
+                auto value = sma::value<Analyser, Operation>{};
                 value.object.reset(new ast::empty_node<Analyser>);
                 return value;
             }
             
-            auto v = sma::value<Analyser>{op};
+            auto v = sma::value<Analyser, Operation>{op};
             v.object->add_subnode(std::move(object));
             v.object->add_subnode(std::move(rhs.object));
             return v;
         }
 
         template<typename T>
-        value<Analyser> op(const T& op) {
+        value<Analyser, Operation> op(const T& op) {
             if(object->empty()) {
                 object.reset(new ast::empty_node<Analyser>);
-                auto value = sma::value<Analyser>{};
+                auto value = sma::value<Analyser, Operation>{};
                 value.object.reset(new ast::empty_node<Analyser>);
                 return value;
             }
 
-            auto v = value<Analyser>{op};
+            auto v = value<Analyser, Operation>{op};
             v.object->add_subnode(std::move(object));
             return v;
         }
@@ -126,74 +121,74 @@ namespace sma {
         node_ptr object;
     };
 
-    template<typename Analyser>
-    value<Analyser> operator+(value<Analyser>& lhs, value<Analyser>& rhs) {
-        return lhs.op(rhs, Analyser::ADD);
+    template<typename Analyser, typename Operation>
+    value<Analyser, Operation> operator+(value<Analyser, Operation>& lhs, value<Analyser, Operation>& rhs) {
+        return lhs.op(rhs, typename Operation::ADD());
     }
 
-    template<typename Analyser>
-    value<Analyser> operator-(value<Analyser>& lhs, value<Analyser>& rhs) {
-        return lhs.op(rhs, Analyser::SUB);   
+    template<typename Analyser, typename Operation>
+    value<Analyser, Operation> operator-(value<Analyser, Operation>& lhs, value<Analyser, Operation>& rhs) {
+        return lhs.op(rhs, typename Operation::SUB());   
     }
 
-    template<typename Analyser>
-    value<Analyser> operator-(value<Analyser>& rhs) {
-        return rhs.op(Analyser::UNARY_SUB);   
+    template<typename Analyser, typename Operation>
+    value<Analyser, Operation> operator-(value<Analyser, Operation>& rhs) {
+        return rhs.op(typename Operation::SUB_UNARY());   
     }
 
-    template<typename Analyser>
-    value<Analyser> operator*(value<Analyser>& lhs, value<Analyser>& rhs) {
-        return lhs.op(rhs, Analyser::MULT);
+    template<typename Analyser, typename Operation>
+    value<Analyser, Operation> operator*(value<Analyser, Operation>& lhs, value<Analyser, Operation>& rhs) {
+        return lhs.op(rhs, typename Operation::MULT());
     }
 
-    template<typename Analyser>
-    value<Analyser> operator/(value<Analyser>& lhs, value<Analyser>& rhs) {
-        return lhs.op(rhs, Analyser::DIV);
+    template<typename Analyser, typename Operation>
+    value<Analyser, Operation> operator/(value<Analyser, Operation>& lhs, value<Analyser, Operation>& rhs) {
+        return lhs.op(rhs, typename Operation::DIV());
     }
 
-    template<typename Analyser>
-    value<Analyser> operator%(value<Analyser>& lhs, value<Analyser>& rhs) {
-        return lhs.op(rhs, Analyser::MOD);
+    template<typename Analyser, typename Operation>
+    value<Analyser, Operation> operator%(value<Analyser, Operation>& lhs, value<Analyser, Operation>& rhs) {
+        return lhs.op(rhs, typename Operation::MOD());
     }
 
-    template<typename Analyser>
-    value<Analyser> operator<(value<Analyser>& lhs, value<Analyser>& rhs) {
-        return lhs.op(rhs, Analyser::LT);
+    template<typename Analyser, typename Operation>
+    value<Analyser, Operation> operator<(value<Analyser, Operation>& lhs, value<Analyser, Operation>& rhs) {
+        return lhs.op(rhs, typename Operation::LT());
     }
 
-    template<typename Analyser>
-    value<Analyser> operator>(value<Analyser>& lhs, value<Analyser>& rhs) {
-        return lhs.op(rhs, Analyser::GT);
+    template<typename Analyser, typename Operation>
+    value<Analyser, Operation> operator>(value<Analyser, Operation>& lhs, value<Analyser, Operation>& rhs) {
+        return lhs.op(rhs, typename Operation::GT());
     }
 
-    template<typename Analyser>
-    value<Analyser> operator<=(value<Analyser>& lhs, value<Analyser>& rhs) {
-        return lhs.op(rhs, Analyser::LE);
+    template<typename Analyser, typename Operation>
+    value<Analyser, Operation> operator<=(value<Analyser, Operation>& lhs, value<Analyser, Operation>& rhs) {
+        return lhs.op(rhs, typename Operation::LE());
     }
 
-    template<typename Analyser>
-    value<Analyser> operator>=(value<Analyser>& lhs, value<Analyser>& rhs) {
-        return lhs.op(rhs, Analyser::GE);
+    template<typename Analyser, typename Operation>
+    value<Analyser, Operation> operator>=(value<Analyser, Operation>& lhs, value<Analyser, Operation>& rhs) {
+        return lhs.op(rhs, typename Operation::GE());
     }
 
-    template<typename Analyser>
-    value<Analyser> operator==(value<Analyser>& lhs, value<Analyser>& rhs) {
-        return lhs.op(rhs, Analyser::EQ);
+    template<typename Analyser, typename Operation>
+    value<Analyser, Operation> operator==(value<Analyser, Operation>& lhs, value<Analyser, Operation>& rhs) {
+        return lhs.op(rhs, typename Operation::EQ());
     }
 
-    template<typename Analyser>
-    value<Analyser> operator!=(value<Analyser>& lhs, value<Analyser>& rhs) {
-        return lhs.op(rhs, Analyser::NE);
+    template<typename Analyser, typename Operation>
+    value<Analyser, Operation> operator!=(value<Analyser, Operation>& lhs, value<Analyser, Operation>& rhs) {
+        return lhs.op(rhs, typename Operation::NE());
     }
 
-    template<typename Analyser>
-    value<Analyser> operator&&(value<Analyser>& lhs, value<Analyser>& rhs) {
-        return lhs.op(rhs, Analyser::AND);
+    template<typename Analyser, typename Operation>
+    value<Analyser, Operation> operator&&(value<Analyser, Operation>& lhs, value<Analyser, Operation>& rhs) {
+        return lhs.op(rhs, typename Operation::AND());
     }
 
-    template<typename Analyser>
-    value<Analyser> operator||(value<Analyser>& lhs, value<Analyser>& rhs) {
-        return lhs.op(rhs, Analyser::OR);
+    template<typename Analyser, typename Operation>
+    value<Analyser, Operation> operator||(value<Analyser, Operation>& lhs, value<Analyser, Operation>& rhs) {
+        return lhs.op(rhs, typename Operation::OR());
     }
 }
 

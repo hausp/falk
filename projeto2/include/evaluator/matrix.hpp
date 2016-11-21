@@ -2,13 +2,26 @@
 #ifndef FALK_EV_MATRIX_HPP
 #define FALK_EV_MATRIX_HPP
 
-#include "rvalue.hpp"
-
 namespace falk {
     namespace ev {
-        struct matrix : public rvalue {
+        struct matrix {
+            matrix pow(const matrix&);
+            matrix& pow_assign(const matrix&);
 
-        }
+            matrix& operator+=(const matrix&);
+            matrix& operator-=(const matrix&);
+            matrix& operator*=(const matrix&);
+            matrix& operator/=(const matrix&);
+            matrix& operator%=(const matrix&);
+        };
+
+        matrix operator+(const matrix&, const matrix&);
+        matrix operator-(const matrix&, const matrix&);
+        matrix operator*(const matrix&, const matrix&);
+        matrix operator/(const matrix&, const matrix&);
+        matrix operator%(const matrix&, const matrix&);
+        matrix operator-(const matrix&);
+
     }
 }
 

@@ -6,11 +6,14 @@
 #include <iostream>
 #include <stack>
 
+#include "array.hpp"
+#include "aut/utilities.hpp"
 #include "base/operators.hpp"
 #include "base/types.hpp"
 #include "function.hpp"
+#include "matrix.hpp"
+#include "rvalue.hpp"
 #include "symbol_mapper.hpp"
-
 #include "sma/value.hpp"
 
 namespace falk {
@@ -26,10 +29,10 @@ namespace falk {
             using boolean = bool;
 
             // Alias to define semantic abstraction for values.
-            using rvalue = sma::value<ast_evaluator>;
+            using rvalue = sma::value<ast_evaluator, falk::op>;
             using lvalue = int; // TODO
 
-            using falk::op;
+            // using namespace falk::op;
 
             // Methods
             // assignment assign(identifier, value);
@@ -59,31 +62,102 @@ namespace falk {
             // identifier retrieve_identifier(const std::string&, array_index) { return identifier{}; }
             // identifier retrieve_identifier(const std::string&, matrix_index) { return identifier{}; }
 
-            void analyse(real);
-            void analyse(complex);
-            void analyse(boolean);
-            void analyse(ADD, std::array<node_ptr, 2>&);
-            void analyse(SUB, std::array<node_ptr, 2>&);
-            void analyse(MULT, std::array<node_ptr, 2>&);
-            void analyse(DIV, std::array<node_ptr, 2>&);
-            void analyse(POW, std::array<node_ptr, 2>&);
-            void analyse(MOD, std::array<node_ptr, 2>&);
+            void analyse(rvalue);
+            void analyse(op::ADD, std::array<node_ptr, 2>&);
+            void analyse(op::SUB, std::array<node_ptr, 2>&);
+            void analyse(op::MULT, std::array<node_ptr, 2>&);
+            void analyse(op::DIV, std::array<node_ptr, 2>&);
+            void analyse(op::POW, std::array<node_ptr, 2>&);
+            void analyse(op::MOD, std::array<node_ptr, 2>&);
 
-            void analyse(ADD_ASSIGN, std::array<node_ptr, 2>&);
-            void analyse(SUB_ASSIGN, std::array<node_ptr, 2>&);
-            void analyse(MULT_ASSIGN, std::array<node_ptr, 2>&);
-            void analyse(DIV_ASSIGN, std::array<node_ptr, 2>&);
-            void analyse(POW_ASSIGN, std::array<node_ptr, 2>&);
-            void analyse(MOD_ASSIGN, std::array<node_ptr, 2>&);
+            void analyse(op::ADD_ASSIGN, std::array<node_ptr, 2>&);
+            void analyse(op::SUB_ASSIGN, std::array<node_ptr, 2>&);
+            void analyse(op::MULT_ASSIGN, std::array<node_ptr, 2>&);
+            void analyse(op::DIV_ASSIGN, std::array<node_ptr, 2>&);
+            void analyse(op::POW_ASSIGN, std::array<node_ptr, 2>&);
+            void analyse(op::MOD_ASSIGN, std::array<node_ptr, 2>&);
 
-            void analyse(SUB_UNARY, std::array<node_ptr, 1>&);
+            void analyse(op::SUB_UNARY, std::array<node_ptr, 1>&);
 
-            value single_calculation(value value);
+            rvalue single_calculation(rvalue value);
          private:
             symbol_mapper mapper;
-            std::stack<value> stacker;
+            std::stack<rvalue> var_stacker;
+            std::stack<array> array_stacker;
+            std::stack<matrix> matrix_stacker;
+            std::stack<structural::type> types_stacker;
 
-            void calc(const std::function<value(value, value)>&);
+            template<typename T>
+            void calc(std::array<node_ptr, 2>& operands, T callback) {
+                for (auto& op : operands) {
+                    op->traverse(*this);
+                }
+
+                auto t1 = aut::pop(types_stacker);
+                auto t2 = aut::pop(types_stacker);
+
+                if (t1 == t2) {
+                    switch (t1) {
+                        case structural::type::VARIABLE: {
+                            auto lhs = aut::pop(var_stacker);
+                            auto rhs = aut::pop(var_stacker);
+                            auto result = callback(lhs, rhs);
+                            var_stacker.push(result);
+                            break;
+                        }
+                        case structural::type::ARRAY: {
+                            auto lhs = aut::pop(array_stacker);
+                            auto rhs = aut::pop(array_stacker);
+                            auto result = callback(lhs, rhs);
+                            array_stacker.push(result);
+                            break;
+                        }
+                        case structural::type::MATRIX: {
+                            auto lhs = aut::pop(matrix_stacker);
+                            auto rhs = aut::pop(matrix_stacker);
+                            auto result = callback(lhs, rhs);
+                            matrix_stacker.push(result);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            template<typename T>
+            void calc_assign(std::array<node_ptr, 2>& operands, T callback) {
+                for (auto& op : operands) {
+                    op->traverse(*this);
+                }
+
+                auto t1 = aut::pop(types_stacker);
+                auto t2 = aut::pop(types_stacker);
+
+                if (t1 == t2) {
+                    switch (t1) {
+                        case structural::type::VARIABLE: {
+                            auto lhs = aut::pop(var_stacker);
+                            auto rhs = aut::pop(var_stacker);
+                            auto result = callback(lhs, rhs);
+                            // TODO
+                            break;
+                        }
+                        case structural::type::ARRAY: {
+                            auto lhs = aut::pop(array_stacker);
+                            auto rhs = aut::pop(array_stacker);
+                            auto result = callback(lhs, rhs);
+                            // TODO
+                            break;
+                        }
+                        case structural::type::MATRIX: {
+                            auto lhs = aut::pop(matrix_stacker);
+                            auto rhs = aut::pop(matrix_stacker);
+                            auto result = callback(lhs, rhs);
+                            // TODO
+                            break;
+                        }
+                    }
+                }
+            }
         };
 
 
@@ -105,7 +179,7 @@ namespace falk {
             return 0;
         }
 
-        inline ast_evaluator::value ast_evaluator::single_calculation(value value) {
+        inline ast_evaluator::rvalue ast_evaluator::single_calculation(rvalue value) {
             // std::cout << "res = " << value << std::endl;
             return value;
         }
