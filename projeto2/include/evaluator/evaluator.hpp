@@ -11,7 +11,7 @@
 #include "function.hpp"
 #include "symbol_mapper.hpp"
 #include "lvalue.hpp"
-#include "rvalue.hpp"
+#include "scalar.hpp"
 
 namespace falk {
     namespace ev {
@@ -25,7 +25,7 @@ namespace falk {
 
             // Alias to define semantic abstraction for rvalues.
             using lvalue = ev::lvalue;
-            using rvalue = ev::rvalue;
+            using rvalue = ev::scalar;
 
             // Methods
             // assignment assign(identifier, rvalue);

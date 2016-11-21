@@ -12,7 +12,7 @@
 #include "base/types.hpp"
 #include "function.hpp"
 #include "matrix.hpp"
-#include "rvalue.hpp"
+#include "scalar.hpp"
 #include "symbol_mapper.hpp"
 #include "sma/value.hpp"
 
