@@ -87,14 +87,14 @@
 %token<falk::op::logic> OR  "|";
 %token<falk::op::logic> NOT "!";
 
-%type<int> program;
+%type<falk::rvalue> program;
 %type<falk::rvalue> command;
 %type<falk::rvalue> identifier arr_size mat_size;
 %type<falk::rvalue> expr single_calc;
-%type<int> assignment;
-%type<int> declaration;
-%type<int> index rvalue;
-%type<int> new_line eoc;
+%type<falk::rvalue> assignment;
+%type<falk::rvalue> declaration;
+%type<falk::rvalue> index rvalue;
+%type<falk::rvalue> new_line eoc;
 
 /* Operator precedence for mathematical operators
  * The latest it is listed, the highest the precedence

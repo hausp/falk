@@ -180,6 +180,7 @@ namespace falk {
         }
 
         inline ast_evaluator::rvalue ast_evaluator::single_calculation(rvalue value) {
+            rvalue->traverse(*this);
             // std::cout << "res = " << value << std::endl;
             return value;
         }

@@ -3,12 +3,13 @@
 #define FALK_DEFINITIONS_HPP
 
 #include "evaluator/evaluator.hpp"
+#include "evaluator/ast_evaluator.hpp"
 #include "types.hpp"
 
 namespace falk {
     // Defines what kind of analyser will be used.
     // Usually, an evaluator or a translater.
-    using analyser = ev::evaluator;
+    using analyser = ev::ast_evaluator;
     
     // Propagates aliases from analyser to namespace falk.
     // This trick makes things easier to change.

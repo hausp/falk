@@ -117,6 +117,10 @@ namespace sma {
             return v;
         }
 
+        void traverse(Analyser& analyser) {
+            object->traverse(analyser);
+        }
+
      private:
         node_ptr object;
     };
