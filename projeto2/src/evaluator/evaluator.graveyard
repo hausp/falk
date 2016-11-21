@@ -1,0 +1,241 @@
+
+#include "evaluator/evaluator.hpp"
+#include "evaluator/expr.hpp"
+
+const auto falk::ev::evaluator::ADD = 
+    operation<op::arithmetic, 2>{op::arithmetic::ADD};
+const auto falk::ev::evaluator::SUB =
+    operation<op::arithmetic, 2>{op::arithmetic::SUB};
+const auto falk::ev::evaluator::MULT =
+    operation<op::arithmetic, 2>{op::arithmetic::MULT};
+const auto falk::ev::evaluator::DIV =
+    operation<op::arithmetic, 2>{op::arithmetic::DIV};
+const auto falk::ev::evaluator::POW =
+    operation<op::arithmetic, 2>{op::arithmetic::POW};
+const auto falk::ev::evaluator::MOD =
+    operation<op::arithmetic, 2>{op::arithmetic::MOD};
+const auto falk::ev::evaluator::AND =
+    operation<op::logic, 2>{op::logic::AND};
+const auto falk::ev::evaluator::OR =
+    operation<op::logic, 2>{op::logic::OR};
+const auto falk::ev::evaluator::NOT =
+    operation<op::logic, 2>{op::logic::NOT};
+const auto falk::ev::evaluator::ADD_ASSIGN =
+    operation<op::arithmetic, 2>{op::arithmetic::ADD_ASSIGN};
+const auto falk::ev::evaluator::SUB_ASSIGN =
+    operation<op::arithmetic, 2>{op::arithmetic::SUB_ASSIGN};
+const auto falk::ev::evaluator::MULT_ASSIGN =
+    operation<op::arithmetic, 2>{op::arithmetic::MULT_ASSIGN};
+const auto falk::ev::evaluator::DIV_ASSIGN =
+    operation<op::arithmetic, 2>{op::arithmetic::DIV_ASSIGN};
+const auto falk::ev::evaluator::POW_ASSIGN =
+    operation<op::arithmetic, 2>{op::arithmetic::POW_ASSIGN};
+const auto falk::ev::evaluator::MOD_ASSIGN =
+    operation<op::arithmetic, 2>{op::arithmetic::MOD_ASSIGN};
+const auto falk::ev::evaluator::UNARY_SUB =
+    operation<op::arithmetic, 1>{op::arithmetic::SUB};
+
+void falk::ev::evaluator::analyse(real value) {
+    real_stack.push(value);
+    types_stack.push(Type::REAL);
+}
+
+void falk::ev::evaluator::analyse(complex value) {
+    complex_stack.push(value);
+    types_stack.push(Type::COMPLEX);
+}
+
+void falk::ev::evaluator::analyse(boolean value) {
+    boolean_stack.push(value);
+    types_stack.push(Type::BOOL);
+}
+
+void falk::ev::evaluator::analyse(operation<op::arithmetic, 2> op, std::array<node_ptr, 2>& operands) {
+    using callback = std::function<void(evaluator&)>;
+    static const std::unordered_map<decltype(op), callback> functions = {
+        {ADD, [](evaluator& instance) {
+            instance.calc(std::plus<value>());
+        }},
+        {SUB, [](evaluator& instance) {
+            instance.calc(std::minus<value>());
+        }},
+        {DIV, [](evaluator& instance) {
+            instance.calc(std::divides<value>());
+        }},
+        {MULT, [](evaluator& instance) {
+            instance.calc(std::multiplies<value>());
+        }},
+        {POW, [](evaluator& instance) {
+            instance.calc([](value lhs, value rhs) {
+                // TODO
+            });
+        }},
+        {MOD, [](evaluator& instance) {
+            instance.calc([](value lhs, value rhs) {
+                // TODO
+            });
+        }},
+        {ADD_ASSIGN, [](evaluator& instance) {
+            instance.calc([](value lhs, value rhs) {
+                // TODO
+            });
+        }},
+        {SUB_ASSIGN, [](evaluator& instance) {
+            instance.calc([](value lhs, value rhs) {
+                // TODO
+            });
+        }},
+        {DIV_ASSIGN, [](evaluator& instance) {
+            instance.calc([](value lhs, value rhs) {
+                // TODO
+            });
+        }},
+        {MULT_ASSIGN, [](evaluator& instance) {
+            instance.calc([](value lhs, value rhs) {
+                // TODO
+            });
+        }},
+        {POW_ASSIGN, [](evaluator& instance) {
+            instance.calc([](value lhs, value rhs) {
+                // TODO
+            });
+        }},
+        {MOD_ASSIGN, [](evaluator& instance) {
+            instance.calc([](value lhs, value rhs) {
+                // TODO
+            });
+        }},
+    }
+
+    for (auto& op : operands) {
+        op->traverse(*this);
+    }
+
+    auto fn = functions.at(op);
+}
+
+void falk::ev::evaluator::analyse(operation<op::arithmetic, 1> op, std::array<node_ptr, 1>& operand) {
+    switch (op) {
+        // TODO
+    }
+}
+
+void falk::ev::evaluator::calc(const std::function<value(value, value)>& fn) {
+    auto lhs = stacker.top();
+    stacker.pop();
+    auto rhs = stacker.top();
+    stacker.pop();
+
+    auto result_type = resolve_types(lhs.type, rhs.type);
+    // TODO: what if result_type == Type::UNDEFINED?
+
+    stacker.push(fn(lhs, rhs));
+};
+
+
+// falk::ev::evaluator::program falk::ev::evaluator::append(program, command) {
+//  return program{};
+// }
+
+// falk::ev::evaluator::array_index falk::ev::evaluator::make_array_index(value) {
+//  return array_index{};
+// }
+
+// falk::ev::evaluator::assignment falk::ev::evaluator::assign(identifier id, value val) {
+//  mapper.assign(id, val);
+//  return val; // é ou não - GRAF, Merlseson. 2016.
+// }
+
+// falk::ev::evaluator::assignment falk::ev::evaluator::assign(identifier id, value val, op::arithmetic op) {
+//  auto curr_value = mapper.get(id);
+//  // TODO: apply op(curr_value, val)
+//  // mapper.assign(id, ??);
+//  return assignment{};
+// }
+
+// falk::ev::evaluator::program falk::ev::evaluator::create_program() {
+//  return program{};
+// }
+// falk::ev::evaluator::command falk::ev::evaluator::empty_command() {
+//  return command{};
+// }
+
+// falk::ev::evaluator::declaration falk::ev::evaluator::declare_array(const std::string&) {
+//  return declaration{};
+// }
+// falk::ev::evaluator::declaration falk::ev::evaluator::declare_array(const std::string&, array_index) {
+//  return declaration{};
+// }
+// falk::ev::evaluator::declaration falk::ev::evaluator::declare_array(const std::string&, init_list) {
+//  return declaration{};
+// }
+
+// falk::ev::evaluator::declaration falk::ev::evaluator::declare_variable(const std::string&) {
+//  return declaration{};
+// }
+// falk::ev::evaluator::declaration falk::ev::evaluator::declare_variable(const std::string&, Type) {
+//  return declaration{};
+// }
+// falk::ev::evaluator::declaration falk::ev::evaluator::declare_variable(const std::string&, value) {
+//  return declaration{};
+// }
+
+// falk::ev::evaluator::declaration falk::ev::evaluator::declare_matrix(const std::string&) {
+//  return declaration{};
+// }
+// falk::ev::evaluator::declaration falk::ev::evaluator::declare_matrix(const std::string&, matrix_index) {
+//  return declaration{};
+// }
+// falk::ev::evaluator::declaration falk::ev::evaluator::declare_matrix(const std::string&, init_list) {
+//  return declaration{};
+// }
+
+// value falk::ev::evaluator::make_real(const std::string& text) {
+//  return value{};
+// }
+
+// value falk::ev::evaluator::make_complex(const std::string& text) {
+//  return value{};
+// }
+
+// value falk::ev::evaluator::make_boolean(const std::string& yytext) {
+//  return value{};
+// }
+
+// falk::ev::evaluator::matrix_index falk::ev::evaluator::make_matrix_index(value) {
+//  return matrix_index{};
+// }
+
+// falk::ev::evaluator::matrix_index falk::ev::evaluator::make_matrix_index(value, value) {
+//  return matrix_index{};
+// }
+
+// control new_line() {
+//  return control{};
+// }
+
+// falk::ev::evaluator::control falk::ev::evaluator::semicolon() {
+//  return control{};
+// }
+
+// falk::ev::evaluator::identifier falk::ev::evaluator::retrieve_identifier(const std::string&) {
+//  return identifier{};
+// }
+// falk::ev::evaluator::identifier falk::ev::evaluator::retrieve_identifier(const std::string&, array_index) {
+//  return identifier{};
+// }
+// falk::ev::evaluator::identifier falk::ev::evaluator::retrieve_identifier(const std::string&, matrix_index) {
+//  return identifier{};
+// }
+
+// falk::ev::evaluator::value falk::ev::evaluator::pow(const value& lhs,
+//                                                     const value& rhs) {
+//     auto type = falk::resolve_types(lhs.type, rhs.type);
+//     if (type == Type::REAL) {
+//         // TODO
+//     } else {
+//         // TODO
+//     }
+//     return value{};
+// }
+

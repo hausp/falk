@@ -22,7 +22,7 @@ cursed::terminal::terminal():
     // enforces use of 8 bit char
     meta(stdscr, true);
     // set scrolling area (not sure about that)
-    // wsetscrreg(stdscr, 0, 100);
+    wsetscrreg(stdscr, 0, 100);
     // refresh screen like crazy
     immedok(stdscr, true);
     // disable echoing chars when getch is called
@@ -75,9 +75,12 @@ std::string cursed::terminal::get_line() {
             case KEY_END:
                 end_pressed();
                 break;
-            case KEY_PPAGE:
-                page_up_pressed();
-                break;
+            // case KEY_PPAGE:
+            //     page_up_pressed();
+            //     break;
+            // case KEY_NPAGE:
+            //     page_down_pressed();
+            //     break;
             default:
                 save_character(ch);
         }

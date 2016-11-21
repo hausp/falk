@@ -6,120 +6,82 @@
 #include <iostream>
 #include <stack>
 
-#include "array_index.hpp"
 #include "base/operators.hpp"
 #include "base/types.hpp"
 #include "function.hpp"
-#include "identifier.hpp"
-#include "matrix_index.hpp"
 #include "symbol_mapper.hpp"
-#include "value.hpp"
+#include "lvalue.hpp"
+#include "rvalue.hpp"
 
 namespace falk {
     namespace ev {
         // Responsible for all semantic actions in 'interpreted mode'
         class evaluator {
          public:
-            using Type = Type;
+            // Aliases to define semantical types (objects).
+            using real = double;
+            using complex = std::complex<double>;
+            using boolean = bool;
+
+            // Alias to define semantic abstraction for rvalues.
+            using lvalue = ev::lvalue;
+            using rvalue = ev::rvalue;
+
+            // Methods
+            // assignment assign(identifier, rvalue);
+            // assignment assign(identifier, rvalue, falk::op::arithmetic);
             
-            static constexpr auto ADD = op::Arithmetical::ADD;
-            static constexpr auto SUB = op::Arithmetical::SUB;
-            static constexpr auto MULT = op::Arithmetical::MULT;
-            static constexpr auto DIV = op::Arithmetical::DIV;
-            static constexpr auto POW = op::Arithmetical::POW;
-            static constexpr auto AND = op::Logical::AND;
-            static constexpr auto OR = op::Logical::OR;
-            static constexpr auto NOT = op::Logical::NOT;
-            static constexpr auto ADD_ASSIGN = op::Arithmetical::ADD_ASSIGN;
-            static constexpr auto SUB_ASSIGN = op::Arithmetical::SUB_ASSIGN;
-            static constexpr auto MULT_ASSIGN = op::Arithmetical::MULT_ASSIGN;
-            static constexpr auto DIV_ASSIGN = op::Arithmetical::DIV_ASSIGN;
-            static constexpr auto POW_ASSIGN = op::Arithmetical::POW_ASSIGN;
-
-            // Definitions for parser
-            using generic = ev::value;
-
-            using program = generic;
-            using command = generic;
-            using control = generic;
-            using declaration = generic;
-            using assignment = generic;
-            using identifier = ev::identifier;
-            using array_index = ev::array_index;
-            using matrix_index = ev::matrix_index;
-            using expression = ev::value;
-            using value = ev::value;
-            using init_list = value; // TODO: change this
-            using function = ev::function;
-         public:
-            program append(program, command);
-
-            array_index make_array_index(value);
-
-            assignment assign(identifier, value);
-            assignment assign(identifier, value, falk::op::Arithmetical);
-
-            program create_program();
-            command empty_command();
+            int create_program() { return 0; }
             
-            declaration declare_array(const std::string&);
-            declaration declare_array(const std::string&, array_index);
-            declaration declare_array(const std::string&, init_list);
+            // declaration declare_array(const std::string&);
+            // declaration declare_array(const std::string&, rvalue&);
+            // declaration declare_array(const std::string&, rvalue&);
             
-            declaration declare_variable(const std::string&);
-            declaration declare_variable(const std::string&, Type);
-            declaration declare_variable(const std::string&, value);
+            // declaration declare_variable(const std::string&);
+            // declaration declare_variable(const std::string&, Type);
+            // declaration declare_variable(const std::string&, rvalue);
             
-            declaration declare_matrix(const std::string&);
-            declaration declare_matrix(const std::string&, matrix_index);
-            declaration declare_matrix(const std::string&, init_list);
+            // declaration declare_matrix(const std::string&);
+            // declaration declare_matrix(const std::string&, matrix_index);
+            // declaration declare_matrix(const std::string&, init_list);
 
-            value make_real(const std::string& text);
-            value make_complex(const std::string& text);
-            value make_boolean(const std::string& yytext);
+            real make_real(const std::string& text);
+            complex make_complex(const std::string& text);
+            boolean make_boolean(const std::string& yytext);
 
-            matrix_index make_matrix_index(value);
-            matrix_index make_matrix_index(value, value);
+            int new_line();
 
-            control new_line();
-            control semicolon();
+            // identifier retrieve_identifier(const std::string&) { return identifier{}; }
+            // identifier retrieve_identifier(const std::string&, array_index) { return identifier{}; }
+            // identifier retrieve_identifier(const std::string&, matrix_index) { return identifier{}; }
 
-            identifier retrieve_identifier(const std::string&) { return identifier{}; }
-            identifier retrieve_identifier(const std::string&, array_index) { return identifier{}; }
-            identifier retrieve_identifier(const std::string&, matrix_index) { return identifier{}; }
-
-            value single_calculation(value value);
-
-            value pow(const value& lhs, const value& rhs);
+            rvalue single_calculation(rvalue rvalue);
          private:
             symbol_mapper mapper;
         };
 
 
-        inline evaluator::value evaluator::make_real(const std::string& text) {
-            return {Type::REAL, std::stod(text), 0};
+        inline evaluator::real evaluator::make_real(const std::string& text) {
+            return std::stod(text);
         }
 
-        inline evaluator::value evaluator::make_complex(const std::string& text) {
-            // TODO
-            return value{Type::COMPLEX};
+        inline evaluator::complex evaluator::make_complex(const std::string& text) {
+            auto clean_text = text.substr(0, text.size() - 2);
+            return std::complex<double>{0, std::stod(text)};
         }
 
-        inline evaluator::value evaluator::make_boolean(const std::string& text) {
-            if (text == "true") {
-                return TRUE;
-            }
-            return FALSE;
+        inline evaluator::boolean evaluator::make_boolean(const std::string& text) {
+            return text == "true";
         }
 
-        inline evaluator::control evaluator::new_line() {
+        inline int evaluator::new_line() {
             std::cout << "falk> ";
-            return control{};
+            return 0;
         }
 
-        inline ev::value evaluator::single_calculation(ev::value value) {
-            std::cout << "res = " << value << std::endl;
-            return value;
+        inline evaluator::rvalue evaluator::single_calculation(rvalue rvalue) {
+            std::cout << "res = " << rvalue << std::endl;
+            return rvalue;
         }
     }
 }

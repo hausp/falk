@@ -3,6 +3,7 @@
 
 #include <array>
 #include <list>
+#include <type_traits>
 
 namespace aut {
     template<int64_t S>
@@ -10,46 +11,34 @@ namespace aut {
         static constexpr auto value = S > 0;
     };
 
-    template<typename T, int64_t S, bool = is_positive<S>::value>
-    struct value_holder;
+    template<size_t...>
+    struct maxof;
 
-    template<typename T, int64_t S>
-    struct value_holder<T, S, true> {
-        using Type = std::array<T, S>;
-        Type container;
-
-        template<typename... Targs>
-        value_holder(Targs...);
-        bool add(T u);
-        bool empty() const;
-        T last() const;
-
-     private:
-        size_t size = 0;
+    template<size_t Last>
+    struct maxof<Last> {
+        static constexpr auto value = Last;
     };
 
-    template<typename T>
-    struct value_holder<T, 0, false> {
-        using Type = void;
-
-        bool add(T u) { return false; }
-        bool empty() const { return false; }
-        T last() const { return T(); }    
+    template<size_t First, size_t Second, size_t... Others>
+    struct maxof<First, Second, Others...> {
+        static constexpr auto value =
+            First >= Second ? maxof<First, Others...>::value
+                            : maxof<Second, Others...>::value;
     };
 
-    template<typename T, int64_t S>
-    struct value_holder<T, S, false> {
-        template<typename... Targs>
-        value_holder(Targs...);
-        bool add(T u);
-        bool empty() const;
-        T last() const;
-        
-        using Type = std::list<T>;
-        Type container;
+    template<typename T, typename... Args>
+    struct is_oneof;
+
+    template<typename T, typename Last>
+    struct is_oneof<T, Last> {
+        static constexpr auto value = std::is_same<T, Last>::value;
+    };
+
+    template<typename T, typename First, typename... Others>
+    struct is_oneof<T, First, Others...> {
+        static constexpr auto value =
+            std::is_same<T, First>::value || is_oneof<T, Others...>::value;
     };
 }
-
-#include "utilities.ipp"
 
 #endif /* ASZDRICK_UTILITIES_HPP */

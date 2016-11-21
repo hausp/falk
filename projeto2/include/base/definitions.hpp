@@ -3,28 +3,24 @@
 #define FALK_DEFINITIONS_HPP
 
 #include "evaluator/evaluator.hpp"
-#include "operators.hpp"
-#include "sma/value.hpp"
 #include "types.hpp"
 
 namespace falk {
+    // Defines what kind of analyser will be used.
+    // Usually, an evaluator or a translater.
     using analyser = ev::evaluator;
     
-    // using program = analyser::program;
-    // using command = analyser::command;
-    // using control = analyser::control;
-    // using declaration = analyser::declaration;
-    // using assignment = analyser::assignment;
-    using identifier = analyser::identifier;
-    using array_index = analyser::array_index;
-    using matrix_index = analyser::matrix_index;
-    using expression = analyser::expression;
-    using value = analyser::value;
-    using init_list = analyser::init_list;
-    using function = analyser::function;
+    // Propagates aliases from analyser to namespace falk.
+    // This trick makes things easier to change.
+    
+    // Semantic types (objects) definitions.
+    using real = analyser::real;
+    using complex = analyser::complex;
+    using boolean = analyser::boolean;
 
-
-    using generic = value;
+    // Semantic abstractions definitions.
+    using lvalue = analyser::lvalue;
+    using rvalue = analyser::rvalue;
 }
 
 #endif /* FALK_DEFINITIONS_HPP */

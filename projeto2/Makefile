@@ -70,7 +70,7 @@ $(OBJDIR)/%.o: %.cpp
 $(DEPDIR)/%.d: %.cpp
 	@echo "[makedep] $< -> .d"
 	@mkdir -p $(DEPDIR)/$(*D)
-	@$(CXX) -MM -MP -MT "$(OBJDIR)/$*.o $@" -MF "$@" $< $(INCLUDE) $(CXXFLAGS)
+	@$(CXX) -MM -MP -MG -MT "$(OBJDIR)/$*.o $@" -MF "$@" $< $(INCLUDE) $(CXXFLAGS)
 
 makedir: | $(MAKEDIR)
 
@@ -79,13 +79,15 @@ $(MAKEDIR):
 	@mkdir -p $@
 
 ################################ TESTS RULES ##################################
-tests: makedir $(TCALL)
+tests: makedir $(TCALL) $(TEXEC)
 
-$(foreach t,$(TCALL),$(t): $(OBJDIR)/$(TESTDIR)/$(t).o $(BINDIR)/$(t))
+$(foreach t,$(TCALL),$(t): $(PUREOBJ) $(TPUREOBJ) $(OBJDIR)/$(TESTDIR)/$(t).o)
 
-$(TEXEC): $(PUREOBJ) $(TPUREOBJ) LDFLAGS+=-lgtest
+$(TEXEC): LDFLAGS+=-lgtest 
+
+$(TEXEC): $(PUREOBJ) $(TPUREOBJ) $(TMAIN)
 	@echo "[linking] $@"
-	@$(CXX) $(PUREOBJ) $(OBJDIR)/$(TESTDIR)/$(@F).o -o $@ $(LDLIBS) $(LDFLAGS)
+	@$(CXX) $(PUREOBJ) $(TOBJ) -o $@ $(LDLIBS) $(LDFLAGS)
 
 ################################ CLEAN RULES ##################################
 # Only remove object files

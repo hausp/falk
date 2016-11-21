@@ -4,7 +4,7 @@
 
 namespace falk {
     namespace op {
-        enum class Arithmetical {
+        enum class arithmetic {
             ADD,
             SUB,
             DIV,
@@ -19,7 +19,7 @@ namespace falk {
             MOD_ASSIGN,
         };
 
-        enum class Comparison {
+        enum class comparison {
             LT,
             GT,
             LE,
@@ -28,7 +28,7 @@ namespace falk {
             NE,
         };
 
-        enum class Logical {
+        enum class logic {
             AND,
             OR,
             NOT,
@@ -36,6 +36,13 @@ namespace falk {
             OR_ASSIGN,
         };
     }
+
+    template<typename Action, size_t Arity>
+    struct operation {
+        static constexpr size_t arity() {return Arity; }
+        
+        Action action;
+    };
 }
 
 #endif /* FALK_OPERATORS_HPP */

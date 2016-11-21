@@ -55,9 +55,10 @@ namespace {
         for (auto in_it = inputs.begin(); in_it != inputs.end(); ++in_it) {
             auto& in = *in_it;
             auto& expected = *out_it;
-            Connection program("./lukacompiler");
+            Connection program("./bin/execute_me");
             program.send(in);
             auto actual = program.receive();
+            // std::cout << "satan: [" << actual << "]" << std::endl;
 
             bool padded = false;
             if (actual.size() >= expected.size()) {

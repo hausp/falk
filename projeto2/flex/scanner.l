@@ -60,19 +60,19 @@ nonacceptable ©
 {real_type} {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::parser::make_TYPE(falk::Type::REAL, falk::location());
+    return falk::parser::make_TYPE(falk::type::REAL, falk::location());
 }
 
 {complex_type} {
     // std::cout << "scanner scanning: " << yytext << std::endl;
-    // TODO: pass real location of token, not an empty one
-    return falk::parser::make_TYPE(falk::Type::COMPLEX, falk::location());
+    // TODO: pass real location of token, 
+    return falk::parser::make_TYPE(falk::type::COMPLEX, falk::location());
 }
 
 {bool_type} {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::parser::make_TYPE(falk::Type::BOOL, falk::location());
+    return falk::parser::make_TYPE(falk::type::BOOL, falk::location());
 }
 
 {var_decl} {
@@ -171,127 +171,127 @@ function {
 "+"  {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::parser::make_PLUS(falk::op::Arithmetical::ADD, falk::location());
+    return falk::parser::make_PLUS(falk::op::arithmetic::ADD, falk::location());
 }
 
 "-"  {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::parser::make_MINUS(falk::op::Arithmetical::SUB, falk::location());
+    return falk::parser::make_MINUS(falk::op::arithmetic::SUB, falk::location());
 }
 
 "*"  {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::parser::make_TIMES(falk::op::Arithmetical::MULT, falk::location());
+    return falk::parser::make_TIMES(falk::op::arithmetic::MULT, falk::location());
 }
 
 "/"  {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::parser::make_DIVIDE(falk::op::Arithmetical::DIV, falk::location());
+    return falk::parser::make_DIVIDE(falk::op::arithmetic::DIV, falk::location());
 }
 
 "**" {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::parser::make_POWER(falk::op::Arithmetical::POW, falk::location());
+    return falk::parser::make_POWER(falk::op::arithmetic::POW, falk::location());
 }
 
 "%"  {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::parser::make_MOD(falk::op::Arithmetical::MOD, falk::location());
+    return falk::parser::make_MOD(falk::op::arithmetic::MOD, falk::location());
 }
 
 "+="  {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::parser::make_ASSIGNOP(falk::op::Arithmetical::ADD, falk::location());
+    return falk::parser::make_ASSIGNOP(falk::op::arithmetic::ADD, falk::location());
 }
 
 "-="  {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::parser::make_ASSIGNOP(falk::op::Arithmetical::SUB, falk::location());
+    return falk::parser::make_ASSIGNOP(falk::op::arithmetic::SUB, falk::location());
 }
 
 "*="  {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::parser::make_ASSIGNOP(falk::op::Arithmetical::MULT, falk::location());
+    return falk::parser::make_ASSIGNOP(falk::op::arithmetic::MULT, falk::location());
 }
 
 "/="  {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::parser::make_ASSIGNOP(falk::op::Arithmetical::DIV, falk::location());
+    return falk::parser::make_ASSIGNOP(falk::op::arithmetic::DIV, falk::location());
 }
 
 "**=" {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::parser::make_ASSIGNOP(falk::op::Arithmetical::POW, falk::location());
+    return falk::parser::make_ASSIGNOP(falk::op::arithmetic::POW, falk::location());
 }
 
 "%="  {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::parser::make_ASSIGNOP(falk::op::Arithmetical::MOD, falk::location());
+    return falk::parser::make_ASSIGNOP(falk::op::arithmetic::MOD, falk::location());
 }
 
 "==" {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::parser::make_COMPARISON(falk::op::Comparison::EQ, falk::location());
+    return falk::parser::make_COMPARISON(falk::op::comparison::EQ, falk::location());
 }
 
 "!=" {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::parser::make_COMPARISON(falk::op::Comparison::NE, falk::location());
+    return falk::parser::make_COMPARISON(falk::op::comparison::NE, falk::location());
 }
 
 ">"  {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::parser::make_COMPARISON(falk::op::Comparison::GT, falk::location());
+    return falk::parser::make_COMPARISON(falk::op::comparison::GT, falk::location());
 }
 
 "<"  {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::parser::make_COMPARISON(falk::op::Comparison::LT, falk::location());
+    return falk::parser::make_COMPARISON(falk::op::comparison::LT, falk::location());
 }
 
 ">=" {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::parser::make_COMPARISON(falk::op::Comparison::GE, falk::location());
+    return falk::parser::make_COMPARISON(falk::op::comparison::GE, falk::location());
 }
 
 "<=" {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::parser::make_COMPARISON(falk::op::Comparison::LE, falk::location());
+    return falk::parser::make_COMPARISON(falk::op::comparison::LE, falk::location());
 }
 
 "&"  {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::parser::make_AND(falk::op::Logical::AND, falk::location());
+    return falk::parser::make_AND(falk::op::logic::AND, falk::location());
 }
 
 "|"  {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::parser::make_OR(falk::op::Logical::OR, falk::location());
+    return falk::parser::make_OR(falk::op::logic::OR, falk::location());
 }
 
 "!"  {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::parser::make_NOT(falk::op::Logical::NOT, falk::location());
+    return falk::parser::make_NOT(falk::op::logic::NOT, falk::location());
 }
 
 "("  {

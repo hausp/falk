@@ -43,11 +43,11 @@
 
 %define api.token.prefix {TOKEN_}
 
-%token<std::string> ID      "variable identifier";
-%token<falk::Type>  TYPE    "type identifier";
-%token<falk::generic> REAL    "real value";
-%token<falk::generic> COMPLEX "complex value";
-%token<falk::generic> BOOL    "boolean value";
+%token<std::string> ID        "variable identifier";
+%token<falk::type>  TYPE      "type identifier";
+%token<falk::real>  REAL      "real value";
+%token<falk::complex> COMPLEX "complex value";
+%token<falk::boolean> BOOL    "boolean value";
 
 %token VAR       "var keyword";
 %token ARRAY     "array keyword";
@@ -73,31 +73,29 @@
 %token CBRACKET  "]";
 %token EOF 0     "end of file";
 
-%token<falk::op::Arithmetical> PLUS     "+";
-%token<falk::op::Arithmetical> MINUS    "-";
-%token<falk::op::Arithmetical> TIMES    "*";
-%token<falk::op::Arithmetical> DIVIDE   "/";
-%token<falk::op::Arithmetical> POWER    "**";
-%token<falk::op::Arithmetical> MOD      "%";
-%token<falk::op::Arithmetical> ASSIGNOP; // TODO: description?
+%token<falk::op::arithmetic> PLUS     "+";
+%token<falk::op::arithmetic> MINUS    "-";
+%token<falk::op::arithmetic> TIMES    "*";
+%token<falk::op::arithmetic> DIVIDE   "/";
+%token<falk::op::arithmetic> POWER    "**";
+%token<falk::op::arithmetic> MOD      "%";
+%token<falk::op::arithmetic> ASSIGNOP; // TODO: description?
 
-%token<falk::op::Comparison> COMPARISON; // TODO: description?
+%token<falk::op::comparison> COMPARISON; // TODO: description?
 
-%token<falk::op::Logical> AND "&";
-%token<falk::op::Logical> OR  "|";
-%token<falk::op::Logical> NOT "!";
+%token<falk::op::logic> AND "&";
+%token<falk::op::logic> OR  "|";
+%token<falk::op::logic> NOT "!";
 
-%type<falk::generic> program;
-%type<falk::generic> command;
-%type<falk::generic> new_line eoc;
-%type<falk::generic> declaration;
-%type<falk::generic> assignment;
-%type<falk::identifier> identifier;
-%type<falk::array_index> arr_size;
-%type<falk::matrix_index> mat_size;
-%type<falk::generic> expr single_calc;
-%type<falk::generic> index rvalue;
-%type<falk::generic> init_list; // CHANGE THIS
+%type<int> program;
+%type<falk::rvalue> command;
+%type<falk::rvalue> identifier arr_size mat_size;
+%type<falk::rvalue> expr single_calc;
+%type<int> assignment;
+%type<int> declaration;
+%type<int> index rvalue;
+%type<int> init_list; // CHANGE THIS!!!!!!
+%type<int> new_line eoc;
 
 /* Operator precedence for mathematical operators
  * The latest it is listed, the highest the precedence
@@ -121,111 +119,107 @@ program :
         $$ = analyser.create_program();
     }
     | program new_line {
-        $$ = analyser.append($1, $2);
+        $$ = $1;
+        $$ += $2;
     }
     | program command eoc {
-        $$ = analyser.append($1, $2);
-        $$ = analyser.append($$, $3);
+        $$ = $1;
+        $$ += $2;
     };
     // | program function
 
-eoc :
-    SEMICOLON {
-        $$ = analyser.semicolon();
-    }
-    | new_line {
-        $$ = $1;
-    };
+eoc : SEMICOLON
+    | new_line
+    ;
 
-new_line :
-    NL { $$ = analyser.new_line(); };
+new_line : NL { analyser.new_line(); };
 
 command :
-    SEMICOLON { $$ = analyser.empty_command(); }
-    | single_calc { $$ = $1; }
-    | declaration { $$ = $1; }
-    | assignment { $$ = $1; };
+    SEMICOLON { /*$$ = analyser.empty_command();*/ }
+    | single_calc { $$ = std::move($1); }
+    | declaration { /*$$ = $1;*/ }
+    | assignment  { /*$$ = $1;*/ };
 
 declaration :
     VAR ID {
-        $$ = analyser.declare_variable($2);
+        // $$ = analyser.declare_variable($2);
     }
     | VAR ID COLON TYPE { /* Aqui pode dar ruim */
-        $$ = analyser.declare_variable($2, $4);
+        // $$ = analyser.declare_variable($2, $4);
     }
     | VAR ID ASSIGN rvalue {
-        $$ = analyser.declare_variable($2, $4);
+        // $$ = analyser.declare_variable($2, $4);
     }
     | ARRAY arr_size ID {
-        $$ = analyser.declare_array($3, $2);
+        // $$ = analyser.declare_array($3, $2);
     }
     | ARRAY ID ASSIGN rvalue {
-        $$ = analyser.declare_array($2, $4);
+        // $$ = analyser.declare_array($2, $4);
     }
     | MATRIX mat_size ID {
-        $$ = analyser.declare_matrix($3, $2);
+        // $$ = analyser.declare_matrix($3, $2);
     }
     | MATRIX ID ASSIGN rvalue { // TODO: init_list or something different?
-        $$ = analyser.declare_matrix($2, $4);   
+        // $$ = analyser.declare_matrix($2, $4);   
     };
 
 init_list: %empty // TODO
 
 assignment :
     identifier ASSIGN rvalue {
-        $$ = analyser.assign($1, $3);
+        // $$ = analyser.assign($1, $3);
     }
     | identifier ASSIGNOP rvalue {
         /* TODO: find a way to allow this without conflicts */
-        $$ = analyser.assign($1, $3, $2);
+        // $$ = analyser.assign($1, $3, $2);
     };
 
 single_calc :
     expr {
-        $$ = analyser.single_calculation($1);
+        $$ = analyser.single_calculation(std::move($1));
     };
 
 rvalue :
     expr {
-        $$ = $1;
+        // $$ = $1;
     }
     | init_list // TODO
     ;
 
 arr_size :
     OBRACKET REAL CBRACKET {
-        $$ = analyser.make_array_index($2);
+        // $$ = analyser.make_array_index($2);
     };
 
 mat_size :
     OBRACKET REAL COMMA REAL CBRACKET {
-        $$ = analyser.make_matrix_index($2, $4);
+        // $$ = analyser.make_matrix_index($2, $4);
     };
 
 identifier :
     ID {
-        $$ = analyser.retrieve_identifier($1);
+        // $$ = analyser.retrieve_identifier($1);
     }
     | ID OBRACKET index CBRACKET {
-        auto index = analyser.make_array_index($3);
-        $$ = analyser.retrieve_identifier($1, index);
+        // auto index = analyser.make_array_index($3);
+        // $$ = analyser.retrieve_identifier($1, index);
     }
     | ID OBRACKET index COMMA index CBRACKET {
-        auto index = analyser.make_matrix_index($3, $5);
-        $$ = analyser.retrieve_identifier($1, index);
+        // auto index = analyser.make_matrix_index($3, $5);
+        // $$ = analyser.retrieve_identifier($1, index);
     }
     | ID OBRACKET COMMA index CBRACKET {
-        auto index = analyser.make_matrix_index($4);
-        $$ = analyser.retrieve_identifier($1, index);
+        // auto index = analyser.make_matrix_index($4);
+        // $$ = analyser.retrieve_identifier($1, index);
     };
     
 
 index :
     identifier {
-        $$ = $1;
+        // $$ = $1;
     }
     | REAL {
-        $$ = $1;
+        // $$ = $1;
     };
 
 // op          : COMPARISON    { $$ = 0; /* TODO */ }
@@ -241,6 +235,7 @@ index :
 //             ;
 
 expr :
+    // TODO: handle literal arrays/matrices
     REAL {
         $$ = $1;
     }
@@ -251,10 +246,10 @@ expr :
         $$ = $1;
     }
     | identifier {
-        $$ = falk::ev::TRUE; /* TODO */
+        $$ = true; /* TODO */
     }
     | expr COMPARISON expr {
-        $$ = falk::ev::TRUE; /* TODO: use $2.operation */
+        $$ = true; /* TODO: use $2.operation */
     }
     | expr PLUS expr {
         $$ = $1 + $3;
@@ -269,7 +264,7 @@ expr :
         $$ = $1 / $3;
     }
     | expr POWER expr {
-        $$ = analyser.pow($1, $3);
+        $$ = $1.pow($3);
     }
     | expr MOD expr {
         $$ = $1 % $3;
@@ -278,7 +273,7 @@ expr :
         $$ = -$2;
     }
     | OPAR expr CPAR {
-        $$ = $2;
+        $$ = std::move($2);
     };
 %%
 
