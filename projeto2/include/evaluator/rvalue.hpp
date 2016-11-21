@@ -3,6 +3,7 @@
 #define FALK_EVALUATOR_RVALUE
 
 #include <complex>
+#include <vector>
 #include "base/types.hpp"
 
 namespace falk {
@@ -10,27 +11,36 @@ namespace falk {
         // Class to capture all kinds of rvalue possible in
         // interpreted mode.
         class rvalue {
+            struct value {
+                double real = 0;
+                double imag = 0;
+
+                operator bool() const;
+                operator double() const;
+                operator std::complex<double>() const;
+            };
          public:
             rvalue(double);
             rvalue(std::complex<double>);
             rvalue(falk::type = falk::type::UNDEFINED, double = 0, double = 0);
             rvalue(bool);
 
-            bool boolean() const;
-            std::complex<double> complex() const;
+            bool boolean(double = 0) const;
+            std::complex<double> complex(double = 0) const;
             
-            double imag() const;
-            double real() const;
+            double imag(double = 0) const;
+            double real(double = 0) const;
             falk::type type() const;
 
-            operator std::complex<double>() const;
+            // Function for unique purpose of compatibility 
+            // with parser generic structure.
             operator long() const;
 
             rvalue pow(const rvalue&);
          private:
-            falk::type _type;
-            double _real;
-            double _imag = 0;
+            falk::fundamental::type _ftype;
+            falk::structural::type _stype;
+            std::vector<value> values;
         };
 
         // Non-member functions
@@ -45,44 +55,54 @@ namespace falk {
 
         // inline implementations
 
+        // struct value methods
+        inline rvalue::value::operator bool() const {
+            return static_cast<bool>(real);
+        }
+
+        inline rvalue::value::operator double() const {
+            return real;
+        }
+
+        inline rvalue::value::operator std::complex<double>() const {
+            return {real, imag};
+        }
+
+        // class rvalue methods
         inline rvalue::rvalue(double v):
-          _type{falk::type::REAL}, _real{v} { }
+          _ftype{falk::type::REAL}, values{{v, 0}} { }
         
         inline rvalue::rvalue(std::complex<double> v):
-          _type{falk::type::COMPLEX}, _real{v.real()}, _imag{v.imag()} { }
+          _ftype{falk::type::COMPLEX}, values{{v.real(), v.imag()}} { }
         
         inline rvalue::rvalue(falk::type type, double real, double imag):
-          _type{type}, _real{real}, _imag{imag} { }
+          _ftype{type}, values{{real, imag}} { }
         
         inline rvalue::rvalue(bool v):
-          _type{falk::type::BOOL}, _real{static_cast<double>(v)} { }
+          _ftype{falk::type::BOOL}, values{{static_cast<double>(v), 0}} { }
 
-        inline std::complex<double> rvalue::complex() const {
-            return {_real, _imag};
+        inline std::complex<double> rvalue::complex(double i) const {
+            return values.at(i);
         }
 
-        inline bool rvalue::boolean() const {
-            return static_cast<bool>(_real);
+        inline bool rvalue::boolean(double i) const {
+            return values.at(i);
         }
 
-        inline double rvalue::imag() const {
-            return _imag;
+        inline double rvalue::imag(double i) const {
+            return values.at(i);
         }
 
-        inline double rvalue::real() const {
-            return _real;
+        inline double rvalue::real(double i) const {
+            return values.at(i);
         }
 
         inline falk::type rvalue::type() const {
-            return _type;
-        }
-        
-        inline rvalue::operator std::complex<double>() const {
-            return {_real, _imag};
+            return _ftype;
         }
 
         inline rvalue::operator long() const {
-            return static_cast<long>(_real);
+            return static_cast<long>(values.at(0).real);
         }
 
     }

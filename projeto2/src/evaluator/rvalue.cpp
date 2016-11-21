@@ -3,12 +3,12 @@
 #include "evaluator/rvalue.hpp"
 
 falk::ev::rvalue falk::ev::rvalue::pow(const rvalue& rhs) {
-    auto result_type = falk::resolve_types(_type, rhs._type);
-    switch (result_type) {
+    auto result_ftype = falk::resolve_types(_ftype, rhs._ftype);
+    switch (result_ftype) {
         case falk::type::COMPLEX:
-            return std::pow(complex(), rhs);
+            return std::pow(complex(), rhs.complex());
         case falk::type::REAL:
-            return {result_type, std::pow(_real, rhs._real)};
+            return {result_ftype, std::pow(real(), rhs.real())};
         case falk::type::BOOL:
             // TODO: error
             return {};
@@ -22,9 +22,9 @@ falk::ev::rvalue falk::ev::operator+(const rvalue& lhs, const rvalue& rhs) {
     auto type = falk::resolve_types(lhs.type(), rhs.type());
     switch (type) {
         case falk::type::COMPLEX:
-            return {type, lhs.real() + rhs.real(), lhs.imag() + rhs.imag()};
+            return lhs.complex() + rhs.complex();
         case falk::type::REAL:
-            return {type, lhs.real() + rhs.real()};
+            return lhs.real() + rhs.real();
         case falk::type::BOOL:
             // TODO: error
             return {};
@@ -38,9 +38,9 @@ falk::ev::rvalue falk::ev::operator-(const rvalue& lhs, const rvalue& rhs) {
     auto type = falk::resolve_types(lhs.type(), rhs.type());
     switch (type) {
         case falk::type::COMPLEX:
-            return {type, lhs.real() - rhs.real(), lhs.imag() - rhs.imag()};
+            return lhs.complex() - rhs.complex();
         case falk::type::REAL:
-            return {type, lhs.real() - rhs.real()};
+            return lhs.real() - rhs.real();
         case falk::type::BOOL:
             // TODO: error
             return {};
