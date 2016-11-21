@@ -39,6 +39,13 @@ namespace aut {
         static constexpr auto value =
             std::is_same<T, First>::value || is_oneof<T, Others...>::value;
     };
+
+    template<typename T>
+    T pop(std::stack<T>& stack) {
+        auto value = stack.top();
+        stack.pop();
+        return value;
+    }
 }
 
 #endif /* ASZDRICK_UTILITIES_HPP */

@@ -25,6 +25,11 @@ namespace falk {
         };
     }
 
+    struct type_def {
+        fundamental::type f_type;
+        structural::type s_type;
+    };
+
     using type = fundamental::type;
 
     inline type resolve_types(type t1, type t2) {

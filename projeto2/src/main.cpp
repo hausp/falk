@@ -3,6 +3,8 @@
 #include "lpi/lpa_context.hpp"
 #include "scanner.hpp"
 
+#include "base/types.hpp"
+
 int main(int, char **) {
     cursed::overterm<true> terminal;
 

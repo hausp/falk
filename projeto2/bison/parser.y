@@ -87,15 +87,14 @@
 %token<falk::op::logic> OR  "|";
 %token<falk::op::logic> NOT "!";
 
-%type<int> program;
+%type<falk::rvalue> program;
 %type<falk::rvalue> command;
 %type<falk::rvalue> identifier arr_size mat_size;
 %type<falk::rvalue> expr single_calc;
-%type<int> assignment;
-%type<int> declaration;
-%type<int> index rvalue;
-%type<int> init_list; // CHANGE THIS!!!!!!
-%type<int> new_line eoc;
+%type<falk::rvalue> assignment;
+%type<falk::rvalue> declaration;
+%type<falk::rvalue> index rvalue;
+%type<falk::rvalue> new_line eoc;
 
 /* Operator precedence for mathematical operators
  * The latest it is listed, the highest the precedence
@@ -128,14 +127,17 @@ program :
     };
     // | program function
 
-eoc : SEMICOLON
-    | new_line
+eoc : SEMICOLON { $$ = 0; }
+    | new_line  { $$ = $1; }
     ;
 
-new_line : NL { analyser.new_line(); };
+new_line : NL {
+    $$ = 0;
+    analyser.new_line();
+};
 
 command :
-    SEMICOLON { /*$$ = analyser.empty_command();*/ }
+    SEMICOLON     { $$ = falk::rvalue{}; }
     | single_calc { $$ = std::move($1); }
     | declaration { /*$$ = $1;*/ }
     | assignment  { /*$$ = $1;*/ };
@@ -163,8 +165,6 @@ declaration :
         // $$ = analyser.declare_matrix($2, $4);   
     };
 
-init_list: %empty // TODO
-
 assignment :
     identifier ASSIGN rvalue {
         // $$ = analyser.assign($1, $3);
@@ -183,7 +183,6 @@ rvalue :
     expr {
         // $$ = $1;
     }
-    | init_list // TODO
     ;
 
 arr_size :
