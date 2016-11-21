@@ -1,6 +1,6 @@
 
-#ifndef FALK_EVALUATOR_REAL_HPP
-#define FALK_EVALUATOR_REAL_HPP
+#ifndef FALK_EV_AST_EVALUATOR_REAL_HPP
+#define FALK_EV_AST_EVALUATOR_REAL_HPP
 
 #include <complex>
 #include <iostream>
@@ -10,24 +10,26 @@
 #include "base/types.hpp"
 #include "function.hpp"
 #include "symbol_mapper.hpp"
-#include "value.hpp"
 
 #include "sma/value.hpp"
 
 namespace falk {
     namespace ev {
         // Responsible for all semantic actions in 'interpreted mode'
-        class evaluator {
-            using node = ast::node<evaluator>;
+        class ast_evaluator {
+            using node = ast::node<ast_evaluator>;
             using node_ptr = std::shared_ptr<node>;
          public:
             // Aliases to define semantical types (objects).
-            using real = double;
+            using real    = double;
             using complex = std::complex<double>;
             using boolean = bool;
 
             // Alias to define semantic abstraction for values.
-            using value = sma::value<evaluator>;
+            using rvalue = sma::value<ast_evaluator>;
+            using lvalue = int; // TODO
+
+            using falk::op;
 
             // Methods
             // assignment assign(identifier, value);
@@ -60,8 +62,21 @@ namespace falk {
             void analyse(real);
             void analyse(complex);
             void analyse(boolean);
-            void analyse(operation<op::arithmetic, 2>, std::array<node_ptr, 2>&);
-            void analyse(operation<op::arithmetic, 1>, std::array<node_ptr, 1>&);
+            void analyse(ADD, std::array<node_ptr, 2>&);
+            void analyse(SUB, std::array<node_ptr, 2>&);
+            void analyse(MULT, std::array<node_ptr, 2>&);
+            void analyse(DIV, std::array<node_ptr, 2>&);
+            void analyse(POW, std::array<node_ptr, 2>&);
+            void analyse(MOD, std::array<node_ptr, 2>&);
+
+            void analyse(ADD_ASSIGN, std::array<node_ptr, 2>&);
+            void analyse(SUB_ASSIGN, std::array<node_ptr, 2>&);
+            void analyse(MULT_ASSIGN, std::array<node_ptr, 2>&);
+            void analyse(DIV_ASSIGN, std::array<node_ptr, 2>&);
+            void analyse(POW_ASSIGN, std::array<node_ptr, 2>&);
+            void analyse(MOD_ASSIGN, std::array<node_ptr, 2>&);
+
+            void analyse(SUB_UNARY, std::array<node_ptr, 1>&);
 
             value single_calculation(value value);
          private:
@@ -69,50 +84,32 @@ namespace falk {
             std::stack<value> stacker;
 
             void calc(const std::function<value(value, value)>&);
-
-         public:
-            static const operation<op::arithmetic, 2> ADD;
-            static const operation<op::arithmetic, 2> SUB;
-            static const operation<op::arithmetic, 2> MULT;
-            static const operation<op::arithmetic, 2> DIV;
-            static const operation<op::arithmetic, 2> POW;
-            static const operation<op::arithmetic, 2> MOD;
-            static const operation<op::logic, 2> AND;
-            static const operation<op::logic, 2> OR;
-            static const operation<op::logic, 2> NOT;
-            static const operation<op::arithmetic, 2> ADD_ASSIGN;
-            static const operation<op::arithmetic, 2> SUB_ASSIGN;
-            static const operation<op::arithmetic, 2> MULT_ASSIGN;
-            static const operation<op::arithmetic, 2> DIV_ASSIGN;
-            static const operation<op::arithmetic, 2> POW_ASSIGN;
-            static const operation<op::arithmetic, 2> MOD_ASSIGN;
-            static const operation<op::arithmetic, 1> UNARY_SUB;
         };
 
 
-        inline evaluator::real evaluator::make_real(const std::string& text) {
+        inline ast_evaluator::real ast_evaluator::make_real(const std::string& text) {
             return std::stod(text);
         }
 
-        inline evaluator::complex evaluator::make_complex(const std::string& text) {
+        inline ast_evaluator::complex ast_evaluator::make_complex(const std::string& text) {
             // TODO
             return std::complex<double>{};
         }
 
-        inline evaluator::boolean evaluator::make_boolean(const std::string& text) {
+        inline ast_evaluator::boolean ast_evaluator::make_boolean(const std::string& text) {
             return text == "true";
         }
 
-        inline int evaluator::new_line() {
+        inline int ast_evaluator::new_line() {
             std::cout << "falk> ";
             return 0;
         }
 
-        inline evaluator::value evaluator::single_calculation(value value) {
+        inline ast_evaluator::value ast_evaluator::single_calculation(value value) {
             // std::cout << "res = " << value << std::endl;
             return value;
         }
     }
 }
 
-#endif /* FALK_EVALUATOR_REAL_HPP */
+#endif /* FALK_EV_AST_EVALUATOR_REAL_HPP */
