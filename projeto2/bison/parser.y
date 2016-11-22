@@ -177,7 +177,7 @@ assignment :
 
 single_calc :
     expr {
-        $$ = analyser.single_calculation(std::move($1));
+        $$ = analyser.single_calculation($1);
     };
 
 rvalue :
