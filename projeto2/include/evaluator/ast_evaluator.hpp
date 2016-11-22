@@ -88,123 +88,14 @@ namespace falk {
             std::stack<structural::type> types_stacker;
 
             template<typename T>
-            void calc(std::array<node_ptr, 2>& operands, T callback) {
-                for (auto& op : operands) {
-                    op->traverse(*this);
-                }
-
-                auto t1 = aut::pop(types_stacker);
-                auto t2 = aut::pop(types_stacker);
-
-                if (t1 == t2) {
-                    switch (t1) {
-                        case structural::type::VARIABLE: {
-                            auto rhs = aut::pop(var_stacker);
-                            auto lhs = aut::pop(var_stacker);
-                            auto result = callback(lhs, rhs);
-                            var_stacker.push(result);
-                            types_stacker.push(structural::type::VARIABLE);
-                            break;
-                        }
-                        case structural::type::ARRAY: {
-                            auto rhs = aut::pop(array_stacker);
-                            auto lhs = aut::pop(array_stacker);
-                            auto result = callback(lhs, rhs);
-                            array_stacker.push(result);
-                            types_stacker.push(structural::type::ARRAY);
-                            break;
-                        }
-                        case structural::type::MATRIX: {
-                            auto rhs = aut::pop(matrix_stacker);
-                            auto lhs = aut::pop(matrix_stacker);
-                            auto result = callback(lhs, rhs);
-                            matrix_stacker.push(result);
-                            types_stacker.push(structural::type::MATRIX);
-                            break;
-                        }
-                    }
-                }
-            }
+            void calc(std::array<node_ptr, 2>& operands, T callback);
 
             template<typename T>
-            void calc_assign(std::array<node_ptr, 2>& operands, T callback) {
-                for (auto& op : operands) {
-                    op->traverse(*this);
-                }
-
-                auto t1 = aut::pop(types_stacker);
-                auto t2 = aut::pop(types_stacker);
-
-                if (t1 == t2) {
-                    switch (t1) {
-                        case structural::type::VARIABLE: {
-                            auto rhs = aut::pop(var_stacker);
-                            auto lhs = aut::pop(var_stacker);
-                            auto result = callback(lhs, rhs);
-                            // TODO
-                            break;
-                        }
-                        case structural::type::ARRAY: {
-                            auto rhs = aut::pop(array_stacker);
-                            auto lhs = aut::pop(array_stacker);
-                            auto result = callback(lhs, rhs);
-                            // TODO
-                            break;
-                        }
-                        case structural::type::MATRIX: {
-                            auto rhs = aut::pop(matrix_stacker);
-                            auto lhs = aut::pop(matrix_stacker);
-                            auto result = callback(lhs, rhs);
-                            // TODO
-                            break;
-                        }
-                    }
-                }
-            }
+            void calc_assign(std::array<node_ptr, 2>& operands, T callback);
         };
-
-
-        inline ast_evaluator::real ast_evaluator::make_real(const std::string& text) {
-            return std::stod(text);
-        }
-
-        inline ast_evaluator::complex ast_evaluator::make_complex(const std::string& text) {
-            auto clean_text = text.substr(0, text.size() - 2);
-            return std::complex<double>{0, std::stod(text)};
-        }
-
-        inline ast_evaluator::boolean ast_evaluator::make_boolean(const std::string& text) {
-            return text == "true";
-        }
-
-        inline int ast_evaluator::new_line() {
-            std::cout << "falk> ";
-            return 0;
-        }
-
-        inline ast_evaluator::rvalue& ast_evaluator::single_calculation(rvalue& value) {
-            value.traverse(*this);
-            auto type = aut::pop(types_stacker);
-            switch (type) {
-                case structural::type::VARIABLE: {
-                    auto v = aut::pop(var_stacker);
-                    std::cout << "res = " << v << std::endl;
-                    break;
-                }
-                case structural::type::ARRAY: {
-                    auto v = aut::pop(array_stacker);
-                    // std::cout << "res = " << v << std::endl;
-                    break;
-                }
-                case structural::type::MATRIX: {
-                    auto v = aut::pop(matrix_stacker);
-                    // std::cout << "res = " << v << std::endl;
-                    break;
-                }
-            }
-            return value;
-        }
     }
 }
+
+#include "ast_evaluator.ipp"
 
 #endif /* FALK_EV_AST_EVALUATOR_REAL_HPP */

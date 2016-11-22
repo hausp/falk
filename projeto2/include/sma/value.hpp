@@ -16,9 +16,13 @@ namespace sma {
           object{new ast::empty_node<Analyser>{}} { }
 
         template<typename T>
-        value(T data):
-          object{new ast::model<Analyser, T>{std::move(data)}} { }
+        value(const T& data):
+          object{new ast::model<Analyser, T>{data}} { }
     
+        bool empty() const {
+            return object->empty();
+        }
+
         value<Analyser, Operation>& operator+=(value<Analyser, Operation>& rhs) {
             op_assign(rhs, typename Operation::ADD_ASSIGN());
             return *this;

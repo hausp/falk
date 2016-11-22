@@ -10,6 +10,8 @@ namespace falk {
     namespace ev {
         class matrix {
          public:
+            // matrix()
+
             size_t size() const {
                 return values.size();
             }

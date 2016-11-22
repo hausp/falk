@@ -76,9 +76,9 @@ namespace ast {
     template<typename Analyser>
     class empty_node : public node<Analyser> {
      public:
-        void traverse(Analyser&) { };
-        void add_subnode(std::shared_ptr<node<Analyser>>) { };
-        bool empty() { return true; }
+        void traverse(Analyser&) override { };
+        void add_subnode(std::shared_ptr<node<Analyser>>) override { };
+        bool empty() override { return true; }
     };
 }
 

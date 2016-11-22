@@ -90,7 +90,7 @@
 %type<falk::rvalue> program;
 %type<falk::rvalue> command;
 %type<falk::rvalue> identifier arr_size mat_size;
-%type<falk::rvalue> expr single_calc;
+%type<falk::rvalue> flat_expr expr single_calc;
 %type<falk::rvalue> assignment;
 %type<falk::rvalue> declaration;
 %type<falk::rvalue> index rvalue;
@@ -162,7 +162,7 @@ declaration :
     | MATRIX mat_size ID {
         // $$ = analyser.declare_matrix($3, $2);
     }
-    | MATRIX ID ASSIGN rvalue { // TODO: init_list or something different?
+    | MATRIX ID ASSIGN rvalue {
         // $$ = analyser.declare_matrix($2, $4);   
     };
 
@@ -234,8 +234,43 @@ index :
 //             | MOD           { $$ = 0; /* TODO */ }
 //             ;
 
-expr :
-    // TODO: handle literal arrays/matrices
+array_list :
+    OBRACKET scalar_list CBRACKET {
+        // TODO
+    }
+    | OPAR scalar_list CPAR {
+        // TODO
+    }
+    ;
+
+matrix_list :
+    OBRACKET matrix_list_body CBRACKET {
+        // TODO
+    }
+    | OPAR matrix_list_body CPAR {
+        // TODO
+    }
+    ;
+
+scalar_list:
+    flat_expr {
+        // TODO
+    }
+    | scalar_list COMMA flat_expr {
+        // TODO
+    }
+    ;
+
+matrix_list_body :
+    array_list {
+
+    }
+    | matrix_list_body COMMA array_list {
+
+    }
+    ;
+
+flat_expr :
     REAL {
         $$ = $1;
     }
@@ -277,7 +312,20 @@ expr :
     }
     | OPAR expr CPAR {
         $$ = std::move($2);
-    };
+    }
+    ;
+
+expr :
+    flat_expr {
+        $$ = $1;
+    }
+    | array_list {
+        
+    }
+    | matrix_list {
+        
+    }
+    ;
 %%
 
 void falk::parser::error(const location &loc , const std::string &message) {
