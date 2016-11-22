@@ -47,7 +47,7 @@ namespace ast {
     template<typename Analyser, typename T>
     class model<Analyser, T, false> : public node<Analyser> {
      public:
-        model(T d) : data{std::move(d)} { }
+        model(const T& d) : data{d} { }
         void traverse(Analyser& analyser) override {
             analyser.analyse(data);
         }
@@ -61,7 +61,7 @@ namespace ast {
         using node_ptr = std::shared_ptr<node<Analyser>>;
         using holder = aut::value_holder<node_ptr, T::arity()>;
      public:
-        model(T d) : data{std::move(d)} { }
+        model(const T& d) : data{d} { }
         void traverse(Analyser& analyser) override {
             analyser.analyse(data, operands.container);
         }

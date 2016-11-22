@@ -79,7 +79,7 @@ namespace falk {
 
             void analyse(op::SUB_UNARY, std::array<node_ptr, 1>&);
 
-            rvalue single_calculation(rvalue value);
+            rvalue& single_calculation(rvalue& value);
          private:
             symbol_mapper mapper;
             std::stack<scalar> var_stacker;
@@ -182,7 +182,7 @@ namespace falk {
             return 0;
         }
 
-        inline ast_evaluator::rvalue ast_evaluator::single_calculation(rvalue value) {
+        inline ast_evaluator::rvalue& ast_evaluator::single_calculation(rvalue& value) {
             value.traverse(*this);
             auto type = aut::pop(types_stacker);
             switch (type) {
