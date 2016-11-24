@@ -22,7 +22,7 @@ namespace lpi {
         Lexer lexer;
         Parser parser;
         Analyser analyser;
-        unsigned loc;
+        unsigned loc = 0;
 
         void increase_location(unsigned) override;
         unsigned location() const override;

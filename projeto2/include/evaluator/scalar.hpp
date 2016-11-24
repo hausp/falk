@@ -29,29 +29,30 @@ namespace falk {
             // with parser generic structure.
             operator long() const;
 
-            scalar pow(const scalar&);
-            scalar pow_assign(const scalar&) {
-                return scalar{};
+            static scalar pow(const scalar&, const scalar&);
+
+            scalar& pow(const scalar&) {
+                return *this;
             }
 
-            scalar operator+=(const scalar&) {
-                return scalar{};
+            scalar& operator+=(const scalar&) {
+                return *this;
             }
 
-            scalar operator-=(const scalar&) {
-                return scalar{};
+            scalar& operator-=(const scalar&) {
+                return *this;
             }
 
-            scalar operator*=(const scalar&) {
-                return scalar{};
+            scalar& operator*=(const scalar&) {
+                return *this;
             }
 
-            scalar operator/=(const scalar&) {
-                return scalar{};
+            scalar& operator/=(const scalar&) {
+                return *this;
             }
 
-            scalar operator%=(const scalar&) {
-                return scalar{};
+            scalar& operator%=(const scalar&) {
+                return *this;
             }
 
          private:

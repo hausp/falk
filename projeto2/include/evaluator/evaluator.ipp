@@ -1,0 +1,137 @@
+template<typename Type, Type OP>
+void falk::ev::evaluator::analyse(operation<Type, OP, 2, false> op,
+                                  node_array<2>& nodes) {
+    for (auto& node : nodes) {
+        node->traverse(*this);
+    }
+
+    auto t1 = aut::pop(types_stacker);
+    auto t2 = aut::pop(types_stacker);
+
+    if (t1 == t2) {
+        switch (t1) {
+            case structural::type::VARIABLE: {
+                auto rhs = aut::pop(var_stacker);
+                auto lhs = aut::pop(var_stacker);
+                auto result = op(lhs, rhs);
+                var_stacker.push(result);
+                types_stacker.push(structural::type::VARIABLE);
+                break;
+            }
+            case structural::type::ARRAY: {
+                auto rhs = aut::pop(array_stacker);
+                auto lhs = aut::pop(array_stacker);
+                auto result = op(lhs, rhs);
+                array_stacker.push(result);
+                types_stacker.push(structural::type::ARRAY);
+                break;
+            }
+            case structural::type::MATRIX: {
+                auto rhs = aut::pop(matrix_stacker);
+                auto lhs = aut::pop(matrix_stacker);
+                auto result = op(lhs, rhs);
+                matrix_stacker.push(result);
+                types_stacker.push(structural::type::MATRIX);
+                break;
+            }
+        }
+    }
+}
+
+template<typename Type, Type OP>
+void falk::ev::evaluator::analyse(operation<Type, OP, 1, false> op,
+                                  node_array<1>& nodes) {
+    nodes[0]->traverse(*this);
+
+    auto t1 = aut::pop(types_stacker);
+
+    switch (t1) {
+        case structural::type::VARIABLE: {
+            auto lhs = aut::pop(var_stacker);
+            auto result = op(lhs);
+            var_stacker.push(result);
+            types_stacker.push(structural::type::VARIABLE);
+            break;
+        }
+        case structural::type::ARRAY: {
+            auto lhs = aut::pop(array_stacker);
+            auto result = op(lhs);
+            array_stacker.push(result);
+            types_stacker.push(structural::type::ARRAY);
+            break;
+        }
+        case structural::type::MATRIX: {
+            auto lhs = aut::pop(matrix_stacker);
+            auto result = op(lhs);
+            matrix_stacker.push(result);
+            types_stacker.push(structural::type::MATRIX);
+            break;
+        }
+    }
+}
+
+template<typename Type, Type OP>
+void falk::ev::evaluator::analyse(operation<Type, OP, 2, true> op,
+                                  node_array<2>& nodes) {
+    for (auto& node : nodes) {
+        node->traverse(*this);
+    }
+
+    auto t1 = aut::pop(types_stacker);
+    auto t2 = aut::pop(types_stacker);
+
+    if (t1 == t2) {
+        switch (t1) {
+            case structural::type::VARIABLE: {
+                auto rhs = aut::pop(var_stacker);
+                auto lhs = aut::pop(var_stacker);
+                auto result = op(lhs, rhs);
+                (void)result;
+                // TODO
+                break;
+            }
+            case structural::type::ARRAY: {
+                auto rhs = aut::pop(array_stacker);
+                auto lhs = aut::pop(array_stacker);
+                auto result = op(lhs, rhs);
+                (void)result;
+                // TODO
+                break;
+            }
+            case structural::type::MATRIX: {
+                auto rhs = aut::pop(matrix_stacker);
+                auto lhs = aut::pop(matrix_stacker);
+                auto result = op(lhs, rhs);
+                (void)result;
+                // TODO
+                break;
+            }
+        }
+    }
+}
+
+inline int falk::ev::evaluator::create_program() {
+    std::cout << "falk> ";
+    return 0;
+}
+
+inline falk::ev::evaluator::real
+falk::ev::evaluator::make_real(const std::string& text) {
+    return std::stod(text);
+}
+
+inline falk::ev::evaluator::complex
+falk::ev::evaluator::make_complex(const std::string& text) {
+    auto clean_text = text.substr(0, text.size() - 2);
+    return std::complex<double>{0, std::stod(text)};
+}
+
+inline falk::ev::evaluator::boolean
+falk::ev::evaluator::make_boolean(const std::string& text) {
+    return text == "true";
+}
+
+inline int falk::ev::evaluator::new_line() {
+    std::cout << "falk> ";
+    return 0;
+}

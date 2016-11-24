@@ -2,13 +2,13 @@
 #include <ostream>
 #include "evaluator/scalar.hpp"
 
-falk::ev::scalar falk::ev::scalar::pow(const scalar& rhs) {
-    auto result_type = falk::resolve_types(_type, rhs._type);
+falk::ev::scalar falk::ev::scalar::pow(const scalar& lhs, const scalar& rhs) {
+    auto result_type = falk::resolve_types(lhs._type, rhs._type);
     switch (result_type) {
         case falk::type::COMPLEX:
-            return std::pow(complex(), rhs.complex());
+            return std::pow(lhs.complex(), rhs.complex());
         case falk::type::REAL:
-            return {result_type, std::pow(real(), rhs.real())};
+            return {result_type, std::pow(lhs.real(), rhs.real())};
         case falk::type::BOOL:
             // TODO: error
             return {};
@@ -17,6 +17,7 @@ falk::ev::scalar falk::ev::scalar::pow(const scalar& rhs) {
             return {};
     }
 }
+
 
 falk::ev::scalar falk::ev::operator+(const scalar& lhs, const scalar& rhs) {
     auto type = falk::resolve_types(lhs.type(), rhs.type());

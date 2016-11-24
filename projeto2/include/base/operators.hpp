@@ -3,7 +3,11 @@
 #define FALK_OPERATORS_HPP
 
 namespace falk {
-    template<typename Type, Type Op, size_t Arity = 2>
+    // The first template argument specifies the type of operation.
+    // The second argument specifies the specific operation.
+    // The third argument specifies if the operation is a composite
+    // assignment.
+    template<typename Type, Type, size_t = 2, bool = false>
     struct operation;
 
     struct op {
@@ -14,12 +18,6 @@ namespace falk {
             MULT,
             POW,
             MOD,
-            ADD_ASSIGN,
-            SUB_ASSIGN,
-            DIV_ASSIGN,
-            MULT_ASSIGN,
-            POW_ASSIGN,
-            MOD_ASSIGN,
         };
 
         enum class comparison {
@@ -35,54 +33,255 @@ namespace falk {
             AND,
             OR,
             NOT,
-            AND_ASSIGN,
-            OR_ASSIGN,
         };
 
-        using ADD  = operation<op::arithmetic, op::arithmetic::ADD>;
-        using SUB  = operation<op::arithmetic, op::arithmetic::SUB>;
-        using MULT = operation<op::arithmetic, op::arithmetic::MULT>;
-        using DIV  = operation<op::arithmetic, op::arithmetic::DIV>;
-        using POW  = operation<op::arithmetic, op::arithmetic::POW>;
-        using MOD  = operation<op::arithmetic, op::arithmetic::MOD>;
-
-        using SUB_UNARY  = operation<op::arithmetic, op::arithmetic::SUB, 1>;
-
-        using ADD_ASSIGN  = operation<op::arithmetic, op::arithmetic::ADD_ASSIGN>;
-        using SUB_ASSIGN  = operation<op::arithmetic, op::arithmetic::SUB_ASSIGN>;
-        using MULT_ASSIGN = operation<op::arithmetic, op::arithmetic::MULT_ASSIGN>;
-        using DIV_ASSIGN  = operation<op::arithmetic, op::arithmetic::DIV_ASSIGN>;
-        using POW_ASSIGN  = operation<op::arithmetic, op::arithmetic::POW_ASSIGN>;
-        using MOD_ASSIGN  = operation<op::arithmetic, op::arithmetic::MOD_ASSIGN>;
-
-        using LT = operation<op::comparison, op::comparison::LT>;
-        using GT = operation<op::comparison, op::comparison::GT>;
-        using LE = operation<op::comparison, op::comparison::LE>;
-        using GE = operation<op::comparison, op::comparison::GE>;
-        using EQ = operation<op::comparison, op::comparison::EQ>;
-        using NE = operation<op::comparison, op::comparison::NE>;
-
-        using AND = operation<op::logic, op::logic::AND>;
-        using OR  = operation<op::logic, op::logic::OR>;
-        using NOT = operation<op::logic, op::logic::NOT>;
-
-        using AND_ASSIGN = operation<op::logic, op::logic::AND_ASSIGN>;
-        using OR_ASSIGN  = operation<op::logic, op::logic::OR_ASSIGN>;
+        // Arithmetic operations
+        using ADD = operation<arithmetic, arithmetic::ADD>;
+        using SUB = operation<arithmetic, arithmetic::SUB>;
+        using MULT = operation<arithmetic, arithmetic::MULT>;
+        using DIV = operation<arithmetic, arithmetic::DIV>;
+        using POW = operation<arithmetic, arithmetic::POW>;
+        using MOD = operation<arithmetic, arithmetic::MOD>;
+        using SUB_UNARY  = operation<arithmetic, arithmetic::SUB, 1>;
+        using ADD_ASSIGN = operation<arithmetic, arithmetic::ADD, 2, true>;
+        using SUB_ASSIGN = operation<arithmetic, arithmetic::SUB, 2, true>;
+        using MULT_ASSIGN = operation<arithmetic, arithmetic::MULT, 2, true>;
+        using DIV_ASSIGN = operation<arithmetic, arithmetic::DIV, 2, true>;
+        using POW_ASSIGN = operation<arithmetic, arithmetic::POW, 2, true>;
+        using MOD_ASSIGN = operation<arithmetic, arithmetic::MOD, 2, true>;
+        // Comparison operations
+        using LT = operation<comparison, comparison::LT>;
+        using GT = operation<comparison, comparison::GT>;
+        using LE = operation<comparison, comparison::LE>;
+        using GE = operation<comparison, comparison::GE>;
+        using EQ = operation<comparison, comparison::EQ>;
+        using NE = operation<comparison, comparison::NE>;
+        // Logic operations
+        using AND = operation<logic, logic::AND>;
+        using OR = operation<logic, logic::OR>;
+        using NOT = operation<logic, logic::NOT>;
+        using AND_ASSIGN = operation<logic, logic::AND, 2, true>;
+        using OR_ASSIGN = operation<logic, logic::OR, 2, true>;
     };
 
-    template<op::arithmetic Op, size_t Arity>
-    struct operation<op::arithmetic, Op, Arity> {
-        static constexpr size_t arity() { return Arity; }
+    template<>
+    struct operation<op::arithmetic, op::arithmetic::ADD, 2, false> {
+        static constexpr size_t arity() { return 2; }
+        
+        template<typename T>
+        T operator()(const T& lhs, const T& rhs) {
+            return lhs + rhs;
+        }
     };
 
-    template<op::comparison Op, size_t Arity>
-    struct operation<op::comparison, Op, Arity> {
-        static constexpr size_t arity() { return Arity; }
+    template<>
+    struct operation<op::arithmetic, op::arithmetic::SUB, 2, false> {
+        static constexpr size_t arity() { return 2; }
+        
+        template<typename T>
+        T operator()(const T& lhs, const T& rhs) {
+            return lhs - rhs;
+        }
     };
 
-    template<op::logic Op, size_t Arity>
-    struct operation<op::logic, Op, Arity> {
-        static constexpr size_t arity() { return Arity; }
+    template<>
+    struct operation<op::arithmetic, op::arithmetic::SUB, 1, false> {
+        static constexpr size_t arity() { return 1; }
+        
+        template<typename T>
+        T operator()(const T& operand) {
+            return -operand;
+        }
+    };
+
+    template<>
+    struct operation<op::arithmetic, op::arithmetic::MULT, 2, false> {
+        static constexpr size_t arity() { return 2; }
+        
+        template<typename T>
+        T operator()(const T& lhs, const T& rhs) {
+            return lhs * rhs;
+        }
+    };
+
+    template<>
+    struct operation<op::arithmetic, op::arithmetic::DIV, 2, false> {
+        static constexpr size_t arity() { return 2; }
+        
+        template<typename T>
+        T operator()(const T& lhs, const T& rhs) {
+            return lhs / rhs;
+        }
+    };
+
+    template<>
+    struct operation<op::arithmetic, op::arithmetic::POW, 2, false> {
+        static constexpr size_t arity() { return 2; }
+        
+        template<typename T>
+        T operator()(const T& lhs, const T& rhs) {
+            return T::pow(lhs, rhs);
+        }
+    };
+
+    template<>
+    struct operation<op::arithmetic, op::arithmetic::MOD, 2, false> {
+        static constexpr size_t arity() { return 2; }
+        
+        template<typename T>
+        T operator()(const T& lhs, const T& rhs) {
+            return lhs % rhs;
+        }
+    };
+
+    template<>
+    struct operation<op::arithmetic, op::arithmetic::ADD, 2, true> {
+        static constexpr size_t arity() { return 2; }
+        
+        template<typename Variable, typename Rvalue>
+        Variable& operator()(Variable& lhs, const Rvalue& rhs) {
+            return lhs += rhs;
+        }
+    };
+
+    template<>
+    struct operation<op::arithmetic, op::arithmetic::SUB, 2, true> {
+        static constexpr size_t arity() { return 2; }
+        
+        template<typename T>
+        T& operator()(T& lhs, const T& rhs) {
+            return lhs -= rhs;
+        }
+    };
+
+    template<>
+    struct operation<op::arithmetic, op::arithmetic::MULT, 2, true> {
+        static constexpr size_t arity() { return 2; }
+        
+        template<typename T>
+        T& operator()(T& lhs, const T& rhs) {
+            return lhs *= rhs;
+        }
+    };
+
+    template<>
+    struct operation<op::arithmetic, op::arithmetic::DIV, 2, true> {
+        static constexpr size_t arity() { return 2; }
+        
+        template<typename T>
+        T& operator()(T& lhs, const T& rhs) {
+            return lhs /= rhs;
+        }
+    };
+
+    template<>
+    struct operation<op::arithmetic, op::arithmetic::POW, 2, true> {
+        static constexpr size_t arity() { return 2; }
+        
+        template<typename T>
+        T& operator()(T& lhs, const T& rhs) {
+            return lhs.pow(rhs);
+        }
+    };
+
+    template<>
+    struct operation<op::arithmetic, op::arithmetic::MOD, 2, true> {
+        static constexpr size_t arity() { return 2; }
+        
+        template<typename T>
+        T& operator()(T& lhs, const T& rhs) {
+            return lhs %= rhs;
+        }
+    };
+
+    template<>
+    struct operation<op::comparison, op::comparison::LT, 2, false> {
+        static constexpr size_t arity() { return 2; }
+
+        template<typename T>
+        bool operator()(const T& lhs, const T& rhs) {
+            return lhs < rhs;
+        }
+    };
+
+    template<>
+    struct operation<op::comparison, op::comparison::GT, 2, false> {
+        static constexpr size_t arity() { return 2; }
+
+        template<typename T>
+        bool operator()(const T& lhs, const T& rhs) {
+            return lhs > rhs;
+        }
+    };
+
+    template<>
+    struct operation<op::comparison, op::comparison::LE, 2, false> {
+        static constexpr size_t arity() { return 2; }
+
+        template<typename T>
+        bool operator()(const T& lhs, const T& rhs) {
+            return lhs <= rhs;
+        }
+    };
+
+    template<>
+    struct operation<op::comparison, op::comparison::GE, 2, false> {
+        static constexpr size_t arity() { return 2; }
+
+        template<typename T>
+        bool operator()(const T& lhs, const T& rhs) {
+            return lhs >= rhs;
+        }
+    };
+
+    template<>
+    struct operation<op::comparison, op::comparison::EQ, 2, false> {
+        static constexpr size_t arity() { return 2; }
+
+        template<typename T>
+        bool operator()(const T& lhs, const T& rhs) {
+            return lhs == rhs;
+        }
+    };
+
+    template<>
+    struct operation<op::comparison, op::comparison::NE, 2, false> {
+        static constexpr size_t arity() { return 2; }
+
+        template<typename T>
+        bool operator()(const T& lhs, const T& rhs) {
+            return lhs != rhs;
+        }
+    };
+
+    template<>
+    struct operation<op::logic, op::logic::AND, 2, false> {
+        static constexpr size_t arity() { return 2; }
+
+        template<typename T>
+        bool operator()(const T& lhs, const T& rhs) {
+            return lhs && rhs;
+        }
+    };
+
+    template<>
+    struct operation<op::logic, op::logic::OR, 2, false> {
+        static constexpr size_t arity() { return 2; }
+
+        template<typename T>
+        bool operator()(const T& lhs, const T& rhs) {
+            return lhs || rhs;
+        }
+    };
+
+    template<>
+    struct operation<op::logic, op::logic::NOT, 2, false> {
+        static constexpr size_t arity() { return 2; }
+
+        template<typename T>
+        bool operator()(const T& operand) {
+            return !operand;
+        }
     };
 }
 

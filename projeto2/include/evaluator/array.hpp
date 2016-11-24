@@ -25,86 +25,87 @@ namespace falk {
                 return values.at(index);
             }
 
-            array pow(const array& rhs) {
+            array& pow(const array& rhs) {
                 if (size() != rhs.size()) {
                     // TODO: error (incompatible operands)
-                    return array{};
+                    return *this;
                 }
 
-                array result;
                 for (size_t i = 0; i < size(); i++) {
-                    result.push_back(values[i].pow(rhs[i]));
+                    values[i].pow(rhs[i]);
                 }
-                return result;
+
+                return *this;
+            }
+            
+            static array pow(const array& lhs, const array& rhs) {
+                auto copy = lhs;
+                return copy.pow(rhs);
             }
 
-            array& pow_assign(const array& rhs) {
-                return *this = pow(rhs);
-            }
-
-            array operator+=(const array& rhs) {
+            array& operator+=(const array& rhs) {
                 if (size() != rhs.size()) {
                     // TODO: error (incompatible operands)
-                    return array{};
+                    return *this;
                 }
 
                 array result;
                 for (size_t i = 0; i < size(); i++) {
                     result.push_back(values[i] + rhs[i]);
                 }
-                return result;
+                return *this;
             }
 
-            array operator-=(const array& rhs) {
+            array& operator-=(const array& rhs) {
                 if (size() != rhs.size()) {
                     // TODO: error (incompatible operands)
-                    return array{};
+                    return *this;
                 }
 
                 array result;
                 for (size_t i = 0; i < size(); i++) {
                     result.push_back(values[i] - rhs[i]);
                 }
-                return result;
+                return *this;
             }
 
-            array operator*=(const array& rhs) {
+            array& operator*=(const array& rhs) {
                 if (size() != rhs.size()) {
                     // TODO: error (incompatible operands)
-                    return array{};
+                    return *this;
                 }
 
                 array result;
                 for (size_t i = 0; i < size(); i++) {
                     result.push_back(values[i] * rhs[i]);
                 }
-                return result;
+                return *this;
             }
 
-            array operator/=(const array& rhs) {
+            array& operator/=(const array& rhs) {
                 if (size() != rhs.size()) {
                     // TODO: error (incompatible operands)
-                    return array{};
+                    return *this;
                 }
 
                 array result;
                 for (size_t i = 0; i < size(); i++) {
                     result.push_back(values[i] / rhs[i]);
                 }
-                return result;
+                return *this;
             }
 
-            array operator%=(const array& rhs) {
+            array& operator%=(const array& rhs) {
                 if (size() != rhs.size()) {
                     // TODO: error (incompatible operands)
-                    return array{};
+                    return *this;
                 }
 
                 array result;
                 for (size_t i = 0; i < size(); i++) {
                     result.push_back(values[i] % rhs[i]);                
                 }
-                return result;
+                return *this;
             }
 
          private:

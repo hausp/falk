@@ -1,109 +1,32 @@
 
 #include "evaluator/evaluator.hpp"
 
-// falk::ev::evaluator::program falk::ev::evaluator::append(program, command) {
-// 	return program{};
-// }
+void falk::ev::evaluator::analyse(scalar value) {
+    var_stacker.push(value);
+    types_stacker.push(structural::type::VARIABLE);
+}
 
-// falk::ev::evaluator::array_index falk::ev::evaluator::make_array_index(value) {
-// 	return array_index{};
-// }
-
-// falk::ev::evaluator::assignment falk::ev::evaluator::assign(identifier id, value val) {
-// 	mapper.assign(id, val);
-// 	return val; // é ou não - GRAF, Merlseson. 2016.
-// }
-
-// falk::ev::evaluator::assignment falk::ev::evaluator::assign(identifier id, value val, op::arithmetic op) {
-// 	auto curr_value = mapper.get(id);
-// 	// TODO: apply op(curr_value, val)
-// 	// mapper.assign(id, ??);
-// 	return assignment{};
-// }
-
-// falk::ev::evaluator::program falk::ev::evaluator::create_program() {
-// 	return program{};
-// }
-// falk::ev::evaluator::command falk::ev::evaluator::empty_command() {
-// 	return command{};
-// }
-
-// falk::ev::evaluator::declaration falk::ev::evaluator::declare_array(const std::string&) {
-// 	return declaration{};
-// }
-// falk::ev::evaluator::declaration falk::ev::evaluator::declare_array(const std::string&, array_index) {
-// 	return declaration{};
-// }
-// falk::ev::evaluator::declaration falk::ev::evaluator::declare_array(const std::string&, init_list) {
-// 	return declaration{};
-// }
-
-// falk::ev::evaluator::declaration falk::ev::evaluator::declare_variable(const std::string&) {
-// 	return declaration{};
-// }
-// falk::ev::evaluator::declaration falk::ev::evaluator::declare_variable(const std::string&, Type) {
-// 	return declaration{};
-// }
-// falk::ev::evaluator::declaration falk::ev::evaluator::declare_variable(const std::string&, value) {
-// 	return declaration{};
-// }
-
-// falk::ev::evaluator::declaration falk::ev::evaluator::declare_matrix(const std::string&) {
-// 	return declaration{};
-// }
-// falk::ev::evaluator::declaration falk::ev::evaluator::declare_matrix(const std::string&, matrix_index) {
-// 	return declaration{};
-// }
-// falk::ev::evaluator::declaration falk::ev::evaluator::declare_matrix(const std::string&, init_list) {
-// 	return declaration{};
-// }
-
-// value falk::ev::evaluator::make_real(const std::string& text) {
-// 	return value{};
-// }
-
-// value falk::ev::evaluator::make_complex(const std::string& text) {
-// 	return value{};
-// }
-
-// value falk::ev::evaluator::make_boolean(const std::string& yytext) {
-// 	return value{};
-// }
-
-// falk::ev::evaluator::matrix_index falk::ev::evaluator::make_matrix_index(value) {
-// 	return matrix_index{};
-// }
-
-// falk::ev::evaluator::matrix_index falk::ev::evaluator::make_matrix_index(value, value) {
-// 	return matrix_index{};
-// }
-
-// control new_line() {
-// 	return control{};
-// }
-
-// falk::ev::evaluator::control falk::ev::evaluator::semicolon() {
-// 	return control{};
-// }
-
-// falk::ev::evaluator::identifier falk::ev::evaluator::retrieve_identifier(const std::string&) {
-// 	return identifier{};
-// }
-// falk::ev::evaluator::identifier falk::ev::evaluator::retrieve_identifier(const std::string&, array_index) {
-// 	return identifier{};
-// }
-// falk::ev::evaluator::identifier falk::ev::evaluator::retrieve_identifier(const std::string&, matrix_index) {
-// 	return identifier{};
-// }
-
-// falk::ev::evaluator::value falk::ev::evaluator::pow(const value& lhs,
-//                                                     const value& rhs) {
-//     auto type = falk::resolve_types(lhs.type, rhs.type);
-//     if (type == Type::REAL) {
-//         // TODO
-//     } else {
-//         // TODO
-//     }
-//     return value{};
-// }
-
+falk::ev::evaluator::rvalue& falk::ev::evaluator::single_calculation(rvalue& value) {
+    if (!value.empty()) {
+        value.traverse(*this);
+        auto type = aut::pop(types_stacker);
+        switch (type) {
+            case structural::type::VARIABLE: {
+                auto v = aut::pop(var_stacker);
+                std::cout << "res = " << v << std::endl;
+                break;
+            }
+            case structural::type::ARRAY: {
+                auto v = aut::pop(array_stacker);
+                // std::cout << "res = " << v << std::endl;
+                break;
+            }
+            case structural::type::MATRIX: {
+                auto v = aut::pop(matrix_stacker);
+                // std::cout << "res = " << v << std::endl;
+                break;
+            }
+        }
+    }
+    return value;
+}

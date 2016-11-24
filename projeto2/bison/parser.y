@@ -238,16 +238,10 @@ array_list :
     OBRACKET scalar_list CBRACKET {
         // TODO
     }
-    | OPAR scalar_list CPAR {
-        // TODO
-    }
     ;
 
 matrix_list :
     OBRACKET matrix_list_body CBRACKET {
-        // TODO
-    }
-    | OPAR matrix_list_body CPAR {
         // TODO
     }
     ;

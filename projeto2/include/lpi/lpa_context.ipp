@@ -4,22 +4,18 @@
 template<typename L, typename P, typename A>
 lpi::lpa_context<L,P,A>::lpa_context():
   lexer{analyser, *this},
-  parser{lexer, analyser, *this},
-  loc{0} { }
+  parser{lexer, analyser, *this} { }
 
 template<typename L, typename P, typename A>
 lpi::lpa_context<L,P,A>::lpa_context(A a):
   lexer{analyser, *this},
   parser{lexer, analyser, *this},
-  analyser{std::move(a)},
-  loc{0} { }
+  analyser{std::move(a)} { }
 
 template<typename L, typename P, typename A>
 int lpi::lpa_context<L,P,A>::run() {
     loc = 0;
-    std::cout << "falk> ";
     auto res = parser.parse();
-    std::cout << "called quit!" << std::endl;
     return res;
 }
 

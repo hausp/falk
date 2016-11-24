@@ -28,86 +28,87 @@ namespace falk {
                 return values.at(index);
             }
 
-            matrix pow(const matrix& rhs) {
+            matrix& pow(const matrix& rhs) {
                 if (size() != rhs.size()) {
                     // TODO: error (incompatible operands)
-                    return matrix{};
+                    return *this;
                 }
 
-                matrix result;
                 for (size_t i = 0; i < size(); i++) {
-                    result.push_back(values[i].pow(rhs[i]));
+                    values[i].pow(rhs[i]);
                 }
-                return result;
+
+                return *this;
             }
 
-            matrix& pow_assign(const matrix& rhs) {
-                return *this = pow(rhs);
+            static matrix pow(const matrix& lhs, const matrix& rhs) {
+                auto copy = lhs;
+                return copy.pow(rhs);
             }
 
-            matrix operator+=(const matrix& rhs) {
+            matrix& operator+=(const matrix& rhs) {
                 if (size() != rhs.size()) {
                     // TODO: error (incompatible operands)
-                    return matrix{};
+                    return *this;
                 }
 
                 matrix result;
                 for (size_t i = 0; i < size(); i++) {
                     result.push_back(values[i] + rhs[i]);
                 }
-                return result;
+                return *this;
             }
 
-            matrix operator-=(const matrix& rhs) {
+            matrix& operator-=(const matrix& rhs) {
                 if (size() != rhs.size()) {
                     // TODO: error (incompatible operands)
-                    return matrix{};
+                    return *this;
                 }
 
                 matrix result;
                 for (size_t i = 0; i < size(); i++) {
                     result.push_back(values[i] - rhs[i]);
                 }
-                return result;
+                return *this;
             }
 
-            matrix operator*=(const matrix& rhs) {
+            matrix& operator*=(const matrix& rhs) {
                 if (size() != rhs.size()) {
                     // TODO: error (incompatible operands)
-                    return matrix{};
+                    return *this;
                 }
 
                 matrix result;
                 for (size_t i = 0; i < size(); i++) {
                     result.push_back(values[i] * rhs[i]);
                 }
-                return result;
+                return *this;
             }
 
-            matrix operator/=(const matrix& rhs) {
+            matrix& operator/=(const matrix& rhs) {
                 if (size() != rhs.size()) {
                     // TODO: error (incompatible operands)
-                    return matrix{};
+                    return *this;
                 }
 
                 matrix result;
                 for (size_t i = 0; i < size(); i++) {
                     result.push_back(values[i] / rhs[i]);
                 }
-                return result;
+                return *this;
             }
 
-            matrix operator%=(const matrix& rhs) {
+            matrix& operator%=(const matrix& rhs) {
                 if (size() != rhs.size()) {
                     // TODO: error (incompatible operands)
-                    return matrix{};
+                    return *this;
                 }
 
                 matrix result;
                 for (size_t i = 0; i < size(); i++) {
                     result.push_back(values[i] % rhs[i]);                
                 }
-                return result;
+                return *this;
             }
 
          private:
