@@ -9,11 +9,12 @@
 #include "aut/utilities.hpp"
 #include "base/operators.hpp"
 #include "base/types.hpp"
+#include "evaluator/array.hpp"
+#include "evaluator/matrix.hpp"
 #include "function.hpp"
 #include "symbol_mapper.hpp"
 #include "sma/value.hpp"
 #include "sma/list.hpp"
-#include "variable.hpp"
 
 namespace falk {
     namespace ev {

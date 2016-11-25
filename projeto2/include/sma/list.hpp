@@ -15,7 +15,7 @@ namespace sma {
           object{new ast::empty_node<Analyser>{}} { }
 
         template<typename T>
-        list(const T& data):
+        explicit list(const T& data):
           object{new ast::model<Analyser, T>{data}} { }
 
         void push(node_ptr);

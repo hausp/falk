@@ -6,6 +6,10 @@ void falk::ev::evaluator::analyse(scalar value) {
     types_stacker.push(structural::type::SCALAR);
 }
 
+void falk::ev::evaluator::analyse(list values) {
+    // TODO
+}
+
 falk::ev::evaluator::value& falk::ev::evaluator::single_calculation(value& v) {
     if (!v.empty()) {
         v.traverse(*this);

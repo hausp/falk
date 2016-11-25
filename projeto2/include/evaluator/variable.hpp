@@ -4,6 +4,7 @@
 
 #include "array.hpp"
 #include "aut/variant.hpp"
+#include "base/definitions.hpp"
 #include "matrix.hpp"
 #include "scalar.hpp"
 
