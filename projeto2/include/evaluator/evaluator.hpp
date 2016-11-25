@@ -54,9 +54,9 @@ namespace falk {
             // declaration declare_matrix(const std::string&, matrix_index);
             // declaration declare_matrix(const std::string&, init_list);
 
-            real make_real(const std::string& text);
-            complex make_complex(const std::string& text);
-            boolean make_boolean(const std::string& yytext);
+            real make_real(const std::string&);
+            complex make_complex(const std::string&);
+            boolean make_boolean(const std::string&);
 
             int new_line();
 
@@ -64,8 +64,15 @@ namespace falk {
             // identifier retrieve_identifier(const std::string&, array_index) { return identifier{}; }
             // identifier retrieve_identifier(const std::string&, matrix_index) { return identifier{}; }
 
-            void analyse(scalar);
-            void analyse(list);
+            void analyse(const scalar&);
+            void analyse(const array&);
+            void analyse(const matrix&);
+
+            template<typename T>
+            void analyse(const T&);
+
+            template<typename T>
+            void analyse(const T&, const std::list<node_ptr>&);
 
             // TODO: can the methods below be generalized?
             // Binary calculations

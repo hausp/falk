@@ -31,6 +31,8 @@
     static falk::parser::symbol_type yylex(falk::scanner& scanner) {
         return scanner.next_token();
     }
+
+    class TODO {};
 }
 
 %lex-param { falk::scanner &scanner }
@@ -239,21 +241,24 @@ matrix_list :
 
 scalar_list:
     flat_expr {
+        $$ = falk::list(TODO());
         $$.push($1);
         // TODO
     }
     | scalar_list COMMA flat_expr {
-        $$.push($3);
-        // TODO
+        $1.push($3);
+        $$ = $1;
     }
     ;
 
 matrix_list_body :
     array_list {
+        $$ = falk::list(TODO());
         $$.push($1);
     }
     | matrix_list_body COMMA array_list {
-        $$.push($3);
+        $1.push($3);
+        $$ = $1;
     }
     ;
 

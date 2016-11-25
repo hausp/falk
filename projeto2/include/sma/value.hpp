@@ -3,6 +3,7 @@
 #define SMA_VALUE_HPP
 
 #include "ast/node.hpp"
+#include "sma/list.hpp"
 
 // Semantical Abstractions
 namespace sma {
@@ -15,6 +16,9 @@ namespace sma {
      public:
         value():
           object{new ast::empty_node<Analyser>{}} { }
+
+        value(list<Analyser>& container):
+          object{container} { }
 
         template<typename T>
         value(const T& data):
