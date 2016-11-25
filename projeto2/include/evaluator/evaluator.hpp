@@ -12,6 +12,7 @@
 #include "function.hpp"
 #include "symbol_mapper.hpp"
 #include "sma/value.hpp"
+#include "sma/list.hpp"
 #include "variable.hpp"
 
 namespace falk {
@@ -27,9 +28,12 @@ namespace falk {
             using real = double;
             using complex = std::complex<double>;
             using boolean = bool;
+            using array = ev::array;
+            using matrix = ev::matrix;
 
             // Alias to define semantic abstraction for values.
             using value = sma::value<evaluator, falk::op>;
+            using list = sma::list<evaluator>;
 
             // Methods
             // assignment assign(identifier, value);
@@ -60,6 +64,7 @@ namespace falk {
             // identifier retrieve_identifier(const std::string&, matrix_index) { return identifier{}; }
 
             void analyse(scalar);
+            void analyse(list);
 
             // TODO: can the methods below be generalized?
             // Binary calculations

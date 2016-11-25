@@ -36,12 +36,12 @@ namespace falk {
 
     inline type resolve_types(type t1, type t2) {
         if (t1 != t2) {
-            if (t1 == type::BOOL || t2 == type::BOOL) {
-                // TODO
-            } else if (t1 == type::COMPLEX || t2 == type::COMPLEX) {
+            if (t1 == type::COMPLEX || t2 == type::COMPLEX) {
                 return type::COMPLEX;
+            } else if (t1 == type::REAL || t2 == type::REAL) {
+                return type::REAL;
             }
-            // TODO: mensagem de erro
+            // TODO: error (incompatible types)
             return type::UNDEFINED;
         }
         return t1;

@@ -50,7 +50,6 @@ while_literal while
 
 end_of_command ;|\n
 
-/* TODO */
 nonacceptable [^-\+\*\(\)/=%,;\.\n0-9A-Za-z_ \t><!&|:\[\]]+
 
 %%

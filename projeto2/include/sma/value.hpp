@@ -29,6 +29,10 @@ namespace sma {
         //     return *this;
         // }
 
+        operator node_ptr() {
+            return object;
+        }
+
         val& operator+=(val& rhs) {
             op_assign(rhs, typename Operation::ADD_ASSIGN());
             return *this;

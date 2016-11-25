@@ -91,6 +91,7 @@
 %type<falk::value> command;
 %type<falk::value> identifier arr_size mat_size;
 %type<falk::value> flat_expr expr single_calc;
+%type<falk::list> array_list matrix_list scalar_list matrix_list_body;
 %type<falk::value> assignment;
 %type<falk::value> declaration;
 %type<falk::value> index rvalue;
@@ -174,7 +175,6 @@ assignment :
         // $$ = analyser.assign($1, $3);
     }
     | identifier ASSIGNOP rvalue {
-        /* TODO: find a way to allow this without conflicts */
         // $$ = analyser.assign($1, $3, $2);
     };
 
@@ -227,31 +227,33 @@ index :
 
 array_list :
     OBRACKET scalar_list CBRACKET {
-        // TODO
+        $$ = $2;
     }
     ;
 
 matrix_list :
     OBRACKET matrix_list_body CBRACKET {
-        // TODO
+        $$ = $2;
     }
     ;
 
 scalar_list:
     flat_expr {
+        $$.push($1);
         // TODO
     }
     | scalar_list COMMA flat_expr {
+        $$.push($3);
         // TODO
     }
     ;
 
 matrix_list_body :
     array_list {
-
+        $$.push($1);
     }
     | matrix_list_body COMMA array_list {
-
+        $$.push($3);
     }
     ;
 
@@ -305,10 +307,10 @@ expr :
         $$ = $1;
     }
     | array_list {
-        
+        $$ = $1;
     }
     | matrix_list {
-        
+        $$ = $1;        
     }
     ;
 %%

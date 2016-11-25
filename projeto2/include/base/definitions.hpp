@@ -18,9 +18,12 @@ namespace falk {
     using real = analyser::real;
     using complex = analyser::complex;
     using boolean = analyser::boolean;
+    using array = analyser::array;
+    using matrix = analyser::matrix;
 
     // Semantic abstractions definitions.
     using value = analyser::value;
+    using list = analyser::list;
 }
 
 #endif /* FALK_DEFINITIONS_HPP */
