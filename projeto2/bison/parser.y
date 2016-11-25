@@ -277,34 +277,34 @@ flat_expr :
     | identifier {
         $$ = true; /* TODO */
     }
-    | flat_expr COMPARISON flat_expr {
+    | expr COMPARISON expr {
         $$ = true; /* TODO: use $2.operation */
     }
-    | flat_expr PLUS flat_expr {
+    | expr PLUS expr {
         $$ = $1 + $3;
     }
-    | flat_expr MINUS flat_expr {
+    | expr MINUS expr {
         $$ = $1 - $3;
     }
-    | flat_expr TIMES flat_expr {
+    | expr TIMES expr {
         $$ = $1 * $3;
     }
-    | flat_expr DIVIDE flat_expr {
+    | expr DIVIDE expr {
         $$ = $1 / $3;
     }
-    | flat_expr POWER flat_expr {
+    | expr POWER expr {
         $$ = $1.pow($3);
     }
-    | flat_expr MOD flat_expr {
+    | expr MOD expr {
         $$ = $1 % $3;
     }
-    | MINUS flat_expr %prec U_MINUS {
+    | MINUS expr %prec U_MINUS {
         $$ = -$2;
     }
-    | PLUS flat_expr %prec U_PLUS {
+    | PLUS expr %prec U_PLUS {
         $$ = $2;
     }
-    | OPAR flat_expr CPAR {
+    | OPAR expr CPAR {
         $$ = std::move($2);
     }
     ;
