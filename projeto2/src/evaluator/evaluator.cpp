@@ -3,15 +3,15 @@
 
 void falk::ev::evaluator::analyse(scalar value) {
     var_stacker.push(value);
-    types_stacker.push(structural::type::VARIABLE);
+    types_stacker.push(structural::type::SCALAR);
 }
 
-falk::ev::evaluator::rvalue& falk::ev::evaluator::single_calculation(rvalue& value) {
-    if (!value.empty()) {
-        value.traverse(*this);
+falk::ev::evaluator::value& falk::ev::evaluator::single_calculation(value& v) {
+    if (!v.empty()) {
+        v.traverse(*this);
         auto type = aut::pop(types_stacker);
         switch (type) {
-            case structural::type::VARIABLE: {
+            case structural::type::SCALAR: {
                 auto v = aut::pop(var_stacker);
                 std::cout << "res = " << v << std::endl;
                 break;
@@ -28,5 +28,5 @@ falk::ev::evaluator::rvalue& falk::ev::evaluator::single_calculation(rvalue& val
             }
         }
     }
-    return value;
+    return v;
 }

@@ -19,16 +19,18 @@ namespace falk {
 
     namespace structural {
         enum class type {
-            VARIABLE,
+            SCALAR,
             ARRAY,
             MATRIX,
         };
     }
 
-    struct type_def {
-        fundamental::type f_type;
-        structural::type s_type;
-    };
+    namespace symbol {
+        enum class type {
+            VARIABLE,
+            FUNCTION  
+        };
+    }
 
     using type = fundamental::type;
 

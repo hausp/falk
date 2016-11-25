@@ -68,8 +68,8 @@ namespace falk {
     struct operation<op::arithmetic, op::arithmetic::ADD, 2, false> {
         static constexpr size_t arity() { return 2; }
         
-        template<typename T>
-        T operator()(const T& lhs, const T& rhs) {
+        template<typename LH, typename RH>
+        auto operator()(const LH& lhs, const RH& rhs) {
             return lhs + rhs;
         }
     };
@@ -78,8 +78,8 @@ namespace falk {
     struct operation<op::arithmetic, op::arithmetic::SUB, 2, false> {
         static constexpr size_t arity() { return 2; }
         
-        template<typename T>
-        T operator()(const T& lhs, const T& rhs) {
+        template<typename LH, typename RH>
+        auto operator()(const LH& lhs, const RH& rhs) {
             return lhs - rhs;
         }
     };
@@ -98,8 +98,8 @@ namespace falk {
     struct operation<op::arithmetic, op::arithmetic::MULT, 2, false> {
         static constexpr size_t arity() { return 2; }
         
-        template<typename T>
-        T operator()(const T& lhs, const T& rhs) {
+        template<typename LH, typename RH>
+        auto operator()(const LH& lhs, const RH& rhs) {
             return lhs * rhs;
         }
     };
@@ -108,8 +108,8 @@ namespace falk {
     struct operation<op::arithmetic, op::arithmetic::DIV, 2, false> {
         static constexpr size_t arity() { return 2; }
         
-        template<typename T>
-        T operator()(const T& lhs, const T& rhs) {
+        template<typename LH, typename RH>
+        auto operator()(const LH& lhs, const RH& rhs) {
             return lhs / rhs;
         }
     };
@@ -118,9 +118,9 @@ namespace falk {
     struct operation<op::arithmetic, op::arithmetic::POW, 2, false> {
         static constexpr size_t arity() { return 2; }
         
-        template<typename T>
-        T operator()(const T& lhs, const T& rhs) {
-            return T::pow(lhs, rhs);
+        template<typename LH, typename RH>
+        auto operator()(const LH& lhs, const RH& rhs) {
+            return LH::pow(lhs, rhs);
         }
     };
 
@@ -128,8 +128,8 @@ namespace falk {
     struct operation<op::arithmetic, op::arithmetic::MOD, 2, false> {
         static constexpr size_t arity() { return 2; }
         
-        template<typename T>
-        T operator()(const T& lhs, const T& rhs) {
+        template<typename LH, typename RH>
+        auto operator()(const LH& lhs, const RH& rhs) {
             return lhs % rhs;
         }
     };

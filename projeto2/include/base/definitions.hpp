@@ -20,8 +20,7 @@ namespace falk {
     using boolean = analyser::boolean;
 
     // Semantic abstractions definitions.
-    using lvalue = analyser::lvalue;
-    using rvalue = analyser::rvalue;
+    using value = analyser::value;
 }
 
 #endif /* FALK_DEFINITIONS_HPP */

@@ -4,12 +4,7 @@
 
 #include <memory>
 #include <type_traits>
-
-#include <iostream>
 #include <utility>
-#include <typeinfo>
-#include <type_traits>
-#include <string>
 
 #include "utilities.hpp"
 

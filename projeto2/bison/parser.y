@@ -87,14 +87,14 @@
 %token<falk::op::logic> OR  "|";
 %token<falk::op::logic> NOT "!";
 
-%type<falk::rvalue> program;
-%type<falk::rvalue> command;
-%type<falk::rvalue> identifier arr_size mat_size;
-%type<falk::rvalue> flat_expr expr single_calc;
-%type<falk::rvalue> assignment;
-%type<falk::rvalue> declaration;
-%type<falk::rvalue> index rvalue;
-%type<falk::rvalue> new_line eoc;
+%type<falk::value> program;
+%type<falk::value> command;
+%type<falk::value> identifier arr_size mat_size;
+%type<falk::value> flat_expr expr single_calc;
+%type<falk::value> assignment;
+%type<falk::value> declaration;
+%type<falk::value> index rvalue;
+%type<falk::value> new_line eoc;
 
 /* Operator precedence for mathematical operators
  * The latest it is listed, the highest the precedence
@@ -138,7 +138,7 @@ new_line : NL {
 };
 
 command :
-    SEMICOLON     { $$ = falk::rvalue{}; }
+    SEMICOLON     { $$ = {}; }
     | single_calc { $$ = std::move($1); }
     | declaration { /*$$ = $1;*/ }
     | assignment  { /*$$ = $1;*/ };
@@ -221,18 +221,6 @@ index :
     | REAL {
         // $$ = $1;
     };
-
-// op          : COMPARISON    { $$ = 0; /* TODO */ }
-//             | AND           { $$ = 0; /* TODO */ }
-//             | OR            { $$ = 0; /* TODO */ }
-//             | NOT           { $$ = 0; /* TODO */ }
-//             | PLUS          { $$ = 0; /* TODO */ }
-//             | MINUS         { $$ = 0; /* TODO */ }
-//             | TIMES         { $$ = 0; /* TODO */ }
-//             | DIVIDE        { $$ = 0; /* TODO */ }
-//             | POWER         { $$ = 0; /* TODO */ }
-//             | MOD           { $$ = 0; /* TODO */ }
-//             ;
 
 array_list :
     OBRACKET scalar_list CBRACKET {

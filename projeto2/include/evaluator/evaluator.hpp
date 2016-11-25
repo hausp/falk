@@ -6,15 +6,13 @@
 #include <iostream>
 #include <stack>
 
-#include "array.hpp"
 #include "aut/utilities.hpp"
 #include "base/operators.hpp"
 #include "base/types.hpp"
 #include "function.hpp"
-#include "matrix.hpp"
-#include "scalar.hpp"
 #include "symbol_mapper.hpp"
 #include "sma/value.hpp"
+#include "variable.hpp"
 
 namespace falk {
     namespace ev {
@@ -30,9 +28,8 @@ namespace falk {
             using complex = std::complex<double>;
             using boolean = bool;
 
-            // Alias to define semantic abstraction for rvalues.
-            using rvalue = sma::value<evaluator, falk::op>;
-            using lvalue = int; // TODO
+            // Alias to define semantic abstraction for values.
+            using value = sma::value<evaluator, falk::op>;
 
             // Methods
             // assignment assign(identifier, value);
@@ -76,7 +73,7 @@ namespace falk {
             template<typename Type, Type OP>
             void analyse(operation<Type, OP, 2, true>, node_array<2>&);
 
-            rvalue& single_calculation(rvalue& value);
+            value& single_calculation(value& value);
          private:
             symbol_mapper mapper;
             std::stack<scalar> var_stacker;

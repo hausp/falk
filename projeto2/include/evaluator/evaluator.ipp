@@ -10,12 +10,12 @@ void falk::ev::evaluator::analyse(operation<Type, OP, 2, false> op,
 
     if (t1 == t2) {
         switch (t1) {
-            case structural::type::VARIABLE: {
+            case structural::type::SCALAR: {
                 auto rhs = aut::pop(var_stacker);
                 auto lhs = aut::pop(var_stacker);
                 auto result = op(lhs, rhs);
                 var_stacker.push(result);
-                types_stacker.push(structural::type::VARIABLE);
+                types_stacker.push(structural::type::SCALAR);
                 break;
             }
             case structural::type::ARRAY: {
@@ -46,11 +46,11 @@ void falk::ev::evaluator::analyse(operation<Type, OP, 1, false> op,
     auto t1 = aut::pop(types_stacker);
 
     switch (t1) {
-        case structural::type::VARIABLE: {
+        case structural::type::SCALAR: {
             auto lhs = aut::pop(var_stacker);
             auto result = op(lhs);
             var_stacker.push(result);
-            types_stacker.push(structural::type::VARIABLE);
+            types_stacker.push(structural::type::SCALAR);
             break;
         }
         case structural::type::ARRAY: {
@@ -82,7 +82,7 @@ void falk::ev::evaluator::analyse(operation<Type, OP, 2, true> op,
 
     if (t1 == t2) {
         switch (t1) {
-            case structural::type::VARIABLE: {
+            case structural::type::SCALAR: {
                 auto rhs = aut::pop(var_stacker);
                 auto lhs = aut::pop(var_stacker);
                 auto result = op(lhs, rhs);
