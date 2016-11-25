@@ -1,13 +1,3 @@
-template<typename T>
-void falk::ev::evaluator::analyse(const T& todo) {
-    std::cout << "simple analyse" << std::endl;
-}
-
-template<typename T>
-void falk::ev::evaluator::analyse(const T& todo, const std::list<node_ptr>& nodes) {
-    std::cout << "analyse!!!!!!!!!" << std::endl;
-}
-
 template<typename Type, Type OP>
 void falk::ev::evaluator::analyse(operation<Type, OP, 2, false> op,
                                   node_array<2>& nodes) {

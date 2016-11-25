@@ -1,6 +1,11 @@
 
 #include "evaluator/evaluator.hpp"
 
+void falk::ev::evaluator::analyse(const op::LIST&, const std::list<node_ptr>& nodes) {
+    // TODO
+    std::cout << "TODO: handle list" << std::endl;
+}
+
 void falk::ev::evaluator::analyse(const scalar& value) {
     var_stacker.push(value);
     types_stacker.push(structural::type::SCALAR);
@@ -19,7 +24,6 @@ void falk::ev::evaluator::analyse(const matrix& container) {
 }
 
 falk::ev::evaluator::value& falk::ev::evaluator::single_calculation(value& v) {
-    std::cout << "single_calculation" << std::endl;
     if (!v.empty()) {
         v.traverse(*this);
         auto type = aut::pop(types_stacker);

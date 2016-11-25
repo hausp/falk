@@ -29,7 +29,7 @@ namespace aut {
 
         bool add(T u) { return false; }
         bool empty() const { return false; }
-        T last() const { return T(); }    
+        T last() const { return T(); }
     };
 
     template<typename T, int64_t S>

@@ -68,11 +68,7 @@ namespace falk {
             void analyse(const array&);
             void analyse(const matrix&);
 
-            template<typename T>
-            void analyse(const T&);
-
-            template<typename T>
-            void analyse(const T&, const std::list<node_ptr>&);
+            void analyse(const op::LIST&, const std::list<node_ptr>&);
 
             // TODO: can the methods below be generalized?
             // Binary calculations
