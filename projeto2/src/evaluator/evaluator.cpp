@@ -2,8 +2,15 @@
 #include "evaluator/evaluator.hpp"
 
 void falk::ev::evaluator::analyse(const op::LIST&, const std::list<node_ptr>& nodes) {
-    // TODO
-    std::cout << "TODO: handle list" << std::endl;
+    std::cout << "TODO: handle lists" << std::endl;
+    for (auto& value : nodes) {
+        if (!value) {
+            // TODO: why does this happen?
+            continue;
+        }
+        // TODO: actually create the array
+        value->traverse(*this);
+    }
 }
 
 void falk::ev::evaluator::analyse(const scalar& value) {
