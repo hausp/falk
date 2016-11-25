@@ -22,6 +22,7 @@ namespace falk {
 
          private:
             variant& data;
+            structural::type type;
         };
     }
 }

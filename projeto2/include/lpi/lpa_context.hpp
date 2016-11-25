@@ -15,8 +15,8 @@ namespace lpi {
         lpa_context();
         lpa_context(Analyser);
 
-        void count_new_line();
-        unsigned line_count() const;
+        void count_new_line() override;
+        unsigned line_count() const override;
         int run();
         void clear();
         void switch_input_stream(std::istream*);
