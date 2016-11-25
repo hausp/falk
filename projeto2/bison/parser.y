@@ -94,7 +94,7 @@
 %type<falk::value> assignment;
 %type<falk::value> declaration;
 %type<falk::value> index rvalue;
-%type<falk::value> new_line eoc;
+// %type<falk::value> new_line eoc;
 
 /* Operator precedence for mathematical operators
  * The latest it is listed, the highest the precedence
@@ -120,23 +120,23 @@ program :
     }
     | program new_line {
         $$ = $1;
-        $$ += $2;
+        // $$ += $2;
     }
     | program command eoc {
         $$ = $1;
-        $$ += $2;
+        // $$ += $2;
     }
     | program error eoc {
         // yyerrorok;
     };
     // | program function
 
-eoc : SEMICOLON { $$ = 0; }
-    | new_line  { $$ = $1; }
+eoc : SEMICOLON
+    | new_line
     ;
 
 new_line : NL {
-    $$ = 0;
+    context.count_new_line();
     analyser.new_line();
 };
 
@@ -313,6 +313,6 @@ expr :
     ;
 %%
 
-void falk::parser::error(const location &loc , const std::string &message) {
-	std::cout << "Error: " << message << std::endl;// << "Location: " << loc << std::endl;
+void falk::parser::error(const location& loc, const std::string& message) {
+	std::cout <<  "[Line " << context.line_count() << "] syntax error: " << message << std::endl;// << "Location: " << loc << std::endl;
 }

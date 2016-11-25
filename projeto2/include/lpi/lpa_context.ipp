@@ -13,6 +13,16 @@ lpi::lpa_context<L,P,A>::lpa_context(A a):
   analyser{std::move(a)} { }
 
 template<typename L, typename P, typename A>
+void lpi::lpa_context<L,P,A>::count_new_line() {
+    lines++;
+}
+
+template<typename L, typename P, typename A>
+unsigned lpi::lpa_context<L,P,A>::line_count() const {
+    return lines;
+}
+
+template<typename L, typename P, typename A>
 int lpi::lpa_context<L,P,A>::run() {
     loc = 0;
     auto res = parser.parse();

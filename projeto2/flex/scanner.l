@@ -51,7 +51,7 @@ while_literal while
 end_of_command ;|\n
 
 /* TODO */
-nonacceptable ©
+nonacceptable [^-\+\*\(\)/=%,;\.\n0-9A-Za-z_ \t><!&|:\[\]]+
 
 %%
 
@@ -354,12 +354,14 @@ function {
     return falk::parser::make_SEMICOLON(falk::location());
 }
 
-<<EOF>> { return yyterminate(); }
-
 {nonacceptable} {
     // std::cout << "scanner scanning: " << yytext << std::endl;
-    // TODO
-    // lexical_error("unknown symbol %s\n", strdup(yytext));
+    std::string message = "unknown symbol ";
+    message += yytext;
+    message += "\n";
+    lpi::lexical_error(context, message);
 }
+
+<<EOF>> { return yyterminate(); }
 
 %%
