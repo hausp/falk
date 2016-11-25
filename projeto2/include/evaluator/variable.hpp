@@ -14,11 +14,49 @@ namespace falk {
          public:
             variable(variant&);
 
-            template<typename T>
-            T& get_data();
+            falk::value get_value();
 
-            template<typename T>
-            const T& get_data() const;
+            variable& operator+=(const variable& rhs) {
+                // TODO
+                // op_assign(rhs, typename Operation::ADD_ASSIGN());
+                return *this;
+            }
+
+            variable& operator-=(const variable& rhs) {
+                // TODO
+                // op_assign(rhs, typename Operation::SUB_ASSIGN());
+                return *this;
+            }
+
+            variable& operator*=(const variable& rhs) {
+                // TODO
+                // op_assign(rhs, typename Operation::MULT_ASSIGN());
+                return *this;
+            }
+
+            variable& operator/=(const variable& rhs) {
+                // TODO
+                // op_assign(rhs, typename Operation::DIV_ASSIGN());
+                return *this;
+            }
+
+            variable& operator%=(const variable& rhs) {
+                // TODO
+                // op_assign(rhs, typename Operation::MOD_ASSIGN());
+                return *this;
+            }
+
+            variable& operator&=(const variable& rhs) {
+                // TODO
+                // op_assign(rhs, typename Operation::AND_ASSIGN());
+                return *this;
+            }
+
+            variable& operator|=(const variable& rhs) {
+                // TODO
+                // op_assign(rhs, typename Operation::OR_ASSIGN());
+                return *this;
+            }
 
          private:
             variant& data;
