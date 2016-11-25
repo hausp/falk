@@ -125,6 +125,9 @@ program :
     | program command eoc {
         $$ = $1;
         $$ += $2;
+    }
+    | program error eoc {
+        // yyerrorok;
     };
     // | program function
 
