@@ -39,9 +39,7 @@ namespace falk {
             // Methods
             // assignment assign(identifier, value);
             // assignment assign(identifier, value, falk::op::arithmetic);
-            
-            int create_program();
-            
+
             // declaration declare_array(const std::string&);
             // declaration declare_array(const std::string&, value&);
             // declaration declare_array(const std::string&, value&);
@@ -54,6 +52,7 @@ namespace falk {
             // declaration declare_matrix(const std::string&, matrix_index);
             // declaration declare_matrix(const std::string&, init_list);
 
+            list make_program();
             real make_real(const std::string&);
             complex make_complex(const std::string&);
             boolean make_boolean(const std::string&);

@@ -18,11 +18,9 @@ namespace sma {
         list(const T& data):
           object{new ast::model<Analyser, T>{data}} { }
 
-        void push(node_ptr);
+        list<Analyser>& operator+=(node_ptr);
 
-        operator node_ptr() {
-            return object;
-        }
+        operator node_ptr() { return object; }
 
      private:
      	node_ptr object;

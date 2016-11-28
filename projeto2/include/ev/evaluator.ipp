@@ -111,9 +111,9 @@ void falk::ev::evaluator::analyse(operation<Type, OP, 2, true> op,
     }
 }
 
-inline int falk::ev::evaluator::create_program() {
+inline falk::ev::evaluator::list falk::ev::evaluator::make_program() {
     std::cout << "falk> ";
-    return 0;
+    return {};
 }
 
 inline falk::ev::evaluator::real

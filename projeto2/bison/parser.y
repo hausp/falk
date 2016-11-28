@@ -1,29 +1,23 @@
-%skeleton "lalr1.cc" /* -*- C++ -*- */
+%skeleton "lalr1.cc"
 %require "3.0"
 %defines
-%define parser_class_name { parser }
 
+%define parser_class_name { parser }
 %define api.token.constructor
 %define api.value.type variant
 %define parse.assert
 %define api.namespace { falk }
 
-// this code goes to hpp
+// this code goes on hpp
 %code requires {
-    #include <iostream>
-    #include <string>
-    #include <cstdint>
     #include "base/definitions.hpp"
     #include "lpi/context.hpp"
 
-    namespace falk {
-        class scanner;
-    }
+    namespace falk { class scanner; }
 }
 
-// this code goes to cpp
+// this code goes on cpp
 %code top {
-    #include <iostream>
     #include "scanner.hpp"
     #include "parser.hpp"
     #include "location.hh"
@@ -33,22 +27,18 @@
     }
 }
 
-%lex-param { falk::scanner &scanner }
+%lex-param   { falk::scanner &scanner }
 %parse-param { falk::scanner &scanner }
 %parse-param { falk::analyser &analyser }
 %parse-param { lpi::context &context }
+
 %locations
+
 %define parse.trace
 %define parse.error verbose
-
 %define api.token.prefix {TOKEN_}
 
-%token<std::string> ID        "variable identifier";
-%token<falk::type>  TYPE      "type identifier";
-%token<falk::real>  REAL      "real value";
-%token<falk::complex> COMPLEX "complex value";
-%token<falk::boolean> BOOL    "boolean value";
-
+// Tokens
 %token VAR       "var keyword";
 %token ARRAY     "array keyword";
 %token MATRIX    "matrix keyword";
@@ -73,35 +63,38 @@
 %token CBRACKET  "]";
 %token EOF 0     "end of file";
 
-%token<falk::op::arithmetic> PLUS     "+";
-%token<falk::op::arithmetic> MINUS    "-";
-%token<falk::op::arithmetic> TIMES    "*";
-%token<falk::op::arithmetic> DIVIDE   "/";
-%token<falk::op::arithmetic> POWER    "**";
-%token<falk::op::arithmetic> MOD      "%";
-%token<falk::op::arithmetic> ASSIGNOP; // TODO: description?
+%token<std::string> ID        "variable identifier";
+%token<falk::type> TYPE       "type identifier";
+%token<falk::real> REAL       "real value";
+%token<falk::complex> COMPLEX "complex value";
+%token<falk::boolean> BOOL    "boolean value";
 
-%token<falk::op::comparison> COMPARISON; // TODO: description?
-
+%token<falk::op::arithmetic> PLUS      "+";
+%token<falk::op::arithmetic> MINUS     "-";
+%token<falk::op::arithmetic> TIMES     "*";
+%token<falk::op::arithmetic> DIVIDE    "/";
+%token<falk::op::arithmetic> POWER     "**";
+%token<falk::op::arithmetic> MOD       "%";
+%token<falk::op::arithmetic> ASSIGNOP  "assignment operator";
+%token<falk::op::comparison> COMPARISON "comparison operator";;
 %token<falk::op::logic> AND "&";
 %token<falk::op::logic> OR  "|";
 %token<falk::op::logic> NOT "!";
 
-%type<falk::value> program;
+// Non-terminals
+%type<falk::list> program;
 %type<falk::value> command;
 %type<falk::value> identifier arr_size mat_size;
 %type<falk::value> flat_expr expr single_calc;
+%type<falk::value> index rvalue;
 %type<falk::value> assignment;
 %type<falk::value> declaration;
-%type<falk::value> index rvalue;
 %type<falk::array> array_list scalar_list
 %type<falk::matrix> matrix_list matrix_list_body;
-// %type<falk::value> new_line eoc;
 
-/* Operator precedence for mathematical operators
- * The latest it is listed, the highest the precedence
- * left, right, nonassoc
- */
+// Operators precedence.
+// The latest it is listed, the highest the precedence.
+// Possible types: left, right, nonassoc
 %left AND OR
 %nonassoc NOT
 %left COMPARISON
@@ -116,39 +109,35 @@
 
 %%
 
-program :
+program:
     %empty {
-        $$ = analyser.create_program();
+        $$ = analyser.make_program();
     }
     | program new_line {
-        $$ = $1;
-        // $$ += $2;
+        $$ += $1;
     }
     | program command eoc {
-        $$ = $1;
-        // $$ += $2;
+        $$ += $1;
     }
     | program error eoc {
         // yyerrorok;
     };
     // | program function
 
-eoc : SEMICOLON
-    | new_line
-    ;
+eoc: SEMICOLON | new_line;
 
-new_line : NL {
+new_line: NL {
     context.count_new_line();
     analyser.new_line();
 };
 
-command :
+command:
     SEMICOLON     { $$ = {}; }
-    | single_calc { $$ = std::move($1); }
-    | declaration { /*$$ = $1;*/ }
-    | assignment  { /*$$ = $1;*/ };
+    | single_calc { $$ = $1; }
+    | declaration { $$ = $1; }
+    | assignment  { $$ = $1; };
 
-declaration :
+declaration:
     VAR ID {
         // $$ = analyser.declare_variable($2);
     }
@@ -171,7 +160,7 @@ declaration :
         // $$ = analyser.declare_matrix($2, $4);   
     };
 
-assignment :
+assignment:
     identifier ASSIGN rvalue {
         // $$ = analyser.assign($1, $3);
     }
@@ -179,28 +168,25 @@ assignment :
         // $$ = analyser.assign($1, $3, $2);
     };
 
-single_calc :
-    expr {
-        $$ = analyser.single_calculation($1);
-    };
+single_calc: expr {
+    $$ = analyser.single_calculation($1);
+};
 
-rvalue :
-    expr {
-        $$ = $1;
-    }
-    ;
+rvalue: expr {
+    $$ = $1;
+};
 
-arr_size :
+arr_size:
     OBRACKET REAL CBRACKET {
         // $$ = analyser.make_array_index($2);
     };
 
-mat_size :
+mat_size:
     OBRACKET REAL COMMA REAL CBRACKET {
         // $$ = analyser.make_matrix_index($2, $4);
     };
 
-identifier :
+identifier:
     ID {
         // $$ = analyser.retrieve_identifier($1);
     }
@@ -218,7 +204,7 @@ identifier :
     };
     
 
-index :
+index:
     identifier {
         // $$ = $1;
     }
@@ -226,17 +212,15 @@ index :
         // $$ = $1;
     };
 
-array_list :
+array_list:
     OBRACKET scalar_list CBRACKET {
         $$ = $2;
-    }
-    ;
+    };
 
-matrix_list :
+matrix_list:
     OBRACKET matrix_list_body CBRACKET {
         $$ = $2;
-    }
-    ;
+    };
 
 scalar_list:
     flat_expr {
@@ -244,10 +228,9 @@ scalar_list:
     }
     | scalar_list COMMA flat_expr {
         $$ = analyser.extract($1, $3);
-    }
-    ;
+    };
 
-matrix_list_body :
+matrix_list_body:
     array_list {
         // TODO: create this method on matrix
         // $$.push_back($1);
@@ -256,10 +239,9 @@ matrix_list_body :
         $$ = $1;
         // TODO: create this method on matrix
         // $$.push_back($3);
-    }
-    ;
+    };
 
-flat_expr :
+flat_expr:
     REAL {
         $$ = $1;
     }
@@ -301,10 +283,9 @@ flat_expr :
     }
     | OPAR expr CPAR {
         $$ = std::move($2);
-    }
-    ;
+    };
 
-expr :
+expr:
     flat_expr {
         $$ = $1;
     }
@@ -313,8 +294,7 @@ expr :
     }
     | matrix_list {
         $$ = $1;        
-    }
-    ;
+    };
 %%
 
 void falk::parser::error(const location& loc, const std::string& message) {
