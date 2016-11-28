@@ -1,6 +1,6 @@
 
 #include <ostream>
-#include "evaluator/scalar.hpp"
+#include "ev/scalar.hpp"
 
 falk::ev::scalar falk::ev::scalar::pow(const scalar& lhs, const scalar& rhs) {
     auto result_type = falk::resolve_types(lhs._type, rhs._type);

@@ -4,12 +4,12 @@
 
 #include <complex>
 #include <vector>
+
 #include "base/types.hpp"
 
 namespace falk {
     namespace ev {
-        // Class to capture all kinds of scalar possible in
-        // interpreted mode.
+        // Class to capture all kinds of scalar possible.
         class scalar {
          public:
             scalar(double);
@@ -32,26 +32,32 @@ namespace falk {
             static scalar pow(const scalar&, const scalar&);
 
             scalar& pow(const scalar&) {
+                // TODO: implement this
                 return *this;
             }
 
             scalar& operator+=(const scalar&) {
+                // TODO: implement this
                 return *this;
             }
 
             scalar& operator-=(const scalar&) {
+                // TODO: implement this
                 return *this;
             }
 
             scalar& operator*=(const scalar&) {
+                // TODO: implement this
                 return *this;
             }
 
             scalar& operator/=(const scalar&) {
+                // TODO: implement this
                 return *this;
             }
 
             scalar& operator%=(const scalar&) {
+                // TODO: implement this
                 return *this;
             }
 
@@ -112,7 +118,6 @@ namespace falk {
         inline scalar::operator long() const {
             return static_cast<long>(_real);
         }
-
     }
 }
 

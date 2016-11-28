@@ -4,6 +4,7 @@
 
 #include <vector>
 #include "scalar.hpp"
+#include <ostream>
 
 namespace falk {
     namespace ev {
@@ -49,9 +50,9 @@ namespace falk {
                     return *this;
                 }
 
-                array result;
                 for (size_t i = 0; i < size(); i++) {
-                    result.push_back(values[i] + rhs[i]);
+                    values[i] += rhs[i];
+                    std::cout << values[i] << std::endl;
                 }
                 return *this;
             }
@@ -62,9 +63,8 @@ namespace falk {
                     return *this;
                 }
 
-                array result;
                 for (size_t i = 0; i < size(); i++) {
-                    result.push_back(values[i] - rhs[i]);
+                    values[i] -= rhs[i];
                 }
                 return *this;
             }
@@ -75,9 +75,8 @@ namespace falk {
                     return *this;
                 }
 
-                array result;
                 for (size_t i = 0; i < size(); i++) {
-                    result.push_back(values[i] * rhs[i]);
+                    values[i] *= rhs[i];
                 }
                 return *this;
             }
@@ -88,9 +87,8 @@ namespace falk {
                     return *this;
                 }
 
-                array result;
                 for (size_t i = 0; i < size(); i++) {
-                    result.push_back(values[i] / rhs[i]);
+                    values[i] /= rhs[i];
                 }
                 return *this;
             }
@@ -101,9 +99,8 @@ namespace falk {
                     return *this;
                 }
 
-                array result;
                 for (size_t i = 0; i < size(); i++) {
-                    result.push_back(values[i] % rhs[i]);                
+                    values[i] %= rhs[i];                
                 }
                 return *this;
             }
@@ -144,6 +141,17 @@ namespace falk {
                 result.push_back(-rhs[i]);
             }
             return result;
+        }
+
+        inline std::ostream& operator<<(std::ostream& out, const array& arr) {
+            out << "[";
+            for (auto i = 0; i < arr.size(); i++) {
+                if (i != 0) {
+                   out << ", ";
+                }
+                out << arr[i];
+            }
+            return out << "]";
         }
     }
 }

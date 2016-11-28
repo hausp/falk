@@ -91,10 +91,11 @@
 %type<falk::value> command;
 %type<falk::value> identifier arr_size mat_size;
 %type<falk::value> flat_expr expr single_calc;
-%type<falk::list> array_list matrix_list scalar_list matrix_list_body;
 %type<falk::value> assignment;
 %type<falk::value> declaration;
 %type<falk::value> index rvalue;
+%type<falk::array> array_list scalar_list
+%type<falk::matrix> matrix_list matrix_list_body;
 // %type<falk::value> new_line eoc;
 
 /* Operator precedence for mathematical operators
@@ -185,7 +186,7 @@ single_calc :
 
 rvalue :
     expr {
-        // $$ = $1;
+        $$ = $1;
     }
     ;
 
@@ -239,24 +240,22 @@ matrix_list :
 
 scalar_list:
     flat_expr {
-        $$ = falk::list(falk::op::LIST());
-        $$.push($1);
-        // TODO
+        $$ = analyser.extract($$, $1);
     }
     | scalar_list COMMA flat_expr {
-        $1.push($3);
-        $$ = $1;
+        $$ = analyser.extract($1, $3);
     }
     ;
 
 matrix_list_body :
     array_list {
-        $$ = falk::list(falk::op::LIST());
-        $$.push($1);
+        // TODO: create this method on matrix
+        // $$.push_back($1);
     }
     | matrix_list_body COMMA array_list {
-        $1.push($3);
         $$ = $1;
+        // TODO: create this method on matrix
+        // $$.push_back($3);
     }
     ;
 

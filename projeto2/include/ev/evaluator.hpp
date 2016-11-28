@@ -6,15 +6,15 @@
 #include <iostream>
 #include <stack>
 
+#include "array.hpp"
 #include "aut/utilities.hpp"
 #include "base/operators.hpp"
 #include "base/types.hpp"
-#include "evaluator/array.hpp"
-#include "evaluator/matrix.hpp"
 #include "function.hpp"
+#include "matrix.hpp"
 #include "symbol_mapper.hpp"
-#include "sma/value.hpp"
 #include "sma/list.hpp"
+#include "sma/value.hpp"
 
 namespace falk {
     namespace ev {
@@ -68,8 +68,6 @@ namespace falk {
             void analyse(const array&);
             void analyse(const matrix&);
 
-            void analyse(const op::LIST&, const std::list<node_ptr>&);
-
             // TODO: can the methods below be generalized?
             // Binary calculations
             template<typename Type, Type OP>
@@ -83,6 +81,9 @@ namespace falk {
             void analyse(operation<Type, OP, 2, true>, node_array<2>&);
 
             value& single_calculation(value& value);
+
+            array& extract(array&, value&);
+            // matrix& extract(matrix&, value&);
          private:
             symbol_mapper mapper;
             std::stack<scalar> var_stacker;

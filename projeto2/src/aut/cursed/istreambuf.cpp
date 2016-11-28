@@ -1,7 +1,7 @@
 
 #include <ncurses.h>
-#include "cursed/istreambuf.hpp"
-#include "cursed/terminal.hpp"
+#include "aut/cursed/istreambuf.hpp"
+#include "aut/cursed/terminal.hpp"
 
 cursed::istreambuf::istreambuf(cursed::terminal& term):
  terminal{term} { }

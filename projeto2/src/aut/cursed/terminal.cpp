@@ -1,8 +1,8 @@
 
 #include <ncurses.h>
-#include "cursed/istreambuf.hpp"
-#include "cursed/ostreambuf.hpp"
-#include "cursed/terminal.hpp"
+#include "aut/cursed/istreambuf.hpp"
+#include "aut/cursed/ostreambuf.hpp"
+#include "aut/cursed/terminal.hpp"
 
 cursed::terminal::terminal():
   inbuffer{*this},

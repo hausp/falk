@@ -22,6 +22,7 @@ void falk::ev::evaluator::analyse(operation<Type, OP, 2, false> op,
                 auto rhs = aut::pop(array_stacker);
                 auto lhs = aut::pop(array_stacker);
                 auto result = op(lhs, rhs);
+                std::cout << "result: " << result << std::endl;
                 array_stacker.push(result);
                 types_stacker.push(structural::type::ARRAY);
                 break;

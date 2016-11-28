@@ -28,11 +28,6 @@ namespace sma {
             return object->empty();
         }
 
-        // val& operator==(val&& v) {
-        //     object.reset(v.object.release());
-        //     return *this;
-        // }
-
         operator node_ptr() {
             return object;
         }

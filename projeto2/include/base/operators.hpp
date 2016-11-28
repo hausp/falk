@@ -35,10 +35,6 @@ namespace falk {
             NOT,
         };
 
-        enum class misc {
-            LIST,
-        };
-
         // Arithmetic operations
         using ADD = operation<arithmetic, arithmetic::ADD>;
         using SUB = operation<arithmetic, arithmetic::SUB>;
@@ -66,8 +62,6 @@ namespace falk {
         using NOT = operation<logic, logic::NOT>;
         using AND_ASSIGN = operation<logic, logic::AND, 2, true>;
         using OR_ASSIGN = operation<logic, logic::OR, 2, true>;
-        // Misc. operations
-        using LIST = operation<misc, misc::LIST, 0, false>;
     };
 
     template<>
@@ -288,13 +282,6 @@ namespace falk {
         bool operator()(const T& operand) {
             return !operand;
         }
-    };
-
-    template<>
-    struct operation<op::misc, op::misc::LIST, 0, false> {
-        static constexpr int arity() { return -1; }
-
-        void operator()() { }
     };
 }
 

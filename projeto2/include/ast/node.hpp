@@ -46,12 +46,13 @@ namespace ast {
 
     template<typename Analyser, typename T>
     class model<Analyser, T, false> : public node<Analyser> {
+        using node_ptr = std::shared_ptr<node<Analyser>>;
      public:
         model(const T& d) : data{d} { }
         void traverse(Analyser& analyser) override {
             analyser.analyse(data);
         }
-        void add_subnode(std::shared_ptr<node<Analyser>>) override { }
+        void add_subnode(node_ptr node) override { }
      private:
         T data;
     };
@@ -63,14 +64,14 @@ namespace ast {
      public:
         model(const T& d) : data{d} { }
         void traverse(Analyser& analyser) override {
-            analyser.analyse(data, operands.container);
+            analyser.analyse(data, subnodes.container);
         }
-        void add_subnode(std::shared_ptr<node<Analyser>> node) override {
-            operands.add(std::move(node));
+        void add_subnode(node_ptr node) override {
+            subnodes.add(std::move(node));
         }
      private:
         T data;
-        holder operands;
+        holder subnodes;
     };
 
     template<typename Analyser>

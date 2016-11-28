@@ -5,7 +5,6 @@
 #include <vector>
 #include "scalar.hpp"
 
-// Assigned to: Merlseson
 namespace falk {
     namespace ev {
         class matrix;

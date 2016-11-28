@@ -2,7 +2,7 @@
 #ifndef SMA_LIST_HPP
 #define SMA_LIST_HPP
 
-#include "sma/list.hpp"
+#include "ast/node.hpp"
 
 // Semantical Abstractions
 namespace sma {
@@ -15,7 +15,7 @@ namespace sma {
           object{new ast::empty_node<Analyser>{}} { }
 
         template<typename T>
-        explicit list(const T& data):
+        list(const T& data):
           object{new ast::model<Analyser, T>{data}} { }
 
         void push(node_ptr);

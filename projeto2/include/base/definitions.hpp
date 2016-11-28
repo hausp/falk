@@ -2,8 +2,8 @@
 #ifndef FALK_DEFINITIONS_HPP
 #define FALK_DEFINITIONS_HPP
 
-#include "evaluator/evaluator.hpp"
-#include "evaluator/evaluator.hpp"
+#include "ev/evaluator.hpp"
+#include "ev/evaluator.hpp"
 #include "types.hpp"
 
 namespace falk {
