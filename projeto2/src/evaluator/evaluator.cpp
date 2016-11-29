@@ -36,7 +36,6 @@ void falk::ev::evaluator::analyse(const array& container) {
 }
 
 void falk::ev::evaluator::analyse(const matrix& container) {
-    std::cout << "matrix" << std::endl;
     matrix_stacker.push(container);
     types_stacker.push(structural::type::MATRIX);
 }
@@ -58,8 +57,7 @@ falk::ev::evaluator::value& falk::ev::evaluator::single_calculation(value& v) {
             }
             case structural::type::MATRIX: {
                 auto v = aut::pop(matrix_stacker);
-                std::cout << "type = matrix" << std::endl;
-                // std::cout << "res = " << v << std::endl;
+                std::cout << "res = " << v << std::endl;
                 break;
             }
         }

@@ -232,13 +232,11 @@ scalar_list:
 
 matrix_list_body:
     array_list {
-        // TODO: create this method on matrix
-        // $$.push_back($1);
+        $$.push_back($1);
     }
     | matrix_list_body COMMA array_list {
         $$ = $1;
-        // TODO: create this method on matrix
-        // $$.push_back($3);
+        $$.push_back($3);
     };
 
 flat_expr:

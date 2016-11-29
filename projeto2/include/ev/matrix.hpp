@@ -4,6 +4,7 @@
 
 #include <vector>
 #include "scalar.hpp"
+#include "array.hpp"
 
 namespace falk {
     namespace ev {
@@ -12,7 +13,6 @@ namespace falk {
 
         class matrix {
          public:
-            // TODO: grammar-friendly constructor
             matrix() = default;
 
             matrix(size_t rows, size_t columns):
@@ -24,7 +24,7 @@ namespace falk {
                     // TODO: return what?
                     return values[0];
                 }
-                return values.at(row * num_rows + column);
+                return values.at(row * num_columns + column);
             }
 
             const scalar& at(size_t row, size_t column) const {
@@ -33,7 +33,23 @@ namespace falk {
                     // TODO: return what?
                     return values.at(0);
                 }
-                return values.at(row * num_rows + column);
+                return values.at(row * num_columns + column);
+            }
+
+            void push_back(const array& row) {
+                if (values.size() == 0) {
+                    num_columns = row.size();
+                }
+
+                if (row.size() != num_columns) {
+                    // TODO: error (wrong number of columns)
+                    return;
+                }
+
+                for (size_t i = 0; i < num_columns; i++) {
+                    values.push_back(row[i]);
+                }
+                ++num_rows;
             }
 
             std::pair<size_t, size_t> size() const {
@@ -119,8 +135,8 @@ namespace falk {
 
          private:
             std::vector<scalar> values;
-            size_t num_rows;
-            size_t num_columns;
+            size_t num_rows = 0;
+            size_t num_columns = 0;
         };
 
 
@@ -181,6 +197,24 @@ namespace falk {
                 }
             }
             return result;
+        }
+
+        inline std::ostream& operator<<(std::ostream& out, const matrix& mat) {
+            out << "[";
+            for (size_t i = 0; i < mat.row_count(); i++) {
+                if (i != 0) {
+                   out << ", ";
+                }
+                out << "[";
+                for (size_t j = 0; j < mat.column_count(); j++) {
+                    if (j != 0) {
+                       out << ", ";
+                    }
+                    out << mat.at(i, j);
+                }
+                out << "]";
+            }
+            return out << "]";
         }
     }
 }

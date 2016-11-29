@@ -2,9 +2,9 @@
 #ifndef FALK_EV_ARRAY_HPP
 #define FALK_EV_ARRAY_HPP
 
+#include <ostream>
 #include <vector>
 #include "scalar.hpp"
-#include <ostream>
 
 namespace falk {
     namespace ev {
@@ -145,7 +145,7 @@ namespace falk {
 
         inline std::ostream& operator<<(std::ostream& out, const array& arr) {
             out << "[";
-            for (auto i = 0; i < arr.size(); i++) {
+            for (size_t i = 0; i < arr.size(); i++) {
                 if (i != 0) {
                    out << ", ";
                 }
