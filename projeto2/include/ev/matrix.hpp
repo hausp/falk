@@ -8,137 +8,40 @@
 
 namespace falk {
     namespace ev {
+
         class matrix;
         matrix operator*(const matrix& lhs, const matrix& rhs);
 
         class matrix {
          public:
-            matrix() = default;
+            explicit matrix(bool = false);
+            matrix(size_t, size_t);
 
-            matrix(size_t rows, size_t columns):
-              num_rows{rows}, num_columns{columns} { }
+            scalar& at(size_t, size_t);
+            const scalar& at(size_t, size_t) const;
+            void push_back(const array&);
+            bool error() const;
+            std::pair<size_t, size_t> size() const;
+            size_t row_count() const;
+            size_t column_count() const;
 
-            scalar& at(size_t row, size_t column) {
-                if (row >= num_rows || column >= num_columns) {
-                    // TODO: error (index out of bounds)
-                    // TODO: return what?
-                    return values[0];
-                }
-                return values.at(row * num_columns + column);
-            }
-
-            const scalar& at(size_t row, size_t column) const {
-                if (row >= num_rows || column >= num_columns) {
-                    // TODO: error (index out of bounds)
-                    // TODO: return what?
-                    return values.at(0);
-                }
-                return values.at(row * num_columns + column);
-            }
-
-            void push_back(const array& row) {
-                if (values.size() == 0) {
-                    num_columns = row.size();
-                }
-
-                if (row.size() != num_columns) {
-                    // TODO: error (wrong number of columns)
-                    return;
-                }
-
-                for (size_t i = 0; i < num_columns; i++) {
-                    values.push_back(row[i]);
-                }
-                ++num_rows;
-            }
-
-            std::pair<size_t, size_t> size() const {
-                return {num_rows, num_columns};
-            }
-
-            size_t row_count() const {
-                return num_rows;
-            }
-
-            size_t column_count() const {
-                return num_columns;
-            }
-
-            // scalar& operator[](size_t index) {
-            //     return values[index];
-            // }
-
-            // const scalar& operator[](size_t index) const {
-            //     return values.at(index);
-            // }
-
-            // void push_back(const scalar& value) {
-            //     values.push_back(value);
-            // }
-
-            matrix& pow(const matrix& rhs) {
-                // TODO: error (operation not allowed)
-                return *this;
-            }
-
-            static matrix pow(const matrix& lhs, const matrix& rhs) {
-                // TODO: error (operation not allowed)
-                // TODO: return what?
-                return matrix{};
-            }
-
-            matrix& operator+=(const matrix& rhs) {
-                if (size() != rhs.size()) {
-                    // TODO: error (incompatible operands)
-                    return *this;
-                }
-
-                for (size_t i = 0; i < row_count(); i++) {
-                    for (size_t j = 0; j < column_count(); j++) {
-                        at(i, j) += rhs.at(i, j);
-                    }
-                }
-                return *this;
-            }
-
-            matrix& operator-=(const matrix& rhs) {
-                if (size() != rhs.size()) {
-                    // TODO: error (incompatible operands)
-                    return *this;
-                }
-
-                for (size_t i = 0; i < row_count(); i++) {
-                    for (size_t j = 0; j < column_count(); j++) {
-                        at(i, j) -= rhs.at(i, j);
-                    }
-                }
-                return *this;
-            }
-
-            matrix& operator*=(const matrix& rhs) {
-                if (num_rows != rhs.row_count() || num_rows != rhs.column_count()) {
-                    // TODO: error (incompatible operands)
-                    return *this;
-                }
-                return *this = *this * rhs;
-            }
-
-            matrix& operator/=(const matrix& rhs) {
-                // TODO: error (operation not allowed)
-                return *this;
-            }
-
-            matrix& operator%=(const matrix& rhs) {
-                // TODO: error (operation not allowed)
-                return *this;
-            }
+            static matrix pow(const matrix&, const matrix&);
+            matrix& pow(const matrix&);
+            matrix& operator+=(const matrix&);
+            matrix& operator-=(const matrix&);
+            matrix& operator*=(const matrix&);
+            matrix& operator/=(const matrix&);
+            matrix& operator%=(const matrix&);
 
          private:
             std::vector<scalar> values;
+            static scalar invalid;
             size_t num_rows = 0;
             size_t num_columns = 0;
+            bool fail = false;
         };
 
+        const auto invalid_matrix = matrix(true);
 
         inline matrix operator+(const matrix& lhs, const matrix& rhs) {
             auto copy = lhs;
@@ -150,43 +53,14 @@ namespace falk {
             return copy -= rhs;
         }
 
-        inline matrix operator*(const matrix& lhs, const matrix& rhs) {
-            if (lhs.column_count() != rhs.row_count()) {
-                // TODO: error (incompatible operands)
-                // TODO: return what?
-                return matrix{};
-            }
-
-            auto num_rows = lhs.row_count();
-            auto num_columns = rhs.column_count();
-            auto result = matrix(num_rows, num_columns);
-            for (size_t i = 0; i < num_rows; i++) {
-                for (size_t j = 0; j < num_columns; j++) {
-                    scalar sum;
-                    for (size_t k = 0; k < lhs.column_count(); k++) {
-                        auto factor = lhs.at(i, k) * rhs.at(k, j);
-                        if (k == 0) {
-                            sum = factor;
-                        } else {
-                            sum += factor;
-                        }
-                    }
-                    result.at(i, j) = sum;
-                }
-            }
-            return result;
-        }
-
         inline matrix operator/(const matrix& lhs, const matrix& rhs) {
-            // TODO: error (incompatible operands)
-            // TODO: return what?
-            return matrix{};
+            // TODO: error (operation not allowed)
+            return invalid_matrix;
         }
 
         inline matrix operator%(const matrix& lhs, const matrix& rhs) {
-            // TODO: error (incompatible operands)
-            // TODO: return what?
-            return matrix{};
+            // TODO: error (operation not allowed)
+            return invalid_matrix;
         }
 
         inline matrix operator-(const matrix& rhs) {
@@ -199,22 +73,123 @@ namespace falk {
             return result;
         }
 
-        inline std::ostream& operator<<(std::ostream& out, const matrix& mat) {
-            out << "[";
-            for (size_t i = 0; i < mat.row_count(); i++) {
-                if (i != 0) {
-                   out << ", ";
-                }
-                out << "[";
-                for (size_t j = 0; j < mat.column_count(); j++) {
-                    if (j != 0) {
-                       out << ", ";
-                    }
-                    out << mat.at(i, j);
-                }
-                out << "]";
+        std::ostream& operator<<(std::ostream&, const matrix&);
+
+        inline matrix::matrix(bool flag) : fail{flag} { }
+
+        inline matrix::matrix(size_t rows, size_t columns):
+          values(rows * columns), num_rows{rows}, num_columns{columns} { }
+
+        inline scalar& matrix::at(size_t row, size_t column) {
+            if (row >= num_rows || column >= num_columns) {
+                // TODO: error (index out of bounds)
+                fail = true;
+                return invalid;
             }
-            return out << "]";
+            return values.at(row * num_columns + column);
+        }
+
+        inline const scalar& matrix::at(size_t row, size_t column) const {
+            // std::cout << "num_rows = " << num_rows << std::endl;
+            // std::cout << "num_columns = " << num_columns << std::endl;
+            if (row >= num_rows || column >= num_columns) {
+                // TODO: error (index out of bounds)
+                return invalid;
+            }
+            return values.at(row * num_columns + column);
+        }
+
+        inline void matrix::push_back(const array& row) {
+            if (values.size() == 0) {
+                num_columns = row.size();
+            }
+
+            if (row.size() != num_columns) {
+                // TODO: error (wrong number of columns)
+                fail = true;
+                return;
+            }
+
+            for (size_t i = 0; i < num_columns; i++) {
+                values.push_back(row[i]);
+            }
+            ++num_rows;
+        }
+
+        inline bool matrix::error() const {
+            return fail;
+        }
+
+        inline std::pair<size_t, size_t> matrix::size() const {
+            return {num_rows, num_columns};
+        }
+
+        inline size_t matrix::row_count() const {
+            return num_rows;
+        }
+
+        inline size_t matrix::column_count() const {
+            return num_columns;
+        }
+
+        inline matrix& matrix::pow(const matrix& rhs) {
+            // TODO: error (operation not allowed)
+            return *this;
+        }
+
+        inline matrix matrix::pow(const matrix& lhs, const matrix& rhs) {
+            // TODO: error (operation not allowed)
+            return invalid_matrix;
+        }
+
+        inline matrix& matrix::operator+=(const matrix& rhs) {
+            if (size() != rhs.size()) {
+                // TODO: error (incompatible operands)
+                return *this;
+            }
+
+            for (size_t i = 0; i < row_count(); i++) {
+                for (size_t j = 0; j < column_count(); j++) {
+                    at(i, j) += rhs.at(i, j);
+                }
+            }
+            return *this;
+        }
+
+        inline matrix& matrix::operator-=(const matrix& rhs) {
+            if (size() != rhs.size()) {
+                // TODO: error (incompatible operands)
+                fail = true;
+                return *this;
+            }
+
+            for (size_t i = 0; i < row_count(); i++) {
+                for (size_t j = 0; j < column_count(); j++) {
+                    at(i, j) -= rhs.at(i, j);
+                }
+            }
+            return *this;
+        }
+
+        inline matrix& matrix::operator*=(const matrix& rhs) {
+            if (num_rows != rhs.row_count() || num_rows != rhs.column_count()) {
+                // TODO: error (incompatible operands)
+                fail = true;
+                return *this;
+            }
+            return *this = *this * rhs;
+        }
+
+        inline matrix& matrix::operator/=(const matrix& rhs) {
+            // TODO: error (operation not allowed)
+            fail = true;
+            return *this;
+        }
+
+        inline matrix& matrix::operator%=(const matrix& rhs) {
+            // TODO: error (operation not allowed)
+            fail = true;
+            return *this;
         }
     }
 }

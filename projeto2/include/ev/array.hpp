@@ -26,6 +26,10 @@ namespace falk {
                 return values.at(index);
             }
 
+            bool error() const {
+                return fail;
+            }
+
             array& pow(const array& rhs) {
                 if (size() != rhs.size()) {
                     // TODO: error (incompatible operands)
@@ -47,12 +51,12 @@ namespace falk {
             array& operator+=(const array& rhs) {
                 if (size() != rhs.size()) {
                     // TODO: error (incompatible operands)
+                    fail = true;
                     return *this;
                 }
 
                 for (size_t i = 0; i < size(); i++) {
                     values[i] += rhs[i];
-                    std::cout << values[i] << std::endl;
                 }
                 return *this;
             }
@@ -60,6 +64,7 @@ namespace falk {
             array& operator-=(const array& rhs) {
                 if (size() != rhs.size()) {
                     // TODO: error (incompatible operands)
+                    fail = true;
                     return *this;
                 }
 
@@ -72,6 +77,7 @@ namespace falk {
             array& operator*=(const array& rhs) {
                 if (size() != rhs.size()) {
                     // TODO: error (incompatible operands)
+                    fail = true;
                     return *this;
                 }
 
@@ -84,6 +90,7 @@ namespace falk {
             array& operator/=(const array& rhs) {
                 if (size() != rhs.size()) {
                     // TODO: error (incompatible operands)
+                    fail = true;
                     return *this;
                 }
 
@@ -96,6 +103,7 @@ namespace falk {
             array& operator%=(const array& rhs) {
                 if (size() != rhs.size()) {
                     // TODO: error (incompatible operands)
+                    fail = true;
                     return *this;
                 }
 
@@ -107,8 +115,8 @@ namespace falk {
 
          private:
             std::vector<scalar> values;
+            bool fail = false;
         };
-
 
         inline array operator+(const array& lhs, const array& rhs) {
             auto copy = lhs;

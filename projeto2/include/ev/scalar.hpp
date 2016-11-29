@@ -30,41 +30,18 @@ namespace falk {
             operator long() const;
 
             static scalar pow(const scalar&, const scalar&);
-
-            scalar& pow(const scalar&) {
-                // TODO: implement this
-                return *this;
-            }
-
-            scalar& operator+=(const scalar&) {
-                // TODO: implement this
-                return *this;
-            }
-
-            scalar& operator-=(const scalar&) {
-                // TODO: implement this
-                return *this;
-            }
-
-            scalar& operator*=(const scalar&) {
-                // TODO: implement this
-                return *this;
-            }
-
-            scalar& operator/=(const scalar&) {
-                // TODO: implement this
-                return *this;
-            }
-
-            scalar& operator%=(const scalar&) {
-                // TODO: implement this
-                return *this;
-            }
+            scalar& pow(const scalar&);
+            scalar& operator+=(const scalar&);
+            scalar& operator-=(const scalar&);
+            scalar& operator*=(const scalar&);
+            scalar& operator/=(const scalar&);
+            scalar& operator%=(const scalar&);
 
          private:
             falk::fundamental::type _type;
             double _real = 0;
             double _imag = 0;
+            bool fail = false;
         };
 
         // Non-member functions
