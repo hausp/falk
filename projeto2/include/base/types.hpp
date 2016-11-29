@@ -14,6 +14,18 @@ namespace falk {
         }
     };
 
+    struct conditional {
+        static constexpr size_t arity() {
+            return 3;
+        }
+    };
+
+    struct calculation {
+        static constexpr size_t arity() {
+            return 1;
+        }
+    };
+
     namespace fundamental {
         enum class type {
             UNDEFINED,

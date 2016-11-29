@@ -18,13 +18,40 @@ void falk::ev::evaluator::analyse(const matrix& container) {
 
 void falk::ev::evaluator::analyse(const block&, std::list<node_ptr>& nodes) {
     for (auto& node : nodes) {
-        node->traverse(*this);
+        if (node) {
+            node->traverse(*this);        
+        }
     }
 }
 
-falk::ev::evaluator::value& falk::ev::evaluator::single_calculation(value& v) {
+void falk::ev::evaluator::analyse(const calculation&, node_array<1>& nodes) {
+    single_calculation(nodes[0]);
+}
+
+void falk::ev::evaluator::analyse(const conditional&, node_array<3>& nodes) {
+    nodes[0]->traverse(*this);
+    auto type = aut::pop(types_stacker);
+    if (type == structural::type::SCALAR) {
+        auto result = aut::pop(var_stacker);
+        if (result) {
+            nodes[1]->traverse(*this);
+        } else {
+            nodes[2]->traverse(*this);
+        }
+    } else {
+        // TODO: error (expression must be boolean)
+    }
+}
+
+void falk::ev::evaluator::execute(value& v) {
     if (!v.empty()) {
         v.traverse(*this);
+    }
+}
+
+void falk::ev::evaluator::single_calculation(node_ptr v) {
+    if (!v->empty()) {
+        v->traverse(*this);
         auto type = aut::pop(types_stacker);
         switch (type) {
             case structural::type::SCALAR: {
@@ -50,7 +77,6 @@ falk::ev::evaluator::value& falk::ev::evaluator::single_calculation(value& v) {
             }
         }
     }
-    return v;
 }
 
 falk::ev::array& falk::ev::evaluator::extract(array& arr, value& v) {

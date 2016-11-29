@@ -83,13 +83,13 @@
 
 // Non-terminals
 %type<falk::list> program block block_body;
+%type<falk::list> conditional;
 %type<falk::value> command;
 %type<falk::value> identifier arr_size mat_size;
 %type<falk::value> flat_expr expr single_calc;
 %type<falk::value> index rvalue;
 %type<falk::value> assignment;
 %type<falk::value> declaration;
-%type<falk::value> conditional;
 %type<falk::array> array_list scalar_list
 %type<falk::matrix> matrix_list matrix_list_body;
 
@@ -117,9 +117,14 @@ program:
     | program new_line {
         $$ = $1;
     }
+    | program single_calc eoc {
+        $$ = $1;
+        $$ += $2;
+    }
     | program command eoc {
         $$ = $1;
         $$ += $2;
+        analyser.execute($2);
     }
     | program error eoc {
         yyerrok;
@@ -142,11 +147,20 @@ block_body:
     %empty {
         $$ = falk::block();
     }
+    | expr {
+        $$ = falk::block();
+        $$ += $1;
+    }
     | command {
         $$ = falk::block();
+        $$ += $1;
     }
     | block new_line {
         $$ = $1;
+    }
+    | block expr eoc {
+        $$ = $1;
+        $$ += $2;
     }
     | block command eoc {
         $$ = $1;
@@ -158,7 +172,6 @@ block_body:
 
 command:
     SEMICOLON     { $$ = {}; }
-    | single_calc { $$ = $1; }
     | declaration { $$ = $1; }
     | assignment  { $$ = $1; }
     | conditional { $$ = $1; }
@@ -197,12 +210,23 @@ assignment:
 
 single_calc:
     expr {
-        $$ = analyser.single_calculation($1);
+        $$ = $1;
+        analyser.single_calculation($1);
     };
 
 conditional:
-    IF OPAR expr CPAR block { /* TODO */ }
-    | IF OPAR expr CPAR block ELSE block { /* TODO */ }
+    IF OPAR expr CPAR block {
+        $$ = falk::conditional();
+        $$ += $3;
+        $$ += $5;
+        $$ += std::make_shared<falk::empty>();
+    }
+    | IF OPAR expr CPAR block ELSE block {
+        $$ = falk::conditional();
+        $$ += $3;
+        $$ += $5;
+        $$ += $7;
+    }
     ;
 
 rvalue:

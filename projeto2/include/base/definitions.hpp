@@ -24,6 +24,7 @@ namespace falk {
     // Semantic abstractions definitions.
     using value = analyser::value;
     using list = analyser::list;
+    using empty = analyser::empty;
 }
 
 #endif /* FALK_DEFINITIONS_HPP */

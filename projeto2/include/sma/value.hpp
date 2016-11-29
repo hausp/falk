@@ -23,7 +23,7 @@ namespace sma {
         template<typename T>
         value(const T& data):
           object{new ast::model<Analyser, T>{data}} { }
-    
+
         bool empty() const {
             return object->empty();
         }

@@ -36,6 +36,7 @@ namespace falk {
             // Alias to define semantic abstraction for values.
             using value = sma::value<evaluator, falk::op>;
             using list = sma::list<evaluator>;
+            using empty = ast::empty_node<evaluator>;
 
             // Methods
             // assignment assign(identifier, value);
@@ -68,6 +69,10 @@ namespace falk {
             void analyse(const array&);
             void analyse(const matrix&);
             void analyse(const block&, std::list<node_ptr>&);
+            void analyse(const conditional&, node_array<3>&);
+            void analyse(const calculation&, node_array<1>&);
+
+            void execute(value&);
 
             void push(const scalar& result) {
                 var_stacker.push(result);
@@ -99,7 +104,7 @@ namespace falk {
             template<typename Operation, typename Stack>
             void handle_operation(const Operation&, structural::type, Stack&);
 
-            value& single_calculation(value& value);
+            void single_calculation(node_ptr value);
 
             array& extract(array&, value&);
             // matrix& extract(matrix&, value&);
