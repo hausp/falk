@@ -67,6 +67,7 @@ namespace falk {
             void analyse(const scalar&);
             void analyse(const array&);
             void analyse(const matrix&);
+            void analyse(const block&, std::list<node_ptr>&);
 
             void push(const scalar& result) {
                 var_stacker.push(result);

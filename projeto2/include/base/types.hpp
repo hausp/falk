@@ -8,6 +8,12 @@ namespace falk {
     template<typename T>
     struct definitions;
 
+    struct block {
+        static constexpr int arity() {
+            return -1;
+        }
+    };
+
     namespace fundamental {
         enum class type {
             UNDEFINED,

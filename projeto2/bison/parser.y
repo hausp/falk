@@ -82,13 +82,14 @@
 %token<falk::op::logic> NOT "!";
 
 // Non-terminals
-%type<falk::list> program;
+%type<falk::list> program block block_body;
 %type<falk::value> command;
 %type<falk::value> identifier arr_size mat_size;
 %type<falk::value> flat_expr expr single_calc;
 %type<falk::value> index rvalue;
 %type<falk::value> assignment;
 %type<falk::value> declaration;
+%type<falk::value> conditional;
 %type<falk::array> array_list scalar_list
 %type<falk::matrix> matrix_list matrix_list_body;
 
@@ -127,16 +128,41 @@ program:
 
 eoc: SEMICOLON | new_line;
 
-new_line: NL {
-    context.count_new_line();
-    analyser.new_line();
-};
+new_line:
+    NL {
+        context.count_new_line();
+        analyser.new_line();
+    };
+
+block:
+    COLON block_body DOT { $$ = $2; }
+    ;
+
+block_body:
+    %empty {
+        $$ = falk::block();
+    }
+    | command {
+        $$ = falk::block();
+    }
+    | block new_line {
+        $$ = $1;
+    }
+    | block command eoc {
+        $$ = $1;
+        $$ += $2;
+    }
+    | block error eoc {
+        yyerrok;
+    };
 
 command:
     SEMICOLON     { $$ = {}; }
     | single_calc { $$ = $1; }
     | declaration { $$ = $1; }
-    | assignment  { $$ = $1; };
+    | assignment  { $$ = $1; }
+    | conditional { $$ = $1; }
+    ;
 
 declaration:
     VAR ID {
@@ -169,13 +195,20 @@ assignment:
         // $$ = analyser.assign($1, $3, $2);
     };
 
-single_calc: expr {
-    $$ = analyser.single_calculation($1);
-};
+single_calc:
+    expr {
+        $$ = analyser.single_calculation($1);
+    };
 
-rvalue: expr {
-    $$ = $1;
-};
+conditional:
+    IF OPAR expr CPAR block { /* TODO */ }
+    | IF OPAR expr CPAR block ELSE block { /* TODO */ }
+    ;
+
+rvalue:
+    expr {
+        $$ = $1;
+    };
 
 arr_size:
     OBRACKET REAL CBRACKET {

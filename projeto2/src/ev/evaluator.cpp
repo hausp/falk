@@ -16,6 +16,12 @@ void falk::ev::evaluator::analyse(const matrix& container) {
     types_stacker.push(structural::type::MATRIX);
 }
 
+void falk::ev::evaluator::analyse(const block&, std::list<node_ptr>& nodes) {
+    for (auto& node : nodes) {
+        node->traverse(*this);
+    }
+}
+
 falk::ev::evaluator::value& falk::ev::evaluator::single_calculation(value& v) {
     if (!v.empty()) {
         v.traverse(*this);
