@@ -4,7 +4,6 @@
 
 #include "array.hpp"
 #include "aut/variant.hpp"
-#include "base/definitions.hpp"
 #include "matrix.hpp"
 #include "scalar.hpp"
 
@@ -15,55 +14,32 @@ namespace falk {
          public:
             variable(variant&);
 
-            falk::value get_value();
-
-            variable& operator+=(const variable& rhs) {
-                // TODO
-                // op_assign(rhs, typename Operation::ADD_ASSIGN());
-                return *this;
-            }
-
-            variable& operator-=(const variable& rhs) {
-                // TODO
-                // op_assign(rhs, typename Operation::SUB_ASSIGN());
-                return *this;
-            }
-
-            variable& operator*=(const variable& rhs) {
-                // TODO
-                // op_assign(rhs, typename Operation::MULT_ASSIGN());
-                return *this;
-            }
-
-            variable& operator/=(const variable& rhs) {
-                // TODO
-                // op_assign(rhs, typename Operation::DIV_ASSIGN());
-                return *this;
-            }
-
-            variable& operator%=(const variable& rhs) {
-                // TODO
-                // op_assign(rhs, typename Operation::MOD_ASSIGN());
-                return *this;
-            }
-
-            variable& operator&=(const variable& rhs) {
-                // TODO
-                // op_assign(rhs, typename Operation::AND_ASSIGN());
-                return *this;
-            }
-
-            variable& operator|=(const variable& rhs) {
-                // TODO
-                // op_assign(rhs, typename Operation::OR_ASSIGN());
-                return *this;
-            }
-
+            template<typename T>
+            variable& pow(const T&);
+            template<typename T>
+            variable& operator+=(const T&);
+            template<typename T>
+            variable& operator-=(const T&);
+            template<typename T>
+            variable& operator*=(const T&);
+            template<typename T>
+            variable& operator/=(const T&);
+            template<typename T>
+            variable& operator%=(const T&);
+            template<typename T>
+            variable& operator&=(const T&);
+            template<typename T>
+            variable& operator|=(const T&);
          private:
             variant& data;
             structural::type type;
+
+            template<typename Type, Type OP, typename T>
+            variable& op(operation<Type, OP, 2, true>, const T&);
         };
     }
 }
+
+#include "variable.ipp"
 
 #endif /* FALK_EV_SCALAR_HPP */

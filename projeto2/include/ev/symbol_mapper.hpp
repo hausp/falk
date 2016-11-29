@@ -5,10 +5,13 @@
 namespace falk {
     namespace ev {
         class symbol_mapper {
+            struct symbol {
+
+            }
          public:
             // TODO
          private:
-            // TODO
+            std::unordered_map<std::string, symbol> table;
         };
     }
 }

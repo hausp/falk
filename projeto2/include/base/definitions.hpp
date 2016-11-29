@@ -3,7 +3,6 @@
 #define FALK_DEFINITIONS_HPP
 
 #include "ev/evaluator.hpp"
-#include "ev/evaluator.hpp"
 #include "types.hpp"
 
 namespace falk {
