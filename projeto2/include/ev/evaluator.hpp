@@ -95,6 +95,9 @@ namespace falk {
             template<typename Type, Type OP>
             void analyse(operation<Type, OP, 2, true>, node_array<2>&);
 
+            template<typename Operation, typename Stack>
+            void handle_operation(const Operation&, structural::type, Stack&);
+
             value& single_calculation(value& value);
 
             array& extract(array&, value&);

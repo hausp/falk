@@ -9,73 +9,39 @@ void falk::ev::evaluator::analyse(operation<Type, OP, 2, false> op,
     auto t2 = aut::pop(types_stacker);
 
     switch (t1) {
+        case structural::type::SCALAR:
+            handle_operation(op, t2, var_stacker);
+            break;
+        case structural::type::ARRAY:
+            handle_operation(op, t2, array_stacker);
+            break;
+        case structural::type::MATRIX:
+            handle_operation(op, t2, matrix_stacker);
+            break;
+    }
+}
+
+template<typename Operation, typename Stack>
+void falk::ev::evaluator::handle_operation(const Operation& op,
+                                           structural::type rhs_type,
+                                           Stack& stack) {
+    switch (rhs_type) {
         case structural::type::SCALAR: {
-            switch (t2) {
-                case structural::type::SCALAR: {
-                    auto rhs = aut::pop(var_stacker);
-                    auto lhs = aut::pop(var_stacker);
-                    push(op(lhs, rhs));
-                    break;
-                }
-                case structural::type::ARRAY: {
-                    auto rhs = aut::pop(array_stacker);
-                    auto lhs = aut::pop(var_stacker);
-                    push(op(lhs, rhs));
-                    break;
-                }
-                case structural::type::MATRIX: {
-                    auto rhs = aut::pop(matrix_stacker);
-                    auto lhs = aut::pop(var_stacker);
-                    push(op(lhs, rhs));
-                    break;
-                }
-            }
+            auto rhs = aut::pop(var_stacker);
+            auto lhs = aut::pop(stack);
+            push(op(lhs, rhs));
             break;
         }
         case structural::type::ARRAY: {
-            switch (t2) {
-                case structural::type::SCALAR: {
-                    auto rhs = aut::pop(var_stacker);
-                    auto lhs = aut::pop(array_stacker);
-                    push(op(lhs, rhs));
-                    break;
-                }
-                case structural::type::ARRAY: {
-                    auto rhs = aut::pop(array_stacker);
-                    auto lhs = aut::pop(array_stacker);
-                    push(op(lhs, rhs));
-                    break;
-                }
-                case structural::type::MATRIX: {
-                    auto rhs = aut::pop(matrix_stacker);
-                    auto lhs = aut::pop(array_stacker);
-                    push(op(lhs, rhs));
-                    break;
-                }
-            }
+            auto rhs = aut::pop(array_stacker);
+            auto lhs = aut::pop(stack);
+            push(op(lhs, rhs));
             break;
         }
         case structural::type::MATRIX: {
-            switch (t2) {
-                case structural::type::SCALAR: {
-                    auto rhs = aut::pop(var_stacker);
-                    auto lhs = aut::pop(matrix_stacker);
-                    push(op(lhs, rhs));
-                    break;
-                }
-                case structural::type::ARRAY: {
-                    auto rhs = aut::pop(array_stacker);
-                    auto lhs = aut::pop(matrix_stacker);
-                    push(op(lhs, rhs));
-                    break;
-                }
-                case structural::type::MATRIX: {
-                    auto rhs = aut::pop(matrix_stacker);
-                    auto lhs = aut::pop(matrix_stacker);
-                    push(op(lhs, rhs));
-                    break;
-                }
-            }
+            auto rhs = aut::pop(matrix_stacker);
+            auto lhs = aut::pop(stack);
+            push(op(lhs, rhs));
             break;
         }
     }

@@ -36,4 +36,4 @@ LDLIBS   :=-pthread -lncurses
 INCLUDE  :=-I$(HDRDIR)
 # Files
 MAIN     :=main
-EXEC     :=$(BINDIR)/execute_me
+EXEC     :=$(BINDIR)/falk

@@ -69,7 +69,7 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
         
         template<typename LH, typename RH>
-        auto operator()(const LH& lhs, const RH& rhs) {
+        auto operator()(const LH& lhs, const RH& rhs) const {
             return lhs + rhs;
         }
     };
@@ -79,7 +79,7 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
         
         template<typename LH, typename RH>
-        auto operator()(const LH& lhs, const RH& rhs) {
+        auto operator()(const LH& lhs, const RH& rhs) const {
             return lhs - rhs;
         }
     };
@@ -89,7 +89,7 @@ namespace falk {
         static constexpr size_t arity() { return 1; }
         
         template<typename T>
-        T operator()(const T& operand) {
+        T operator()(const T& operand) const {
             return -operand;
         }
     };
@@ -99,7 +99,7 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
         
         template<typename LH, typename RH>
-        auto operator()(const LH& lhs, const RH& rhs) {
+        auto operator()(const LH& lhs, const RH& rhs) const {
             return lhs * rhs;
         }
     };
@@ -109,7 +109,7 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
         
         template<typename LH, typename RH>
-        auto operator()(const LH& lhs, const RH& rhs) {
+        auto operator()(const LH& lhs, const RH& rhs) const {
             return lhs / rhs;
         }
     };
@@ -119,7 +119,7 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
         
         template<typename LH, typename RH>
-        auto operator()(const LH& lhs, const RH& rhs) {
+        auto operator()(const LH& lhs, const RH& rhs) const {
             return LH::pow(lhs, rhs);
         }
     };
@@ -129,7 +129,7 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
         
         template<typename LH, typename RH>
-        auto operator()(const LH& lhs, const RH& rhs) {
+        auto operator()(const LH& lhs, const RH& rhs) const {
             return lhs % rhs;
         }
     };
@@ -139,7 +139,7 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
         
         template<typename Variable, typename Rvalue>
-        Variable& operator()(Variable& lhs, const Rvalue& rhs) {
+        Variable& operator()(Variable& lhs, const Rvalue& rhs) const {
             return lhs += rhs;
         }
     };
@@ -149,7 +149,7 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
         
         template<typename T>
-        T& operator()(T& lhs, const T& rhs) {
+        T& operator()(T& lhs, const T& rhs) const {
             return lhs -= rhs;
         }
     };
@@ -159,7 +159,7 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
         
         template<typename T>
-        T& operator()(T& lhs, const T& rhs) {
+        T& operator()(T& lhs, const T& rhs) const {
             return lhs *= rhs;
         }
     };
@@ -169,7 +169,7 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
         
         template<typename T>
-        T& operator()(T& lhs, const T& rhs) {
+        T& operator()(T& lhs, const T& rhs) const {
             return lhs /= rhs;
         }
     };
@@ -179,7 +179,7 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
         
         template<typename T>
-        T& operator()(T& lhs, const T& rhs) {
+        T& operator()(T& lhs, const T& rhs) const {
             return lhs.pow(rhs);
         }
     };
@@ -189,7 +189,7 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
         
         template<typename T>
-        T& operator()(T& lhs, const T& rhs) {
+        T& operator()(T& lhs, const T& rhs) const {
             return lhs %= rhs;
         }
     };
@@ -199,7 +199,7 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
 
         template<typename T>
-        bool operator()(const T& lhs, const T& rhs) {
+        bool operator()(const T& lhs, const T& rhs) const {
             return lhs < rhs;
         }
     };
@@ -209,7 +209,7 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
 
         template<typename T>
-        bool operator()(const T& lhs, const T& rhs) {
+        bool operator()(const T& lhs, const T& rhs) const {
             return lhs > rhs;
         }
     };
@@ -219,7 +219,7 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
 
         template<typename T>
-        bool operator()(const T& lhs, const T& rhs) {
+        bool operator()(const T& lhs, const T& rhs) const {
             return lhs <= rhs;
         }
     };
@@ -229,7 +229,7 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
 
         template<typename T>
-        bool operator()(const T& lhs, const T& rhs) {
+        bool operator()(const T& lhs, const T& rhs) const {
             return lhs >= rhs;
         }
     };
@@ -239,7 +239,7 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
 
         template<typename T>
-        bool operator()(const T& lhs, const T& rhs) {
+        bool operator()(const T& lhs, const T& rhs) const {
             return lhs == rhs;
         }
     };
@@ -249,7 +249,7 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
 
         template<typename T>
-        bool operator()(const T& lhs, const T& rhs) {
+        bool operator()(const T& lhs, const T& rhs) const {
             return lhs != rhs;
         }
     };
@@ -259,7 +259,7 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
 
         template<typename T>
-        bool operator()(const T& lhs, const T& rhs) {
+        bool operator()(const T& lhs, const T& rhs) const {
             return lhs && rhs;
         }
     };
@@ -269,7 +269,7 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
 
         template<typename T>
-        bool operator()(const T& lhs, const T& rhs) {
+        bool operator()(const T& lhs, const T& rhs) const {
             return lhs || rhs;
         }
     };
@@ -279,7 +279,7 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
 
         template<typename T>
-        bool operator()(const T& operand) {
+        bool operator()(const T& operand) const {
             return !operand;
         }
     };
