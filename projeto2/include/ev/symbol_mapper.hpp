@@ -2,12 +2,14 @@
 #ifndef FALK_EV_SYMBOL_MAPPER_HPP
 #define FALK_EV_SYMBOL_MAPPER_HPP
 
+#include <unordered_map>
+
 namespace falk {
     namespace ev {
         class symbol_mapper {
             struct symbol {
 
-            }
+            };
          public:
             // TODO
          private:
