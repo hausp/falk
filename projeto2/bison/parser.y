@@ -114,13 +114,14 @@ program:
         $$ = analyser.make_program();
     }
     | program new_line {
-        $$ += $1;
+        $$ = $1;
     }
     | program command eoc {
-        $$ += $1;
+        $$ = $1;
+        $$ += $2;
     }
     | program error eoc {
-        // yyerrorok;
+        yyerrok;
     };
     // | program function
 
@@ -241,19 +242,19 @@ matrix_list_body:
 
 flat_expr:
     REAL {
-        $$ = $1;
+        $$ = falk::scalar($1);
     }
     | COMPLEX {
-        $$ = $1;
+        $$ = falk::scalar($1);
     }
     | BOOL {
-        $$ = $1;
+        $$ = falk::scalar($1);
     }
     | identifier {
-        $$ = true; /* TODO */
+        $$ = falk::scalar(true); /* TODO */
     }
     | expr COMPARISON expr {
-        $$ = true; /* TODO: use $2.operation */
+        $$ = falk::scalar(true); /* TODO: use $2.operation */
     }
     | expr PLUS expr {
         $$ = $1 + $3;

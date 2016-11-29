@@ -16,7 +16,7 @@ namespace cursed {
         int_type pbackfail(int_type ch);
         std::streamsize showmanyc();
      private:
-        cursed::terminal& terminal;
+        cursed::terminal& term;
         std::string line = "";
         size_t current = 0;
     };

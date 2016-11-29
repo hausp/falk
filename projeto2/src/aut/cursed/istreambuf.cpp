@@ -4,11 +4,11 @@
 #include "aut/cursed/terminal.hpp"
 
 cursed::istreambuf::istreambuf(cursed::terminal& term):
- terminal{term} { }
+ term{term} { }
 
 cursed::istreambuf::int_type cursed::istreambuf::underflow() {
     if (current == line.size()) {
-        line = terminal.get_line();
+        line = term.get_line();
         current = 0;
     }
 

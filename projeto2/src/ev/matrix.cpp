@@ -1,4 +1,3 @@
-#include <iostream>
 #include "ev/matrix.hpp"
 
 falk::ev::scalar falk::ev::matrix::invalid;

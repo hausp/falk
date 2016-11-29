@@ -31,6 +31,7 @@ namespace falk {
             using boolean = bool;
             using array = ev::array;
             using matrix = ev::matrix;
+            using scalar = ev::scalar;
 
             // Alias to define semantic abstraction for values.
             using value = sma::value<evaluator, falk::op>;
@@ -66,6 +67,21 @@ namespace falk {
             void analyse(const scalar&);
             void analyse(const array&);
             void analyse(const matrix&);
+
+            void push(const scalar& result) {
+                var_stacker.push(result);
+                types_stacker.push(structural::type::SCALAR);
+            }
+
+            void push(const array& result) {
+                array_stacker.push(result);
+                types_stacker.push(structural::type::ARRAY);
+            }
+
+            void push(const matrix& result) {
+                matrix_stacker.push(result);
+                types_stacker.push(structural::type::MATRIX);
+            }
 
             // TODO: can the methods below be generalized?
             // Binary calculations

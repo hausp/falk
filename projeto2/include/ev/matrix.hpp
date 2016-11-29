@@ -8,10 +8,6 @@
 
 namespace falk {
     namespace ev {
-
-        class matrix;
-        matrix operator*(const matrix& lhs, const matrix& rhs);
-
         class matrix {
          public:
             explicit matrix(bool = false);
@@ -53,6 +49,8 @@ namespace falk {
             return copy -= rhs;
         }
 
+        matrix operator*(const matrix& lhs, const matrix& rhs);
+
         inline matrix operator/(const matrix& lhs, const matrix& rhs) {
             // TODO: error (operation not allowed)
             return invalid_matrix;
@@ -61,6 +59,46 @@ namespace falk {
         inline matrix operator%(const matrix& lhs, const matrix& rhs) {
             // TODO: error (operation not allowed)
             return invalid_matrix;
+        }
+
+        inline matrix operator+(const matrix& lhs, const scalar& rhs) {
+            return rhs + lhs;
+        }
+
+        inline matrix operator-(const matrix& lhs, const scalar& rhs) {
+            return rhs - lhs;
+        }
+
+        inline matrix operator*(const matrix& lhs, const scalar& rhs) {
+            return rhs * lhs;
+        }
+
+        inline matrix operator/(const matrix& lhs, const scalar& rhs) {
+            return rhs / lhs;
+        }
+
+        inline matrix operator%(const matrix& lhs, const scalar& rhs) {
+            return rhs % lhs;
+        }
+
+        inline matrix operator+(const matrix& lhs, const array& rhs) {
+            return rhs + lhs;
+        }
+
+        inline matrix operator-(const matrix& lhs, const array& rhs) {
+            return rhs - lhs;
+        }
+
+        inline matrix operator*(const matrix& lhs, const array& rhs) {
+            return rhs * lhs;
+        }
+
+        inline matrix operator/(const matrix& lhs, const array& rhs) {
+            return rhs / lhs;
+        }
+
+        inline matrix operator%(const matrix& lhs, const array& rhs) {
+            return rhs % lhs;
         }
 
         inline matrix operator-(const matrix& rhs) {

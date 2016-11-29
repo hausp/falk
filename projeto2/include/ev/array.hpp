@@ -8,8 +8,12 @@
 
 namespace falk {
     namespace ev {
+        class matrix;
+
         class array {
          public:
+            array(bool flag = false) : fail(flag) { }
+
             size_t size() const {
                 return values.size();
             }
@@ -30,6 +34,8 @@ namespace falk {
                 return fail;
             }
 
+            matrix to_matrix() const;
+
             array& pow(const array& rhs) {
                 if (size() != rhs.size()) {
                     // TODO: error (incompatible operands)
@@ -42,7 +48,7 @@ namespace falk {
 
                 return *this;
             }
-            
+
             static array pow(const array& lhs, const array& rhs) {
                 auto copy = lhs;
                 return copy.pow(rhs);
@@ -150,6 +156,32 @@ namespace falk {
             }
             return result;
         }
+
+        inline array operator+(const array& lhs, const scalar& rhs) {
+            return rhs + lhs;
+        }
+
+        inline array operator-(const array& lhs, const scalar& rhs) {
+            return rhs - lhs;
+        }
+
+        inline array operator*(const array& lhs, const scalar& rhs) {
+            return rhs * lhs;
+        }
+
+        inline array operator/(const array& lhs, const scalar& rhs) {
+            return rhs / lhs;
+        }
+
+        inline array operator%(const array& lhs, const scalar& rhs) {
+            return rhs % lhs;
+        }
+
+        matrix operator+(const array& lhs, const matrix& rhs);
+        matrix operator-(const array& lhs, const matrix& rhs);
+        matrix operator*(const array& lhs, const matrix& rhs);
+        matrix operator/(const array& lhs, const matrix& rhs);
+        matrix operator%(const array& lhs, const matrix& rhs);
 
         inline std::ostream& operator<<(std::ostream& out, const array& arr) {
             out << "[";

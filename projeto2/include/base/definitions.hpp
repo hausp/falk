@@ -19,6 +19,7 @@ namespace falk {
     using boolean = analyser::boolean;
     using array = analyser::array;
     using matrix = analyser::matrix;
+    using scalar = analyser::scalar;
 
     // Semantic abstractions definitions.
     using value = analyser::value;

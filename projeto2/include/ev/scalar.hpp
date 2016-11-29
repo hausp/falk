@@ -4,11 +4,13 @@
 
 #include <complex>
 #include <vector>
-
 #include "base/types.hpp"
 
 namespace falk {
     namespace ev {
+        class array;
+        class matrix;
+
         // Class to capture all kinds of scalar possible.
         class scalar {
          public:
@@ -23,11 +25,15 @@ namespace falk {
             double imag() const;
             double real() const;
             
+            bool error() const;
+
             falk::fundamental::type type() const;
 
             // Function for unique purpose of compatibility 
             // with parser generic structure.
             operator long() const;
+
+            array to_array(size_t) const;
 
             static scalar pow(const scalar&, const scalar&);
             scalar& pow(const scalar&);
@@ -51,6 +57,18 @@ namespace falk {
         scalar operator/(const scalar&, const scalar&);
         scalar operator%(const scalar&, const scalar&);
         scalar operator-(const scalar&);
+
+        array operator+(const scalar&, const array&);
+        array operator-(const scalar&, const array&);
+        array operator*(const scalar&, const array&);
+        array operator/(const scalar&, const array&);
+        array operator%(const scalar&, const array&);
+
+        matrix operator+(const scalar&, const matrix&);
+        matrix operator-(const scalar&, const matrix&);
+        matrix operator*(const scalar&, const matrix&);
+        matrix operator/(const scalar&, const matrix&);
+        matrix operator%(const scalar&, const matrix&);
 
         std::ostream& operator<<(std::ostream&, const scalar&);
 
@@ -94,6 +112,10 @@ namespace falk {
 
         inline scalar::operator long() const {
             return static_cast<long>(_real);
+        }
+
+        inline bool scalar::error() const {
+            return fail;
         }
     }
 }
