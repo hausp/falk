@@ -82,7 +82,7 @@
 %token<falk::op::logic> NOT "!";
 
 // Non-terminals
-%type<falk::list> program block block_body;
+%type<falk::list> block block_body;
 %type<falk::list> conditional;
 %type<falk::value> command;
 %type<falk::value> identifier arr_size mat_size;
@@ -111,45 +111,34 @@
 %%
 
 program:
-    %empty {
-        $$ = analyser.make_program();
-    }
-    | program new_line {
-        $$ = $1;
-    }
-    | program single_calc eoc {
-        $$ = $1;
-        $$ += $2;
-    }
-    | program command eoc {
-        $$ = $1;
-        $$ += $2;
-        analyser.execute($2);
-    }
-    | program error eoc {
-        yyerrok;
-    };
+      init
+    | program new_line
+    | entry eoc
+    | program error eoc { yyerrok; }
     // | program function
+
+init: %empty {
+    analyser.initialize();
+};
+
+entry: program command {
+    analyser.process($2);
+};
 
 eoc: SEMICOLON | new_line;
 
-new_line:
-    NL {
-        context.count_new_line();
-        analyser.new_line();
-    };
+new_line: NL {
+    context.count_new_line();
+    analyser.new_line();
+};
 
-block:
-    COLON block_body DOT { $$ = $2; }
-    ;
+block: COLON block_body DOT {
+    $$ = $2;
+};
 
 block_body:
     %empty {
         $$ = falk::block();
-    }
-    | expr {
-        $$ = falk::block();
-        $$ += $1;
     }
     | command {
         $$ = falk::block();
@@ -157,10 +146,6 @@ block_body:
     }
     | block new_line {
         $$ = $1;
-    }
-    | block expr eoc {
-        $$ = $1;
-        $$ += $2;
     }
     | block command eoc {
         $$ = $1;
@@ -172,6 +157,7 @@ block_body:
 
 command:
     SEMICOLON     { $$ = {}; }
+    | single_calc { $$ = $1; }
     | declaration { $$ = $1; }
     | assignment  { $$ = $1; }
     | conditional { $$ = $1; }
@@ -210,8 +196,8 @@ assignment:
 
 single_calc:
     expr {
+        // $$ = falk::calculation();
         $$ = $1;
-        analyser.single_calculation($1);
     };
 
 conditional:

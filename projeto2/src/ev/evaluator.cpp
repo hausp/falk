@@ -24,10 +24,6 @@ void falk::ev::evaluator::analyse(const block&, std::list<node_ptr>& nodes) {
     }
 }
 
-void falk::ev::evaluator::analyse(const calculation&, node_array<1>& nodes) {
-    single_calculation(nodes[0]);
-}
-
 void falk::ev::evaluator::analyse(const conditional&, node_array<3>& nodes) {
     nodes[0]->traverse(*this);
     auto type = aut::pop(types_stacker);
@@ -43,38 +39,39 @@ void falk::ev::evaluator::analyse(const conditional&, node_array<3>& nodes) {
     }
 }
 
-void falk::ev::evaluator::execute(value& v) {
+void falk::ev::evaluator::process(value& v) {
     if (!v.empty()) {
         v.traverse(*this);
     }
+
+    while (!types_stacker.empty()) {
+        print_result();
+    }
 }
 
-void falk::ev::evaluator::single_calculation(node_ptr v) {
-    if (!v->empty()) {
-        v->traverse(*this);
-        auto type = aut::pop(types_stacker);
-        switch (type) {
-            case structural::type::SCALAR: {
-                auto result = aut::pop(var_stacker);
-                if (!result.error()) {
-                    std::cout << "res = " << result << std::endl;
-                }
-                break;
+void falk::ev::evaluator::print_result() {
+    auto type = aut::pop(types_stacker);
+    switch (type) {
+        case structural::type::SCALAR: {
+            auto result = aut::pop(var_stacker);
+            if (!result.error()) {
+                std::cout << "res = " << result << std::endl;
             }
-            case structural::type::ARRAY: {
-                auto result = aut::pop(array_stacker);
-                if (!result.error()) {
-                    std::cout << "res = " << result << std::endl;
-                }
-                break;
+            break;
+        }
+        case structural::type::ARRAY: {
+            auto result = aut::pop(array_stacker);
+            if (!result.error()) {
+                std::cout << "res = " << result << std::endl;
             }
-            case structural::type::MATRIX: {
-                auto result = aut::pop(matrix_stacker);
-                if (!result.error()) {
-                    std::cout << "res = " << result << std::endl;
-                }
-                break;
+            break;
+        }
+        case structural::type::MATRIX: {
+            auto result = aut::pop(matrix_stacker);
+            if (!result.error()) {
+                std::cout << "res = " << result << std::endl;
             }
+            break;
         }
     }
 }

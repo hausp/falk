@@ -20,12 +20,6 @@ namespace falk {
         }
     };
 
-    struct calculation {
-        static constexpr size_t arity() {
-            return 1;
-        }
-    };
-
     namespace fundamental {
         enum class type {
             UNDEFINED,

@@ -54,7 +54,7 @@ namespace falk {
             // declaration declare_matrix(const std::string&, matrix_index);
             // declaration declare_matrix(const std::string&, init_list);
 
-            list make_program();
+            list initialize();
             real make_real(const std::string&);
             complex make_complex(const std::string&);
             boolean make_boolean(const std::string&);
@@ -70,9 +70,8 @@ namespace falk {
             void analyse(const matrix&);
             void analyse(const block&, std::list<node_ptr>&);
             void analyse(const conditional&, node_array<3>&);
-            void analyse(const calculation&, node_array<1>&);
 
-            void execute(value&);
+            void process(value&);
 
             void push(const scalar& result) {
                 var_stacker.push(result);
@@ -104,7 +103,7 @@ namespace falk {
             template<typename Operation, typename Stack>
             void handle_operation(const Operation&, structural::type, Stack&);
 
-            void single_calculation(node_ptr value);
+            void print_result();
 
             array& extract(array&, value&);
             // matrix& extract(matrix&, value&);
