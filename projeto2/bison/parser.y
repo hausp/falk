@@ -142,12 +142,12 @@ block:
     COLON block_body DOT {
         $$ = $2;
     }
-    | COLON DOT {
-        $$ = falk::block();
-    }
     | COLON command DOT {
         $$ = falk::block();
         $$ += $2;
+    }
+    | COLON DOT {
+        $$ = falk::block();
     };
 
 block_body:
@@ -197,7 +197,7 @@ declaration:
         // $$ = analyser.declare_matrix($3, $2);
     }
     | MATRIX ID ASSIGN rvalue {
-        // $$ = analyser.declare_matrix($2, $4);   
+        // $$ = analyser.declare_matrix($2, $4);
     };
 
 assignment:

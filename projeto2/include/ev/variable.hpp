@@ -4,6 +4,7 @@
 
 #include "array.hpp"
 #include "aut/variant.hpp"
+#include "base/operators.hpp"
 #include "matrix.hpp"
 #include "scalar.hpp"
 
@@ -12,7 +13,10 @@ namespace falk {
         class variable {
             using variant = aut::variant<scalar, array, matrix>;
          public:
-            variable(variant&);
+            variable() = default;
+
+            template<typename T>
+            variable(const T&);
 
             template<typename T>
             variable& pow(const T&);
@@ -31,7 +35,7 @@ namespace falk {
             template<typename T>
             variable& operator|=(const T&);
          private:
-            variant& data;
+            variant data;
             structural::type type;
 
             template<typename Type, Type OP, typename T>

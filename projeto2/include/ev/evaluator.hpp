@@ -8,6 +8,7 @@
 
 #include "array.hpp"
 #include "aut/utilities.hpp"
+#include "base/constructs.hpp"
 #include "base/operators.hpp"
 #include "base/types.hpp"
 #include "function.hpp"

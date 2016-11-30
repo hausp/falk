@@ -5,21 +5,6 @@
 #include <string>
 
 namespace falk {
-    template<typename T>
-    struct definitions;
-
-    struct block {
-        static constexpr int arity() {
-            return -1;
-        }
-    };
-
-    struct conditional {
-        static constexpr size_t arity() {
-            return 3;
-        }
-    };
-
     namespace fundamental {
         enum class type {
             UNDEFINED,

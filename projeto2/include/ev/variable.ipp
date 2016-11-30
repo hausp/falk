@@ -1,4 +1,7 @@
 
+template<typename T>
+falk::ev::variable::variable(const T& value): data{value} { }
+
 template<typename Type, Type OP, typename T>
 falk::ev::variable& falk::ev::variable::op(operation<Type, OP, 2, true> op,
                                            const T& v) {
