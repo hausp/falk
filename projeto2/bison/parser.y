@@ -112,9 +112,16 @@
 
 program:
       init
-    | program new_line
-    | entry eoc
-    | program error eoc { yyerrok; }
+    | program new_line {
+        analyser.prompt();
+    }
+    | entry eoc {
+        analyser.prompt();
+    }
+    | program error eoc {
+        yyerrok;
+        analyser.prompt();
+    }
     // | program function
 
 init: %empty {
@@ -129,29 +136,29 @@ eoc: SEMICOLON | new_line;
 
 new_line: NL {
     context.count_new_line();
-    analyser.new_line();
 };
 
-block: COLON block_body DOT {
-    $$ = $2;
-};
+block:
+    COLON block_body DOT {
+        $$ = $2;
+    }
+    | COLON DOT {
+        $$ = falk::block();
+    };
 
 block_body:
-    %empty {
-        $$ = falk::block();
-    }
-    | command {
+    command {
         $$ = falk::block();
         $$ += $1;
     }
-    | block new_line {
+    | block_body new_line {
         $$ = $1;
     }
-    | block command eoc {
+    | block_body command eoc {
         $$ = $1;
         $$ += $2;
     }
-    | block error eoc {
+    | block_body error eoc {
         yyerrok;
     };
 

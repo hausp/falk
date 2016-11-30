@@ -119,9 +119,8 @@ void falk::ev::evaluator::analyse(operation<Type, OP, 2, true> op,
     }
 }
 
-inline falk::ev::evaluator::list falk::ev::evaluator::initialize() {
+inline void falk::ev::evaluator::initialize() {
     std::cout << "falk> ";
-    return {};
 }
 
 inline falk::ev::evaluator::real
@@ -140,7 +139,6 @@ falk::ev::evaluator::make_boolean(const std::string& text) {
     return text == "true";
 }
 
-inline int falk::ev::evaluator::new_line() {
+inline void falk::ev::evaluator::prompt() {
     std::cout << "falk> ";
-    return 0;
 }

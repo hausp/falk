@@ -54,12 +54,12 @@ namespace falk {
             // declaration declare_matrix(const std::string&, matrix_index);
             // declaration declare_matrix(const std::string&, init_list);
 
-            list initialize();
+            void initialize();
             real make_real(const std::string&);
             complex make_complex(const std::string&);
             boolean make_boolean(const std::string&);
 
-            int new_line();
+            void prompt();
 
             // identifier retrieve_identifier(const std::string&) { return identifier{}; }
             // identifier retrieve_identifier(const std::string&, array_index) { return identifier{}; }
