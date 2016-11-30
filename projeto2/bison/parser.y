@@ -54,7 +54,7 @@
 %token RET       "return keyword";
 %token FUN       "function keyword";
 %token ASSIGN    "=";
-%token COMMA     ";";
+%token COMMA     ",";
 %token OPAR      "(";
 %token CPAR      ")";
 %token COLON     ":";
@@ -144,10 +144,17 @@ block:
     }
     | COLON DOT {
         $$ = falk::block();
+    }
+    | COLON command DOT {
+        $$ = falk::block();
+        $$ += $2;
     };
 
 block_body:
-    command {
+    new_line {
+        $$ = falk::block();
+    }
+    | command eoc {
         $$ = falk::block();
         $$ += $1;
     }
