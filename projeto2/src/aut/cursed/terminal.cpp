@@ -124,6 +124,7 @@ void cursed::terminal::up_pressed() {
 
 void cursed::terminal::down_pressed() {
     if (buffer_it != buffer.end()) {
+        cursor_x = o_cursor_x + current_input.size();
         current_input.clear();
         while (cursor_x > o_cursor_x) {
             --cursor_x;
