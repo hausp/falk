@@ -326,7 +326,8 @@ flat_expr:
         $$ = $1 / $3;
     }
     | expr POWER expr {
-        $$ = $1.pow($3);
+        // $$ = falk::value::pow($1, $3);
+        $$ = falk::scalar(true);
     }
     | expr MOD expr {
         $$ = $1 % $3;
