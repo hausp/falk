@@ -1,16 +1,21 @@
 
 #include <iostream>
+#include "base/errors.hpp"
 
 template<typename L, typename P, typename A>
 lpi::lpa_context<L,P,A>::lpa_context():
   lexer{analyser, *this},
-  parser{lexer, analyser, *this} { }
+  parser{lexer, analyser, *this} {
+    err::set_context(*this);
+}
 
 template<typename L, typename P, typename A>
 lpi::lpa_context<L,P,A>::lpa_context(A a):
   lexer{analyser, *this},
   parser{lexer, analyser, *this},
-  analyser{std::move(a)} { }
+  analyser{std::move(a)} {
+    err::set_context(*this);
+}
 
 template<typename L, typename P, typename A>
 void lpi::lpa_context<L,P,A>::count_new_line() {

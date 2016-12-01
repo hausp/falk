@@ -29,10 +29,6 @@ namespace falk {
 
             falk::fundamental::type type() const;
 
-            // Function for unique purpose of compatibility 
-            // with parser generic structure.
-            operator long() const;
-
             array to_array(size_t) const;
 
             static scalar pow(const scalar&, const scalar&);
@@ -95,7 +91,7 @@ namespace falk {
         }
 
         inline bool scalar::boolean() const {
-            return static_cast<bool>(_real);
+            return _real != 0;
         }
 
         inline double scalar::imag() const {
@@ -108,10 +104,6 @@ namespace falk {
 
         inline falk::type scalar::type() const {
             return _type;
-        }
-
-        inline scalar::operator long() const {
-            return static_cast<long>(_real);
         }
 
         inline bool scalar::error() const {

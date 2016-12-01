@@ -191,8 +191,17 @@ namespace falk {
         }
 
         inline matrix& matrix::operator+=(const matrix& rhs) {
-            if (size() != rhs.size()) {
-                // TODO: error (incompatible operands)
+            if (row_count() != rhs.row_count()) {
+                err::semantic<Error::ROW_SIZE_MISMATCH>(row_count(),
+                                                        rhs.row_count());
+                fail = true;
+                return *this;
+            }
+
+            if (column_count() != rhs.column_count()) {
+                err::semantic<Error::COLUMN_SIZE_MISMATCH>(column_count(),
+                                                           rhs.column_count());
+                fail = true;
                 return *this;
             }
 
@@ -205,8 +214,16 @@ namespace falk {
         }
 
         inline matrix& matrix::operator-=(const matrix& rhs) {
-            if (size() != rhs.size()) {
-                // TODO: error (incompatible operands)
+            if (row_count() != rhs.row_count()) {
+                err::semantic<Error::ROW_SIZE_MISMATCH>(row_count(),
+                                                        rhs.row_count());
+                fail = true;
+                return *this;
+            }
+
+            if (column_count() != rhs.column_count()) {
+                err::semantic<Error::COLUMN_SIZE_MISMATCH>(column_count(),
+                                                           rhs.column_count());
                 fail = true;
                 return *this;
             }
@@ -220,8 +237,14 @@ namespace falk {
         }
 
         inline matrix& matrix::operator*=(const matrix& rhs) {
-            if (num_rows != rhs.row_count() || num_rows != rhs.column_count()) {
-                // TODO: error (incompatible operands)
+            if (num_columns != rhs.row_count()) {
+                err::semantic<Error::MATRIX_MULT_MISMATCH>(num_columns, rhs.row_count());
+                fail = true;
+                return *this;
+            }
+
+            if (num_columns != rhs.column_count()) {
+                err::semantic<Error::NON_SQUARE_MATRIX>(num_columns, rhs.column_count());
                 fail = true;
                 return *this;
             }

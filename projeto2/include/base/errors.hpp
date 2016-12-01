@@ -2,10 +2,21 @@
 #define ERRORS_HPP
 
 #include <iostream>
+#include <unordered_map>
+#include "base/types.hpp"
+
+namespace lpi {
+    class context;
+}
 
 enum class Error {
     INCOMPATIBLE_TYPES,
-    INCOMPATIBLE_OPERANDS,
+    // INCOMPATIBLE_OPERANDS,
+    ARRAY_SIZE_MISMATCH,
+    ROW_SIZE_MISMATCH,
+    COLUMN_SIZE_MISMATCH,
+    MATRIX_MULT_MISMATCH,
+    NON_SQUARE_MATRIX,
     ILLEGAL_OPERATION,
     INDEX_OUT_OF_BOUNDS,
     WRONG_COLUMN_COUNT,
@@ -17,7 +28,28 @@ enum class Error {
     REDECLARATION_OF_SYMBOL,
 };
 
+namespace std {
+    template<>
+    struct hash<falk::type> {
+        inline size_t operator()(falk::type type) const {
+            return static_cast<int>(type);
+        }
+    };
+}
+
 namespace err {
+    const std::unordered_map<falk::type, std::string> type_table = {
+        {falk::type::REAL, "real"},
+        {falk::type::COMPLEX, "complex"},
+        {falk::type::BOOL, "boolean"},
+    };
+
+    void set_context(lpi::context&);
+    std::string error_prefix(const std::string&);
+    void echo(const std::string&);
+
+    template<Error>
+    inline void semantic(falk::type, falk::type);
     template<Error>
     inline void semantic(size_t, size_t);
     template<Error>
@@ -25,13 +57,41 @@ namespace err {
     template<Error>
     inline void semantic();
 
-    inline std::string error_prefix(const std::string& type) {
-        auto line = std::to_string(0); // TODO
-        return "[Line " + line + "] " + type + " error: ";
+    template<>
+    inline void semantic<Error::INCOMPATIBLE_TYPES>(falk::type lhs, falk::type rhs) {
+        echo(error_prefix("semantic") + "incompatible types (" +
+            type_table.at(lhs) + " and " + type_table.at(rhs) + ")");
     }
 
-    inline void echo(const std::string& message) {
-        std::cout << message << std::endl;
+    template<>
+    inline void semantic<Error::ARRAY_SIZE_MISMATCH>(size_t lhs, size_t rhs) {
+        echo(error_prefix("semantic") + "array size mismatch (" +
+            std::to_string(lhs) + " and " + std::to_string(rhs) + ")");
+    }
+
+    template<>
+    inline void semantic<Error::ROW_SIZE_MISMATCH>(size_t lhs, size_t rhs) {
+        echo(error_prefix("semantic") + "row count mismatch (" +
+            std::to_string(lhs) + " and " + std::to_string(rhs) + ")");
+    }
+
+    template<>
+    inline void semantic<Error::COLUMN_SIZE_MISMATCH>(size_t lhs, size_t rhs) {
+        echo(error_prefix("semantic") + "column count mismatch (" +
+            std::to_string(lhs) + " and " + std::to_string(rhs) + ")");
+    }
+
+    template<>
+    inline void semantic<Error::MATRIX_MULT_MISMATCH>(size_t lhs, size_t rhs) {
+        echo(error_prefix("semantic") + "the number of columns of the first " + 
+            "matrix (" + std::to_string(lhs) + ") must be equal to the number " +
+            "of rows of the second matrix (" + std::to_string(rhs) + ")");
+    }
+
+    template<>
+    inline void semantic<Error::NON_SQUARE_MATRIX>(size_t lhs, size_t rhs) {
+        echo(error_prefix("semantic") + "second matrix must be square (" +
+            std::to_string(lhs) + " and " + std::to_string(rhs) + ")");
     }
 
     template<>

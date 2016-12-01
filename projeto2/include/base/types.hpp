@@ -1,8 +1,5 @@
-
 #ifndef FALK_TYPES_HPP
 #define FALK_TYPES_HPP
-
-#include <string>
 
 namespace falk {
     namespace fundamental {
@@ -25,24 +22,34 @@ namespace falk {
     namespace symbol {
         enum class type {
             VARIABLE,
-            FUNCTION  
+            FUNCTION,
         };
     }
 
     using type = fundamental::type;
 
     inline type resolve_types(type t1, type t2) {
-        if (t1 != t2) {
-            if (t1 == type::COMPLEX || t2 == type::COMPLEX) {
-                return type::COMPLEX;
-            } else if (t1 == type::REAL || t2 == type::REAL) {
-                return type::REAL;
-            }
-            // TODO: error (incompatible types)
-            return type::UNDEFINED;
+        if (t1 == type::COMPLEX || t2 == type::COMPLEX) {
+            return type::COMPLEX;
+        } else if (t1 == type::REAL || t2 == type::REAL) {
+            return type::REAL;
         }
-        return t1;
+        return type::BOOL;
     }
+
+    // inline scalar coerce(type t, const scalar& value) {
+    //     if (t == value.type()) {
+    //         return value;
+    //     }
+
+    //     if (t == type::REAL) {
+    //         return scalar(t, value.real());
+    //     }
+
+    //     if (t == type::BOOL) {
+    //         return scalar(t, value.real() != 0);
+    //     }
+    // }
 }
 
 #endif /* FALK_TYPES_HPP */

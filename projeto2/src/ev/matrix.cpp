@@ -4,7 +4,7 @@ falk::ev::scalar falk::ev::matrix::invalid;
 
 falk::ev::matrix falk::ev::operator*(const matrix& lhs, const matrix& rhs) {
     if (lhs.column_count() != rhs.row_count()) {
-        // TODO: error (incompatible operands)
+        err::semantic<Error::MATRIX_MULT_MISMATCH>(lhs.column_count(), rhs.row_count());
         return invalid_matrix;
     }
 

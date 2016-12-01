@@ -4,6 +4,7 @@
 
 #include <ostream>
 #include <vector>
+#include "base/errors.hpp"
 #include "scalar.hpp"
 
 namespace falk {
@@ -38,7 +39,7 @@ namespace falk {
 
             array& pow(const array& rhs) {
                 if (size() != rhs.size()) {
-                    // TODO: error (incompatible operands)
+                    err::semantic<Error::ARRAY_SIZE_MISMATCH>(size(), rhs.size());
                     return *this;
                 }
 
@@ -56,7 +57,7 @@ namespace falk {
 
             array& operator+=(const array& rhs) {
                 if (size() != rhs.size()) {
-                    // TODO: error (incompatible operands)
+                    err::semantic<Error::ARRAY_SIZE_MISMATCH>(size(), rhs.size());
                     fail = true;
                     return *this;
                 }
@@ -69,7 +70,7 @@ namespace falk {
 
             array& operator-=(const array& rhs) {
                 if (size() != rhs.size()) {
-                    // TODO: error (incompatible operands)
+                    err::semantic<Error::ARRAY_SIZE_MISMATCH>(size(), rhs.size());
                     fail = true;
                     return *this;
                 }
@@ -82,7 +83,7 @@ namespace falk {
 
             array& operator*=(const array& rhs) {
                 if (size() != rhs.size()) {
-                    // TODO: error (incompatible operands)
+                    err::semantic<Error::ARRAY_SIZE_MISMATCH>(size(), rhs.size());
                     fail = true;
                     return *this;
                 }
@@ -95,7 +96,7 @@ namespace falk {
 
             array& operator/=(const array& rhs) {
                 if (size() != rhs.size()) {
-                    // TODO: error (incompatible operands)
+                    err::semantic<Error::ARRAY_SIZE_MISMATCH>(size(), rhs.size());
                     fail = true;
                     return *this;
                 }
@@ -108,7 +109,7 @@ namespace falk {
 
             array& operator%=(const array& rhs) {
                 if (size() != rhs.size()) {
-                    // TODO: error (incompatible operands)
+                    err::semantic<Error::ARRAY_SIZE_MISMATCH>(size(), rhs.size());
                     fail = true;
                     return *this;
                 }
