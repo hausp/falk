@@ -22,7 +22,11 @@ namespace falk {
             size_t row_count() const;
             size_t column_count() const;
 
+            static matrix pow(const matrix&, const scalar&);
+            static matrix pow(const matrix&, const array&);
             static matrix pow(const matrix&, const matrix&);
+            matrix& pow(const scalar&);
+            matrix& pow(const array&);
             matrix& pow(const matrix&);
             matrix& operator+=(const matrix&);
             matrix& operator-=(const matrix&);
@@ -119,51 +123,6 @@ namespace falk {
         inline matrix::matrix(size_t rows, size_t columns):
           values(rows * columns), num_rows{rows}, num_columns{columns} { }
 
-        inline scalar& matrix::at(size_t row, size_t column) {
-            if (row >= num_rows) {
-                err::semantic<Error::INDEX_OUT_OF_BOUNDS>(num_rows, row);
-                fail = true;
-                return invalid;
-            }
-
-            if (column >= num_columns) {
-                err::semantic<Error::INDEX_OUT_OF_BOUNDS>(num_columns, column);
-                fail = true;
-                return invalid;
-            }
-            return values.at(row * num_columns + column);
-        }
-
-        inline const scalar& matrix::at(size_t row, size_t column) const {
-            if (row >= num_rows) {
-                err::semantic<Error::INDEX_OUT_OF_BOUNDS>(num_rows, row);
-                return invalid;
-            }
-
-            if (column >= num_columns) {
-                err::semantic<Error::INDEX_OUT_OF_BOUNDS>(num_columns, column);
-                return invalid;
-            }
-            return values.at(row * num_columns + column);
-        }
-
-        inline void matrix::push_back(const array& row) {
-            if (values.size() == 0) {
-                num_columns = row.size();
-            }
-
-            if (row.size() != num_columns) {
-                err::semantic<Error::WRONG_COLUMN_COUNT>(num_columns, row.size());
-                fail = true;
-                return;
-            }
-
-            for (size_t i = 0; i < num_columns; i++) {
-                values.push_back(row[i]);
-            }
-            ++num_rows;
-        }
-
         inline bool matrix::error() const {
             return fail;
         }
@@ -180,87 +139,37 @@ namespace falk {
             return num_columns;
         }
 
+        inline matrix& matrix::pow(const scalar&) {
+            // TODO
+            fail = true;
+            return *this;
+        }
+
+        inline matrix& matrix::pow(const array&) {
+            err::semantic<Error::ILLEGAL_OPERATION>("array exponentiation");
+            fail = true;
+            return *this;
+        }
+
         inline matrix& matrix::pow(const matrix& rhs) {
             err::semantic<Error::ILLEGAL_OPERATION>("matrix exponentiation");
+            fail = true;
             return *this;
+        }
+
+        inline matrix matrix::pow(const matrix&, const scalar&) {
+            // TODO
+            return invalid_matrix;
+        }
+
+        inline matrix matrix::pow(const matrix&, const array&) {
+            err::semantic<Error::ILLEGAL_OPERATION>("array exponentiation");
+            return invalid_matrix;
         }
 
         inline matrix matrix::pow(const matrix& lhs, const matrix& rhs) {
             err::semantic<Error::ILLEGAL_OPERATION>("matrix exponentiation");
             return invalid_matrix;
-        }
-
-        inline matrix& matrix::operator+=(const matrix& rhs) {
-            if (row_count() != rhs.row_count()) {
-                err::semantic<Error::ROW_SIZE_MISMATCH>(row_count(),
-                                                        rhs.row_count());
-                fail = true;
-                return *this;
-            }
-
-            if (column_count() != rhs.column_count()) {
-                err::semantic<Error::COLUMN_SIZE_MISMATCH>(column_count(),
-                                                           rhs.column_count());
-                fail = true;
-                return *this;
-            }
-
-            for (size_t i = 0; i < row_count(); i++) {
-                for (size_t j = 0; j < column_count(); j++) {
-                    at(i, j) += rhs.at(i, j);
-                }
-            }
-            return *this;
-        }
-
-        inline matrix& matrix::operator-=(const matrix& rhs) {
-            if (row_count() != rhs.row_count()) {
-                err::semantic<Error::ROW_SIZE_MISMATCH>(row_count(),
-                                                        rhs.row_count());
-                fail = true;
-                return *this;
-            }
-
-            if (column_count() != rhs.column_count()) {
-                err::semantic<Error::COLUMN_SIZE_MISMATCH>(column_count(),
-                                                           rhs.column_count());
-                fail = true;
-                return *this;
-            }
-
-            for (size_t i = 0; i < row_count(); i++) {
-                for (size_t j = 0; j < column_count(); j++) {
-                    at(i, j) -= rhs.at(i, j);
-                }
-            }
-            return *this;
-        }
-
-        inline matrix& matrix::operator*=(const matrix& rhs) {
-            if (num_columns != rhs.row_count()) {
-                err::semantic<Error::MATRIX_MULT_MISMATCH>(num_columns, rhs.row_count());
-                fail = true;
-                return *this;
-            }
-
-            if (num_columns != rhs.column_count()) {
-                err::semantic<Error::NON_SQUARE_MATRIX>(num_columns, rhs.column_count());
-                fail = true;
-                return *this;
-            }
-            return *this = *this * rhs;
-        }
-
-        inline matrix& matrix::operator/=(const matrix& rhs) {
-            err::semantic<Error::ILLEGAL_OPERATION>("matrix division");
-            fail = true;
-            return *this;
-        }
-
-        inline matrix& matrix::operator%=(const matrix& rhs) {
-            err::semantic<Error::ILLEGAL_OPERATION>("matrix modulus");
-            fail = true;
-            return *this;
         }
     }
 }

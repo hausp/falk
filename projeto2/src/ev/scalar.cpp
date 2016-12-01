@@ -25,6 +25,18 @@ falk::ev::scalar& falk::ev::scalar::pow(const scalar& rhs) {
     return *this;
 }
 
+falk::ev::scalar& falk::ev::scalar::pow(const array& rhs) {
+    err::semantic<Error::ILLEGAL_OPERATION>("array exponentiation");
+    fail = true;
+    return *this;
+}
+
+falk::ev::scalar& falk::ev::scalar::pow(const matrix& rhs) {
+    err::semantic<Error::ILLEGAL_OPERATION>("matrix exponentiation");
+    fail = true;
+    return *this;
+}
+
 falk::ev::scalar& falk::ev::scalar::operator+=(const scalar& rhs) {
     auto type = falk::resolve_types(_type, rhs.type());
     switch (type) {
@@ -114,6 +126,16 @@ falk::ev::scalar& falk::ev::scalar::operator%=(const scalar& rhs) {
 }
 
 falk::ev::scalar falk::ev::scalar::pow(const scalar& lhs, const scalar& rhs) {
+    auto copy = lhs;
+    return copy.pow(rhs);
+}
+
+falk::ev::scalar falk::ev::scalar::pow(const scalar& lhs, const array& rhs) {
+    auto copy = lhs;
+    return copy.pow(rhs);
+}
+
+falk::ev::scalar falk::ev::scalar::pow(const scalar& lhs, const matrix& rhs) {
     auto copy = lhs;
     return copy.pow(rhs);
 }

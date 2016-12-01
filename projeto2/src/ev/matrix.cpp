@@ -45,3 +45,121 @@ std::ostream& falk::ev::operator<<(std::ostream& out, const falk::ev::matrix& ma
     }
     return out << "]";
 }
+
+falk::ev::scalar& falk::ev::matrix::at(size_t row, size_t column) {
+    if (row >= num_rows) {
+        err::semantic<Error::INDEX_OUT_OF_BOUNDS>(num_rows, row);
+        fail = true;
+        return invalid;
+    }
+
+    if (column >= num_columns) {
+        err::semantic<Error::INDEX_OUT_OF_BOUNDS>(num_columns, column);
+        fail = true;
+        return invalid;
+    }
+    return values.at(row * num_columns + column);
+}
+
+const falk::ev::scalar& falk::ev::matrix::at(size_t row, size_t column) const {
+    if (row >= num_rows) {
+        err::semantic<Error::INDEX_OUT_OF_BOUNDS>(num_rows, row);
+        return invalid;
+    }
+
+    if (column >= num_columns) {
+        err::semantic<Error::INDEX_OUT_OF_BOUNDS>(num_columns, column);
+        return invalid;
+    }
+    return values.at(row * num_columns + column);
+}
+
+void falk::ev::matrix::push_back(const array& row) {
+    if (values.size() == 0) {
+        num_columns = row.size();
+    }
+
+    if (row.size() != num_columns) {
+        err::semantic<Error::WRONG_COLUMN_COUNT>(num_columns, row.size());
+        fail = true;
+        return;
+    }
+
+    for (size_t i = 0; i < num_columns; i++) {
+        values.push_back(row[i]);
+    }
+    ++num_rows;
+}
+
+falk::ev::matrix& falk::ev::matrix::operator+=(const matrix& rhs) {
+    if (row_count() != rhs.row_count()) {
+        err::semantic<Error::ROW_SIZE_MISMATCH>(row_count(),
+                                                rhs.row_count());
+        fail = true;
+        return *this;
+    }
+
+    if (column_count() != rhs.column_count()) {
+        err::semantic<Error::COLUMN_SIZE_MISMATCH>(column_count(),
+                                                   rhs.column_count());
+        fail = true;
+        return *this;
+    }
+
+    for (size_t i = 0; i < row_count(); i++) {
+        for (size_t j = 0; j < column_count(); j++) {
+            at(i, j) += rhs.at(i, j);
+        }
+    }
+    return *this;
+}
+
+falk::ev::matrix& falk::ev::matrix::operator-=(const matrix& rhs) {
+    if (row_count() != rhs.row_count()) {
+        err::semantic<Error::ROW_SIZE_MISMATCH>(row_count(),
+                                                rhs.row_count());
+        fail = true;
+        return *this;
+    }
+
+    if (column_count() != rhs.column_count()) {
+        err::semantic<Error::COLUMN_SIZE_MISMATCH>(column_count(),
+                                                   rhs.column_count());
+        fail = true;
+        return *this;
+    }
+
+    for (size_t i = 0; i < row_count(); i++) {
+        for (size_t j = 0; j < column_count(); j++) {
+            at(i, j) -= rhs.at(i, j);
+        }
+    }
+    return *this;
+}
+
+falk::ev::matrix& falk::ev::matrix::operator*=(const matrix& rhs) {
+    if (num_columns != rhs.row_count()) {
+        err::semantic<Error::MATRIX_MULT_MISMATCH>(num_columns, rhs.row_count());
+        fail = true;
+        return *this;
+    }
+
+    if (num_columns != rhs.column_count()) {
+        err::semantic<Error::NON_SQUARE_MATRIX>(num_columns, rhs.column_count());
+        fail = true;
+        return *this;
+    }
+    return *this = *this * rhs;
+}
+
+falk::ev::matrix& falk::ev::matrix::operator/=(const matrix& rhs) {
+    err::semantic<Error::ILLEGAL_OPERATION>("matrix division");
+    fail = true;
+    return *this;
+}
+
+falk::ev::matrix& falk::ev::matrix::operator%=(const matrix& rhs) {
+    err::semantic<Error::ILLEGAL_OPERATION>("matrix modulus");
+    fail = true;
+    return *this;
+}

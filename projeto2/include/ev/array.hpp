@@ -37,20 +37,21 @@ namespace falk {
 
             matrix to_matrix() const;
 
-            array& pow(const array& rhs) {
-                if (size() != rhs.size()) {
-                    err::semantic<Error::ARRAY_SIZE_MISMATCH>(size(), rhs.size());
-                    return *this;
-                }
+            array& pow(const scalar& rhs);
+            array& pow(const array& rhs);
+            array& pow(const matrix& rhs);
 
-                for (size_t i = 0; i < size(); i++) {
-                    values[i].pow(rhs[i]);
-                }
-
-                return *this;
+            static array pow(const array& lhs, const scalar& rhs) {
+                auto copy = lhs;
+                return copy.pow(rhs);
             }
 
             static array pow(const array& lhs, const array& rhs) {
+                auto copy = lhs;
+                return copy.pow(rhs);
+            }
+
+            static array pow(const array& lhs, const matrix& rhs) {
                 auto copy = lhs;
                 return copy.pow(rhs);
             }
