@@ -181,12 +181,12 @@ namespace falk {
         }
 
         inline matrix& matrix::pow(const matrix& rhs) {
-            // TODO: error (operation not allowed)
+            err::semantic<Error::ILLEGAL_OPERATION>("matrix exponentiation");
             return *this;
         }
 
         inline matrix matrix::pow(const matrix& lhs, const matrix& rhs) {
-            // TODO: error (operation not allowed)
+            err::semantic<Error::ILLEGAL_OPERATION>("matrix exponentiation");
             return invalid_matrix;
         }
 
@@ -229,13 +229,13 @@ namespace falk {
         }
 
         inline matrix& matrix::operator/=(const matrix& rhs) {
-            // TODO: error (operation not allowed)
+            err::semantic<Error::ILLEGAL_OPERATION>("matrix division");
             fail = true;
             return *this;
         }
 
         inline matrix& matrix::operator%=(const matrix& rhs) {
-            // TODO: error (operation not allowed)
+            err::semantic<Error::ILLEGAL_OPERATION>("matrix modulus");
             fail = true;
             return *this;
         }

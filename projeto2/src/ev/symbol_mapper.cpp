@@ -12,7 +12,7 @@ void falk::ev::symbol_mapper::declare_function(const std::string& id,
         auto& scope = scopes.top();
         scope.functions[id] = std::move(fn);
     } else {
-        // TODO: error: redeclaration of symbol
+        err::semantic<Error::REDECLARATION_OF_SYMBOL>(id);
     }
 }
 
@@ -23,6 +23,6 @@ void falk::ev::symbol_mapper::declare_variable(const std::string& id,
         auto& scope = scopes.top();
         scope.variables[id] = std::move(var);
     } else {
-        // TODO: error: redeclaration of symbol
+        err::semantic<Error::REDECLARATION_OF_SYMBOL>(id);
     }
 }

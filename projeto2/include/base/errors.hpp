@@ -80,6 +80,11 @@ namespace err {
     inline void semantic<Error::ILLEGAL_OPERATION>() {
         echo(error_prefix("semantic") + "illegal operation");
     }
+
+    template<>
+    inline void semantic<Error::NON_BOOLEAN_CONDITION>() {
+        echo(error_prefix("semantic") + "non-boolean condition");
+    }
 }
 
 #endif /* ERRORS_HPP */

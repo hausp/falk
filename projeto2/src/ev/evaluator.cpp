@@ -1,4 +1,4 @@
-
+#include "base/errors.hpp"
 #include "ev/evaluator.hpp"
 
 void falk::ev::evaluator::analyse(const scalar& value) {
@@ -27,6 +27,7 @@ void falk::ev::evaluator::analyse(const block&, std::list<node_ptr>& nodes) {
 void falk::ev::evaluator::analyse(const conditional&, node_array<3>& nodes) {
     nodes[0]->traverse(*this);
     auto type = aut::pop(types_stacker);
+    // TODO: how to know if this is a boolean?
     if (type == structural::type::SCALAR) {
         auto result = aut::pop(var_stacker);
         if (result) {
@@ -35,7 +36,8 @@ void falk::ev::evaluator::analyse(const conditional&, node_array<3>& nodes) {
             nodes[2]->traverse(*this);
         }
     } else {
-        // TODO: error (expression must be boolean)
+        // TODO: does this need arguments?
+        err::semantic<Error::NON_BOOLEAN_CONDITION>();
     }
 }
 

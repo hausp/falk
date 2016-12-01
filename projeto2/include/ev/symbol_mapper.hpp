@@ -5,6 +5,7 @@
 #include <stack>
 #include <unordered_map>
 
+#include "base/errors.hpp"
 #include "base/types.hpp"
 #include "function.hpp"
 #include "variable.hpp"
@@ -40,12 +41,12 @@ namespace falk {
                 if (symbol_table.at(id) == symbol::type::FUNCTION) {
                     return scopes.top().functions.at(id);
                 } else {
-                    // TODO: error
-                    // return what?
+                    err::semantic<Error::NOT_A_FUNCTION>(id);
+                    // TODO: return what?
                 }
             } else {
-                // TODO: error
-                // return what?
+                err::semantic<Error::UNDEFINED_FUNCTION>(id);
+                // TODO: return what?
             }
         }
 
@@ -54,12 +55,12 @@ namespace falk {
                 if (symbol_table.at(id) == symbol::type::VARIABLE) {
                     return scopes.top().variables.at(id);
                 } else {
-                    // TODO: error
-                    // return what?
+                    err::semantic<Error::NOT_A_VARIABLE>(id);
+                    // TODO: return what?
                 }
             } else {
-                // TODO: error
-                // return what?
+                err::semantic<Error::UNDEFINED_VARIABLE>(id);
+                // TODO: return what?
             }
         }
 
