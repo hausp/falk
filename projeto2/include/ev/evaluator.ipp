@@ -5,18 +5,18 @@ void falk::ev::evaluator::analyse(operation<Type, OP, 2, false> op,
         node->traverse(*this);
     }
 
-    auto t1 = aut::pop(types_stacker);
-    auto t2 = aut::pop(types_stacker);
+    auto t1 = aut::pop(types_stack);
+    auto t2 = aut::pop(types_stack);
 
     switch (t1) {
         case structural::type::SCALAR:
-            handle_operation(op, t2, var_stacker);
+            handle_operation(op, t2, scalar_stack);
             break;
         case structural::type::ARRAY:
-            handle_operation(op, t2, array_stacker);
+            handle_operation(op, t2, array_stack);
             break;
         case structural::type::MATRIX:
-            handle_operation(op, t2, matrix_stacker);
+            handle_operation(op, t2, matrix_stack);
             break;
     }
 }
@@ -27,19 +27,19 @@ void falk::ev::evaluator::handle_operation(const Operation& op,
                                            Stack& stack) {
     switch (rhs_type) {
         case structural::type::SCALAR: {
-            auto rhs = aut::pop(var_stacker);
+            auto rhs = aut::pop(scalar_stack);
             auto lhs = aut::pop(stack);
             push(op(lhs, rhs));
             break;
         }
         case structural::type::ARRAY: {
-            auto rhs = aut::pop(array_stacker);
+            auto rhs = aut::pop(array_stack);
             auto lhs = aut::pop(stack);
             push(op(lhs, rhs));
             break;
         }
         case structural::type::MATRIX: {
-            auto rhs = aut::pop(matrix_stacker);
+            auto rhs = aut::pop(matrix_stack);
             auto lhs = aut::pop(stack);
             push(op(lhs, rhs));
             break;
@@ -52,28 +52,28 @@ void falk::ev::evaluator::analyse(operation<Type, OP, 1, false> op,
                                   node_array<1>& nodes) {
     nodes[0]->traverse(*this);
 
-    auto t1 = aut::pop(types_stacker);
+    auto t1 = aut::pop(types_stack);
 
     switch (t1) {
         case structural::type::SCALAR: {
-            auto lhs = aut::pop(var_stacker);
+            auto lhs = aut::pop(scalar_stack);
             auto result = op(lhs);
-            var_stacker.push(result);
-            types_stacker.push(structural::type::SCALAR);
+            scalar_stack.push(result);
+            types_stack.push(structural::type::SCALAR);
             break;
         }
         case structural::type::ARRAY: {
-            auto lhs = aut::pop(array_stacker);
+            auto lhs = aut::pop(array_stack);
             auto result = op(lhs);
-            array_stacker.push(result);
-            types_stacker.push(structural::type::ARRAY);
+            array_stack.push(result);
+            types_stack.push(structural::type::ARRAY);
             break;
         }
         case structural::type::MATRIX: {
-            auto lhs = aut::pop(matrix_stacker);
+            auto lhs = aut::pop(matrix_stack);
             auto result = op(lhs);
-            matrix_stacker.push(result);
-            types_stacker.push(structural::type::MATRIX);
+            matrix_stack.push(result);
+            types_stack.push(structural::type::MATRIX);
             break;
         }
     }
@@ -86,37 +86,38 @@ void falk::ev::evaluator::analyse(operation<Type, OP, 2, true> op,
         node->traverse(*this);
     }
 
-    auto t1 = aut::pop(types_stacker);
-    auto t2 = aut::pop(types_stacker);
+    auto t1 = aut::pop(types_stack);
+    auto t2 = aut::pop(types_stack);
 
     if (t1 == t2) {
         switch (t1) {
             case structural::type::SCALAR: {
-                auto rhs = aut::pop(var_stacker);
-                auto lhs = aut::pop(var_stacker);
-                auto result = op(lhs, rhs);
-                (void)result;
-                // TODO
+                auto rhs = aut::pop(scalar_stack);
+                auto id = aut::pop(id_stack);
+                auto& var = mapper.retrieve_variable(id.name);
+                op(var, rhs);
                 break;
             }
             case structural::type::ARRAY: {
-                auto rhs = aut::pop(array_stacker);
-                auto lhs = aut::pop(array_stacker);
-                auto result = op(lhs, rhs);
-                (void)result;
-                // TODO
+                auto rhs = aut::pop(array_stack);
+                auto id = aut::pop(id_stack);
+                auto& var = mapper.retrieve_variable(id.name);
+                op(var, rhs);
                 break;
             }
             case structural::type::MATRIX: {
-                auto rhs = aut::pop(matrix_stacker);
-                auto lhs = aut::pop(matrix_stacker);
-                auto result = op(lhs, rhs);
-                (void)result;
-                // TODO
+                auto rhs = aut::pop(matrix_stack);
+                auto id = aut::pop(id_stack);
+                auto& var = mapper.retrieve_variable(id.name);
+                op(var, rhs);
                 break;
             }
         }
     }
+}
+
+inline void falk::ev::evaluator::analyse(const identifier& id) {
+    id_stack.push(id);
 }
 
 inline void falk::ev::evaluator::initialize() {

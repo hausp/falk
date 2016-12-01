@@ -69,24 +69,25 @@ namespace falk {
             void analyse(const scalar&);
             void analyse(const array&);
             void analyse(const matrix&);
+            void analyse(const identifier&);
             void analyse(const block&, std::list<node_ptr>&);
             void analyse(const conditional&, node_array<3>&);
 
             void process(value&);
 
             void push(const scalar& result) {
-                var_stacker.push(result);
-                types_stacker.push(structural::type::SCALAR);
+                scalar_stack.push(result);
+                types_stack.push(structural::type::SCALAR);
             }
 
             void push(const array& result) {
-                array_stacker.push(result);
-                types_stacker.push(structural::type::ARRAY);
+                array_stack.push(result);
+                types_stack.push(structural::type::ARRAY);
             }
 
             void push(const matrix& result) {
-                matrix_stacker.push(result);
-                types_stacker.push(structural::type::MATRIX);
+                matrix_stack.push(result);
+                types_stack.push(structural::type::MATRIX);
             }
 
             // TODO: can the methods below be generalized?
@@ -110,10 +111,11 @@ namespace falk {
             // matrix& extract(matrix&, value&);
          private:
             symbol_mapper mapper;
-            std::stack<scalar> var_stacker;
-            std::stack<array> array_stacker;
-            std::stack<matrix> matrix_stacker;
-            std::stack<structural::type> types_stacker;
+            std::stack<scalar> scalar_stack;
+            std::stack<array> array_stack;
+            std::stack<matrix> matrix_stack;
+            std::stack<identifier> id_stack;
+            std::stack<structural::type> types_stack;
         };
     }
 }

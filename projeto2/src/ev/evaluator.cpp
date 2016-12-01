@@ -2,18 +2,18 @@
 #include "ev/evaluator.hpp"
 
 void falk::ev::evaluator::analyse(const scalar& value) {
-    var_stacker.push(value);
-    types_stacker.push(structural::type::SCALAR);
+    scalar_stack.push(value);
+    types_stack.push(structural::type::SCALAR);
 }
 
 void falk::ev::evaluator::analyse(const array& container) {
-    array_stacker.push(container);
-    types_stacker.push(structural::type::ARRAY);
+    array_stack.push(container);
+    types_stack.push(structural::type::ARRAY);
 }
 
 void falk::ev::evaluator::analyse(const matrix& container) {
-    matrix_stacker.push(container);
-    types_stacker.push(structural::type::MATRIX);
+    matrix_stack.push(container);
+    types_stack.push(structural::type::MATRIX);
 }
 
 void falk::ev::evaluator::analyse(const block&, std::list<node_ptr>& nodes) {
@@ -26,9 +26,9 @@ void falk::ev::evaluator::analyse(const block&, std::list<node_ptr>& nodes) {
 
 void falk::ev::evaluator::analyse(const conditional&, node_array<3>& nodes) {
     nodes[0]->traverse(*this);
-    auto type = aut::pop(types_stacker);
+    auto type = aut::pop(types_stack);
     if (type == structural::type::SCALAR) {
-        auto result = aut::pop(var_stacker);
+        auto result = aut::pop(scalar_stack);
         if (result.boolean()) {
             nodes[1]->traverse(*this);
         } else {
@@ -45,30 +45,30 @@ void falk::ev::evaluator::process(value& v) {
         v.traverse(*this);
     }
 
-    while (!types_stacker.empty()) {
+    while (!types_stack.empty()) {
         print_result();
     }
 }
 
 void falk::ev::evaluator::print_result() {
-    auto type = aut::pop(types_stacker);
+    auto type = aut::pop(types_stack);
     switch (type) {
         case structural::type::SCALAR: {
-            auto result = aut::pop(var_stacker);
+            auto result = aut::pop(scalar_stack);
             if (!result.error()) {
                 std::cout << "res = " << result << std::endl;
             }
             break;
         }
         case structural::type::ARRAY: {
-            auto result = aut::pop(array_stacker);
+            auto result = aut::pop(array_stack);
             if (!result.error()) {
                 std::cout << "res = " << result << std::endl;
             }
             break;
         }
         case structural::type::MATRIX: {
-            auto result = aut::pop(matrix_stacker);
+            auto result = aut::pop(matrix_stack);
             if (!result.error()) {
                 std::cout << "res = " << result << std::endl;
             }
@@ -79,8 +79,8 @@ void falk::ev::evaluator::print_result() {
 
 falk::ev::array& falk::ev::evaluator::extract(array& arr, value& v) {
     v.traverse(*this);
-    if (aut::pop(types_stacker) == structural::type::SCALAR) {
-        auto scalar = aut::pop(var_stacker);
+    if (aut::pop(types_stack) == structural::type::SCALAR) {
+        auto scalar = aut::pop(scalar_stack);
         arr.push_back(scalar);
     } else {
         // TODO: error
