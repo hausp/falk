@@ -21,7 +21,7 @@
     #include "scanner.hpp"
     #include "parser.hpp"
     #include "location.hh"
-    
+
     static falk::parser::symbol_type yylex(falk::scanner& scanner) {
         return scanner.next_token();
     }

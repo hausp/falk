@@ -8,15 +8,15 @@ void falk::ev::evaluator::analyse(operation<Type, OP, 2, false> op,
     auto t1 = aut::pop(types_stack);
     auto t2 = aut::pop(types_stack);
 
-    switch (t1) {
+    switch (t2) {
         case structural::type::SCALAR:
-            handle_operation(op, t2, scalar_stack);
+            handle_operation(op, t1, scalar_stack);
             break;
         case structural::type::ARRAY:
-            handle_operation(op, t2, array_stack);
+            handle_operation(op, t1, array_stack);
             break;
         case structural::type::MATRIX:
-            handle_operation(op, t2, matrix_stack);
+            handle_operation(op, t1, matrix_stack);
             break;
     }
 }
