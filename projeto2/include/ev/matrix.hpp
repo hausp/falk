@@ -3,8 +3,9 @@
 #define FALK_EV_MATRIX_HPP
 
 #include <vector>
-#include "scalar.hpp"
 #include "array.hpp"
+#include "base/errors.hpp"
+#include "scalar.hpp"
 
 namespace falk {
     namespace ev {
@@ -52,12 +53,12 @@ namespace falk {
         matrix operator*(const matrix& lhs, const matrix& rhs);
 
         inline matrix operator/(const matrix& lhs, const matrix& rhs) {
-            // TODO: error (operation not allowed)
+            err::semantic<Error::ILLEGAL_OPERATION>("matrix division");
             return invalid_matrix;
         }
 
         inline matrix operator%(const matrix& lhs, const matrix& rhs) {
-            // TODO: error (operation not allowed)
+            err::semantic<Error::ILLEGAL_OPERATION>("matrix modulus");
             return invalid_matrix;
         }
 
@@ -119,8 +120,14 @@ namespace falk {
           values(rows * columns), num_rows{rows}, num_columns{columns} { }
 
         inline scalar& matrix::at(size_t row, size_t column) {
-            if (row >= num_rows || column >= num_columns) {
-                // TODO: error (index out of bounds)
+            if (row >= num_rows) {
+                err::semantic<Error::INDEX_OUT_OF_BOUNDS>(num_rows, row);
+                fail = true;
+                return invalid;
+            }
+
+            if (column >= num_columns) {
+                err::semantic<Error::INDEX_OUT_OF_BOUNDS>(num_columns, column);
                 fail = true;
                 return invalid;
             }
@@ -128,10 +135,13 @@ namespace falk {
         }
 
         inline const scalar& matrix::at(size_t row, size_t column) const {
-            // std::cout << "num_rows = " << num_rows << std::endl;
-            // std::cout << "num_columns = " << num_columns << std::endl;
-            if (row >= num_rows || column >= num_columns) {
-                // TODO: error (index out of bounds)
+            if (row >= num_rows) {
+                err::semantic<Error::INDEX_OUT_OF_BOUNDS>(num_rows, row);
+                return invalid;
+            }
+
+            if (column >= num_columns) {
+                err::semantic<Error::INDEX_OUT_OF_BOUNDS>(num_columns, column);
                 return invalid;
             }
             return values.at(row * num_columns + column);
@@ -143,7 +153,7 @@ namespace falk {
             }
 
             if (row.size() != num_columns) {
-                // TODO: error (wrong number of columns)
+                err::semantic<Error::WRONG_COLUMN_COUNT>(num_columns, row.size());
                 fail = true;
                 return;
             }
