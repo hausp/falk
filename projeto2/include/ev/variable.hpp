@@ -51,7 +51,7 @@ namespace falk {
             bool fail;
 
             template<typename Type, Type OP, typename T>
-            variable& op(op::callback<Type, OP, 2, true>, const T&);
+            variable& op(op::callback<Type, OP, 2>, const T&);
         };
     }
 }

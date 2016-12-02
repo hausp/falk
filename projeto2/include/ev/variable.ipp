@@ -9,7 +9,7 @@ template<typename T>
 falk::ev::variable::variable(const T& value, structural::type t): data{value}, type{t} { }
 
 template<typename Type, Type OP, typename T>
-falk::ev::variable& falk::ev::variable::op(op::callback<Type, OP, 2, true> op,
+falk::ev::variable& falk::ev::variable::op(op::callback<Type, OP, 2> op,
                                            const T& v) {
     switch (type) {
         case falk::structural::type::SCALAR: {
@@ -36,7 +36,7 @@ falk::ev::variable& falk::ev::variable::op(op::callback<Type, OP, 2, true> op,
 template<typename T>
 falk::ev::variable& falk::ev::variable::pow(const T& rhs) {
     return op(
-        op::callback<op::arithmetic, op::arithmetic::POW, 2, true>(),
+        op::callback<op::assignment, op::assignment::POW, 2>(),
         rhs
     );
 }
@@ -44,7 +44,7 @@ falk::ev::variable& falk::ev::variable::pow(const T& rhs) {
 template<typename T>
 falk::ev::variable& falk::ev::variable::operator+=(const T& rhs) {
     return op(
-        op::callback<op::arithmetic, op::arithmetic::ADD, 2, true>(),
+        op::callback<op::assignment, op::assignment::ADD, 2>(),
         rhs
     );
 }
@@ -52,7 +52,7 @@ falk::ev::variable& falk::ev::variable::operator+=(const T& rhs) {
 template<typename T>
 falk::ev::variable& falk::ev::variable::operator-=(const T& rhs) {
     return op(
-        op::callback<op::arithmetic, op::arithmetic::SUB, 2, true>(),
+        op::callback<op::assignment, op::assignment::SUB, 2>(),
         rhs
     );
 }
@@ -60,7 +60,7 @@ falk::ev::variable& falk::ev::variable::operator-=(const T& rhs) {
 template<typename T>
 falk::ev::variable& falk::ev::variable::operator*=(const T& rhs) {
     return op(
-        op::callback<op::arithmetic, op::arithmetic::MULT, 2, true>(),
+        op::callback<op::assignment, op::assignment::MULT, 2>(),
         rhs
     );
 }
@@ -68,7 +68,7 @@ falk::ev::variable& falk::ev::variable::operator*=(const T& rhs) {
 template<typename T>
 falk::ev::variable& falk::ev::variable::operator/=(const T& rhs) {
     return op(
-        op::callback<op::arithmetic, op::arithmetic::DIV, 2, true>(),
+        op::callback<op::assignment, op::assignment::DIV, 2>(),
         rhs
     );
 }
@@ -76,7 +76,7 @@ falk::ev::variable& falk::ev::variable::operator/=(const T& rhs) {
 template<typename T>
 falk::ev::variable& falk::ev::variable::operator%=(const T& rhs) {
     return op(
-        op::callback<op::arithmetic, op::arithmetic::MOD, 2, true>(),
+        op::callback<op::assignment, op::assignment::MOD, 2>(),
         rhs
     );
 }

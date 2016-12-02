@@ -60,14 +60,14 @@ namespace falk {
 
             // Binary calculations
             template<typename Type, Type OP>
-            void analyse(op::callback<Type, OP, 2, false>, node_array<2>&);
+            void analyse(op::callback<Type, OP, 2>, node_array<2>&);
             // Unary calculations
             template<typename Type, Type OP>
-            void analyse(op::callback<Type, OP, 1, false>, node_array<1>&);
+            void analyse(op::callback<Type, OP, 1>, node_array<1>&);
 
             // Binary operation-assignment calculations
-            template<typename Type, Type OP>
-            void analyse(op::callback<Type, OP, 2, true>, node_array<2>&);
+            template<op::assignment OP>
+            void analyse(op::callback<op::assignment, OP, 2>, node_array<2>&);
             
             array& extract(array&, value&);
 

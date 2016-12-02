@@ -86,7 +86,7 @@ namespace sma {
         op_assign(
             rhs,
             typename O::template
-            callback<typename O::arithmetic, O::arithmetic::ADD, 2, true>()
+            callback<typename O::assignment, O::assignment::ADD, 2>()
         );
         return *this;
     }
@@ -96,7 +96,7 @@ namespace sma {
         op_assign(
             rhs,
             typename O::template
-            callback<typename O::arithmetic, O::arithmetic::SUB, 2, true>()
+            callback<typename O::assignment, O::assignment::SUB, 2>()
         );
         return *this;
     }
@@ -106,7 +106,7 @@ namespace sma {
         op_assign(
             rhs,
             typename O::template
-            callback<typename O::arithmetic, O::arithmetic::MULT, 2, true>()
+            callback<typename O::assignment, O::assignment::MULT, 2>()
         );
         return *this;
     }
@@ -116,7 +116,7 @@ namespace sma {
         op_assign(
             rhs,
             typename O::template
-            callback<typename O::arithmetic, O::arithmetic::DIV, 2, true>()
+            callback<typename O::assignment, O::assignment::DIV, 2>()
         );
         return *this;
     }
@@ -126,7 +126,7 @@ namespace sma {
         op_assign(
             rhs,
             typename O::template
-            callback<typename O::arithmetic, O::arithmetic::MOD, 2, true>()
+            callback<typename O::assignment, O::assignment::MOD, 2>()
         );
         return *this;
     }
@@ -136,7 +136,7 @@ namespace sma {
         op_assign(
             rhs,
             typename O::template
-            callback<typename O::logic, O::logic::AND, 2, true>()
+            callback<typename O::assignment, O::assignment::AND, 2>()
         );
         return *this;
     }
@@ -146,7 +146,7 @@ namespace sma {
         op_assign(
             rhs,
             typename O::template
-            callback<typename O::logic, O::logic::OR, 2, true>()
+            callback<typename O::assignment, O::assignment::OR, 2>()
         );
         return *this;
     }
@@ -155,7 +155,7 @@ namespace sma {
     value<A,O> value<A,O>::operator!() {
         return op(
             typename O::template
-            callback<typename O::logic, O::logic::OR, 2, true>()
+            callback<typename O::assignment, O::assignment::OR, 2>()
         );
     }
 
@@ -164,7 +164,7 @@ namespace sma {
         op_assign(
             rhs,
             typename O::template
-            callback<typename O::arithmetic, O::arithmetic::POW, 2, true>()
+            callback<typename O::assignment, O::assignment::POW, 2>()
         );
         return *this;
     }
