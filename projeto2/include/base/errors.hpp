@@ -26,6 +26,7 @@ enum class Error {
     NOT_A_FUNCTION,
     NON_BOOLEAN_CONDITION,
     REDECLARATION_OF_SYMBOL,
+    NOT_A_STRUCTURE,
 };
 
 namespace std {
@@ -166,6 +167,11 @@ namespace err {
     template<>
     inline void semantic<Error::NON_BOOLEAN_CONDITION>() {
         echo(error_prefix("semantic") + "non-boolean condition");
+    }
+
+    template<>
+    inline void semantic<Error::NOT_A_STRUCTURE>() {
+        echo(error_prefix("semantic") + "expected array or matrix, got scalar instead");
     }
 }
 

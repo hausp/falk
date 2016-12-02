@@ -89,7 +89,7 @@
 %type<falk::value> flat_expr expr single_calc;
 %type<falk::value> index rvalue;
 %type<falk::value> assignment;
-%type<falk::identifier> identifier
+%type<falk::identifier> identifier;
 %type<falk::declaration> declaration;
 %type<falk::array> array_list scalar_list
 %type<falk::matrix> matrix_list matrix_list_body;
@@ -245,16 +245,22 @@ identifier:
         // $$ = analyser.retrieve_identifier($1);
     }
     | ID OBRACKET index CBRACKET {
-        // auto index = analyser.make_array_index($3);
-        // $$ = analyser.retrieve_identifier($1, index);
+        // $$ = falk::index_access();
+        // $$ += $1;
+        // $$ += $3;
+        // $$ += std::make_shared<falk::empty>();
     }
     | ID OBRACKET index COMMA index CBRACKET {
-        // auto index = analyser.make_matrix_index($3, $5);
-        // $$ = analyser.retrieve_identifier($1, index);
+        // $$ = falk::index_access();
+        // $$ += $1;
+        // $$ += $3;
+        // $$ += $5;
     }
     | ID OBRACKET COMMA index CBRACKET {
-        // auto index = analyser.make_matrix_index($4);
-        // $$ = analyser.retrieve_identifier($1, index);
+        // $$ = falk::index_access();
+        // $$ += $1;
+        // $$ += std::make_shared<falk::empty>();
+        // $$ += $4;
     };
     
 

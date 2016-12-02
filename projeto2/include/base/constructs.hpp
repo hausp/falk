@@ -41,6 +41,12 @@ namespace falk {
         identifier id;
     };
 
+    struct index_access {
+        static constexpr size_t arity() {
+            return 3;
+        }
+    };
+
     using declare_variable = falk::declare<symbol::type::VARIABLE>;
 }
 
