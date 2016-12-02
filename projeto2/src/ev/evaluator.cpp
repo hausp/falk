@@ -35,7 +35,17 @@ void falk::ev::evaluator::analyse(const conditional&, node_array<3>& nodes) {
             nodes[2]->traverse(*this);
         }
     } else {
-        // TODO: does this need arguments?
+        err::semantic<Error::NON_BOOLEAN_CONDITION>();
+    }
+}
+
+void falk::ev::evaluator::analyse(const loop&, node_array<2>& nodes) {
+    nodes[0]->traverse(*this);
+    auto type = aut::pop(types_stack);
+    if (type == structural::type::SCALAR) {
+        // TODO
+        std::cout << "while loop" << std::endl;
+    } else {
         err::semantic<Error::NON_BOOLEAN_CONDITION>();
     }
 }

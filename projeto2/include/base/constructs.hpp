@@ -17,6 +17,12 @@ namespace falk {
         }
     };
 
+    struct loop {
+        static constexpr size_t arity() {
+            return 2;
+        }
+    };
+
     struct identifier {
         std::string name;
         symbol::type type;
