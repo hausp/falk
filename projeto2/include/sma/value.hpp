@@ -33,51 +33,99 @@ namespace sma {
         }
 
         val& operator+=(val& rhs) {
-            op_assign(rhs, typename Operation::ADD_ASSIGN());
+            op_assign(
+                rhs,
+                typename Operation::template
+                callback<typename Operation::arithmetic,
+                         Operation::arithmetic::ADD, 2, true>()
+            );
             return *this;
         }
 
         val& operator-=(val& rhs) {
-            op_assign(rhs, typename Operation::SUB_ASSIGN());
+            op_assign(
+                rhs,
+                typename Operation::template
+                callback<typename Operation::arithmetic,
+                         Operation::arithmetic::SUB, 2, true>()
+            );
             return *this;
         }
 
         val& operator*=(val& rhs) {
-            op_assign(rhs, typename Operation::MULT_ASSIGN());
+            op_assign(
+                rhs,
+                typename Operation::template
+                callback<typename Operation::arithmetic,
+                         Operation::arithmetic::MULT, 2, true>()
+            );
             return *this;
         }
 
         val& operator/=(val& rhs) {
-            op_assign(rhs, typename Operation::DIV_ASSIGN());
+            op_assign(
+                rhs,
+                typename Operation::template
+                callback<typename Operation::arithmetic,
+                         Operation::arithmetic::DIV, 2, true>()
+            );
             return *this;
         }
 
         val& operator%=(val& rhs) {
-            op_assign(rhs, typename Operation::MOD_ASSIGN());
+            op_assign(
+                rhs,
+                typename Operation::template
+                callback<typename Operation::arithmetic,
+                         Operation::arithmetic::MOD, 2, true>()
+            );
             return *this;
         }
 
         val& operator&=(val& rhs) {
-            op_assign(rhs, typename Operation::AND_ASSIGN());
+            op_assign(
+                rhs,
+                typename Operation::template
+                callback<typename Operation::logic,
+                         Operation::logic::AND, 2, true>()
+            );
             return *this;
         }
 
         val& operator|=(val& rhs) {
-            op_assign(rhs, typename Operation::OR_ASSIGN());
+            op_assign(
+                rhs,
+                typename Operation::template
+                callback<typename Operation::logic,
+                         Operation::logic::OR, 2, true>()
+            );
             return *this;
         }
 
         val operator!() {
-            return op(typename Operation::NOT());
+            return op(typename Operation::template
+                callback<typename Operation::logic,
+                         Operation::logic::OR, 2, true>()
+                );
         }
 
         val& pow(val& rhs) {
-            op_assign(rhs, typename Operation::POW_ASSIGN());
+            op_assign(
+                rhs,
+                typename Operation::template
+                callback<typename Operation::arithmetic,
+                         Operation::arithmetic::POW, 2, true>()
+            );
             return *this;
         }
 
         static val pow(val& lhs, val& rhs) {
-            return lhs.op(rhs, typename Operation::POW());
+            return lhs.op(
+                rhs,
+                typename Operation::template
+                callback<typename Operation::arithmetic,
+                         Operation::arithmetic::POW, 2>()
+            );
         }
 
         template<typename T>
@@ -140,72 +188,126 @@ namespace sma {
 
     template<typename A, typename O>
     value<A, O> operator+(value<A, O>& lhs, value<A, O>& rhs) {
-        return lhs.op(rhs, typename O::ADD());
+        return lhs.op(
+            rhs,
+            typename O::template
+            callback<typename O::arithmetic, O::arithmetic::ADD, 2>()
+        );
     }
 
     template<typename A, typename O>
     value<A, O> operator-(value<A, O>& lhs, value<A, O>& rhs) {
-        return lhs.op(rhs, typename O::SUB());   
+        return lhs.op(
+            rhs, typename O::template
+            callback<typename O::arithmetic, O::arithmetic::SUB, 2>()
+        );
     }
 
     template<typename A, typename O>
     value<A, O> operator-(value<A, O>& rhs) {
-        return rhs.op(typename O::SUB_UNARY());   
+        return rhs.op(
+            typename O::template
+            callback<typename O::arithmetic, O::arithmetic::SUB, 1>()
+        );
     }
 
     template<typename A, typename O>
     value<A, O> operator*(value<A, O>& lhs, value<A, O>& rhs) {
-        return lhs.op(rhs, typename O::MULT());
+        return lhs.op(
+            rhs,
+            typename O::template
+            callback<typename O::arithmetic, O::arithmetic::MULT, 2>()
+        );
     }
 
     template<typename A, typename O>
     value<A, O> operator/(value<A, O>& lhs, value<A, O>& rhs) {
-        return lhs.op(rhs, typename O::DIV());
+        return lhs.op(
+            rhs,
+            typename O::template
+            callback<typename O::arithmetic, O::arithmetic::DIV, 2>()
+        );
     }
 
     template<typename A, typename O>
     value<A, O> operator%(value<A, O>& lhs, value<A, O>& rhs) {
-        return lhs.op(rhs, typename O::MOD());
+        return lhs.op(
+            rhs,
+            typename O::template
+            callback<typename O::arithmetic, O::arithmetic::MOD, 2>()
+        );
     }
 
     template<typename A, typename O>
     value<A, O> operator<(value<A, O>& lhs, value<A, O>& rhs) {
-        return lhs.op(rhs, typename O::LT());
+        return lhs.op(
+            rhs,
+            typename O::template
+            callback<typename O::comparison, O::comparison::LT, 2>()
+        );
     }
 
     template<typename A, typename O>
     value<A, O> operator>(value<A, O>& lhs, value<A, O>& rhs) {
-        return lhs.op(rhs, typename O::GT());
+        return lhs.op(
+            rhs,
+            typename O::template
+            callback<typename O::comparison, O::comparison::GT, 2>()
+        );
     }
 
     template<typename A, typename O>
     value<A, O> operator<=(value<A, O>& lhs, value<A, O>& rhs) {
-        return lhs.op(rhs, typename O::LE());
+        return lhs.op(
+            rhs,
+            typename O::template
+            callback<typename O::comparison, O::comparison::LE, 2>()
+        );
     }
 
     template<typename A, typename O>
     value<A, O> operator>=(value<A, O>& lhs, value<A, O>& rhs) {
-        return lhs.op(rhs, typename O::GE());
+        return lhs.op(
+            rhs,
+            typename O::template
+            callback<typename O::comparison, O::comparison::GE, 2>()
+        );
     }
 
     template<typename A, typename O>
     value<A, O> operator==(value<A, O>& lhs, value<A, O>& rhs) {
-        return lhs.op(rhs, typename O::EQ());
+        return lhs.op(
+            rhs,
+            typename O::template
+            callback<typename O::comparison, O::comparison::EQ, 2>()
+        );
     }
 
     template<typename A, typename O>
     value<A, O> operator!=(value<A, O>& lhs, value<A, O>& rhs) {
-        return lhs.op(rhs, typename O::NE());
+        return lhs.op(
+            rhs,
+            typename O::template
+            callback<typename O::comparison, O::comparison::NE, 2>()
+        );
     }
 
     template<typename A, typename O>
     value<A, O> operator&&(value<A, O>& lhs, value<A, O>& rhs) {
-        return lhs.op(rhs, typename O::AND());
+        return lhs.op(
+            rhs,
+            typename O::template
+            callback<typename O::logic, O::logic::NE, 2>()
+        );
     }
 
     template<typename A, typename O>
     value<A, O> operator||(value<A, O>& lhs, value<A, O>& rhs) {
-        return lhs.op(rhs, typename O::OR());
+        return lhs.op(
+            rhs,
+            typename O::template
+            callback<typename O::logic, O::logic::NE, 2>()
+        );
     }
 }
 

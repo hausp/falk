@@ -42,11 +42,11 @@ namespace aut {
           type_code{typeid(T).hash_code()} { }
 
         template<typename T>
-        void is() {
+        bool is() {
             return (type_code == typeid(T).hash_code());
         }
 
-        void valid() {
+        bool valid() {
             return (type_code != typeid(void));
         }
 

@@ -1,5 +1,5 @@
 template<typename Type, Type OP>
-void falk::ev::evaluator::analyse(operation<Type, OP, 2, false> op,
+void falk::ev::evaluator::analyse(op::callback<Type, OP, 2, false> op,
                                   node_array<2>& nodes) {
     for (auto& node : nodes) {
         node->traverse(*this);
@@ -48,7 +48,7 @@ void falk::ev::evaluator::handle_operation(const Operation& op,
 }
 
 template<typename Type, Type OP>
-void falk::ev::evaluator::analyse(operation<Type, OP, 1, false> op,
+void falk::ev::evaluator::analyse(op::callback<Type, OP, 1, false> op,
                                   node_array<1>& nodes) {
     nodes[0]->traverse(*this);
 
@@ -67,7 +67,7 @@ void falk::ev::evaluator::analyse(operation<Type, OP, 1, false> op,
 }
 
 template<typename Type, Type OP>
-void falk::ev::evaluator::analyse(operation<Type, OP, 2, true> op,
+void falk::ev::evaluator::analyse(op::callback<Type, OP, 2, true> op,
                                   node_array<2>& nodes) {
     for (auto& node : nodes) {
         node->traverse(*this);

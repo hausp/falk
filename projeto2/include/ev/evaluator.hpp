@@ -91,14 +91,14 @@ namespace falk {
             // TODO: can the methods below be generalized?
             // Binary calculations
             template<typename Type, Type OP>
-            void analyse(operation<Type, OP, 2, false>, node_array<2>&);
+            void analyse(op::callback<Type, OP, 2, false>, node_array<2>&);
             // Unary calculations
             template<typename Type, Type OP>
-            void analyse(operation<Type, OP, 1, false>, node_array<1>&);
+            void analyse(op::callback<Type, OP, 1, false>, node_array<1>&);
 
             // Binary operation-assignment calculations
             template<typename Type, Type OP>
-            void analyse(operation<Type, OP, 2, true>, node_array<2>&);
+            void analyse(op::callback<Type, OP, 2, true>, node_array<2>&);
 
             template<typename Operation, typename Stack>
             void handle_operation(const Operation&, structural::type, Stack&);
