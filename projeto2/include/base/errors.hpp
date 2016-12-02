@@ -10,6 +10,7 @@ namespace lpi {
 }
 
 enum class Error {
+    ILLEGAL_ASSIGNMENT,
     INCOMPATIBLE_TYPES,
     // INCOMPATIBLE_OPERANDS,
     ARRAY_SIZE_MISMATCH,

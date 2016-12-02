@@ -56,70 +56,23 @@ namespace falk {
                 return copy.pow(rhs);
             }
 
-            array& operator+=(const array& rhs) {
-                if (size() != rhs.size()) {
-                    err::semantic<Error::ARRAY_SIZE_MISMATCH>(size(), rhs.size());
-                    fail = true;
-                    return *this;
-                }
+            array& operator+=(const scalar& rhs);
+            array& operator-=(const scalar& rhs);
+            array& operator*=(const scalar& rhs);
+            array& operator/=(const scalar& rhs);
+            array& operator%=(const scalar& rhs);
 
-                for (size_t i = 0; i < size(); i++) {
-                    values[i] += rhs[i];
-                }
-                return *this;
-            }
+            array& operator+=(const array& rhs);
+            array& operator-=(const array& rhs);
+            array& operator*=(const array& rhs);
+            array& operator/=(const array& rhs);
+            array& operator%=(const array& rhs);
 
-            array& operator-=(const array& rhs) {
-                if (size() != rhs.size()) {
-                    err::semantic<Error::ARRAY_SIZE_MISMATCH>(size(), rhs.size());
-                    fail = true;
-                    return *this;
-                }
-
-                for (size_t i = 0; i < size(); i++) {
-                    values[i] -= rhs[i];
-                }
-                return *this;
-            }
-
-            array& operator*=(const array& rhs) {
-                if (size() != rhs.size()) {
-                    err::semantic<Error::ARRAY_SIZE_MISMATCH>(size(), rhs.size());
-                    fail = true;
-                    return *this;
-                }
-
-                for (size_t i = 0; i < size(); i++) {
-                    values[i] *= rhs[i];
-                }
-                return *this;
-            }
-
-            array& operator/=(const array& rhs) {
-                if (size() != rhs.size()) {
-                    err::semantic<Error::ARRAY_SIZE_MISMATCH>(size(), rhs.size());
-                    fail = true;
-                    return *this;
-                }
-
-                for (size_t i = 0; i < size(); i++) {
-                    values[i] /= rhs[i];
-                }
-                return *this;
-            }
-
-            array& operator%=(const array& rhs) {
-                if (size() != rhs.size()) {
-                    err::semantic<Error::ARRAY_SIZE_MISMATCH>(size(), rhs.size());
-                    fail = true;
-                    return *this;
-                }
-
-                for (size_t i = 0; i < size(); i++) {
-                    values[i] %= rhs[i];                
-                }
-                return *this;
-            }
+            array& operator+=(const matrix& rhs);
+            array& operator-=(const matrix& rhs);
+            array& operator*=(const matrix& rhs);
+            array& operator/=(const matrix& rhs);
+            array& operator%=(const matrix& rhs);
 
          private:
             std::vector<scalar> values;

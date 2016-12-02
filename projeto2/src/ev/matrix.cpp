@@ -91,6 +91,69 @@ void falk::ev::matrix::push_back(const array& row) {
     ++num_rows;
 }
 
+falk::ev::matrix& falk::ev::matrix::operator+=(const scalar& rhs) {
+    // TODO: implement here insteaf of using the non-assign version
+    *this = *this + rhs;
+    return *this;
+}
+
+falk::ev::matrix& falk::ev::matrix::operator-=(const scalar& rhs) {
+    // TODO: implement here insteaf of using the non-assign version
+    *this = *this - rhs;
+    return *this;
+}
+
+falk::ev::matrix& falk::ev::matrix::operator*=(const scalar& rhs) {
+    // TODO: implement here insteaf of using the non-assign version
+    *this = *this * rhs;
+    return *this;
+}
+
+falk::ev::matrix& falk::ev::matrix::operator/=(const scalar& rhs) {
+    // TODO: implement here insteaf of using the non-assign version
+    *this = *this / rhs;
+    return *this;
+}
+
+falk::ev::matrix& falk::ev::matrix::operator%=(const scalar& rhs) {
+    // TODO: implement here insteaf of using the non-assign version
+    *this = *this % rhs;
+    return *this;
+}
+
+
+falk::ev::matrix& falk::ev::matrix::operator+=(const array& rhs) {
+    // TODO: implement here insteaf of using the non-assign version
+    *this = *this + rhs;
+    return *this;
+}
+
+falk::ev::matrix& falk::ev::matrix::operator-=(const array& rhs) {
+    // TODO: implement here insteaf of using the non-assign version
+    *this = *this - rhs;
+    return *this;
+}
+
+falk::ev::matrix& falk::ev::matrix::operator*=(const array& rhs) {
+    // TODO: implement here insteaf of using the non-assign version
+    *this = *this * rhs;
+    return *this;
+}
+
+falk::ev::matrix& falk::ev::matrix::operator/=(const array& rhs) {
+    // TODO: implement here insteaf of using the non-assign version
+    *this = *this / rhs;
+    return *this;
+}
+
+falk::ev::matrix& falk::ev::matrix::operator%=(const array& rhs) {
+    // TODO: implement here insteaf of using the non-assign version
+    *this = *this % rhs;
+    return *this;
+}
+
+
+
 falk::ev::matrix& falk::ev::matrix::operator+=(const matrix& rhs) {
     if (row_count() != rhs.row_count()) {
         err::semantic<Error::ROW_SIZE_MISMATCH>(row_count(),

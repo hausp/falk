@@ -44,6 +44,18 @@ namespace falk {
             scalar& operator/=(const scalar&);
             scalar& operator%=(const scalar&);
 
+            scalar& operator+=(const array&);
+            scalar& operator-=(const array&);
+            scalar& operator*=(const array&);
+            scalar& operator/=(const array&);
+            scalar& operator%=(const array&);
+
+            scalar& operator+=(const matrix&);
+            scalar& operator-=(const matrix&);
+            scalar& operator*=(const matrix&);
+            scalar& operator/=(const matrix&);
+            scalar& operator%=(const matrix&);
+
          private:
             falk::fundamental::type _type;
             double _real = 0;

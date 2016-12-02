@@ -1,6 +1,121 @@
 #include "ev/array.hpp"
 #include "ev/matrix.hpp"
 
+falk::ev::array& falk::ev::array::operator+=(const scalar& rhs) {
+    // TODO: implement here instead of using the non-assign version
+    *this = *this + rhs;
+}
+
+falk::ev::array& falk::ev::array::operator-=(const scalar& rhs) {
+    // TODO: implement here instead of using the non-assign version
+    *this = *this - rhs;
+}
+
+falk::ev::array& falk::ev::array::operator*=(const scalar& rhs) {
+    // TODO: implement here instead of using the non-assign version
+    *this = *this * rhs;
+}
+
+falk::ev::array& falk::ev::array::operator/=(const scalar& rhs) {
+    // TODO: implement here instead of using the non-assign version
+    *this = *this / rhs;
+}
+
+falk::ev::array& falk::ev::array::operator%=(const scalar& rhs) {
+    // TODO: implement here instead of using the non-assign version
+    *this = *this % rhs;
+}
+
+falk::ev::array& falk::ev::array::operator+=(const matrix& rhs) {
+    // TODO: error (invalid assignment)
+    return *this;
+}
+
+falk::ev::array& falk::ev::array::operator-=(const matrix& rhs) {
+    // TODO: error (invalid assignment)
+    return *this;
+}
+
+falk::ev::array& falk::ev::array::operator*=(const matrix& rhs) {
+    // TODO: error (invalid assignment)
+    return *this;
+}
+
+falk::ev::array& falk::ev::array::operator/=(const matrix& rhs) {
+    // TODO: error (invalid assignment)
+    return *this;
+}
+
+falk::ev::array& falk::ev::array::operator%=(const matrix& rhs) {
+    // TODO: error (invalid assignment)
+    return *this;
+}
+
+falk::ev::array& falk::ev::array::operator+=(const array& rhs) {
+    if (size() != rhs.size()) {
+        err::semantic<Error::ARRAY_SIZE_MISMATCH>(size(), rhs.size());
+        fail = true;
+        return *this;
+    }
+
+    for (size_t i = 0; i < size(); i++) {
+        values[i] += rhs[i];
+    }
+    return *this;
+}
+
+falk::ev::array& falk::ev::array::operator-=(const array& rhs) {
+    if (size() != rhs.size()) {
+        err::semantic<Error::ARRAY_SIZE_MISMATCH>(size(), rhs.size());
+        fail = true;
+        return *this;
+    }
+
+    for (size_t i = 0; i < size(); i++) {
+        values[i] -= rhs[i];
+    }
+    return *this;
+}
+
+falk::ev::array& falk::ev::array::operator*=(const array& rhs) {
+    if (size() != rhs.size()) {
+        err::semantic<Error::ARRAY_SIZE_MISMATCH>(size(), rhs.size());
+        fail = true;
+        return *this;
+    }
+
+    for (size_t i = 0; i < size(); i++) {
+        values[i] *= rhs[i];
+    }
+    return *this;
+}
+
+falk::ev::array& falk::ev::array::operator/=(const array& rhs) {
+    if (size() != rhs.size()) {
+        err::semantic<Error::ARRAY_SIZE_MISMATCH>(size(), rhs.size());
+        fail = true;
+        return *this;
+    }
+
+    for (size_t i = 0; i < size(); i++) {
+        values[i] /= rhs[i];
+    }
+    return *this;
+}
+
+falk::ev::array& falk::ev::array::operator%=(const array& rhs) {
+    if (size() != rhs.size()) {
+        err::semantic<Error::ARRAY_SIZE_MISMATCH>(size(), rhs.size());
+        fail = true;
+        return *this;
+    }
+
+    for (size_t i = 0; i < size(); i++) {
+        values[i] %= rhs[i];                
+    }
+    return *this;
+}
+
 falk::ev::array& falk::ev::array::pow(const scalar& rhs) {
     for (size_t i = 0; i < size(); i++) {
         values[i].pow(rhs);

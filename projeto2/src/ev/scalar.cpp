@@ -125,6 +125,66 @@ falk::ev::scalar& falk::ev::scalar::operator%=(const scalar& rhs) {
     return *this;
 }
 
+falk::ev::scalar& falk::ev::scalar::operator+=(const array& rhs) {
+    // TODO: error (invalid assignment)
+    fail = true;
+    return *this;
+}
+
+falk::ev::scalar& falk::ev::scalar::operator-=(const array& rhs) {
+    // TODO: error (invalid assignment)
+    fail = true;
+    return *this;
+}
+
+falk::ev::scalar& falk::ev::scalar::operator*=(const array& rhs) {
+    // TODO: error (invalid assignment)
+    fail = true;
+    return *this;
+}
+
+falk::ev::scalar& falk::ev::scalar::operator/=(const array& rhs) {
+    // TODO: error (invalid assignment)
+    fail = true;
+    return *this;
+}
+
+falk::ev::scalar& falk::ev::scalar::operator%=(const array& rhs) {
+    // TODO: error (invalid assignment)
+    fail = true;
+    return *this;
+}
+
+falk::ev::scalar& falk::ev::scalar::operator+=(const matrix& rhs) {
+    // TODO: error (invalid assignment)
+    fail = true;
+    return *this;
+}
+
+falk::ev::scalar& falk::ev::scalar::operator-=(const matrix& rhs) {
+    // TODO: error (invalid assignment)
+    fail = true;
+    return *this;
+}
+
+falk::ev::scalar& falk::ev::scalar::operator*=(const matrix& rhs) {
+    // TODO: error (invalid assignment)
+    fail = true;
+    return *this;
+}
+
+falk::ev::scalar& falk::ev::scalar::operator/=(const matrix& rhs) {
+    // TODO: error (invalid assignment)
+    fail = true;
+    return *this;
+}
+
+falk::ev::scalar& falk::ev::scalar::operator%=(const matrix& rhs) {
+    // TODO: error (invalid assignment)
+    fail = true;
+    return *this;
+}
+
 falk::ev::scalar falk::ev::scalar::pow(const scalar& lhs, const scalar& rhs) {
     auto copy = lhs;
     return copy.pow(rhs);
