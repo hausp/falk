@@ -22,9 +22,10 @@ namespace falk {
     using scalar = analyser::scalar;
 
     // Semantic abstractions definitions.
-    using value = analyser::value;
-    using list = analyser::list;
+    using declaration = analyser::declaration;
     using empty = analyser::empty;
+    using list = analyser::list;
+    using value = analyser::value;
 }
 
 #endif /* FALK_DEFINITIONS_HPP */

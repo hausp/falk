@@ -13,10 +13,15 @@ namespace falk {
         class variable {
             using variant = aut::variant<scalar, array, matrix>;
          public:
-            variable() = default;
+            variable(falk::type = falk::type());
 
             template<typename T>
             variable(const T&);
+
+            structural::type stored_type() const { return type; }
+
+            template<typename T>
+            T& value() { return data.value<T>(); }
 
             template<typename T>
             variable& pow(const T&);
@@ -36,7 +41,7 @@ namespace falk {
             variable& operator|=(const T&);
          private:
             variant data;
-            structural::type type;
+            structural::type type = structural::type::SCALAR;
 
             template<typename Type, Type OP, typename T>
             variable& op(operation<Type, OP, 2, true>, const T&);

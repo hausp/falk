@@ -16,6 +16,49 @@ void falk::ev::evaluator::analyse(const matrix& container) {
     types_stack.push(structural::type::MATRIX);
 }
 
+void falk::ev::evaluator::analyse(const declare_variable& var,
+                                  node_array<1>& nodes) {
+    switch (var.s_type) {
+        case structural::type::SCALAR: {
+            if (!nodes[0]->empty()) {
+                nodes[0]->traverse(*this);
+                // TODO: assigned to Ghabriel
+            } else {
+                mapper.declare_variable(var.id, variable(var.f_type));
+            }
+            break;
+        }
+        case structural::type::ARRAY: {
+            // TODO: assigned to Ghabriel
+            break;
+        }
+        case structural::type::MATRIX: {
+            // TODO: assigned to Ghabriel
+            break;
+        }
+        default:;
+    }
+}
+
+void falk::ev::evaluator::analyse(const valueof& request) {
+    auto& var = mapper.retrieve_variable(request.id);
+    switch (var.stored_type()) {
+        case structural::type::SCALAR: {
+            push(var.value<scalar>());
+            break;
+        }
+        case structural::type::ARRAY: {
+            push(var.value<array>());
+            break;
+        }
+        case structural::type::MATRIX: {
+            push(var.value<matrix>());
+            break;
+        }
+        default:;
+    }
+}
+
 void falk::ev::evaluator::analyse(const block&, std::list<node_ptr>& nodes) {
     for (auto& node : nodes) {
         if (node) {

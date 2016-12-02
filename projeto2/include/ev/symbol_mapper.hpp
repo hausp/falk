@@ -16,6 +16,7 @@ namespace falk {
             struct scope {
                 std::unordered_map<std::string, variable> variables;
                 std::unordered_map<std::string, function> functions;
+                std::unordered_map<std::string, symbol::type> symbol_table;
             };
          public:
             symbol_mapper();
@@ -30,55 +31,11 @@ namespace falk {
             variable& retrieve_variable(const std::string&);
 
             bool is_declared(const std::string&) const;
-            symbol::type typeof(const std::string&) const;
+            scope& scope_of(const std::string& id);
+            symbol::type type_of(const std::string&) const;
          private:
-            std::stack<scope> scopes;
-            std::unordered_map<std::string, symbol::type> symbol_table;
+            std::list<scope> scopes;
         };
-
-        inline function& symbol_mapper::retrieve_function(const std::string& id) {
-            if (symbol_table.count(id)) {
-                if (symbol_table.at(id) == symbol::type::FUNCTION) {
-                    return scopes.top().functions.at(id);
-                } else {
-                    err::semantic<Error::NOT_A_FUNCTION>(id);
-                    // TODO: return what?
-                }
-            } else {
-                err::semantic<Error::UNDEFINED_FUNCTION>(id);
-                // TODO: return what?
-            }
-        }
-
-        inline variable& symbol_mapper::retrieve_variable(const std::string& id) {
-            if (symbol_table.count(id)) {
-                if (symbol_table.at(id) == symbol::type::VARIABLE) {
-                    return scopes.top().variables.at(id);
-                } else {
-                    err::semantic<Error::NOT_A_VARIABLE>(id);
-                    // TODO: return what?
-                }
-            } else {
-                err::semantic<Error::UNDEFINED_VARIABLE>(id);
-                // TODO: return what?
-            }
-        }
-
-        inline void symbol_mapper::open_scope() {
-            scopes.emplace();
-        }
-
-        inline void symbol_mapper::close_scope() {
-            scopes.pop();
-        }
-
-        inline bool symbol_mapper::is_declared(const std::string& id) const {
-            return symbol_table.count(id);
-        }
-
-        inline symbol::type symbol_mapper::typeof(const std::string& id) const {
-            return symbol_table.at(id);
-        }
     }
 }
 

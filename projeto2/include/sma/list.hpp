@@ -21,6 +21,7 @@ namespace sma {
         list<Analyser>& operator+=(node_ptr);
 
         operator node_ptr() { return object; }
+        node_ptr extract() { return object; }
 
      private:
      	node_ptr object;

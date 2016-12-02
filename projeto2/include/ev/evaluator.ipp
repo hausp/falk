@@ -53,72 +53,65 @@ void falk::ev::evaluator::analyse(operation<Type, OP, 1, false> op,
     nodes[0]->traverse(*this);
 
     auto t1 = aut::pop(types_stack);
-
     switch (t1) {
-        case structural::type::SCALAR: {
-            auto lhs = aut::pop(scalar_stack);
-            auto result = op(lhs);
-            scalar_stack.push(result);
-            types_stack.push(structural::type::SCALAR);
+        case structural::type::SCALAR:
+            push(op(aut::pop(scalar_stack)));
             break;
-        }
-        case structural::type::ARRAY: {
-            auto lhs = aut::pop(array_stack);
-            auto result = op(lhs);
-            array_stack.push(result);
-            types_stack.push(structural::type::ARRAY);
+        case structural::type::ARRAY:
+            push(op(aut::pop(array_stack)));
             break;
-        }
-        case structural::type::MATRIX: {
-            auto lhs = aut::pop(matrix_stack);
-            auto result = op(lhs);
-            matrix_stack.push(result);
-            types_stack.push(structural::type::MATRIX);
+        case structural::type::MATRIX:
+            push(op(aut::pop(matrix_stack)));
             break;
-        }
     }
 }
 
 template<typename Type, Type OP>
 void falk::ev::evaluator::analyse(operation<Type, OP, 2, true> op,
                                   node_array<2>& nodes) {
+    std::cout << "hello" << std::endl;
     for (auto& node : nodes) {
         node->traverse(*this);
     }
 
     auto t1 = aut::pop(types_stack);
-    auto t2 = aut::pop(types_stack);
-
-    if (t1 == t2) {
-        switch (t1) {
-            case structural::type::SCALAR: {
-                auto rhs = aut::pop(scalar_stack);
-                auto id = aut::pop(id_stack);
-                auto& var = mapper.retrieve_variable(id.name);
-                op(var, rhs);
-                break;
-            }
-            case structural::type::ARRAY: {
-                auto rhs = aut::pop(array_stack);
-                auto id = aut::pop(id_stack);
-                auto& var = mapper.retrieve_variable(id.name);
-                op(var, rhs);
-                break;
-            }
-            case structural::type::MATRIX: {
-                auto rhs = aut::pop(matrix_stack);
-                auto id = aut::pop(id_stack);
-                auto& var = mapper.retrieve_variable(id.name);
-                op(var, rhs);
-                break;
-            }
+    switch (t1) {
+        case structural::type::SCALAR: {
+            auto rhs = aut::pop(scalar_stack);
+            auto& var = mapper.retrieve_variable(aut::pop(id_stack));
+            op(var, rhs);
+            break;
+        }
+        case structural::type::ARRAY: {
+            auto rhs = aut::pop(array_stack);
+            auto& var = mapper.retrieve_variable(aut::pop(id_stack));
+            op(var, rhs);
+            break;
+        }
+        case structural::type::MATRIX: {
+            auto rhs = aut::pop(matrix_stack);
+            auto& var = mapper.retrieve_variable(aut::pop(id_stack));
+            op(var, rhs);
+            break;
         }
     }
 }
 
-inline void falk::ev::evaluator::analyse(const identifier& id) {
-    id_stack.push(id);
+inline void falk::ev::evaluator::push(const scalar& result) {
+    scalar_stack.push(result);
+    types_stack.push(structural::type::SCALAR);
 }
+
+inline void falk::ev::evaluator::push(const array& result) {
+    array_stack.push(result);
+    types_stack.push(structural::type::ARRAY);
+}
+
+inline void falk::ev::evaluator::push(const matrix& result) {
+    matrix_stack.push(result);
+    types_stack.push(structural::type::MATRIX);
+}
+
 
 inline void falk::ev::evaluator::initialize() {
     std::cout << "falk> ";

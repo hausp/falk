@@ -21,6 +21,7 @@ namespace falk {
 
     namespace symbol {
         enum class type {
+            UNDECLARED,
             VARIABLE,
             FUNCTION,
         };

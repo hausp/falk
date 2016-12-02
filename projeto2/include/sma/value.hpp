@@ -17,8 +17,8 @@ namespace sma {
         value():
           object{new ast::empty_node<Analyser>{}} { }
 
-        value(list<Analyser>& container):
-          object{container} { }
+        value(node_ptr node):
+          object{std::move(node)} { }
 
         template<typename T>
         value(const T& data):

@@ -14,6 +14,7 @@
 #include "function.hpp"
 #include "matrix.hpp"
 #include "symbol_mapper.hpp"
+#include "sma/declaration.hpp"
 #include "sma/list.hpp"
 #include "sma/value.hpp"
 
@@ -35,9 +36,10 @@ namespace falk {
             using scalar = ev::scalar;
 
             // Alias to define semantic abstraction for values.
-            using value = sma::value<evaluator, falk::op>;
-            using list = sma::list<evaluator>;
+            using declaration = sma::declaration<evaluator>;
             using empty = ast::empty_node<evaluator>;
+            using list = sma::list<evaluator>;
+            using value = sma::value<evaluator, falk::op>;
 
             // Methods
             // assignment assign(identifier, value);
@@ -69,26 +71,17 @@ namespace falk {
             void analyse(const scalar&);
             void analyse(const array&);
             void analyse(const matrix&);
+            void analyse(const declare_variable&, node_array<1>&);
             void analyse(const identifier&);
+            void analyse(const valueof&);
             void analyse(const block&, std::list<node_ptr>&);
             void analyse(const conditional&, node_array<3>&);
 
             void process(value&);
 
-            void push(const scalar& result) {
-                scalar_stack.push(result);
-                types_stack.push(structural::type::SCALAR);
-            }
-
-            void push(const array& result) {
-                array_stack.push(result);
-                types_stack.push(structural::type::ARRAY);
-            }
-
-            void push(const matrix& result) {
-                matrix_stack.push(result);
-                types_stack.push(structural::type::MATRIX);
-            }
+            void push(const scalar& result);
+            void push(const array& result);
+            void push(const matrix& result);
 
             // TODO: can the methods below be generalized?
             // Binary calculations

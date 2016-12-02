@@ -1,4 +1,6 @@
 
+inline falk::ev::variable::variable(falk::type t): data{scalar(t)} {}
+
 template<typename T>
 falk::ev::variable::variable(const T& value): data{value} { }
 
@@ -7,17 +9,17 @@ falk::ev::variable& falk::ev::variable::op(operation<Type, OP, 2, true> op,
                                            const T& v) {
     switch (type) {
         case falk::structural::type::SCALAR: {
-            auto raw = data.value<scalar>();
+            auto& raw = data.value<scalar>();
             op(raw, v);
             break;
         }
         case falk::structural::type::ARRAY: {
-            auto raw = data.value<array>();
+            auto& raw = data.value<array>();
             op(raw, v);
             break;
         }
         case falk::structural::type::MATRIX: {
-            auto raw = data.value<matrix>();
+            auto& raw = data.value<matrix>();
             op(raw, v);
             break;
         }
@@ -34,6 +36,7 @@ falk::ev::variable& falk::ev::variable::pow(const T& rhs) {
 
 template<typename T>
 falk::ev::variable& falk::ev::variable::operator+=(const T& rhs) {
+    std::cout << "little hell" << std::endl;
     return op(falk::op::ADD_ASSIGN(), rhs);
 }
 

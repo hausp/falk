@@ -63,7 +63,7 @@
 %token CBRACKET  "]";
 %token EOF 0     "end of file";
 
-%token<std::string> ID        "variable identifier";
+%token<falk::identifier> ID   "variable identifier";
 %token<falk::type> TYPE       "type identifier";
 %token<falk::real> REAL       "real value";
 %token<falk::complex> COMPLEX "complex value";
@@ -85,11 +85,12 @@
 %type<falk::list> block block_body;
 %type<falk::list> conditional;
 %type<falk::value> command;
-%type<falk::value> identifier arr_size mat_size;
+%type<falk::value> arr_size mat_size;
 %type<falk::value> flat_expr expr single_calc;
 %type<falk::value> index rvalue;
 %type<falk::value> assignment;
-%type<falk::value> declaration;
+%type<falk::identifier> identifier
+%type<falk::declaration> declaration;
 %type<falk::array> array_list scalar_list
 %type<falk::matrix> matrix_list matrix_list_body;
 
@@ -112,31 +113,18 @@
 
 program:
       init
-    | program new_line {
-        analyser.prompt();
-    }
-    | entry eoc {
-        analyser.prompt();
-    }
-    | program error eoc {
-        yyerrok;
-        analyser.prompt();
-    }
+    | program new_line  { analyser.prompt(); }
+    | entry eoc         { analyser.prompt(); }
+    | program error eoc { yyerrok; analyser.prompt(); };
     // | program function
 
-init: %empty {
-    analyser.initialize();
-};
+init: %empty { analyser.initialize(); };
 
-entry: program command {
-    analyser.process($2);
-};
+entry: program command { analyser.process($2); };
+
+new_line: NL { context.count_new_line(); };
 
 eoc: SEMICOLON | new_line;
-
-new_line: NL {
-    context.count_new_line();
-};
 
 block:
     COLON block_body DOT {
@@ -172,47 +160,50 @@ block_body:
 command:
     SEMICOLON     { $$ = {}; }
     | single_calc { $$ = $1; }
-    | declaration { $$ = $1; }
+    | declaration { $$ = $1.extract(); }
     | assignment  { $$ = $1; }
-    | conditional { $$ = $1; }
+    | conditional { $$ = $1.extract(); }
     ;
 
 declaration:
     VAR ID {
-        // $$ = analyser.declare_variable($2);
+        auto declare = falk::declare_variable{$2, structural::type::SCALAR};
+        $$ = falk::declaration{declare};
     }
-    | VAR ID COLON TYPE { /* Aqui pode dar ruim */
-        // $$ = analyser.declare_variable($2, $4);
+    | VAR ID COLON TYPE {
+        auto declare = falk::declare_variable{$2, structural::type::SCALAR, $4};
+        $$ = falk::declaration{declare};
     }
     | VAR ID ASSIGN rvalue {
-        // $$ = analyser.declare_variable($2, $4);
+        auto declare = falk::declare_variable{$2, structural::type::SCALAR};
+        $$ = falk::declaration(declare, $4);
     }
     | ARRAY arr_size ID {
-        // $$ = analyser.declare_array($3, $2);
+        // TODO
+        $$ = falk::declaration();
     }
     | ARRAY ID ASSIGN rvalue {
-        // $$ = analyser.declare_array($2, $4);
+        // TODO
+        $$ = falk::declaration();
     }
     | MATRIX mat_size ID {
-        // $$ = analyser.declare_matrix($3, $2);
+        // TODO
+        $$ = falk::declaration();
     }
     | MATRIX ID ASSIGN rvalue {
-        // $$ = analyser.declare_matrix($2, $4);
+        // TODO
+        $$ = falk::declaration();
     };
 
 assignment:
     identifier ASSIGN rvalue {
-        // $$ = analyser.assign($1, $3);
+        // TODO
     }
     | identifier ASSIGNOP rvalue {
-        // $$ = analyser.assign($1, $3, $2);
+        // TODO
     };
 
-single_calc:
-    expr {
-        // $$ = falk::calculation();
-        $$ = $1;
-    };
+single_calc: expr { $$ = $1; };
 
 conditional:
     IF OPAR expr CPAR block {
@@ -246,6 +237,7 @@ mat_size:
 
 identifier:
     ID {
+        $$ = $1;
         // $$ = analyser.retrieve_identifier($1);
     }
     | ID OBRACKET index CBRACKET {
@@ -308,7 +300,7 @@ flat_expr:
         $$ = falk::scalar($1);
     }
     | identifier {
-        $$ = falk::scalar(true); /* TODO */
+        $$ = falk::valueof{$1};
     }
     | expr COMPARISON expr {
         $$ = falk::scalar(true); /* TODO: use $2.operation */
