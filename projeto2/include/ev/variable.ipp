@@ -1,6 +1,10 @@
 
 inline falk::ev::variable::variable(falk::type t): data{scalar(t)} {}
 
+inline falk::ev::variable::variable(bool flag) : data{scalar(falk::type())}, fail{flag} {
+    value<scalar>().set_error();
+}
+
 template<typename T>
 falk::ev::variable::variable(const T& value, structural::type t): data{value}, type{t} { }
 

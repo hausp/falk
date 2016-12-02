@@ -1,6 +1,11 @@
 
 #include "ev/symbol_mapper.hpp"
 
+namespace {
+    auto invalid_function = falk::ev::function(true);
+    auto invalid_variable = falk::ev::variable(true);
+}
+
 falk::ev::symbol_mapper::symbol_mapper() {
     scopes.emplace_front();
 }
@@ -40,6 +45,7 @@ falk::ev::symbol_mapper::retrieve_function(const std::string& id) {
         }
     } else {
         err::semantic<Error::UNDECLARED_FUNCTION>(id);
+        return invalid_function;
         // TODO: return what?
     }
 }
@@ -56,6 +62,7 @@ falk::ev::symbol_mapper::retrieve_variable(const std::string& id) {
         }
     } else {
         err::semantic<Error::UNDECLARED_VARIABLE>(id);
+        return invalid_variable;
         // TODO: return what?
     }
 }

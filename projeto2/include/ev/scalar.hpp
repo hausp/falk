@@ -24,7 +24,8 @@ namespace falk {
             std::complex<double> complex() const;
             double imag() const;
             double real() const;
-            
+
+            void set_error();
             bool error() const;
 
             falk::fundamental::type type() const;
@@ -121,6 +122,10 @@ namespace falk {
 
         inline falk::type scalar::type() const {
             return _type;
+        }
+
+        inline void scalar::set_error() {
+            fail = true;
         }
 
         inline bool scalar::error() const {
