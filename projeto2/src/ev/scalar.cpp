@@ -126,61 +126,61 @@ falk::ev::scalar& falk::ev::scalar::operator%=(const scalar& rhs) {
 }
 
 falk::ev::scalar& falk::ev::scalar::operator+=(const array& rhs) {
-    // TODO: error (invalid assignment)
+    err::semantic<Error::ILLEGAL_ASSIGNMENT>(falk::struct_t::SCALAR, falk::struct_t::ARRAY);
     fail = true;
     return *this;
 }
 
 falk::ev::scalar& falk::ev::scalar::operator-=(const array& rhs) {
-    // TODO: error (invalid assignment)
+    err::semantic<Error::ILLEGAL_ASSIGNMENT>(falk::struct_t::SCALAR, falk::struct_t::ARRAY);
     fail = true;
     return *this;
 }
 
 falk::ev::scalar& falk::ev::scalar::operator*=(const array& rhs) {
-    // TODO: error (invalid assignment)
+    err::semantic<Error::ILLEGAL_ASSIGNMENT>(falk::struct_t::SCALAR, falk::struct_t::ARRAY);
     fail = true;
     return *this;
 }
 
 falk::ev::scalar& falk::ev::scalar::operator/=(const array& rhs) {
-    // TODO: error (invalid assignment)
+    err::semantic<Error::ILLEGAL_ASSIGNMENT>(falk::struct_t::SCALAR, falk::struct_t::ARRAY);
     fail = true;
     return *this;
 }
 
 falk::ev::scalar& falk::ev::scalar::operator%=(const array& rhs) {
-    // TODO: error (invalid assignment)
+    err::semantic<Error::ILLEGAL_ASSIGNMENT>(falk::struct_t::SCALAR, falk::struct_t::ARRAY);
     fail = true;
     return *this;
 }
 
 falk::ev::scalar& falk::ev::scalar::operator+=(const matrix& rhs) {
-    // TODO: error (invalid assignment)
+    err::semantic<Error::ILLEGAL_ASSIGNMENT>(falk::struct_t::SCALAR, falk::struct_t::MATRIX);
     fail = true;
     return *this;
 }
 
 falk::ev::scalar& falk::ev::scalar::operator-=(const matrix& rhs) {
-    // TODO: error (invalid assignment)
+    err::semantic<Error::ILLEGAL_ASSIGNMENT>(falk::struct_t::SCALAR, falk::struct_t::MATRIX);
     fail = true;
     return *this;
 }
 
 falk::ev::scalar& falk::ev::scalar::operator*=(const matrix& rhs) {
-    // TODO: error (invalid assignment)
+    err::semantic<Error::ILLEGAL_ASSIGNMENT>(falk::struct_t::SCALAR, falk::struct_t::MATRIX);
     fail = true;
     return *this;
 }
 
 falk::ev::scalar& falk::ev::scalar::operator/=(const matrix& rhs) {
-    // TODO: error (invalid assignment)
+    err::semantic<Error::ILLEGAL_ASSIGNMENT>(falk::struct_t::SCALAR, falk::struct_t::MATRIX);
     fail = true;
     return *this;
 }
 
 falk::ev::scalar& falk::ev::scalar::operator%=(const matrix& rhs) {
-    // TODO: error (invalid assignment)
+    err::semantic<Error::ILLEGAL_ASSIGNMENT>(falk::struct_t::SCALAR, falk::struct_t::MATRIX);
     fail = true;
     return *this;
 }

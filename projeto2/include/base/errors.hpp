@@ -36,6 +36,13 @@ namespace std {
             return static_cast<int>(type);
         }
     };
+
+    template<>
+    struct hash<falk::struct_t> {
+        inline size_t operator()(falk::struct_t type) const {
+            return static_cast<int>(type);
+        }
+    };
 }
 
 namespace err {
@@ -45,10 +52,18 @@ namespace err {
         {falk::type::BOOL, "boolean"},
     };
 
+    const std::unordered_map<falk::struct_t, std::string> struct_type_table = {
+        {falk::struct_t::SCALAR, "scalar"},
+        {falk::struct_t::ARRAY, "array"},
+        {falk::struct_t::MATRIX, "matrix"},
+    };
+
     void set_context(lpi::context&);
     std::string error_prefix(const std::string&);
     void echo(const std::string&);
 
+    template<Error>
+    inline void semantic(falk::struct_t, falk::struct_t);
     template<Error>
     inline void semantic(falk::type, falk::type);
     template<Error>
@@ -57,6 +72,13 @@ namespace err {
     inline void semantic(const std::string&);
     template<Error>
     inline void semantic();
+
+    template<>
+    inline void semantic<Error::ILLEGAL_ASSIGNMENT>(falk::struct_t lhs,
+                                                    falk::struct_t rhs) {
+        echo(error_prefix("semantic") + "cannot assign " +
+            struct_type_table.at(rhs) + " to " + struct_type_table.at(lhs));
+    }
 
     template<>
     inline void semantic<Error::INCOMPATIBLE_TYPES>(falk::type lhs, falk::type rhs) {

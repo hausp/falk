@@ -28,6 +28,7 @@ namespace falk {
     }
 
     using type = fundamental::type;
+    using struct_t = structural::type;
 
     inline type resolve_types(type t1, type t2) {
         if (t1 == type::COMPLEX || t2 == type::COMPLEX) {

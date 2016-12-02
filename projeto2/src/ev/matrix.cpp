@@ -92,62 +92,51 @@ void falk::ev::matrix::push_back(const array& row) {
 }
 
 falk::ev::matrix& falk::ev::matrix::operator+=(const scalar& rhs) {
-    // TODO: implement here insteaf of using the non-assign version
     *this = *this + rhs;
     return *this;
 }
 
 falk::ev::matrix& falk::ev::matrix::operator-=(const scalar& rhs) {
-    // TODO: implement here insteaf of using the non-assign version
     *this = *this - rhs;
     return *this;
 }
 
 falk::ev::matrix& falk::ev::matrix::operator*=(const scalar& rhs) {
-    // TODO: implement here insteaf of using the non-assign version
     *this = *this * rhs;
     return *this;
 }
 
 falk::ev::matrix& falk::ev::matrix::operator/=(const scalar& rhs) {
-    // TODO: implement here insteaf of using the non-assign version
     *this = *this / rhs;
     return *this;
 }
 
 falk::ev::matrix& falk::ev::matrix::operator%=(const scalar& rhs) {
-    // TODO: implement here insteaf of using the non-assign version
     *this = *this % rhs;
     return *this;
 }
 
-
 falk::ev::matrix& falk::ev::matrix::operator+=(const array& rhs) {
-    // TODO: implement here insteaf of using the non-assign version
     *this = *this + rhs;
     return *this;
 }
 
 falk::ev::matrix& falk::ev::matrix::operator-=(const array& rhs) {
-    // TODO: implement here insteaf of using the non-assign version
     *this = *this - rhs;
     return *this;
 }
 
 falk::ev::matrix& falk::ev::matrix::operator*=(const array& rhs) {
-    // TODO: implement here insteaf of using the non-assign version
     *this = *this * rhs;
     return *this;
 }
 
 falk::ev::matrix& falk::ev::matrix::operator/=(const array& rhs) {
-    // TODO: implement here insteaf of using the non-assign version
     *this = *this / rhs;
     return *this;
 }
 
 falk::ev::matrix& falk::ev::matrix::operator%=(const array& rhs) {
-    // TODO: implement here insteaf of using the non-assign version
     *this = *this % rhs;
     return *this;
 }
