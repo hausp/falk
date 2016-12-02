@@ -17,7 +17,7 @@ namespace falk {
             scalar(double);
             scalar(int);
             scalar(std::complex<double>);
-            scalar(falk::type = falk::type::UNDEFINED, double = 0, double = 0);
+            scalar(falk::type = falk::type::COMPLEX, double = 0, double = 0);
             scalar(bool);
 
             bool boolean() const;

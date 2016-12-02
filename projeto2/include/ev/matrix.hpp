@@ -100,23 +100,23 @@ namespace falk {
         }
 
         inline matrix operator+(const matrix& lhs, const array& rhs) {
-            return rhs + lhs;
+            return lhs + rhs.to_matrix();
         }
 
         inline matrix operator-(const matrix& lhs, const array& rhs) {
-            return rhs - lhs;
+            return lhs - rhs.to_matrix();
         }
 
         inline matrix operator*(const matrix& lhs, const array& rhs) {
-            return rhs * lhs;
+            return lhs * rhs.to_matrix();
         }
 
         inline matrix operator/(const matrix& lhs, const array& rhs) {
-            return rhs / lhs;
+            return lhs / rhs.to_matrix();
         }
 
         inline matrix operator%(const matrix& lhs, const array& rhs) {
-            return rhs % lhs;
+            return lhs % rhs.to_matrix();
         }
 
         inline matrix operator-(const matrix& rhs) {

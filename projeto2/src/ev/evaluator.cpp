@@ -66,48 +66,16 @@ void falk::ev::evaluator::analyse(const declare_variable& var,
     } else {
         mapper.declare_variable(var.id, variable(var.f_type));
     }
-    // switch (var.s_type) {
-    //     case structural::type::SCALAR: {
-    //         if (!nodes[0]->empty()) {
-    //             nodes[0]->traverse(*this);
-    //             get_value(mapper, var);
-    //         } else {
-    //             mapper.declare_variable(var.id, variable(var.f_type));
-    //         }
-    //         break;
-    //     }
-    //     case structural::type::ARRAY: {
-    //         if (!nodes[0]->empty()) {
-    //             nodes[0]->traverse(*this);
-    //             get_value(mapper, var);
-    //         } else {
-    //             mapper.declare_variable(var.id, variable(var.f_type));
-    //         }
-    //         break;
-    //     }
-    //     case structural::type::MATRIX: {
-    //         if (!nodes[0]->empty()) {
-    //             nodes[0]->traverse(*this);
-    //             get_value(mapper, var);
-    //         } else {
-    //             mapper.declare_variable(var.id, variable(var.f_type));
-    //         }
-    //         break;
-    //     }
-    //     default:;
-    // }
 }
 
 void falk::ev::evaluator::analyse(const valueof& request) {
     auto& var = mapper.retrieve_variable(request.id);
     switch (var.stored_type()) {
         case structural::type::SCALAR: {
-            std::cout << "scalar" << std::endl;
             push(var.value<scalar>());
             break;
         }
         case structural::type::ARRAY: {
-            std::cout << "array" << std::endl;
             push(var.value<array>());
             break;
         }

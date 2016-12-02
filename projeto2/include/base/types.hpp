@@ -4,7 +4,6 @@
 namespace falk {
     namespace fundamental {
         enum class type {
-            UNDEFINED,
             REAL,
             COMPLEX,
             BOOL,

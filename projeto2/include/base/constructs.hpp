@@ -28,7 +28,7 @@ namespace falk {
         
         identifier id;
         structural::type s_type;
-        fundamental::type f_type = fundamental::type::UNDEFINED;
+        fundamental::type f_type;
     };
 
     struct loop {
