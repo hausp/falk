@@ -69,7 +69,6 @@ void falk::ev::evaluator::analyse(operation<Type, OP, 1, false> op,
 template<typename Type, Type OP>
 void falk::ev::evaluator::analyse(operation<Type, OP, 2, true> op,
                                   node_array<2>& nodes) {
-    std::cout << "hello" << std::endl;
     for (auto& node : nodes) {
         node->traverse(*this);
     }
@@ -97,21 +96,29 @@ void falk::ev::evaluator::analyse(operation<Type, OP, 2, true> op,
     }
 }
 
-inline void falk::ev::evaluator::push(const scalar& result) {
-    scalar_stack.push(result);
+template<typename T>
+void falk::ev::evaluator::analyse(const T& object) {
+    push(object);
+}
+
+inline void falk::ev::evaluator::push(const scalar& data) {
+    scalar_stack.push(data);
     types_stack.push(structural::type::SCALAR);
 }
 
-inline void falk::ev::evaluator::push(const array& result) {
-    array_stack.push(result);
+inline void falk::ev::evaluator::push(const array& data) {
+    array_stack.push(data);
     types_stack.push(structural::type::ARRAY);
 }
 
-inline void falk::ev::evaluator::push(const matrix& result) {
-    matrix_stack.push(result);
+inline void falk::ev::evaluator::push(const matrix& data) {
+    matrix_stack.push(data);
     types_stack.push(structural::type::MATRIX);
 }
 
+inline void falk::ev::evaluator::push(const identifier& data) {
+    id_stack.push(data);
+}
 
 inline void falk::ev::evaluator::initialize() {
     std::cout << "falk> ";

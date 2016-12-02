@@ -68,11 +68,14 @@ namespace falk {
             // identifier retrieve_identifier(const std::string&, array_index) { return identifier{}; }
             // identifier retrieve_identifier(const std::string&, matrix_index) { return identifier{}; }
 
-            void analyse(const scalar&);
-            void analyse(const array&);
-            void analyse(const matrix&);
+
+            template<typename T>
+            void analyse(const T&);
+            // void analyse(const scalar&);
+            // void analyse(const array&);
+            // void analyse(const matrix&);
+            // void analyse(const identifier&);
             void analyse(const declare_variable&, node_array<1>&);
-            void analyse(const identifier&);
             void analyse(const valueof&);
             void analyse(const block&, std::list<node_ptr>&);
             void analyse(const conditional&, node_array<3>&);
@@ -80,9 +83,10 @@ namespace falk {
 
             void process(value&);
 
-            void push(const scalar& result);
-            void push(const array& result);
-            void push(const matrix& result);
+            void push(const scalar&);
+            void push(const array&);
+            void push(const matrix&);
+            void push(const identifier&);
 
             // TODO: can the methods below be generalized?
             // Binary calculations

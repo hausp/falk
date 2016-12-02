@@ -36,7 +36,6 @@ falk::ev::variable& falk::ev::variable::pow(const T& rhs) {
 
 template<typename T>
 falk::ev::variable& falk::ev::variable::operator+=(const T& rhs) {
-    std::cout << "little hell" << std::endl;
     return op(falk::op::ADD_ASSIGN(), rhs);
 }
 

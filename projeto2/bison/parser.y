@@ -201,7 +201,8 @@ assignment:
         // TODO
     }
     | identifier ASSIGNOP rvalue {
-        // TODO
+        $$ = $1;
+        $$ += $3;
     };
 
 single_calc: expr { $$ = $1; };

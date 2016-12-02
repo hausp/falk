@@ -1,20 +1,24 @@
 #include "base/errors.hpp"
 #include "ev/evaluator.hpp"
 
-void falk::ev::evaluator::analyse(const scalar& value) {
-    scalar_stack.push(value);
-    types_stack.push(structural::type::SCALAR);
-}
+// void falk::ev::evaluator::analyse(const scalar& value) {
+//     scalar_stack.push(value);
+//     types_stack.push(structural::type::SCALAR);
+// }
 
-void falk::ev::evaluator::analyse(const array& container) {
-    array_stack.push(container);
-    types_stack.push(structural::type::ARRAY);
-}
+// void falk::ev::evaluator::analyse(const array& container) {
+//     array_stack.push(container);
+//     types_stack.push(structural::type::ARRAY);
+// }
 
-void falk::ev::evaluator::analyse(const matrix& container) {
-    matrix_stack.push(container);
-    types_stack.push(structural::type::MATRIX);
-}
+// void falk::ev::evaluator::analyse(const matrix& container) {
+//     matrix_stack.push(container);
+//     types_stack.push(structural::type::MATRIX);
+// }
+
+// void falk::ev::evaluator::analyse(const identifier& id) {
+    
+// }
 
 void falk::ev::evaluator::analyse(const declare_variable& var,
                                   node_array<1>& nodes) {
@@ -41,9 +45,11 @@ void falk::ev::evaluator::analyse(const declare_variable& var,
 }
 
 void falk::ev::evaluator::analyse(const valueof& request) {
+    std::cout << "hello" << std::endl;
     auto& var = mapper.retrieve_variable(request.id);
     switch (var.stored_type()) {
         case structural::type::SCALAR: {
+            std::cout << "darkness" << std::endl;
             push(var.value<scalar>());
             break;
         }
@@ -55,7 +61,8 @@ void falk::ev::evaluator::analyse(const valueof& request) {
             push(var.value<matrix>());
             break;
         }
-        default:;
+        default:
+            std::cout << "satan" << std::endl;
     }
 }
 
