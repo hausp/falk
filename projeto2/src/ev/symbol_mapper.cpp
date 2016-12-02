@@ -7,7 +7,15 @@ namespace {
 }
 
 falk::ev::symbol_mapper::symbol_mapper() {
-    scopes.emplace_front();
+    auto scp = scope{};
+    scp.symbol_table["res"] = symbol::type::VARIABLE;
+    scp.variables["res"] = variable();
+    scopes.emplace_front(std::move(scp));
+}
+
+void falk::ev::symbol_mapper::update_result(variable var) {
+    auto& scope = scopes.back();
+    scope.variables["res"] = std::move(var);
 }
 
 void falk::ev::symbol_mapper::declare_function(const std::string& id,

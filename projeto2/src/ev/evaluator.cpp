@@ -138,6 +138,7 @@ void falk::ev::evaluator::print_result() {
             auto result = aut::pop(scalar_stack);
             if (!result.error()) {
                 std::cout << "res = " << result << std::endl;
+                mapper.update_result(variable(result, type));
             }
             break;
         }
@@ -145,6 +146,7 @@ void falk::ev::evaluator::print_result() {
             auto result = aut::pop(array_stack);
             if (!result.error()) {
                 std::cout << "res = " << result << std::endl;
+                mapper.update_result(variable(result, type));
             }
             break;
         }
@@ -152,6 +154,7 @@ void falk::ev::evaluator::print_result() {
             auto result = aut::pop(matrix_stack);
             if (!result.error()) {
                 std::cout << "res = " << result << std::endl;
+                mapper.update_result(variable(result, type));
             }
             break;
         }

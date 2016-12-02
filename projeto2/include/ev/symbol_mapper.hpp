@@ -33,6 +33,8 @@ namespace falk {
             bool is_declared(const std::string&) const;
             scope& scope_of(const std::string& id);
             symbol::type type_of(const std::string&) const;
+
+            void update_result(variable);
          private:
             std::list<scope> scopes;
         };
