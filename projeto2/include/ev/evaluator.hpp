@@ -76,6 +76,7 @@ namespace falk {
             void analyse(const valueof&);
             void analyse(const block&, std::list<node_ptr>&);
             void analyse(const conditional&, node_array<3>&);
+            void analyse(const loop&, node_array<2>&);
 
             void process(value&);
 

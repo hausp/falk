@@ -83,7 +83,7 @@
 
 // Non-terminals
 %type<falk::list> block block_body;
-%type<falk::list> conditional;
+%type<falk::list> conditional loop;
 %type<falk::value> command;
 %type<falk::value> arr_size mat_size;
 %type<falk::value> flat_expr expr single_calc;
@@ -160,9 +160,10 @@ block_body:
 command:
     SEMICOLON     { $$ = {}; }
     | single_calc { $$ = $1; }
-    | declaration { $$ = $1.extract(); }
     | assignment  { $$ = $1; }
+    | declaration { $$ = $1.extract(); }
     | conditional { $$ = $1.extract(); }
+    | loop        { $$ = $1.extract(); }
     ;
 
 declaration:
@@ -217,8 +218,14 @@ conditional:
         $$ += $3;
         $$ += $5;
         $$ += $7;
-    }
-    ;
+    };
+
+loop:
+    WHILE OPAR expr CPAR block {
+        $$ = falk::loop();
+        $$ += $3;
+        $$ += $5;
+    };
 
 rvalue:
     expr {

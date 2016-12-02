@@ -31,6 +31,12 @@ namespace falk {
         fundamental::type f_type = fundamental::type::UNDEFINED;
     };
 
+    struct loop {
+        static constexpr size_t arity() {
+            return 2;
+        }
+    };
+
     struct valueof {
         identifier id;
     };
