@@ -45,50 +45,19 @@ namespace falk {
             // assignment assign(identifier, value);
             // assignment assign(identifier, value, falk::op::arithmetic);
 
-            // declaration declare_array(const std::string&);
-            // declaration declare_array(const std::string&, value&);
-            // declaration declare_array(const std::string&, value&);
-            
-            // declaration declare_variable(const std::string&);
-            // declaration declare_variable(const std::string&, Type);
-            // declaration declare_variable(const std::string&, value);
-            
-            // declaration declare_matrix(const std::string&);
-            // declaration declare_matrix(const std::string&, matrix_index);
-            // declaration declare_matrix(const std::string&, init_list);
-
             void initialize();
             real make_real(const std::string&);
             complex make_complex(const std::string&);
             boolean make_boolean(const std::string&);
 
-            void prompt();
-
-            // identifier retrieve_identifier(const std::string&) { return identifier{}; }
-            // identifier retrieve_identifier(const std::string&, array_index) { return identifier{}; }
-            // identifier retrieve_identifier(const std::string&, matrix_index) { return identifier{}; }
-
-
             template<typename T>
             void analyse(const T&);
-            // void analyse(const scalar&);
-            // void analyse(const array&);
-            // void analyse(const matrix&);
-            // void analyse(const identifier&);
             void analyse(const declare_variable&, node_array<1>&);
             void analyse(const valueof&);
             void analyse(const block&, std::list<node_ptr>&);
             void analyse(const conditional&, node_array<3>&);
             void analyse(const loop&, node_array<2>&);
 
-            void process(value&);
-
-            void push(const scalar&);
-            void push(const array&);
-            void push(const matrix&);
-            void push(const identifier&);
-
-            // TODO: can the methods below be generalized?
             // Binary calculations
             template<typename Type, Type OP>
             void analyse(op::callback<Type, OP, 2, false>, node_array<2>&);
@@ -99,14 +68,20 @@ namespace falk {
             // Binary operation-assignment calculations
             template<typename Type, Type OP>
             void analyse(op::callback<Type, OP, 2, true>, node_array<2>&);
+            
+            array& extract(array&, value&);
 
             template<typename Operation, typename Stack>
             void handle_operation(const Operation&, structural::type, Stack&);
 
             void print_result();
+            void process(value&);
+            void prompt();
 
-            array& extract(array&, value&);
-            // matrix& extract(matrix&, value&);
+            void push(const scalar&);
+            void push(const array&);
+            void push(const matrix&);
+            void push(const identifier&);
          private:
             symbol_mapper mapper;
             std::stack<scalar> scalar_stack;

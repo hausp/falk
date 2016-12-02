@@ -3,13 +3,12 @@
 #define FALK_OPERATORS_HPP
 
 namespace falk {
-    // The first template argument specifies the type of operation.
-    // The second argument specifies the specific operation.
-    // The third argument specifies the arity of the operation.
-    // The fourth argument specifies if the operation is a composite
-    // assignment.
-
     struct op {
+        // The first template argument specifies the type of operation.
+        // The second argument specifies the specific operation.
+        // The third argument specifies the arity of the operation.
+        // The fourth argument specifies if the operation is a composite
+        // assignment.
         template<typename Type, Type, size_t = 2, bool = false>
         struct callback;
 

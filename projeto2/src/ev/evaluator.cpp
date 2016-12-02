@@ -1,25 +1,6 @@
 #include "base/errors.hpp"
 #include "ev/evaluator.hpp"
 
-// void falk::ev::evaluator::analyse(const scalar& value) {
-//     scalar_stack.push(value);
-//     types_stack.push(structural::type::SCALAR);
-// }
-
-// void falk::ev::evaluator::analyse(const array& container) {
-//     array_stack.push(container);
-//     types_stack.push(structural::type::ARRAY);
-// }
-
-// void falk::ev::evaluator::analyse(const matrix& container) {
-//     matrix_stack.push(container);
-//     types_stack.push(structural::type::MATRIX);
-// }
-
-// void falk::ev::evaluator::analyse(const identifier& id) {
-    
-// }
-
 void falk::ev::evaluator::analyse(const declare_variable& var,
                                   node_array<1>& nodes) {
     auto get_value = [this](auto& mapper, auto& var) {
