@@ -39,7 +39,7 @@ falk::ev::symbol_mapper::retrieve_function(const std::string& id) {
             // TODO: return what?
         }
     } else {
-        err::semantic<Error::UNDEFINED_FUNCTION>(id);
+        err::semantic<Error::UNDECLARED_FUNCTION>(id);
         // TODO: return what?
     }
 }
@@ -55,7 +55,7 @@ falk::ev::symbol_mapper::retrieve_variable(const std::string& id) {
             // TODO: return what?
         }
     } else {
-        err::semantic<Error::UNDEFINED_VARIABLE>(id);
+        err::semantic<Error::UNDECLARED_VARIABLE>(id);
         // TODO: return what?
     }
 }

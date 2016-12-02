@@ -2,7 +2,7 @@
 inline falk::ev::variable::variable(falk::type t): data{scalar(t)} {}
 
 template<typename T>
-falk::ev::variable::variable(const T& value): data{value} { }
+falk::ev::variable::variable(const T& value, structural::type t): data{value}, type{t} { }
 
 template<typename Type, Type OP, typename T>
 falk::ev::variable& falk::ev::variable::op(operation<Type, OP, 2, true> op,

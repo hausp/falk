@@ -22,38 +22,92 @@
 
 void falk::ev::evaluator::analyse(const declare_variable& var,
                                   node_array<1>& nodes) {
-    switch (var.s_type) {
-        case structural::type::SCALAR: {
-            if (!nodes[0]->empty()) {
-                nodes[0]->traverse(*this);
-                // TODO: assigned to Ghabriel
-            } else {
-                mapper.declare_variable(var.id, variable(var.f_type));
+    auto get_value = [this](auto& mapper, auto& var) {
+        auto type = aut::pop(types_stack);
+        if (type != var.s_type) {
+            err::semantic<Error::ILLEGAL_ASSIGNMENT>(var.s_type, type);
+            return;
+        }
+
+        switch (type) {
+            case structural::type::SCALAR: {
+                auto result = aut::pop(scalar_stack);
+                if (!result.error()) {
+                    mapper.declare_variable(
+                        var.id, variable(result, structural::type::SCALAR)
+                    );
+                }
+                break;
             }
-            break;
+            case structural::type::ARRAY: {
+                auto result = aut::pop(array_stack);
+                if (!result.error()) {
+                    mapper.declare_variable(
+                        var.id, variable(result, structural::type::ARRAY)
+                    );
+                }
+                break;
+            }
+            case structural::type::MATRIX: {
+                auto result = aut::pop(matrix_stack);
+                if (!result.error()) {
+                    mapper.declare_variable(
+                        var.id, variable(result, structural::type::MATRIX)
+                    );
+                }
+                break;
+            }
         }
-        case structural::type::ARRAY: {
-            // TODO: assigned to Ghabriel
-            break;
-        }
-        case structural::type::MATRIX: {
-            // TODO: assigned to Ghabriel
-            break;
-        }
-        default:;
+    };
+
+    if (!nodes[0]->empty()) {
+        nodes[0]->traverse(*this);
+        get_value(mapper, var);
+    } else {
+        mapper.declare_variable(var.id, variable(var.f_type));
     }
+    // switch (var.s_type) {
+    //     case structural::type::SCALAR: {
+    //         if (!nodes[0]->empty()) {
+    //             nodes[0]->traverse(*this);
+    //             get_value(mapper, var);
+    //         } else {
+    //             mapper.declare_variable(var.id, variable(var.f_type));
+    //         }
+    //         break;
+    //     }
+    //     case structural::type::ARRAY: {
+    //         if (!nodes[0]->empty()) {
+    //             nodes[0]->traverse(*this);
+    //             get_value(mapper, var);
+    //         } else {
+    //             mapper.declare_variable(var.id, variable(var.f_type));
+    //         }
+    //         break;
+    //     }
+    //     case structural::type::MATRIX: {
+    //         if (!nodes[0]->empty()) {
+    //             nodes[0]->traverse(*this);
+    //             get_value(mapper, var);
+    //         } else {
+    //             mapper.declare_variable(var.id, variable(var.f_type));
+    //         }
+    //         break;
+    //     }
+    //     default:;
+    // }
 }
 
 void falk::ev::evaluator::analyse(const valueof& request) {
-    std::cout << "hello" << std::endl;
     auto& var = mapper.retrieve_variable(request.id);
     switch (var.stored_type()) {
         case structural::type::SCALAR: {
-            std::cout << "darkness" << std::endl;
+            std::cout << "scalar" << std::endl;
             push(var.value<scalar>());
             break;
         }
         case structural::type::ARRAY: {
+            std::cout << "array" << std::endl;
             push(var.value<array>());
             break;
         }
@@ -61,8 +115,7 @@ void falk::ev::evaluator::analyse(const valueof& request) {
             push(var.value<matrix>());
             break;
         }
-        default:
-            std::cout << "satan" << std::endl;
+        default:;
     }
 }
 

@@ -12,7 +12,6 @@ namespace lpi {
 enum class Error {
     ILLEGAL_ASSIGNMENT,
     INCOMPATIBLE_TYPES,
-    // INCOMPATIBLE_OPERANDS,
     ARRAY_SIZE_MISMATCH,
     ROW_SIZE_MISMATCH,
     COLUMN_SIZE_MISMATCH,
@@ -21,8 +20,8 @@ enum class Error {
     ILLEGAL_OPERATION,
     INDEX_OUT_OF_BOUNDS,
     WRONG_COLUMN_COUNT,
-    UNDEFINED_VARIABLE,
-    UNDEFINED_FUNCTION,
+    UNDECLARED_VARIABLE,
+    UNDECLARED_FUNCTION,
     NOT_A_VARIABLE,
     NOT_A_FUNCTION,
     NON_BOOLEAN_CONDITION,
@@ -130,13 +129,13 @@ namespace err {
     }
 
     template<>
-    inline void semantic<Error::UNDEFINED_VARIABLE>(const std::string& name) {
-        echo(error_prefix("semantic") + "undefined variable " + name);
+    inline void semantic<Error::UNDECLARED_VARIABLE>(const std::string& name) {
+        echo(error_prefix("semantic") + "undeclared variable " + name);
     }
 
     template<>
-    inline void semantic<Error::UNDEFINED_FUNCTION>(const std::string& name) {
-        echo(error_prefix("semantic") + "undefined function " + name);
+    inline void semantic<Error::UNDECLARED_FUNCTION>(const std::string& name) {
+        echo(error_prefix("semantic") + "undeclared function " + name);
     }
 
     template<>

@@ -167,11 +167,7 @@ command:
     ;
 
 declaration:
-    VAR ID {
-        auto declare = falk::declare_variable{$2, structural::type::SCALAR};
-        $$ = falk::declaration{declare};
-    }
-    | VAR ID COLON TYPE {
+    VAR ID COLON TYPE {
         auto declare = falk::declare_variable{$2, structural::type::SCALAR, $4};
         $$ = falk::declaration{declare};
     }
@@ -184,16 +180,16 @@ declaration:
         $$ = falk::declaration();
     }
     | ARRAY ID ASSIGN rvalue {
-        // TODO
-        $$ = falk::declaration();
+        auto declare = falk::declare_variable{$2, structural::type::ARRAY};
+        $$ = falk::declaration(declare, $4);
     }
     | MATRIX mat_size ID {
         // TODO
         $$ = falk::declaration();
     }
     | MATRIX ID ASSIGN rvalue {
-        // TODO
-        $$ = falk::declaration();
+        auto declare = falk::declare_variable{$2, structural::type::MATRIX};
+        $$ = falk::declaration(declare, $4);
     };
 
 assignment:
