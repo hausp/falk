@@ -11,20 +11,17 @@ namespace sma {
         using node_ptr = std::shared_ptr<node>;
         using empty = ast::empty_node<Analyser>;
      public:
-        declaration():
-          object{new empty} { }
+        declaration();
 
         template<typename T>
-        declaration(const T& data, node_ptr value = std::make_shared<empty>()):
-          object{new ast::model<Analyser, T>{data}} {
-            object->add_subnode(value);
-        }
-
-        node_ptr extract() { return object; }
+        declaration(const T&, node_ptr = std::make_shared<empty>());
+        node_ptr extract();
 
      private:
         node_ptr object;
     };
 }
+
+#include "declaration.ipp"
 
 #endif /* SMA_DECLARATION_HPP */
