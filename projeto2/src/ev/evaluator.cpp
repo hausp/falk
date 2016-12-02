@@ -102,6 +102,22 @@ void falk::ev::evaluator::analyse(const loop&, node_array<2>& nodes) {
     }
 }
 
+void falk::ev::evaluator::analyse(const index_access&, node_array<3>& nodes) {
+    nodes[0]->traverse(*this);
+    auto type = aut::pop(types_stack);
+    switch (type) {
+        case structural::type::SCALAR:
+            err::semantic<Error::NOT_A_STRUCTURE>();
+            break;
+        case structural::type::ARRAY:
+            std::cout << "TODO: implement indexed access to arrays";
+            break;
+        case structural::type::MATRIX:
+            std::cout << "TODO: implement indexed access to matrices";
+            break;
+    }
+}
+
 void falk::ev::evaluator::process(value& v) {
     if (!v.empty()) {
         v.traverse(*this);

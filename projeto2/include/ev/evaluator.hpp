@@ -57,6 +57,7 @@ namespace falk {
             void analyse(const block&, std::list<node_ptr>&);
             void analyse(const conditional&, node_array<3>&);
             void analyse(const loop&, node_array<2>&);
+            void analyse(const index_access&, node_array<3>&);
 
             // Binary calculations
             template<typename Type, Type OP>
