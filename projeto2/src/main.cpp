@@ -5,8 +5,12 @@
 
 #include "base/types.hpp"
 
-int main(int, char **) {
-    cursed::overterm<true> terminal;
+int main(int argc, char** argv) {
+    using terminal = cursed::overterm<true>;
+    std::unique_ptr<terminal> term;
+    if (argc <= 1 || argv[1] != std::to_string(0)) {
+        term = std::make_unique<terminal>();
+    }
 
     lpi::lpa_context<falk::scanner, falk::parser, falk::analyser> context;
 
