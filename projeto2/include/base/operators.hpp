@@ -184,7 +184,7 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
 
         template<typename LH, typename RH>
-        bool operator()(const LH& lhs, const RH& rhs) const {
+        decltype(auto) operator()(const LH& lhs, const RH& rhs) const {
             return lhs < rhs;
         }
     };
@@ -194,7 +194,7 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
 
         template<typename LH, typename RH>
-        bool operator()(const LH& lhs, const RH& rhs) const {
+        decltype(auto) operator()(const LH& lhs, const RH& rhs) const {
             return lhs > rhs;
         }
     };
@@ -204,7 +204,7 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
 
         template<typename LH, typename RH>
-        bool operator()(const LH& lhs, const RH& rhs) const {
+        decltype(auto) operator()(const LH& lhs, const RH& rhs) const {
             return lhs <= rhs;
         }
     };
@@ -214,7 +214,7 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
 
         template<typename LH, typename RH>
-        bool operator()(const LH& lhs, const RH& rhs) const {
+        decltype(auto) operator()(const LH& lhs, const RH& rhs) const {
             return lhs >= rhs;
         }
     };
@@ -224,7 +224,7 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
 
         template<typename LH, typename RH>
-        bool operator()(const LH& lhs, const RH& rhs) const {
+        decltype(auto) operator()(const LH& lhs, const RH& rhs) const {
             return lhs == rhs;
         }
     };
@@ -234,7 +234,7 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
 
         template<typename LH, typename RH>
-        bool operator()(const LH& lhs, const RH& rhs) const {
+        decltype(auto) operator()(const LH& lhs, const RH& rhs) const {
             return lhs != rhs;
         }
     };

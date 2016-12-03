@@ -310,7 +310,7 @@ flat_expr:
     }
     | expr COMPARISON expr {
         // TODO: allow this to be uncommented
-        // $$ = make_comparison($2, $1, $3);
+        $$ = make_comparison($2, $1, $3);
     }
     | expr PLUS expr {
         $$ = $1 + $3;

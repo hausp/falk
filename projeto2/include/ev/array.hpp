@@ -142,6 +142,150 @@ namespace falk {
         matrix operator/(const array& lhs, const matrix& rhs);
         matrix operator%(const array& lhs, const matrix& rhs);
 
+        inline scalar operator<(const array& lhs, const scalar& rhs) {
+            err::semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t::ARRAY,
+                                                     falk::struct_t::SCALAR);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
+        inline scalar operator>(const array& lhs, const scalar& rhs) {
+            err::semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t::ARRAY,
+                                                     falk::struct_t::SCALAR);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
+        inline scalar operator<=(const array& lhs, const scalar& rhs) {
+            err::semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t::ARRAY,
+                                                     falk::struct_t::SCALAR);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
+        inline scalar operator>=(const array& lhs, const scalar& rhs) {
+            err::semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t::ARRAY,
+                                                     falk::struct_t::SCALAR);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
+        inline scalar operator==(const array& lhs, const scalar& rhs) {
+            err::semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t::ARRAY,
+                                                     falk::struct_t::SCALAR);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
+        inline scalar operator!=(const array& lhs, const scalar& rhs) {
+            err::semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t::ARRAY,
+                                                     falk::struct_t::SCALAR);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
+        inline scalar operator<(const array& lhs, const array& rhs) {
+            err::semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t::ARRAY,
+                                                     falk::struct_t::ARRAY);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
+        inline scalar operator>(const array& lhs, const array& rhs) {
+            err::semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t::ARRAY,
+                                                     falk::struct_t::ARRAY);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
+        inline scalar operator<=(const array& lhs, const array& rhs) {
+            err::semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t::ARRAY,
+                                                     falk::struct_t::ARRAY);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
+        inline scalar operator>=(const array& lhs, const array& rhs) {
+            err::semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t::ARRAY,
+                                                     falk::struct_t::ARRAY);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
+        inline scalar operator==(const array& lhs, const array& rhs) {
+            err::semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t::ARRAY,
+                                                     falk::struct_t::ARRAY);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
+        inline scalar operator!=(const array& lhs, const array& rhs) {
+            err::semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t::ARRAY,
+                                                     falk::struct_t::ARRAY);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
+        inline scalar operator<(const array& lhs, const matrix& rhs) {
+            err::semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t::ARRAY,
+                                                     falk::struct_t::MATRIX);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
+        inline scalar operator>(const array& lhs, const matrix& rhs) {
+            err::semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t::ARRAY,
+                                                     falk::struct_t::MATRIX);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
+        inline scalar operator<=(const array& lhs, const matrix& rhs) {
+            err::semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t::ARRAY,
+                                                     falk::struct_t::MATRIX);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
+        inline scalar operator>=(const array& lhs, const matrix& rhs) {
+            err::semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t::ARRAY,
+                                                     falk::struct_t::MATRIX);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
+        inline scalar operator==(const array& lhs, const matrix& rhs) {
+            err::semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t::ARRAY,
+                                                     falk::struct_t::MATRIX);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
+        inline scalar operator!=(const array& lhs, const matrix& rhs) {
+            err::semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t::ARRAY,
+                                                     falk::struct_t::MATRIX);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
         inline std::ostream& operator<<(std::ostream& out, const array& arr) {
             out << "[";
             for (size_t i = 0; i < arr.size(); i++) {

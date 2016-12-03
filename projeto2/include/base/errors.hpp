@@ -11,6 +11,7 @@ namespace lpi {
 
 enum class Error {
     ILLEGAL_ASSIGNMENT,
+    ILLEGAL_COMPARISON,
     INCOMPATIBLE_TYPES,
     ARRAY_SIZE_MISMATCH,
     ROW_SIZE_MISMATCH,
@@ -78,6 +79,13 @@ namespace err {
                                                     falk::struct_t rhs) {
         echo(error_prefix("semantic") + "cannot assign " +
             struct_type_table.at(rhs) + " to " + struct_type_table.at(lhs));
+    }
+
+    template<>
+    inline void semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t lhs,
+                                                    falk::struct_t rhs) {
+        echo(error_prefix("semantic") + "cannot compare " +
+            struct_type_table.at(lhs) + " and " + struct_type_table.at(rhs));
     }
 
     template<>

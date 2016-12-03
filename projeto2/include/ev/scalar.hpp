@@ -4,6 +4,7 @@
 
 #include <complex>
 #include <vector>
+#include "base/errors.hpp"
 #include "base/types.hpp"
 
 namespace falk {
@@ -87,6 +88,142 @@ namespace falk {
         matrix operator*(const scalar&, const matrix&);
         matrix operator/(const scalar&, const matrix&);
         matrix operator%(const scalar&, const matrix&);
+
+        inline scalar operator<(const scalar& lhs, const scalar& rhs) {
+            // TODO
+            if (lhs.real() == rhs.real()) {
+                return lhs.imag() < rhs.imag();
+            }
+            return lhs.real() < rhs.real();
+        }
+
+        inline scalar operator>(const scalar& lhs, const scalar& rhs) {
+            // TODO
+            if (lhs.real() == rhs.real()) {
+                return lhs.imag() > rhs.imag();
+            }
+            return lhs.real() > rhs.real();
+        }
+
+        inline scalar operator<=(const scalar& lhs, const scalar& rhs) {
+            // TODO
+            if (lhs.real() == rhs.real()) {
+                return lhs.imag() <= rhs.imag();
+            }
+            return lhs.real() <= rhs.real();
+        }
+
+        inline scalar operator>=(const scalar& lhs, const scalar& rhs) {
+            // TODO
+            if (lhs.real() == rhs.real()) {
+                return lhs.imag() >= rhs.imag();
+            }
+            return lhs.real() >= rhs.real();
+        }
+
+        inline scalar operator==(const scalar& lhs, const scalar& rhs) {
+            return lhs.real() == rhs.real() && lhs.imag() == rhs.imag();
+        }
+
+        inline scalar operator!=(const scalar& lhs, const scalar& rhs) {
+            return lhs.real() != rhs.real() || lhs.imag() == rhs.imag();
+        }
+
+        inline scalar operator<(const scalar& lhs, const array& rhs) {
+            err::semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t::SCALAR,
+                                                     falk::struct_t::ARRAY);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
+        inline scalar operator>(const scalar& lhs, const array& rhs) {
+            err::semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t::SCALAR,
+                                                     falk::struct_t::ARRAY);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
+        inline scalar operator<=(const scalar& lhs, const array& rhs) {
+            err::semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t::SCALAR,
+                                                     falk::struct_t::ARRAY);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
+        inline scalar operator>=(const scalar& lhs, const array& rhs) {
+            err::semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t::SCALAR,
+                                                     falk::struct_t::ARRAY);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
+        inline scalar operator==(const scalar& lhs, const array& rhs) {
+            err::semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t::SCALAR,
+                                                     falk::struct_t::ARRAY);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
+        inline scalar operator!=(const scalar& lhs, const array& rhs) {
+            err::semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t::SCALAR,
+                                                     falk::struct_t::ARRAY);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
+        inline scalar operator<(const scalar& lhs, const matrix& rhs) {
+            err::semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t::SCALAR,
+                                                     falk::struct_t::MATRIX);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
+        inline scalar operator>(const scalar& lhs, const matrix& rhs) {
+            err::semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t::SCALAR,
+                                                     falk::struct_t::MATRIX);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
+        inline scalar operator<=(const scalar& lhs, const matrix& rhs) {
+            err::semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t::SCALAR,
+                                                     falk::struct_t::MATRIX);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
+        inline scalar operator>=(const scalar& lhs, const matrix& rhs) {
+            err::semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t::SCALAR,
+                                                     falk::struct_t::MATRIX);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
+        inline scalar operator==(const scalar& lhs, const matrix& rhs) {
+            err::semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t::SCALAR,
+                                                     falk::struct_t::MATRIX);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
+        inline scalar operator!=(const scalar& lhs, const matrix& rhs) {
+            err::semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t::SCALAR,
+                                                     falk::struct_t::MATRIX);
+            scalar result;
+            result.set_error();
+            return result;
+        }
 
         std::ostream& operator<<(std::ostream&, const scalar&);
 
