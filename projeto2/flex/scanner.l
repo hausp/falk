@@ -56,6 +56,9 @@ nonacceptable [^-\+\*\(\)/=%,;\.\n0-9A-Za-z_ \t><!&|:\[\]]+
 
 [ \t] ;
 
+\/\/[^\n]*\n					;
+\/\*([^\*]|\*[^/])*\*\/		;
+
 {real_type} {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
