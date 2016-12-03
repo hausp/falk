@@ -8,15 +8,15 @@
 
 #include "array.hpp"
 #include "aut/utilities.hpp"
-#include "base/constructs.hpp"
+#include "base/actions.hpp"
 #include "base/operators.hpp"
 #include "base/types.hpp"
 #include "function.hpp"
 #include "matrix.hpp"
 #include "symbol_mapper.hpp"
-#include "sma/declaration.hpp"
-#include "sma/list.hpp"
-#include "sma/value.hpp"
+#include "ast/declaration.hpp"
+#include "ast/list.hpp"
+#include "ast/value.hpp"
 
 namespace falk {
     namespace ev {
@@ -36,14 +36,10 @@ namespace falk {
             using scalar = ev::scalar;
 
             // Alias to define semantic abstraction for values.
-            using declaration = sma::declaration<evaluator>;
+            using declaration = ast::declaration<evaluator>;
             using empty = ast::empty_node<evaluator>;
-            using list = sma::list<evaluator>;
-            using value = sma::value<evaluator, falk::op>;
-
-            // Methods
-            // assignment assign(identifier, value);
-            // assignment assign(identifier, value, falk::op::arithmetic);
+            using list = ast::list<evaluator>;
+            using value = ast::value<evaluator>;
 
             void initialize();
             real make_real(const std::string&);

@@ -1,10 +1,10 @@
 
-#ifndef SMA_DECLARATION_HPP
-#define SMA_DECLARATION_HPP
+#ifndef AST_DECLARATION_HPP
+#define AST_DECLARATION_HPP
 
-#include "ast/node.hpp"
+#include "node.hpp"
 
-namespace sma {
+namespace ast {
     template<typename Analyser>
     class declaration {
         using node = ast::node<Analyser>;
@@ -24,4 +24,4 @@ namespace sma {
 
 #include "declaration.ipp"
 
-#endif /* SMA_DECLARATION_HPP */
+#endif /* AST_DECLARATION_HPP */

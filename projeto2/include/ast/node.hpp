@@ -30,7 +30,8 @@ namespace ast {
         template<typename C>
         static constexpr int f(...) { return 0; }
 
-        static constexpr auto value = !std::is_void<decltype(f<Derived>(0))>();
+        static constexpr auto value =
+            !std::is_void<decltype(f<Derived>(0))>();
     }; 
 
     template<typename Analyser>

@@ -194,10 +194,11 @@ declaration:
 
 assignment:
     identifier ASSIGN rvalue {
-        // TODO
+        
     }
     | identifier ASSIGNOP rvalue {
         $$ = $1;
+        // TODO
         $$ += $3;
     };
 

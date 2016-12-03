@@ -288,6 +288,16 @@ namespace falk {
             return lhs |= rhs;
         }
     };
+
+    template<>
+    struct op::callback<op::assignment, op::assignment::DIRECT, 2> {
+        static constexpr size_t arity() { return 2; }
+
+        template<typename LH, typename RH>
+        bool operator()(LH& lhs, const RH& rhs) const {
+            return lhs = rhs;
+        }
+    };
 }
 
 #endif /* FALK_OPERATORS_HPP */

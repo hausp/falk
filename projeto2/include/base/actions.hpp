@@ -1,6 +1,6 @@
 
-#ifndef FALK_CONSTRUCTS_HPP
-#define FALK_CONSTRUCTS_HPP
+#ifndef FALK_ACTIONS_HPP
+#define FALK_ACTIONS_HPP
 
 #include "types.hpp"
 
@@ -47,7 +47,13 @@ namespace falk {
         }
     };
 
+    struct retrieve {
+        static constexpr size_t arity() {
+            return 3;
+        }
+    };
+
     using declare_variable = falk::declare<symbol::type::VARIABLE>;
 }
 
-#endif /* FALK_CONSTRUCTS_HPP */
+#endif /* FALK_ACTIONS_HPP */
