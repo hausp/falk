@@ -63,6 +63,9 @@
 %token CBRACKET  "]";
 %token EOF 0     "end of file";
 
+//%token<TODO: SOME_TYPE> INCLUDE   "include keyword";
+
+%token<std::string> FILE_ID "file identifier"
 %token<std::string> ID   "variable identifier";
 %token<falk::type> TYPE       "type identifier";
 %token<falk::real> REAL       "real value";
@@ -163,6 +166,7 @@ block_body:
 command:
     SEMICOLON     { $$ = {}; }
     | single_calc { $$ = $1; }
+    //| include     { /*TODO: include functions defined here */ }
     | assignment  { $$ = $1.extract(); }
     | decl_var    { $$ = $1.extract(); }
     | decl_fun    { $$ = $1.extract(); }
@@ -262,7 +266,22 @@ loop:
         $$ = falk::loop();
         $$ += $3;
         $$ += $5;
-    };
+    }
+    /*| FOR OPAR ID IN lvalue CPAR block {
+        $$ = falk::loop();
+        // TODO: Criar struct para absorver essas coisas
+    }*/;
+
+/*include:
+    INCLUDE COLON inc_block DOT { $$ = $2; };
+
+inc_block:
+    FILE_ID COMMA inc_block {
+        // TODO: Receive code included heres
+    } 
+    | FILE_ID {
+        // Receive code from FILE_ID
+    };*/
 
 rvalue:
     expr {
