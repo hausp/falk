@@ -92,11 +92,13 @@ void falk::ev::evaluator::analyse(const conditional&, node_array<3>& nodes) {
     auto type = aut::pop(types_stack);
     if (type == structural::type::SCALAR) {
         auto result = aut::pop(scalar_stack);
+        mapper.open_scope();
         if (result.boolean()) {
             nodes[1]->traverse(*this);
         } else {
             nodes[2]->traverse(*this);
         }
+        mapper.close_scope();
     } else {
         err::semantic<Error::NON_BOOLEAN_CONDITION>();
     }
@@ -106,12 +108,16 @@ void falk::ev::evaluator::analyse(const loop& action, node_array<2>& nodes) {
     nodes[0]->traverse(*this);
     auto type = aut::pop(types_stack);
     if (type == structural::type::SCALAR) {
-        // auto result = aut::pop(scalar_stack);
-        // if (result.boolean()) {
-        //     nodes[1]->traverse(*this);
-        //     analyse(action, nodes);
-        // }
-        std::cout << "while loop" << std::endl;
+        auto result = aut::pop(scalar_stack);
+        while (result.boolean()) {
+            mapper.open_scope();
+            nodes[1]->traverse(*this);
+            mapper.close_scope();
+            if (!types_stack.empty()) {
+                print_result();
+            }
+            nodes[0]->traverse(*this);
+        }
     } else {
         err::semantic<Error::NON_BOOLEAN_CONDITION>();
     }
