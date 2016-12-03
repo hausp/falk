@@ -168,6 +168,18 @@ falk::ev::matrix& falk::ev::matrix::operator%=(const scalar& rhs) {
     return *this = *this % rhs;
 }
 
+falk::ev::matrix& falk::ev::matrix::operator&=(const scalar& rhs) {
+    err::semantic<Error::ILLEGAL_BOOL_OP>(falk::struct_t::MATRIX, falk::struct_t::SCALAR);
+    fail = true;
+    return *this;
+}
+
+falk::ev::matrix& falk::ev::matrix::operator|=(const scalar& rhs) {
+    err::semantic<Error::ILLEGAL_BOOL_OP>(falk::struct_t::MATRIX, falk::struct_t::SCALAR);
+    fail = true;
+    return *this;
+}
+
 falk::ev::matrix& falk::ev::matrix::operator+=(const array& rhs) {
     return *this = *this + rhs;
 }
@@ -186,6 +198,18 @@ falk::ev::matrix& falk::ev::matrix::operator/=(const array& rhs) {
 
 falk::ev::matrix& falk::ev::matrix::operator%=(const array& rhs) {
     return *this = *this % rhs;
+}
+
+falk::ev::matrix& falk::ev::matrix::operator&=(const array& rhs) {
+    err::semantic<Error::ILLEGAL_BOOL_OP>(falk::struct_t::MATRIX, falk::struct_t::ARRAY);
+    fail = true;
+    return *this;
+}
+
+falk::ev::matrix& falk::ev::matrix::operator|=(const array& rhs) {
+    err::semantic<Error::ILLEGAL_BOOL_OP>(falk::struct_t::MATRIX, falk::struct_t::ARRAY);
+    fail = true;
+    return *this;
 }
 
 falk::ev::matrix& falk::ev::matrix::operator+=(const matrix& rhs) {
@@ -257,6 +281,18 @@ falk::ev::matrix& falk::ev::matrix::operator/=(const matrix& rhs) {
 
 falk::ev::matrix& falk::ev::matrix::operator%=(const matrix& rhs) {
     err::semantic<Error::ILLEGAL_OPERATION>("matrix modulus");
+    fail = true;
+    return *this;
+}
+
+falk::ev::matrix& falk::ev::matrix::operator&=(const matrix& rhs) {
+    err::semantic<Error::ILLEGAL_BOOL_OP>(falk::struct_t::MATRIX, falk::struct_t::MATRIX);
+    fail = true;
+    return *this;
+}
+
+falk::ev::matrix& falk::ev::matrix::operator|=(const matrix& rhs) {
+    err::semantic<Error::ILLEGAL_BOOL_OP>(falk::struct_t::MATRIX, falk::struct_t::MATRIX);
     fail = true;
     return *this;
 }

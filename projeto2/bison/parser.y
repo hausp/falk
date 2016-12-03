@@ -75,7 +75,7 @@
 %token<falk::op::arithmetic> DIVIDE    "/";
 %token<falk::op::arithmetic> POWER     "**";
 %token<falk::op::arithmetic> MOD       "%";
-%token<falk::op::arithmetic> ASSIGNOP  "assignment operator";
+%token<falk::op::assignment> ASSIGNOP  "assignment operator";
 %token<falk::op::comparison> COMPARISON "comparison operator";;
 %token<falk::op::logic> AND "&";
 %token<falk::op::logic> OR  "|";
@@ -198,9 +198,7 @@ assignment:
         $$ = $1;
     }
     | lvalue ASSIGNOP rvalue {
-        $$ = $1;
-        // TODO
-        // $$ += $3;
+        $$ = make_assignment($2, $1, $3);
     };
 
 single_calc: expr { $$ = $1; };
@@ -309,7 +307,6 @@ flat_expr:
         $$ = $1;
     }
     | expr COMPARISON expr {
-        // TODO: allow this to be uncommented
         $$ = make_comparison($2, $1, $3);
     }
     | expr PLUS expr {
@@ -330,6 +327,15 @@ flat_expr:
     | expr MOD expr {
         $$ = $1 % $3;
     }
+    | expr AND expr {
+        $$ = $1 && $3;
+    }
+    | expr OR expr {
+        $$ = $1 || $3;
+    }
+    // | NOT expr {
+    //     $$ = $1 % $3;
+    // }
     | MINUS expr %prec U_MINUS {
         $$ = -$2;
     }

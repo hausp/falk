@@ -206,37 +206,49 @@ function {
 "+="  {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::parser::make_ASSIGNOP(falk::op::arithmetic::ADD, falk::location());
+    return falk::parser::make_ASSIGNOP(falk::op::assignment::ADD, falk::location());
 }
 
 "-="  {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::parser::make_ASSIGNOP(falk::op::arithmetic::SUB, falk::location());
+    return falk::parser::make_ASSIGNOP(falk::op::assignment::SUB, falk::location());
 }
 
 "*="  {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::parser::make_ASSIGNOP(falk::op::arithmetic::MULT, falk::location());
+    return falk::parser::make_ASSIGNOP(falk::op::assignment::MULT, falk::location());
 }
 
 "/="  {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::parser::make_ASSIGNOP(falk::op::arithmetic::DIV, falk::location());
+    return falk::parser::make_ASSIGNOP(falk::op::assignment::DIV, falk::location());
 }
 
 "**=" {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::parser::make_ASSIGNOP(falk::op::arithmetic::POW, falk::location());
+    return falk::parser::make_ASSIGNOP(falk::op::assignment::POW, falk::location());
 }
 
 "%="  {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
-    return falk::parser::make_ASSIGNOP(falk::op::arithmetic::MOD, falk::location());
+    return falk::parser::make_ASSIGNOP(falk::op::assignment::MOD, falk::location());
+}
+
+"&="  {
+    // std::cout << "scanner scanning: " << yytext << std::endl;
+    // TODO: pass real location of token, not an empty one
+    return falk::parser::make_ASSIGNOP(falk::op::assignment::AND, falk::location());
+}
+
+"|="  {
+    // std::cout << "scanner scanning: " << yytext << std::endl;
+    // TODO: pass real location of token, not an empty one
+    return falk::parser::make_ASSIGNOP(falk::op::assignment::OR, falk::location());
 }
 
 "==" {
