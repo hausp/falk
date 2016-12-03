@@ -60,23 +60,29 @@ namespace falk {
             array& assign(const array& rhs);
             array& assign(const matrix& rhs);
 
-            array& operator+=(const scalar& rhs);
-            array& operator-=(const scalar& rhs);
-            array& operator*=(const scalar& rhs);
-            array& operator/=(const scalar& rhs);
-            array& operator%=(const scalar& rhs);
+            array& operator+=(const scalar&);
+            array& operator-=(const scalar&);
+            array& operator*=(const scalar&);
+            array& operator/=(const scalar&);
+            array& operator%=(const scalar&);
+            array& operator&=(const scalar&);
+            array& operator|=(const scalar&);
 
-            array& operator+=(const array& rhs);
-            array& operator-=(const array& rhs);
-            array& operator*=(const array& rhs);
-            array& operator/=(const array& rhs);
-            array& operator%=(const array& rhs);
+            array& operator+=(const array&);
+            array& operator-=(const array&);
+            array& operator*=(const array&);
+            array& operator/=(const array&);
+            array& operator%=(const array&);
+            array& operator&=(const array&);
+            array& operator|=(const array&);
 
-            array& operator+=(const matrix& rhs);
-            array& operator-=(const matrix& rhs);
-            array& operator*=(const matrix& rhs);
-            array& operator/=(const matrix& rhs);
-            array& operator%=(const matrix& rhs);
+            array& operator+=(const matrix&);
+            array& operator-=(const matrix&);
+            array& operator*=(const matrix&);
+            array& operator/=(const matrix&);
+            array& operator%=(const matrix&);
+            array& operator&=(const matrix&);
+            array& operator|=(const matrix&);
 
          private:
             std::vector<scalar> values;
@@ -142,6 +148,22 @@ namespace falk {
         matrix operator/(const array& lhs, const matrix& rhs);
         matrix operator%(const array& lhs, const matrix& rhs);
 
+        inline scalar operator&&(const array& lhs, const scalar& rhs) {
+            err::semantic<Error::ILLEGAL_BOOL_OP>(falk::struct_t::ARRAY,
+                                                  falk::struct_t::SCALAR);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
+        inline scalar operator||(const array& lhs, const scalar& rhs) {
+            err::semantic<Error::ILLEGAL_BOOL_OP>(falk::struct_t::ARRAY,
+                                                  falk::struct_t::SCALAR);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
         inline scalar operator<(const array& lhs, const scalar& rhs) {
             err::semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t::ARRAY,
                                                      falk::struct_t::SCALAR);
@@ -190,6 +212,22 @@ namespace falk {
             return result;
         }
 
+        inline scalar operator&&(const array& lhs, const array& rhs) {
+            err::semantic<Error::ILLEGAL_BOOL_OP>(falk::struct_t::ARRAY,
+                                                  falk::struct_t::ARRAY);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
+        inline scalar operator||(const array& lhs, const array& rhs) {
+            err::semantic<Error::ILLEGAL_BOOL_OP>(falk::struct_t::ARRAY,
+                                                  falk::struct_t::ARRAY);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
         inline scalar operator<(const array& lhs, const array& rhs) {
             err::semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t::ARRAY,
                                                      falk::struct_t::ARRAY);
@@ -233,6 +271,22 @@ namespace falk {
         inline scalar operator!=(const array& lhs, const array& rhs) {
             err::semantic<Error::ILLEGAL_COMPARISON>(falk::struct_t::ARRAY,
                                                      falk::struct_t::ARRAY);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
+        inline scalar operator&&(const array& lhs, const matrix& rhs) {
+            err::semantic<Error::ILLEGAL_BOOL_OP>(falk::struct_t::ARRAY,
+                                                  falk::struct_t::MATRIX);
+            scalar result;
+            result.set_error();
+            return result;
+        }
+
+        inline scalar operator||(const array& lhs, const matrix& rhs) {
+            err::semantic<Error::ILLEGAL_BOOL_OP>(falk::struct_t::ARRAY,
+                                                  falk::struct_t::MATRIX);
             scalar result;
             result.set_error();
             return result;
