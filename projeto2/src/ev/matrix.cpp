@@ -2,6 +2,34 @@
 
 falk::ev::scalar falk::ev::matrix::invalid;
 
+falk::ev::array falk::ev::matrix::row(size_t index) const {
+    array result;
+    if (index >= num_rows) {
+        err::semantic<Error::INDEX_OUT_OF_BOUNDS>(num_rows, index);
+        result.set_error();
+        return result;
+    }
+
+    for (size_t i = 0; i < num_columns; i++) {
+        result.push_back(at(index, i));
+    }
+    return result;
+}
+
+falk::ev::array falk::ev::matrix::column(size_t index) const {
+    array result;
+    if (index >= num_columns) {
+        err::semantic<Error::INDEX_OUT_OF_BOUNDS>(num_columns, index);
+        result.set_error();
+        return result;
+    }
+
+    for (size_t i = 0; i < num_rows; i++) {
+        result.push_back(at(i, index));
+    }
+    return result;
+}
+
 falk::ev::matrix falk::ev::operator*(const matrix& lhs, const matrix& rhs) {
     if (lhs.column_count() != rhs.row_count()) {
         err::semantic<Error::MATRIX_MULT_MISMATCH>(lhs.column_count(), rhs.row_count());

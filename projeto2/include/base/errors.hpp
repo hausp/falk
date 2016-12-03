@@ -31,6 +31,9 @@ enum class Error {
     NOT_A_STRUCTURE,
     HETEROGENEOUS_STRUCTURE,
     TOO_MANY_DIMENSIONS,
+    TOO_MANY_INDEXES,
+    SCALAR_INDEXED_ACCESS,
+    NONSCALAR_INDEX,
 };
 
 namespace std {
@@ -144,7 +147,7 @@ namespace err {
 
     template<>
     inline void semantic<Error::INDEX_OUT_OF_BOUNDS>(size_t limit, size_t actual) {
-        echo(error_prefix("semantic") + "index out of bounds (limit " +
+        echo(error_prefix("semantic") + "index out of bounds (limit = " +
             std::to_string(limit) + ", actual = " + std::to_string(actual) + ")");
     }
 
@@ -207,6 +210,21 @@ namespace err {
     template<>
     inline void semantic<Error::TOO_MANY_DIMENSIONS>() {
         echo(error_prefix("semantic") + "3d structures are not supported");
+    }
+
+    template<>
+    inline void semantic<Error::TOO_MANY_INDEXES>() {
+        echo(error_prefix("semantic") + "array access can only have one index");
+    }
+
+    template<>
+    inline void semantic<Error::SCALAR_INDEXED_ACCESS>() {
+        echo(error_prefix("semantic") + "scalar access cannot have an index");
+    }
+
+    template<>
+    inline void semantic<Error::NONSCALAR_INDEX>() {
+        echo(error_prefix("semantic") + "indexes must be scalars");
     }
 }
 

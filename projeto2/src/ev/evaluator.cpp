@@ -50,69 +50,27 @@ void falk::ev::evaluator::analyse(const declare_variable& var,
 }
 
 void falk::ev::evaluator::analyse(var_id& vid, node_array<2>& index) {
-    auto has_first = !index[0]->empty();
-    auto has_second = !index[1]->empty();
-    auto& var = mapper.retrieve_variable(vid.id);
-    switch (var.stored_type()) {
-        case structural::type::SCALAR:
+    if (!index[0]->empty()) {
+        index[0]->traverse(*this);
+        auto type = aut::pop(types_stack);
+        if (type != structural::type::SCALAR) {
             // TODO: error
             std::cout << "stop!" << std::endl;
-            return;
-        case structural::type::ARRAY: {
-            if (has_second) {
-                // TODO:: error
-                std::cout << "stop!!" << std::endl;
-                return;
-            }
-
-            auto value = var.value<array>();
-            if (has_first) {
-                index[0]->traverse(*this);
-                auto type = aut::pop(types_stack);
-                if (type != structural::type::SCALAR) {
-                    // TODO: error
-                    std::cout << "stop!!!" << std::endl;
-                }
-
-                auto result = aut::pop(scalar_stack);
-                std::cout << "result = " << value[result.real()] << std::endl;
-                push(value[result.real()]);
-            }
-            break;
         }
-        case structural::type::MATRIX: {
-            auto value = var.value<matrix>();
-            std::cout << "TODO: this thing" << std::endl;
-            // if (has_first) {
-            //     index[0]->traverse(*this);
-            //     auto type = aut::pop(types_stack);
-            //     if (type != structural::type::SCALAR) {
-            //         // TODO: error
-            //         std::cout << "stop!!!" << std::endl;
-            //     }
-
-            //     auto result = aut::pop(scalar_stack);
-            //     // TODO
-            //     // push(value[result]);
-            // }
-
-            // if (has_second) {
-            //     index[1]->traverse(*this);
-            //     auto type = aut::pop(types_stack);
-            //     if (type != structural::type::SCALAR) {
-            //         // TODO: error
-            //         std::cout << "stop!!!!" << std::endl;
-            //     }
-
-            //     auto result = aut::pop(scalar_stack);
-            //     // TODO
-            //     // push(value[result]);
-            // }
-            break;
-        }
+        vid.index.first = aut::pop(scalar_stack).real();
     }
 
-    // push(vid);
+    if (!index[1]->empty()) {
+        index[1]->traverse(*this);
+        auto type = aut::pop(types_stack);
+        if (type != structural::type::SCALAR) {
+            // TODO: error
+            std::cout << "stop!!" << std::endl;
+        }
+        vid.index.second = aut::pop(scalar_stack).real();
+    }
+
+    push(vid);
 }
 
 void falk::ev::evaluator::analyse(const valueof&, node_array<1>& nodes) {
@@ -122,18 +80,52 @@ void falk::ev::evaluator::analyse(const valueof&, node_array<1>& nodes) {
     // Assigned to Ghabriel
     auto vid = aut::pop(id_stack);
     auto& var = mapper.retrieve_variable(vid.id);
-    
+
     switch (var.stored_type()) {
         case structural::type::SCALAR: {
-            push(var.value<scalar>());
+            auto value = var.value<scalar>();
+            if (vid.index.first > -1 || vid.index.second > -1) {
+                err::semantic<Error::SCALAR_INDEXED_ACCESS>();
+                value.set_error();
+                push(value);
+                return;
+            }
+            push(value);
             break;
         }
         case structural::type::ARRAY: {
-            push(var.value<array>());
+            auto value = var.value<array>();
+            if (vid.index.second > -1) {
+                err::semantic<Error::TOO_MANY_INDEXES>();
+                value.set_error();
+                push(value);
+                return;
+            }
+
+            if (vid.index.first > -1) {
+                if (vid.index.first >= value.size()) {
+                    err::semantic<Error::INDEX_OUT_OF_BOUNDS>(value.size(), vid.index.first);
+                    value.set_error();
+                    push(value);
+                    return;
+                }
+                push(value[vid.index.first]);
+            } else {
+                push(var.value<array>());
+            }
             break;
         }
         case structural::type::MATRIX: {
-            push(var.value<matrix>());
+            auto value = var.value<matrix>();
+            if (vid.index.first > -1 && vid.index.second > -1) {
+                push(value.at(vid.index.first, vid.index.second));
+            } else if (vid.index.first > -1) {
+                push(value.row(vid.index.first));
+            } else if (vid.index.second > -1) {
+                push(value.column(vid.index.second));
+            } else {
+                push(value);
+            }
             break;
         }
         // default:

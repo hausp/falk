@@ -16,6 +16,9 @@ namespace falk {
 
             scalar& at(size_t, size_t);
             const scalar& at(size_t, size_t) const;
+            array row(size_t) const;
+            array column(size_t) const;
+
             void push_back(const array&);
             void push_front(const array&);
             void set_error();
