@@ -64,6 +64,12 @@ namespace falk {
         }
     };
 
+    struct create_structure {
+        static constexpr int arity() {
+            return -1;
+        }
+    };
+
     using declare_variable = falk::declare<symbol::type::VARIABLE>;
 }
 

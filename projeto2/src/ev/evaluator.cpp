@@ -216,7 +216,7 @@ void falk::ev::evaluator::analyse(const create_matrix&,
                                   std::list<node_ptr>& nodes) {
     // TODO: solve this (problem number 666: unknown nullptr)
     auto size = nodes.size() - 1;
-    
+
     for (auto& node : nodes) {
         // TODO: solve this (problem number 666: unknown nullptr)
         if (node) {
@@ -236,6 +236,42 @@ void falk::ev::evaluator::analyse(const create_matrix&,
     }
 
     push(m);
+}
+
+void falk::ev::evaluator::analyse(const create_structure&,
+                                  std::list<node_ptr>& nodes) {
+    // TODO: solve this (problem number 666: unknown nullptr)
+    // auto size = nodes.size() - 1;
+    
+    // for (auto& node : nodes) {
+    //     // TODO: solve this (problem number 666: unknown nullptr)
+    //     if (node) {
+    //         node->traverse(*this);
+    //     }
+    // }
+
+    // array arr;
+    // matrix m;
+    // bool is_matrix = false;
+
+    // for (auto i = 0; i < size; i++) {
+    //     auto type = aut::pop(types_stack);
+    //     switch (type) {
+    //         case structural::type::SCALAR:
+    //             auto scalar = aut::pop(scalar_stack);
+    //             arr.push_front(scalar);
+    //             m.push_front(scalar);
+    //             break;
+    //         case structural::type::ARRAY:
+                
+    //     }
+    //     if (aut::pop(types_stack) == structural::type::SCALAR) {
+    //     } else {
+    //         // TODO: error
+    //     }
+    // }
+
+    // push(arr);
 }
 
 falk::ev::array& falk::ev::evaluator::extract(array& arr, rvalue& v) {

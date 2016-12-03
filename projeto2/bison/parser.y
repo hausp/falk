@@ -91,8 +91,9 @@
 %type<falk::lvalue> assignment;
 %type<falk::lvalue> lvalue;
 %type<falk::declaration> declaration;
-%type<falk::list> array_list scalar_list
-%type<falk::list> matrix_list matrix_list_body;
+%type<falk::list> container container_body
+// %type<falk::list> array_list scalar_list
+// %type<falk::list> matrix_list matrix_list_body;
 
 // Operators precedence.
 // The latest it is listed, the highest the precedence.
@@ -262,39 +263,54 @@ index:
     lvalue { $$ = $1; }
     | REAL { $$ = $1; };
 
-array_list:
-    OBRACKET scalar_list CBRACKET {
+container:
+    OBRACKET container_body CBRACKET {
         $$ = $2;
     };
 
-matrix_list:
-    OBRACKET matrix_list_body CBRACKET {
-        $$ = $2;
+container_body:
+    expr {
+        // $$ = falk::create_structure();
+        // $$ += $1;
+    }
+    | container_body COMMA expr {
+        // $$ = $1;
+        // $$ += $3;
     };
 
-scalar_list:
-    flat_expr {
-        $$ = falk::create_array();
-        $$ += $1;
-        // $$ = analyser.extract($$, $1);
-    }
-    | scalar_list COMMA flat_expr {
-        $$ = $1;
-        $$ += $3; 
-        // $$ = analyser.extract($1, $3);
-    };
+// array_list:
+//     OBRACKET scalar_list CBRACKET {
+//         $$ = $2;
+//     };
 
-matrix_list_body:
-    array_list {
-        $$ = falk::create_matrix();
-        $$ += $1;
-        // $$.push_back($1);
-    }
-    | matrix_list_body COMMA array_list {
-        $$ = $1;
-        $$ += $3;
-        // $$.push_back($3);
-    };
+// matrix_list:
+//     OBRACKET matrix_list_body CBRACKET {
+//         $$ = $2;
+//     };
+
+// scalar_list:
+//     flat_expr {
+//         $$ = falk::create_array();
+//         $$ += $1;
+//         // $$ = analyser.extract($$, $1);
+//     }
+//     | scalar_list COMMA flat_expr {
+//         $$ = $1;
+//         $$ += $3; 
+//         // $$ = analyser.extract($1, $3);
+//     };
+
+// matrix_list_body:
+//     array_list {
+//         $$ = falk::create_matrix();
+//         $$ += $1;
+//         // $$.push_back($1);
+//     }
+//     | matrix_list_body COMMA array_list {
+//         $$ = $1;
+//         $$ += $3;
+//         // $$.push_back($3);
+//     };
 
 flat_expr:
     REAL {
@@ -353,14 +369,17 @@ expr:
     flat_expr {
         $$ = $1;
     }
-    | array_list {
-        $$ = $1.extract();
-    }
-    | matrix_list {
+    // | array_list {
+    //     $$ = $1.extract();
+    // }
+    // | matrix_list {
+    //     $$ = $1.extract();
+    // };
+    | container {
         $$ = $1.extract();
     };
 %%
 
 void falk::parser::error(const location& loc, const std::string& message) {
-	std::cout <<  "[Line " << context.line_count() << "] syntax error: " << message << std::endl;// << "Location: " << loc << std::endl;
+    std::cout <<  "[Line " << context.line_count() << "] syntax error: " << message << std::endl;// << "Location: " << loc << std::endl;
 }

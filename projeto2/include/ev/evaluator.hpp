@@ -60,6 +60,7 @@ namespace falk {
 
             void analyse(const create_array&, std::list<node_ptr>&);
             void analyse(const create_matrix&, std::list<node_ptr>&);
+            void analyse(const create_structure&, std::list<node_ptr>&);
 
             // Binary calculations
             template<typename Type, Type OP>
