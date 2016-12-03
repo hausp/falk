@@ -68,27 +68,57 @@ void falk::ev::evaluator::analyse(op::callback<Type, OP, 1> op,
 template<falk::op::assignment OP>
 void falk::ev::evaluator::analyse(op::callback<op::assignment, OP, 2> op,
                                   node_array<2>& nodes) {
+    auto apply = [&](auto& vid, auto& op, auto& var, auto& rhs) {
+        switch (var.stored_type()) {
+            case structural::type::SCALAR: {
+                op(var, rhs);
+                break;
+            }
+            case structural::type::ARRAY: {
+                auto value = var.template value<array>();
+                if (vid.index.first > -1) {
+                    op(value[vid.index.first], rhs);
+                } else {
+                    op(var, rhs);
+                }
+                break;
+            }
+            case structural::type::MATRIX: {
+                auto value = var.template value<matrix>();
+                if (vid.index.first > -1 && vid.index.second > -1) {
+                    op(value.at(vid.index.first, vid.index.second), rhs);
+                } else if (vid.index.first > -1) {
+                    // op(value.row(vid.index.first), rhs);
+                } else if (vid.index.second > -1) {
+                    // op(value.column(vid.index.second), rhs);
+                } else {
+                    op(var, rhs);
+                }
+                break;
+            }
+        }
+    };
+
     for (auto& node : nodes) {
         node->traverse(*this);
     }
     auto t1 = aut::pop(types_stack);
+    auto vid = aut::pop(id_stack);
+    auto& var = mapper.retrieve_variable(vid.id);
     switch (t1) {
         case structural::type::SCALAR: {
             auto rhs = aut::pop(scalar_stack);
-            auto& var = mapper.retrieve_variable(aut::pop(id_stack).id);
-            op(var, rhs);
+            apply(vid, op, var, rhs);
             break;
         }
         case structural::type::ARRAY: {
             auto rhs = aut::pop(array_stack);
-            auto& var = mapper.retrieve_variable(aut::pop(id_stack).id);
-            op(var, rhs);
+            apply(vid, op, var, rhs);
             break;
         }
         case structural::type::MATRIX: {
             auto rhs = aut::pop(matrix_stack);
-            auto& var = mapper.retrieve_variable(aut::pop(id_stack).id);
-            op(var, rhs);
+            apply(vid, op, var, rhs);
             break;
         }
     }
