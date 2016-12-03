@@ -261,12 +261,8 @@ lvalue:
     
 
 index:
-    lvalue {
-        $$ = $1;
-    }
-    | REAL {
-        $$ = $1;
-    };
+    lvalue { $$ = $1; }
+    | REAL { $$ = $1; };
 
 array_list:
     OBRACKET scalar_list CBRACKET {
@@ -280,19 +276,26 @@ matrix_list:
 
 scalar_list:
     flat_expr {
-        $$ = analyser.extract($$, $1);
+        $$ = falk::create_array();
+        $$ += $1;
+        // $$ = analyser.extract($$, $1);
     }
     | scalar_list COMMA flat_expr {
-        $$ = analyser.extract($1, $3);
+        $$ = $1;
+        $$ += $3; 
+        // $$ = analyser.extract($1, $3);
     };
 
 matrix_list_body:
     array_list {
-        $$.push_back($1);
+        $$ = falk::create_matrix();
+        $$ += $1;
+        // $$.push_back($1);
     }
     | matrix_list_body COMMA array_list {
         $$ = $1;
-        $$.push_back($3);
+        $$ += $3;
+        // $$.push_back($3);
     };
 
 flat_expr:
@@ -309,7 +312,6 @@ flat_expr:
         $$ = $1;
     }
     | expr COMPARISON expr {
-        // TODO: allow this to be uncommented
         $$ = make_comparison($2, $1, $3);
     }
     | expr PLUS expr {

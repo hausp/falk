@@ -43,12 +43,6 @@ namespace falk {
         }
     };
 
-    // struct index_access {
-    //     static constexpr size_t arity() {
-    //         return 3;
-    //     }
-    // };
-
     struct var_id {
         static constexpr size_t arity() {
             return 2;
@@ -56,6 +50,10 @@ namespace falk {
 
         std::string id;
         std::pair<int64_t, int64_t> index = {-1, -1};
+    };
+
+    struct create_matrix {
+
     };
 
     using declare_variable = falk::declare<symbol::type::VARIABLE>;
