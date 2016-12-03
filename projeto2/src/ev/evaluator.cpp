@@ -50,9 +50,69 @@ void falk::ev::evaluator::analyse(const declare_variable& var,
 }
 
 void falk::ev::evaluator::analyse(var_id& vid, node_array<2>& index) {
-    // TODO: handle index
-    // Assigned to Ghabriel
-    push(vid);
+    auto has_first = !index[0]->empty();
+    auto has_second = !index[1]->empty();
+    auto& var = mapper.retrieve_variable(vid.id);
+    switch (var.stored_type()) {
+        case structural::type::SCALAR:
+            // TODO: error
+            std::cout << "stop!" << std::endl;
+            return;
+        case structural::type::ARRAY: {
+            if (has_second) {
+                // TODO:: error
+                std::cout << "stop!!" << std::endl;
+                return;
+            }
+
+            auto value = var.value<array>();
+            if (has_first) {
+                index[0]->traverse(*this);
+                auto type = aut::pop(types_stack);
+                if (type != structural::type::SCALAR) {
+                    // TODO: error
+                    std::cout << "stop!!!" << std::endl;
+                }
+
+                auto result = aut::pop(scalar_stack);
+                std::cout << "result = " << value[result.real()] << std::endl;
+                push(value[result.real()]);
+            }
+            break;
+        }
+        case structural::type::MATRIX: {
+            auto value = var.value<matrix>();
+            std::cout << "TODO: this thing" << std::endl;
+            // if (has_first) {
+            //     index[0]->traverse(*this);
+            //     auto type = aut::pop(types_stack);
+            //     if (type != structural::type::SCALAR) {
+            //         // TODO: error
+            //         std::cout << "stop!!!" << std::endl;
+            //     }
+
+            //     auto result = aut::pop(scalar_stack);
+            //     // TODO
+            //     // push(value[result]);
+            // }
+
+            // if (has_second) {
+            //     index[1]->traverse(*this);
+            //     auto type = aut::pop(types_stack);
+            //     if (type != structural::type::SCALAR) {
+            //         // TODO: error
+            //         std::cout << "stop!!!!" << std::endl;
+            //     }
+
+            //     auto result = aut::pop(scalar_stack);
+            //     // TODO
+            //     // push(value[result]);
+            // }
+            break;
+        }
+    }
+
+    // push(vid);
 }
 
 void falk::ev::evaluator::analyse(const valueof&, node_array<1>& nodes) {
