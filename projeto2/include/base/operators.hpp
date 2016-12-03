@@ -298,6 +298,24 @@ namespace falk {
             return lhs = rhs;
         }
     };
+
+    template<typename LH, typename RH>
+    decltype(auto) make_comparison(op::comparison comp, LH lhs, RH rhs) {
+        switch (comp) {
+            case op::comparison::LT:
+                return lhs < rhs;
+            case op::comparison::GT:
+                return lhs > rhs;
+            case op::comparison::LE:
+                return lhs <= rhs;
+            case op::comparison::GE:
+                return lhs >= rhs;
+            case op::comparison::EQ:
+                return lhs == rhs;
+            case op::comparison::NE:
+                return lhs != rhs;
+        }
+    }
 }
 
 #endif /* FALK_OPERATORS_HPP */

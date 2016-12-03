@@ -309,7 +309,8 @@ flat_expr:
         $$ = $1;
     }
     | expr COMPARISON expr {
-        $$ = falk::scalar(true); /* TODO: use $2.operation */
+        // TODO: allow this to be uncommented
+        // $$ = make_comparison($2, $1, $3);
     }
     | expr PLUS expr {
         $$ = $1 + $3;
