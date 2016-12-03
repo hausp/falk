@@ -90,8 +90,10 @@
 %type<falk::rvalue> index rvalue;
 %type<falk::lvalue> assignment;
 %type<falk::lvalue> lvalue;
-%type<falk::declaration> declaration;
-%type<falk::list> container container_body
+%type<falk::declaration> decl_var decl_fun;
+%type<falk::list> container container_body;
+%type<falk::parameters> param_list;
+%type<falk::parameter> param;
 // %type<falk::list> array_list scalar_list
 // %type<falk::list> matrix_list matrix_list_body;
 
@@ -162,12 +164,13 @@ command:
     SEMICOLON     { $$ = {}; }
     | single_calc { $$ = $1; }
     | assignment  { $$ = $1.extract(); }
-    | declaration { $$ = $1.extract(); }
+    | decl_var    { $$ = $1.extract(); }
+    | decl_fun    { $$ = $1.extract(); }
     | conditional { $$ = $1.extract(); }
     | loop        { $$ = $1.extract(); }
     ;
 
-declaration:
+decl_var:
     VAR ID COLON TYPE {
         auto decl = falk::declare_variable{$2, structural::type::SCALAR, $4};
         $$ = falk::declaration(decl);
@@ -192,6 +195,42 @@ declaration:
         auto decl = falk::declare_variable{$2, structural::type::MATRIX};
         $$ = falk::declaration(decl, $4);
     };
+
+decl_fun:
+    FUN ID OPAR param_list CPAR block {
+        // auto decl = falk::declare_function{$2, structural::type::MATRIX};
+        // $$ = falk::declaration(decl, $6);
+    };
+
+param_list:
+    param {
+        $$ = {};
+        $$.push_back($1);
+    }
+    | param_list COMMA param {
+        $$ = $1;
+        $$.push_back($3);    
+    };
+
+param:
+    VAR ID {
+        $$ = {{$2}, falk::structural::type::SCALAR};
+    }
+    | ARRAY ID {
+        $$ = {{$2}, falk::structural::type::ARRAY};
+    }
+    | ARRAY arr_size ID {
+        // TODO
+        $$ = {{$3}, falk::structural::type::ARRAY};
+    }
+    | MATRIX ID {
+        $$ = {{$2}, falk::structural::type::MATRIX};
+    }
+    | MATRIX mat_size ID {
+        // TODO
+        $$ = {{$3}, falk::structural::type::MATRIX};
+    }
+    ;
 
 assignment:
     lvalue ASSIGN rvalue {

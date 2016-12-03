@@ -44,6 +44,8 @@ namespace falk {
         var_id vid;
         structural::type s_type;
     };
+
+    using parameters = std::vector<falk::parameter>;
 }
 
 #endif /* FALK_ACTIONS_HPP */
