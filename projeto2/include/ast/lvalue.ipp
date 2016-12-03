@@ -103,3 +103,8 @@ ast::lvalue<A>::operator rvalue<A>() {
     v.object->add_subnode(std::move(object));
     return v;
 }
+
+template<typename A>
+typename ast::lvalue<A>::node_ptr ast::lvalue<A>::extract() {
+    return object;
+}

@@ -88,7 +88,7 @@
 %type<falk::rvalue> arr_size mat_size;
 %type<falk::rvalue> flat_expr expr single_calc;
 %type<falk::rvalue> index rvalue;
-%type<falk::lvalue> assignment;
+%type<falk::rvalue> assignment;
 %type<falk::lvalue> lvalue;
 %type<falk::declaration> declaration;
 %type<falk::array> array_list scalar_list
@@ -194,8 +194,8 @@ declaration:
 
 assignment:
     lvalue ASSIGN rvalue {
-        $$ = $1;
-        $$ = $3;
+        $1 = $3;
+        $$ = $1.extract();
     }
     | lvalue ASSIGNOP rvalue {
         $$ = $1;

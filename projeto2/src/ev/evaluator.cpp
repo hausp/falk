@@ -65,17 +65,14 @@ void falk::ev::evaluator::analyse(const valueof&, node_array<1>& nodes) {
     
     switch (var.stored_type()) {
         case structural::type::SCALAR: {
-    
             push(var.value<scalar>());
             break;
         }
         case structural::type::ARRAY: {
-    
             push(var.value<array>());
             break;
         }
         case structural::type::MATRIX: {
-    
             push(var.value<matrix>());
             break;
         }

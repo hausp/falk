@@ -33,6 +33,7 @@ namespace ast {
         lvalue<Analyser>& operator=(rvalue<Analyser>&);
 
         operator rvalue<Analyser>();
+        node_ptr extract();
      private:
         node_ptr object;
 
