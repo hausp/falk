@@ -130,7 +130,6 @@ void falk::ev::evaluator::analyse(const loop&, node_array<2>& nodes) {
     }
 }
 
-
 // void falk::ev::evaluator::analyse(const index_access&, node_array<3>& nodes) {
 //     nodes[0]->traverse(*this);
 //     auto type = aut::pop(types_stack);
@@ -242,15 +241,4 @@ void falk::ev::evaluator::analyse(const create_structure&,
     } else {
         push(arr);
     }
-}
-
-falk::ev::array& falk::ev::evaluator::extract(array& arr, rvalue& v) {
-    v.traverse(*this);
-    if (aut::pop(types_stack) == structural::type::SCALAR) {
-        auto scalar = aut::pop(scalar_stack);
-        arr.push_back(scalar);
-    } else {
-        // TODO: error
-    }
-    return arr;
 }
