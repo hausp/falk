@@ -85,6 +85,7 @@ void falk::ev::evaluator::analyse(const valueof&, node_array<1>& nodes) {
 
 void falk::ev::evaluator::analyse(const block&, std::list<node_ptr>& nodes) {
     for (auto& node : nodes) {
+        // TODO: solve this (problem number 666: unknown nullptr)
         if (node) {
             node->traverse(*this);        
         }
@@ -183,6 +184,58 @@ void falk::ev::evaluator::print_result() {
             break;
         }
     }
+}
+
+void falk::ev::evaluator::analyse(const create_array&,
+                                  std::list<node_ptr>& nodes) {
+    // TODO: solve this (problem number 666: unknown nullptr)
+    auto size = nodes.size() - 1;
+    
+    for (auto& node : nodes) {
+        // TODO: solve this (problem number 666: unknown nullptr)
+        if (node) {
+            node->traverse(*this);
+        }
+    }
+    
+    auto arr = array();
+
+    for (auto i = 0; i < size; i++) {
+        if (aut::pop(types_stack) == structural::type::SCALAR) {
+            auto scalar = aut::pop(scalar_stack);
+            arr.push_back(scalar);
+        } else {
+            // TODO: error
+        }
+    }
+
+    push(arr);
+}
+
+void falk::ev::evaluator::analyse(const create_matrix&,
+                                  std::list<node_ptr>& nodes) {
+    // TODO: solve this (problem number 666: unknown nullptr)
+    auto size = nodes.size() - 1;
+    
+    for (auto& node : nodes) {
+        // TODO: solve this (problem number 666: unknown nullptr)
+        if (node) {
+            node->traverse(*this);
+        }
+    }
+
+    auto m = matrix();
+
+    for (auto i = 0; i < size; i++) {
+        if (aut::pop(types_stack) == structural::type::ARRAY) {
+            auto scalar = aut::pop(array_stack);
+            m.push_back(scalar);
+        } else {
+            // TODO: error
+        }
+    }
+
+    push(m);
 }
 
 falk::ev::array& falk::ev::evaluator::extract(array& arr, rvalue& v) {

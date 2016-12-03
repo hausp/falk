@@ -91,8 +91,8 @@
 %type<falk::lvalue> assignment;
 %type<falk::lvalue> lvalue;
 %type<falk::declaration> declaration;
-%type<falk::array> array_list scalar_list
-%type<falk::matrix> matrix_list matrix_list_body;
+%type<falk::list> array_list scalar_list
+%type<falk::list> matrix_list matrix_list_body;
 
 // Operators precedence.
 // The latest it is listed, the highest the precedence.
@@ -354,10 +354,10 @@ expr:
         $$ = $1;
     }
     | array_list {
-        $$ = $1;
+        $$ = $1.extract();
     }
     | matrix_list {
-        $$ = $1;        
+        $$ = $1.extract();        
     };
 %%
 

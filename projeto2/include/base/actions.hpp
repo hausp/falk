@@ -53,7 +53,15 @@ namespace falk {
     };
 
     struct create_matrix {
+        static constexpr int arity() {
+            return -1;
+        }
+    };
 
+    struct create_array {
+        static constexpr int arity() {
+            return -1;
+        }
     };
 
     using declare_variable = falk::declare<symbol::type::VARIABLE>;
