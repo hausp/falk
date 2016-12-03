@@ -357,7 +357,7 @@ expr:
         $$ = $1.extract();
     }
     | matrix_list {
-        $$ = $1.extract();        
+        $$ = $1.extract();
     };
 %%
 
