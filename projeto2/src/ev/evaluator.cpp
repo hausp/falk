@@ -76,6 +76,10 @@ void falk::ev::evaluator::analyse(const valueof&, node_array<1>& nodes) {
             push(var.value<matrix>());
             break;
         }
+        // default:
+        // THROW A BRICK AT THE USER
+        // use of undefined variable
+        // push(invalid_something);
     }
 }
 
@@ -104,7 +108,7 @@ void falk::ev::evaluator::analyse(const conditional&, node_array<3>& nodes) {
     }
 }
 
-void falk::ev::evaluator::analyse(const loop& action, node_array<2>& nodes) {
+void falk::ev::evaluator::analyse(const loop&, node_array<2>& nodes) {
     nodes[0]->traverse(*this);
     auto type = aut::pop(types_stack);
     if (type == structural::type::SCALAR) {
@@ -117,6 +121,8 @@ void falk::ev::evaluator::analyse(const loop& action, node_array<2>& nodes) {
                 print_result();
             }
             nodes[0]->traverse(*this);
+            type = aut::pop(types_stack);
+            result = aut::pop(scalar_stack);
         }
     } else {
         err::semantic<Error::NON_BOOLEAN_CONDITION>();

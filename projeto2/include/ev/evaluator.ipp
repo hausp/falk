@@ -75,19 +75,19 @@ void falk::ev::evaluator::analyse(op::callback<op::assignment, OP, 2> op,
     switch (t1) {
         case structural::type::SCALAR: {
             auto rhs = aut::pop(scalar_stack);
-            auto& var = mapper.retrieve_variable(id_stack.top().id);
+            auto& var = mapper.retrieve_variable(aut::pop(id_stack).id);
             op(var, rhs);
             break;
         }
         case structural::type::ARRAY: {
             auto rhs = aut::pop(array_stack);
-            auto& var = mapper.retrieve_variable(id_stack.top().id);
+            auto& var = mapper.retrieve_variable(aut::pop(id_stack).id);
             op(var, rhs);
             break;
         }
         case structural::type::MATRIX: {
             auto rhs = aut::pop(matrix_stack);
-            auto& var = mapper.retrieve_variable(id_stack.top().id);
+            auto& var = mapper.retrieve_variable(aut::pop(id_stack).id);
             op(var, rhs);
             break;
         }
