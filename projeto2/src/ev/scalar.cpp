@@ -126,14 +126,10 @@ falk::ev::scalar& falk::ev::scalar::operator%=(const scalar& rhs) {
 }
 
 falk::ev::scalar& falk::ev::scalar::operator&=(const scalar& rhs) {
-    std::cout << "hello, darkness" << std::endl;
-    std::cout << err::type_table.at(_type) << std::endl;
-    std::cout << err::type_table.at(rhs.type()) << std::endl;
-    auto type = falk::resolve_types(_type, rhs.type());
-    switch (type) {
+    switch (_type) {
         case falk::type::COMPLEX:
         case falk::type::REAL:
-            err::semantic<Error::ILLEGAL_ASSIGNMENT>(type,
+            err::semantic<Error::ILLEGAL_ASSIGNMENT>(_type,
                                                      falk::type::BOOL);
             fail = true;
             break;
@@ -191,7 +187,6 @@ falk::ev::scalar& falk::ev::scalar::operator%=(const array& rhs) {
 }
 
 falk::ev::scalar& falk::ev::scalar::operator&=(const array& rhs) {
-    std::cout << "hello, darkness 2" << std::endl;
     err::semantic<Error::ILLEGAL_BOOL_OP>(falk::struct_t::SCALAR, falk::struct_t::ARRAY);
     fail = true;
     return *this;
@@ -234,7 +229,6 @@ falk::ev::scalar& falk::ev::scalar::operator%=(const matrix& rhs) {
 }
 
 falk::ev::scalar& falk::ev::scalar::operator&=(const matrix& rhs) {
-    std::cout << "hello, darkness 3" << std::endl;
     err::semantic<Error::ILLEGAL_BOOL_OP>(falk::struct_t::SCALAR, falk::struct_t::MATRIX);
     fail = true;
     return *this;

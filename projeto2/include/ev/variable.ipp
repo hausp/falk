@@ -85,17 +85,17 @@ falk::ev::variable& falk::ev::variable::operator%=(const T& rhs) {
 
 template<typename T>
 falk::ev::variable& falk::ev::variable::operator&=(const T& rhs) {
-    return op(falk::op::callback<op::logic,op::logic::AND, 2>(), rhs);
+    return op(op::callback<op::assignment, op::assignment::AND, 2>(), rhs);
 }
 
 template<typename T>
 falk::ev::variable& falk::ev::variable::operator|=(const T& rhs) {
-    return op(falk::op::callback<op::logic,op::logic::AND, 2>(), rhs);
+    return op(op::callback<op::assignment, op::assignment::OR, 2>(), rhs);
 }
 
 template<typename T>
 falk::ev::variable& falk::ev::variable::assign(const T& rhs) {
-    return op(falk::op::callback<op::assignment,op::assignment::DIRECT, 2>(), rhs);
+    return op(op::callback<op::assignment,op::assignment::DIRECT, 2>(), rhs);
 }
 
 inline std::ostream& falk::ev::operator<<(std::ostream& out, const variable& v) {

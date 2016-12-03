@@ -275,9 +275,6 @@ namespace falk {
 
         template<typename LH, typename RH>
         decltype(auto) operator()(LH& lhs, const RH& rhs) const {
-            // std::cout << "operator&=" << std::endl;
-            // std::cout << "lhs = " << lhs << std::endl;
-            // std::cout << "rhs = " << rhs << std::endl;
             return lhs &= rhs;
         }
     };
