@@ -18,6 +18,7 @@ namespace falk {
             const scalar& at(size_t, size_t) const;
             void push_back(const array&);
             void push_front(const array&);
+            void set_error();
             bool error() const;
             std::pair<size_t, size_t> size() const;
             size_t row_count() const;
@@ -67,6 +68,10 @@ namespace falk {
         };
 
         const auto invalid_matrix = matrix(true);
+
+        inline void matrix::set_error() {
+            fail = true;
+        }
 
         inline matrix operator+(const matrix& lhs, const matrix& rhs) {
             auto copy = lhs;

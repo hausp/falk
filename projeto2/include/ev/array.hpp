@@ -35,6 +35,10 @@ namespace falk {
                 return values.at(index);
             }
 
+            void set_error() {
+                fail = true;
+            }
+
             bool error() const {
                 return fail;
             }

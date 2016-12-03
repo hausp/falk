@@ -29,6 +29,8 @@ enum class Error {
     NON_BOOLEAN_CONDITION,
     REDECLARATION_OF_SYMBOL,
     NOT_A_STRUCTURE,
+    HETEROGENEOUS_STRUCTURE,
+    TOO_MANY_DIMENSIONS,
 };
 
 namespace std {
@@ -195,6 +197,16 @@ namespace err {
     template<>
     inline void semantic<Error::NOT_A_STRUCTURE>() {
         echo(error_prefix("semantic") + "expected array or matrix, got scalar instead");
+    }
+
+    template<>
+    inline void semantic<Error::HETEROGENEOUS_STRUCTURE>() {
+        echo(error_prefix("semantic") + "heterogeneous arrays are illegal");
+    }
+
+    template<>
+    inline void semantic<Error::TOO_MANY_DIMENSIONS>() {
+        echo(error_prefix("semantic") + "3d structures are not supported");
     }
 }
 

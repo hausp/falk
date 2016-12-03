@@ -186,92 +186,62 @@ void falk::ev::evaluator::print_result() {
     }
 }
 
-void falk::ev::evaluator::analyse(const create_array&,
-                                  std::list<node_ptr>& nodes) {
-    // TODO: solve this (problem number 666: unknown nullptr)
-    auto size = nodes.size() - 1;
-    
-    for (auto& node : nodes) {
-        // TODO: solve this (problem number 666: unknown nullptr)
-        if (node) {
-            node->traverse(*this);
-        }
-    }
-    
-    auto arr = array();
-
-    for (auto i = 0; i < size; i++) {
-        if (aut::pop(types_stack) == structural::type::SCALAR) {
-            auto scalar = aut::pop(scalar_stack);
-            arr.push_front(scalar);
-        } else {
-            // TODO: error
-        }
-    }
-
-    push(arr);
-}
-
-void falk::ev::evaluator::analyse(const create_matrix&,
-                                  std::list<node_ptr>& nodes) {
-    // TODO: solve this (problem number 666: unknown nullptr)
-    auto size = nodes.size() - 1;
-
-    for (auto& node : nodes) {
-        // TODO: solve this (problem number 666: unknown nullptr)
-        if (node) {
-            node->traverse(*this);
-        }
-    }
-
-    auto m = matrix();
-
-    for (auto i = 0; i < size; i++) {
-        if (aut::pop(types_stack) == structural::type::ARRAY) {
-            auto scalar = aut::pop(array_stack);
-            m.push_front(scalar);
-        } else {
-            // TODO: error
-        }
-    }
-
-    push(m);
-}
-
 void falk::ev::evaluator::analyse(const create_structure&,
                                   std::list<node_ptr>& nodes) {
     // TODO: solve this (problem number 666: unknown nullptr)
-    // auto size = nodes.size() - 1;
-    
-    // for (auto& node : nodes) {
-    //     // TODO: solve this (problem number 666: unknown nullptr)
-    //     if (node) {
-    //         node->traverse(*this);
-    //     }
-    // }
+    auto size = nodes.size() - 1;
 
-    // array arr;
-    // matrix m;
-    // bool is_matrix = false;
+    for (auto& node : nodes) {
+        // TODO: solve this (problem number 666: unknown nullptr)
+        if (node) {
+            node->traverse(*this);
+        }
+    }
 
-    // for (auto i = 0; i < size; i++) {
-    //     auto type = aut::pop(types_stack);
-    //     switch (type) {
-    //         case structural::type::SCALAR:
-    //             auto scalar = aut::pop(scalar_stack);
-    //             arr.push_front(scalar);
-    //             m.push_front(scalar);
-    //             break;
-    //         case structural::type::ARRAY:
-                
-    //     }
-    //     if (aut::pop(types_stack) == structural::type::SCALAR) {
-    //     } else {
-    //         // TODO: error
-    //     }
-    // }
+    array arr;
+    matrix m;
+    auto result_type = structural::type::ARRAY;
 
-    // push(arr);
+    for (auto i = 0; i < size; i++) {
+        auto type = aut::pop(types_stack);
+        switch (type) {
+            case structural::type::SCALAR: {
+                if (i > 0 && result_type == structural::type::MATRIX) {
+                    err::semantic<Error::HETEROGENEOUS_STRUCTURE>();
+                    m.set_error();
+                    push(m);
+                    return;
+                }
+                auto scalar = aut::pop(scalar_stack);
+                arr.push_front(scalar);
+                result_type = structural::type::ARRAY;
+                break;
+            }
+            case structural::type::ARRAY: {
+                if (i > 0 && result_type == structural::type::ARRAY) {
+                    err::semantic<Error::HETEROGENEOUS_STRUCTURE>();
+                    arr.set_error();
+                    push(arr);
+                    return;
+                }
+                auto a = aut::pop(array_stack);
+                m.push_front(a);
+                result_type = structural::type::MATRIX;
+                break;
+            }
+            case structural::type::MATRIX:
+                err::semantic<Error::TOO_MANY_DIMENSIONS>();
+                m.set_error();
+                push(m);
+                return;
+        }
+    }
+
+    if (result_type == structural::type::MATRIX) {
+        push(m);
+    } else {
+        push(arr);
+    }
 }
 
 falk::ev::array& falk::ev::evaluator::extract(array& arr, rvalue& v) {

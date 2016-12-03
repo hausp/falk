@@ -58,8 +58,6 @@ namespace falk {
             void analyse(var_id&, node_array<2>&);
             void analyse(const valueof&, node_array<1>&);
 
-            void analyse(const create_array&, std::list<node_ptr>&);
-            void analyse(const create_matrix&, std::list<node_ptr>&);
             void analyse(const create_structure&, std::list<node_ptr>&);
 
             // Binary calculations

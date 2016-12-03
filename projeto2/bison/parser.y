@@ -270,47 +270,13 @@ container:
 
 container_body:
     expr {
-        // $$ = falk::create_structure();
-        // $$ += $1;
+        $$ = falk::create_structure();
+        $$ += $1;
     }
     | container_body COMMA expr {
-        // $$ = $1;
-        // $$ += $3;
+        $$ = $1;
+        $$ += $3;
     };
-
-// array_list:
-//     OBRACKET scalar_list CBRACKET {
-//         $$ = $2;
-//     };
-
-// matrix_list:
-//     OBRACKET matrix_list_body CBRACKET {
-//         $$ = $2;
-//     };
-
-// scalar_list:
-//     flat_expr {
-//         $$ = falk::create_array();
-//         $$ += $1;
-//         // $$ = analyser.extract($$, $1);
-//     }
-//     | scalar_list COMMA flat_expr {
-//         $$ = $1;
-//         $$ += $3; 
-//         // $$ = analyser.extract($1, $3);
-//     };
-
-// matrix_list_body:
-//     array_list {
-//         $$ = falk::create_matrix();
-//         $$ += $1;
-//         // $$.push_back($1);
-//     }
-//     | matrix_list_body COMMA array_list {
-//         $$ = $1;
-//         $$ += $3;
-//         // $$.push_back($3);
-//     };
 
 flat_expr:
     REAL {
@@ -369,12 +335,6 @@ expr:
     flat_expr {
         $$ = $1;
     }
-    // | array_list {
-    //     $$ = $1.extract();
-    // }
-    // | matrix_list {
-    //     $$ = $1.extract();
-    // };
     | container {
         $$ = $1.extract();
     };
