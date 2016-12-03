@@ -56,18 +56,21 @@ namespace falk {
                 return copy.pow(rhs);
             }
 
+            array& operator=(const scalar& rhs);
             array& operator+=(const scalar& rhs);
             array& operator-=(const scalar& rhs);
             array& operator*=(const scalar& rhs);
             array& operator/=(const scalar& rhs);
             array& operator%=(const scalar& rhs);
 
+            array& operator=(const array& rhs);
             array& operator+=(const array& rhs);
             array& operator-=(const array& rhs);
             array& operator*=(const array& rhs);
             array& operator/=(const array& rhs);
             array& operator%=(const array& rhs);
 
+            array& operator=(const matrix& rhs);
             array& operator+=(const matrix& rhs);
             array& operator-=(const matrix& rhs);
             array& operator*=(const matrix& rhs);

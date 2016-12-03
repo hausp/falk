@@ -72,7 +72,6 @@ void falk::ev::evaluator::analyse(op::callback<op::assignment, OP, 2> op,
     for (auto& node : nodes) {
         node->traverse(*this);
     }
-    std::cout << "hello" << std::endl;
     auto t1 = aut::pop(types_stack);
     switch (t1) {
         case structural::type::SCALAR: {

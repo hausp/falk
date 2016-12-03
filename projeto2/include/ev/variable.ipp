@@ -30,7 +30,11 @@ falk::ev::variable& falk::ev::variable::op(op::callback<Type, OP, 2> op,
     switch (type) {
         case falk::structural::type::SCALAR: {
             auto& raw = data.value<scalar>();
+            std::cout << "(variable::op) scalar" << std::endl;
+            std::cout << "(variable::op) lhs value = " << raw << std::endl;
+            std::cout << "(variable::op) rhs value = " << v << std::endl;
             op(raw, v);
+            std::cout << "(variable::op) ok" << std::endl;
             break;
         }
         case falk::structural::type::ARRAY: {
@@ -43,7 +47,6 @@ falk::ev::variable& falk::ev::variable::op(op::callback<Type, OP, 2> op,
             op(raw, v);
             break;
         }
-        default:;
     }
 
     return *this;

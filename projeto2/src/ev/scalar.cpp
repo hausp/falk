@@ -17,9 +17,6 @@ falk::ev::scalar& falk::ev::scalar::pow(const scalar& rhs) {
         case falk::type::BOOL:
             _real = std::pow(_real, rhs.real());
             break;
-        default:
-            // TODO: throw a brick at the user
-            fail = true;
     }
 
     return *this;
@@ -37,6 +34,12 @@ falk::ev::scalar& falk::ev::scalar::pow(const matrix& rhs) {
     return *this;
 }
 
+falk::ev::scalar& falk::ev::scalar::operator=(const scalar& rhs) {
+    _real = rhs._real;
+    _imag = rhs._imag;
+    return *this;
+}
+
 falk::ev::scalar& falk::ev::scalar::operator+=(const scalar& rhs) {
     auto type = falk::resolve_types(_type, rhs.type());
     switch (type) {
@@ -48,9 +51,6 @@ falk::ev::scalar& falk::ev::scalar::operator+=(const scalar& rhs) {
         case falk::type::BOOL:
             _real += rhs._real;
             break;
-        default:
-            // TODO: throw a brick at the user
-            fail = true;
     }
     return *this;
 }
@@ -66,9 +66,6 @@ falk::ev::scalar& falk::ev::scalar::operator-=(const scalar& rhs) {
         case falk::type::BOOL:
             _real -= rhs._real;
             break;
-        default:
-            // TODO: throw a brick at the user
-            fail = true;
     }
     return *this;
 }
@@ -83,9 +80,6 @@ falk::ev::scalar& falk::ev::scalar::operator*=(const scalar& rhs) {
         case falk::type::BOOL:
             _real *= rhs.real();
             break;
-        default:
-            // TODO: throw a brick at the user
-            fail = true;
     }
     return *this;
 }
@@ -100,9 +94,6 @@ falk::ev::scalar& falk::ev::scalar::operator/=(const scalar& rhs) {
         case falk::type::BOOL:
             _real /= rhs.real();
             break;
-        default:
-            // TODO: throw a brick at the user
-            fail = true;
     }
     return *this;
 }
@@ -118,10 +109,13 @@ falk::ev::scalar& falk::ev::scalar::operator%=(const scalar& rhs) {
         case falk::type::BOOL:
             _real = std::fmod(real(), rhs.real());
             break;
-        default:
-            // TODO: throw a brick at the user
-            fail = true;
     }
+    return *this;
+}
+
+falk::ev::scalar& falk::ev::scalar::operator=(const array& rhs) {
+    err::semantic<Error::ILLEGAL_ASSIGNMENT>(falk::struct_t::SCALAR, falk::struct_t::ARRAY);
+    fail = true;
     return *this;
 }
 
@@ -151,6 +145,12 @@ falk::ev::scalar& falk::ev::scalar::operator/=(const array& rhs) {
 
 falk::ev::scalar& falk::ev::scalar::operator%=(const array& rhs) {
     err::semantic<Error::ILLEGAL_ASSIGNMENT>(falk::struct_t::SCALAR, falk::struct_t::ARRAY);
+    fail = true;
+    return *this;
+}
+
+falk::ev::scalar& falk::ev::scalar::operator=(const matrix& rhs) {
+    err::semantic<Error::ILLEGAL_ASSIGNMENT>(falk::struct_t::SCALAR, falk::struct_t::MATRIX);
     fail = true;
     return *this;
 }
@@ -232,9 +232,6 @@ falk::ev::scalar falk::ev::operator-(const scalar& n) {
         case falk::type::REAL:
         case falk::type::BOOL:
             return {n.type(), -n.real(), -n.imag()};
-        default:
-            // TODO: throw a brick at the user
-            return {};
     }
 }
 
@@ -342,7 +339,6 @@ std::ostream& falk::ev::operator<<(std::ostream& out, const scalar& n) {
         case falk::type::BOOL:
             out << std::boolalpha << n.boolean() << std::noboolalpha;
             break;
-        default:;
     }
     return out;
 }

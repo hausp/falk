@@ -29,18 +29,21 @@ namespace falk {
             matrix& pow(const array&);
             matrix& pow(const matrix&);
 
+            matrix& operator=(const scalar&);
             matrix& operator+=(const scalar&);
             matrix& operator-=(const scalar&);
             matrix& operator*=(const scalar&);
             matrix& operator/=(const scalar&);
             matrix& operator%=(const scalar&);
 
+            matrix& operator=(const array&);
             matrix& operator+=(const array&);
             matrix& operator-=(const array&);
             matrix& operator*=(const array&);
             matrix& operator/=(const array&);
             matrix& operator%=(const array&);
 
+            matrix& operator=(const matrix&);
             matrix& operator+=(const matrix&);
             matrix& operator-=(const matrix&);
             matrix& operator*=(const matrix&);

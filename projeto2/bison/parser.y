@@ -194,11 +194,8 @@ declaration:
 
 assignment:
     lvalue ASSIGN rvalue {
-        // TODO: uncommenting this lines causes errors
-        // due to MISSING OPERATORS OF ASSIGNMENT
-        // .:. assigned to Ghabriel
-        // $$ = $1;
-        // $$ = $3;
+        $$ = $1;
+        $$ = $3;
     }
     | lvalue ASSIGNOP rvalue {
         $$ = $1;
