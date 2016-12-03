@@ -39,21 +39,22 @@ namespace falk {
             scalar& pow(const array&);
             scalar& pow(const matrix&);
 
-            scalar& operator=(const scalar&);
+            scalar& assign(const scalar&);
+            scalar& assign(const array&);
+            scalar& assign(const matrix&);
+
             scalar& operator+=(const scalar&);
             scalar& operator-=(const scalar&);
             scalar& operator*=(const scalar&);
             scalar& operator/=(const scalar&);
             scalar& operator%=(const scalar&);
 
-            scalar& operator=(const array&);
             scalar& operator+=(const array&);
             scalar& operator-=(const array&);
             scalar& operator*=(const array&);
             scalar& operator/=(const array&);
             scalar& operator%=(const array&);
 
-            scalar& operator=(const matrix&);
             scalar& operator+=(const matrix&);
             scalar& operator-=(const matrix&);
             scalar& operator*=(const matrix&);
@@ -103,7 +104,7 @@ namespace falk {
         
         inline scalar::scalar(falk::type type, double real, double imag):
           _type{type}, _real{real}, _imag{imag} { }
-        
+
         inline scalar::scalar(bool v):
           _type{falk::type::BOOL}, _real{static_cast<double>(v)} { }
 

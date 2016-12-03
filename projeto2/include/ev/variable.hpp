@@ -43,8 +43,9 @@ namespace falk {
             variable& operator&=(const T&);
             template<typename T>
             variable& operator|=(const T&);
+
             template<typename T>
-            variable& operator=(const T&);
+            variable& assign(const T&);
          private:
             variant data;
             structural::type type = structural::type::SCALAR;

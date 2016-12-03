@@ -89,6 +89,6 @@ falk::ev::variable& falk::ev::variable::operator|=(const T& rhs) {
 }
 
 template<typename T>
-falk::ev::variable& falk::ev::variable::operator=(const T& rhs) {
+falk::ev::variable& falk::ev::variable::assign(const T& rhs) {
     return op(falk::op::callback<op::assignment,op::assignment::DIRECT, 2>(), rhs);
 }
