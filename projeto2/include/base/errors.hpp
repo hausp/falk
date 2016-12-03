@@ -12,6 +12,7 @@ namespace lpi {
 enum class Error {
     ILLEGAL_ASSIGNMENT,
     ILLEGAL_COMPARISON,
+    ILLEGAL_BOOL_OP,
     INCOMPATIBLE_TYPES,
     ARRAY_SIZE_MISMATCH,
     ROW_SIZE_MISMATCH,
@@ -86,6 +87,20 @@ namespace err {
                                                     falk::struct_t rhs) {
         echo(error_prefix("semantic") + "cannot compare " +
             struct_type_table.at(lhs) + " and " + struct_type_table.at(rhs));
+    }
+
+    template<>
+    inline void semantic<Error::ILLEGAL_BOOL_OP>(falk::struct_t lhs,
+                                                 falk::struct_t rhs) {
+        echo(error_prefix("semantic") + "invalid types to boolean operation (" +
+            struct_type_table.at(lhs) + " and " + struct_type_table.at(rhs) + ")");
+    }
+
+    template<>
+    inline void semantic<Error::ILLEGAL_ASSIGNMENT>(falk::type lhs,
+                                                    falk::type rhs) {
+        echo(error_prefix("semantic") + "cannot assign " +
+            type_table.at(rhs) + " to " + type_table.at(lhs));
     }
 
     template<>

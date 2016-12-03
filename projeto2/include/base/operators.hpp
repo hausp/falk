@@ -244,7 +244,7 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
 
         template<typename LH, typename RH>
-        bool operator()(const LH& lhs, const RH& rhs) const {
+        decltype(auto) operator()(const LH& lhs, const RH& rhs) const {
             return lhs && rhs;
         }
     };
@@ -254,7 +254,7 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
 
         template<typename LH, typename RH>
-        bool operator()(const LH& lhs, const RH& rhs) const {
+        decltype(auto) operator()(const LH& lhs, const RH& rhs) const {
             return lhs || rhs;
         }
     };
@@ -264,7 +264,7 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
 
         template<typename RH>
-        bool operator()(const RH& operand) const {
+        decltype(auto) operator()(const RH& operand) const {
             return !operand;
         }
     };
@@ -274,7 +274,7 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
 
         template<typename LH, typename RH>
-        bool operator()(LH& lhs, const RH& rhs) const {
+        decltype(auto) operator()(LH& lhs, const RH& rhs) const {
             return lhs &= rhs;
         }
     };
@@ -284,7 +284,7 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
 
         template<typename LH, typename RH>
-        bool operator()(LH& lhs, const RH& rhs) const {
+        decltype(auto) operator()(LH& lhs, const RH& rhs) const {
             return lhs |= rhs;
         }
     };
@@ -314,6 +314,30 @@ namespace falk {
                 return lhs == rhs;
             case op::comparison::NE:
                 return lhs != rhs;
+        }
+    }
+
+    template<typename LH, typename RH>
+    decltype(auto) make_assignment(op::assignment comp, LH lhs, RH rhs) {
+        switch (comp) {
+            case op::assignment::DIRECT:
+                return lhs = rhs;
+            case op::assignment::ADD:
+                return lhs += rhs;
+            case op::assignment::SUB:
+                return lhs -= rhs;
+            case op::assignment::DIV:
+                return lhs /= rhs;
+            case op::assignment::MULT:
+                return lhs *= rhs;
+            case op::assignment::POW:
+                return lhs.pow(rhs);
+            case op::assignment::MOD:
+                return lhs %= rhs;
+            case op::assignment::AND:
+                return lhs &= rhs;
+            case op::assignment::OR:
+                return lhs |= rhs;
         }
     }
 }

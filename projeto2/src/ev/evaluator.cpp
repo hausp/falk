@@ -121,7 +121,7 @@ void falk::ev::evaluator::analyse(const loop&, node_array<2>& nodes) {
                 print_result();
             }
             nodes[0]->traverse(*this);
-            type = aut::pop(types_stack);
+            aut::pop(types_stack);
             result = aut::pop(scalar_stack);
         }
     } else {
