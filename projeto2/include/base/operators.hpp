@@ -295,7 +295,7 @@ namespace falk {
 
         template<typename LH, typename RH>
         decltype(auto) operator()(LH& lhs, const RH& rhs) const {
-            return lhs = rhs;
+            return lhs.assign(rhs);
         }
     };
 }

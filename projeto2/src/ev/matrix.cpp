@@ -91,10 +91,58 @@ void falk::ev::matrix::push_back(const array& row) {
     ++num_rows;
 }
 
-falk::ev::matrix& falk::ev::matrix::operator=(const scalar& rhs) {
+falk::ev::matrix& falk::ev::matrix::assign(const scalar& rhs) {
     for (size_t i = 0; i < num_rows; i++) {
         for (size_t j = 0; j < num_columns; j++) {
             at(i, j) = rhs;
+        }
+    }
+    return *this;
+}
+
+
+falk::ev::matrix& falk::ev::matrix::assign(const array& rhs) {
+    auto value = rhs.to_matrix();
+    if (row_count() != value.row_count()) {
+        err::semantic<Error::ROW_SIZE_MISMATCH>(row_count(),
+                                                value.row_count());
+        fail = true;
+        return *this;
+    }
+
+    if (column_count() != value.column_count()) {
+        err::semantic<Error::COLUMN_SIZE_MISMATCH>(column_count(),
+                                                   value.column_count());
+        fail = true;
+        return *this;
+    }
+
+    for (size_t i = 0; i < row_count(); i++) {
+        for (size_t j = 0; j < column_count(); j++) {
+            at(i, j) = value.at(i, j);
+        }
+    }
+    return *this;
+}
+
+falk::ev::matrix& falk::ev::matrix::assign(const matrix& rhs) {
+    if (row_count() != rhs.row_count()) {
+        err::semantic<Error::ROW_SIZE_MISMATCH>(row_count(),
+                                                rhs.row_count());
+        fail = true;
+        return *this;
+    }
+
+    if (column_count() != rhs.column_count()) {
+        err::semantic<Error::COLUMN_SIZE_MISMATCH>(column_count(),
+                                                   rhs.column_count());
+        fail = true;
+        return *this;
+    }
+
+    for (size_t i = 0; i < row_count(); i++) {
+        for (size_t j = 0; j < column_count(); j++) {
+            at(i, j) = rhs.at(i, j);
         }
     }
     return *this;
@@ -120,30 +168,6 @@ falk::ev::matrix& falk::ev::matrix::operator%=(const scalar& rhs) {
     return *this = *this % rhs;
 }
 
-falk::ev::matrix& falk::ev::matrix::operator=(const array& rhs) {
-    auto value = rhs.to_matrix();
-    if (row_count() != value.row_count()) {
-        err::semantic<Error::ROW_SIZE_MISMATCH>(row_count(),
-                                                value.row_count());
-        fail = true;
-        return *this;
-    }
-
-    if (column_count() != value.column_count()) {
-        err::semantic<Error::COLUMN_SIZE_MISMATCH>(column_count(),
-                                                   value.column_count());
-        fail = true;
-        return *this;
-    }
-
-    for (size_t i = 0; i < row_count(); i++) {
-        for (size_t j = 0; j < column_count(); j++) {
-            at(i, j) = value.at(i, j);
-        }
-    }
-    return *this;
-}
-
 falk::ev::matrix& falk::ev::matrix::operator+=(const array& rhs) {
     return *this = *this + rhs;
 }
@@ -162,29 +186,6 @@ falk::ev::matrix& falk::ev::matrix::operator/=(const array& rhs) {
 
 falk::ev::matrix& falk::ev::matrix::operator%=(const array& rhs) {
     return *this = *this % rhs;
-}
-
-falk::ev::matrix& falk::ev::matrix::operator=(const matrix& rhs) {
-    if (row_count() != rhs.row_count()) {
-        err::semantic<Error::ROW_SIZE_MISMATCH>(row_count(),
-                                                rhs.row_count());
-        fail = true;
-        return *this;
-    }
-
-    if (column_count() != rhs.column_count()) {
-        err::semantic<Error::COLUMN_SIZE_MISMATCH>(column_count(),
-                                                   rhs.column_count());
-        fail = true;
-        return *this;
-    }
-
-    for (size_t i = 0; i < row_count(); i++) {
-        for (size_t j = 0; j < column_count(); j++) {
-            at(i, j) = rhs.at(i, j);
-        }
-    }
-    return *this;
 }
 
 falk::ev::matrix& falk::ev::matrix::operator+=(const matrix& rhs) {
