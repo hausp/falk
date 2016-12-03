@@ -20,6 +20,11 @@ T& falk::ev::variable::value() {
     return data.value<T>();
 }
 
+template<typename T>
+const T& falk::ev::variable::value() const {
+    return data.value<T>();
+}
+
 inline bool falk::ev::variable::error() const {
     return fail;
 }
@@ -91,4 +96,25 @@ falk::ev::variable& falk::ev::variable::operator|=(const T& rhs) {
 template<typename T>
 falk::ev::variable& falk::ev::variable::assign(const T& rhs) {
     return op(falk::op::callback<op::assignment,op::assignment::DIRECT, 2>(), rhs);
+}
+
+inline std::ostream& falk::ev::operator<<(std::ostream& out, const variable& v) {
+    switch (v.stored_type()) {
+        case falk::structural::type::SCALAR: {
+            auto& raw = v.value<scalar>();
+            out << raw;
+            break;
+        }
+        case falk::structural::type::ARRAY: {
+            auto& raw = v.value<array>();
+            out << raw;
+            break;
+        }
+        case falk::structural::type::MATRIX: {
+            auto& raw = v.value<matrix>();
+            out << raw;
+            break;
+        }
+    }
+    return out;
 }
