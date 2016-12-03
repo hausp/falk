@@ -203,7 +203,7 @@ void falk::ev::evaluator::analyse(const create_array&,
     for (auto i = 0; i < size; i++) {
         if (aut::pop(types_stack) == structural::type::SCALAR) {
             auto scalar = aut::pop(scalar_stack);
-            arr.push_back(scalar);
+            arr.push_front(scalar);
         } else {
             // TODO: error
         }
@@ -229,7 +229,7 @@ void falk::ev::evaluator::analyse(const create_matrix&,
     for (auto i = 0; i < size; i++) {
         if (aut::pop(types_stack) == structural::type::ARRAY) {
             auto scalar = aut::pop(array_stack);
-            m.push_back(scalar);
+            m.push_front(scalar);
         } else {
             // TODO: error
         }

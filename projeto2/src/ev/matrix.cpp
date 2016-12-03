@@ -91,6 +91,23 @@ void falk::ev::matrix::push_back(const array& row) {
     ++num_rows;
 }
 
+void falk::ev::matrix::push_front(const array& row) {
+    if (values.size() == 0) {
+        num_columns = row.size();
+    }
+
+    if (row.size() != num_columns) {
+        err::semantic<Error::WRONG_COLUMN_COUNT>(num_columns, row.size());
+        fail = true;
+        return;
+    }
+
+    for (size_t i = 0; i < num_columns; i++) {
+        values.push_front(row[num_columns - i - 1]);
+    }
+    ++num_rows;
+}
+
 falk::ev::matrix& falk::ev::matrix::assign(const scalar& rhs) {
     for (size_t i = 0; i < num_rows; i++) {
         for (size_t j = 0; j < num_columns; j++) {

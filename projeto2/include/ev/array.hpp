@@ -3,7 +3,7 @@
 #define FALK_EV_ARRAY_HPP
 
 #include <ostream>
-#include <vector>
+#include <deque>
 #include "base/errors.hpp"
 #include "scalar.hpp"
 
@@ -21,6 +21,10 @@ namespace falk {
 
             scalar& operator[](size_t index) {
                 return values[index];
+            }
+
+            void push_front(const scalar& value) {
+                values.push_front(value);
             }
 
             void push_back(const scalar& value) {
@@ -85,7 +89,7 @@ namespace falk {
             array& operator|=(const matrix&);
 
          private:
-            std::vector<scalar> values;
+            std::deque<scalar> values;
             bool fail = false;
         };
 
