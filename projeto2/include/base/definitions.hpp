@@ -25,7 +25,8 @@ namespace falk {
     using declaration = analyser::declaration;
     using empty = analyser::empty;
     using list = analyser::list;
-    using value = analyser::value;
+    using lvalue = analyser::lvalue;
+    using rvalue = analyser::rvalue;
 }
 
 #endif /* FALK_DEFINITIONS_HPP */

@@ -20,14 +20,12 @@ namespace falk {
             template<typename T>
             variable(const T&, structural::type);
 
-            structural::type stored_type() const { return type; }
+            structural::type stored_type() const;
 
             template<typename T>
-            T& value() { return data.value<T>(); }
+            T& value();
 
-            bool error() const {
-                return fail;
-            }
+            bool error() const;
 
             template<typename T>
             variable& pow(const T&);
@@ -45,6 +43,8 @@ namespace falk {
             variable& operator&=(const T&);
             template<typename T>
             variable& operator|=(const T&);
+            template<typename T>
+            variable& operator=(const T&);
          private:
             variant data;
             structural::type type = structural::type::SCALAR;

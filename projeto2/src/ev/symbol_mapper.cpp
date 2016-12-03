@@ -49,6 +49,7 @@ falk::ev::symbol_mapper::retrieve_function(const std::string& id) {
             return scope.functions.at(id);
         } else {
             err::semantic<Error::NOT_A_FUNCTION>(id);
+            return invalid_function;
             // TODO: return what?
         }
     } else {
@@ -66,6 +67,7 @@ falk::ev::symbol_mapper::retrieve_variable(const std::string& id) {
             return scope.variables.at(id);
         } else {
             err::semantic<Error::NOT_A_VARIABLE>(id);
+            return invalid_variable;
             // TODO: return what?
         }
     } else {
@@ -92,8 +94,7 @@ bool falk::ev::symbol_mapper::is_declared(const std::string& id) const {
     return false;
 }
 
-falk::ev::symbol_mapper::scope&
-falk::ev::symbol_mapper::scope_of(const std::string& id) {
+scope& falk::ev::symbol_mapper::scope_of(const std::string& id) {
     for (auto& scope : scopes) {
         if (scope.symbol_table.count(id)) {
             return scope;

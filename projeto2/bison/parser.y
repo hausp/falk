@@ -63,7 +63,7 @@
 %token CBRACKET  "]";
 %token EOF 0     "end of file";
 
-%token<falk::identifier> ID   "variable identifier";
+%token<std::string> ID   "variable identifier";
 %token<falk::type> TYPE       "type identifier";
 %token<falk::real> REAL       "real value";
 %token<falk::complex> COMPLEX "complex value";
@@ -82,14 +82,14 @@
 %token<falk::op::logic> NOT "!";
 
 // Non-terminals
-%type<falk::list> block block_body;
-%type<falk::list> conditional loop;
-%type<falk::value> command;
-%type<falk::value> arr_size mat_size;
-%type<falk::value> flat_expr expr single_calc;
-%type<falk::value> index rvalue;
-%type<falk::value> assignment;
-%type<falk::identifier> identifier;
+%type<falk::list>  block block_body;
+%type<falk::list>  conditional loop;
+%type<falk::rvalue> command;
+%type<falk::rvalue> arr_size mat_size;
+%type<falk::rvalue> flat_expr expr single_calc;
+%type<falk::rvalue> index rvalue;
+%type<falk::lvalue> assignment;
+%type<falk::lvalue> lvalue;
 %type<falk::declaration> declaration;
 %type<falk::array> array_list scalar_list
 %type<falk::matrix> matrix_list matrix_list_body;
@@ -168,38 +168,42 @@ command:
 
 declaration:
     VAR ID COLON TYPE {
-        auto declare = falk::declare_variable{$2, structural::type::SCALAR, $4};
-        $$ = falk::declaration{declare};
+        auto decl = falk::declare_variable{$2, structural::type::SCALAR, $4};
+        $$ = falk::declaration(decl);
     }
     | VAR ID ASSIGN rvalue {
-        auto declare = falk::declare_variable{$2, structural::type::SCALAR};
-        $$ = falk::declaration(declare, $4);
+        auto decl = falk::declare_variable{$2, structural::type::SCALAR};
+        $$ = falk::declaration(decl, $4);
     }
     | ARRAY arr_size ID {
         // TODO
         $$ = falk::declaration();
     }
     | ARRAY ID ASSIGN rvalue {
-        auto declare = falk::declare_variable{$2, structural::type::ARRAY};
-        $$ = falk::declaration(declare, $4);
+        auto decl = falk::declare_variable{$2, structural::type::ARRAY};
+        $$ = falk::declaration(decl, $4);
     }
     | MATRIX mat_size ID {
         // TODO
         $$ = falk::declaration();
     }
     | MATRIX ID ASSIGN rvalue {
-        auto declare = falk::declare_variable{$2, structural::type::MATRIX};
-        $$ = falk::declaration(declare, $4);
+        auto decl = falk::declare_variable{$2, structural::type::MATRIX};
+        $$ = falk::declaration(decl, $4);
     };
 
 assignment:
-    identifier ASSIGN rvalue {
-        
+    lvalue ASSIGN rvalue {
+        // TODO: uncommenting this lines causes errors
+        // due to MISSING OPERATORS OF ASSIGNMENT
+        // .:. assigned to Ghabriel
+        // $$ = $1;
+        // $$ = $3;
     }
-    | identifier ASSIGNOP rvalue {
+    | lvalue ASSIGNOP rvalue {
         $$ = $1;
         // TODO
-        $$ += $3;
+        // $$ += $3;
     };
 
 single_calc: expr { $$ = $1; };
@@ -209,7 +213,7 @@ conditional:
         $$ = falk::conditional();
         $$ += $3;
         $$ += $5;
-        $$ += std::make_shared<falk::empty>();
+        $$ += falk::rvalue();
     }
     | IF OPAR expr CPAR block ELSE block {
         $$ = falk::conditional();
@@ -240,37 +244,31 @@ mat_size:
         // $$ = analyser.make_matrix_index($2, $4);
     };
 
-identifier:
+lvalue:
     ID {
-        $$ = $1;
-        // $$ = analyser.retrieve_identifier($1);
+        $$ = falk::var_id{$1};
+        $$.set_index(falk::rvalue(), falk::rvalue());
     }
     | ID OBRACKET index CBRACKET {
-        // $$ = falk::index_access();
-        // $$ += $1;
-        // $$ += $3;
-        // $$ += std::make_shared<falk::empty>();
+        $$ = falk::var_id{$1};
+        $$.set_index($3, falk::rvalue());
     }
     | ID OBRACKET index COMMA index CBRACKET {
-        // $$ = falk::index_access();
-        // $$ += $1;
-        // $$ += $3;
-        // $$ += $5;
+        $$ = falk::var_id{$1};
+        $$.set_index($3, $5);
     }
     | ID OBRACKET COMMA index CBRACKET {
-        // $$ = falk::index_access();
-        // $$ += $1;
-        // $$ += std::make_shared<falk::empty>();
-        // $$ += $4;
+        $$ = falk::var_id{$1};
+        $$.set_index(falk::rvalue(), $4);
     };
     
 
 index:
-    identifier {
-        // $$ = $1;
+    lvalue {
+        $$ = $1;
     }
     | REAL {
-        // $$ = $1;
+        $$ = $1;
     };
 
 array_list:
@@ -310,8 +308,8 @@ flat_expr:
     | BOOL {
         $$ = falk::scalar($1);
     }
-    | identifier {
-        $$ = falk::valueof{$1};
+    | lvalue {
+        $$ = $1;
     }
     | expr COMPARISON expr {
         $$ = falk::scalar(true); /* TODO: use $2.operation */
@@ -329,7 +327,7 @@ flat_expr:
         $$ = $1 / $3;
     }
     | expr POWER expr {
-        $$ = falk::value::pow($1, $3);
+        $$ = falk::rvalue::pow($1, $3);
     }
     | expr MOD expr {
         $$ = $1 % $3;

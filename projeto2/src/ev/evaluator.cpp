@@ -49,8 +49,20 @@ void falk::ev::evaluator::analyse(const declare_variable& var,
     }
 }
 
-void falk::ev::evaluator::analyse(const valueof& request) {
-    auto& var = mapper.retrieve_variable(request.id);
+void falk::ev::evaluator::analyse(var_id& vid, node_array<2>& index) {
+    // TODO: handle index
+    // Assigned to Ghabriel
+    push(vid);
+}
+
+void falk::ev::evaluator::analyse(const valueof&, node_array<1>& nodes) {
+    nodes[0]->traverse(*this);
+
+    // TODO: handle index
+    // Assigned to Ghabriel
+    auto vid = aut::pop(id_stack);
+    auto& var = mapper.retrieve_variable(vid.id);
+    
     switch (var.stored_type()) {
         case structural::type::SCALAR: {
             push(var.value<scalar>());
@@ -64,7 +76,6 @@ void falk::ev::evaluator::analyse(const valueof& request) {
             push(var.value<matrix>());
             break;
         }
-        default:;
     }
 }
 
@@ -102,23 +113,24 @@ void falk::ev::evaluator::analyse(const loop&, node_array<2>& nodes) {
     }
 }
 
-void falk::ev::evaluator::analyse(const index_access&, node_array<3>& nodes) {
-    nodes[0]->traverse(*this);
-    auto type = aut::pop(types_stack);
-    switch (type) {
-        case structural::type::SCALAR:
-            err::semantic<Error::NOT_A_STRUCTURE>();
-            break;
-        case structural::type::ARRAY:
-            std::cout << "TODO: implement indexed access to arrays";
-            break;
-        case structural::type::MATRIX:
-            std::cout << "TODO: implement indexed access to matrices";
-            break;
-    }
-}
 
-void falk::ev::evaluator::process(value& v) {
+// void falk::ev::evaluator::analyse(const index_access&, node_array<3>& nodes) {
+//     nodes[0]->traverse(*this);
+//     auto type = aut::pop(types_stack);
+//     switch (type) {
+//         case structural::type::SCALAR:
+//             err::semantic<Error::NOT_A_STRUCTURE>();
+//             break;
+//         case structural::type::ARRAY:
+//             std::cout << "TODO: implement indexed access to arrays";
+//             break;
+//         case structural::type::MATRIX:
+//             std::cout << "TODO: implement indexed access to matrices";
+//             break;
+//     }
+// }
+
+void falk::ev::evaluator::process(rvalue& v) {
     if (!v.empty()) {
         v.traverse(*this);
     }
@@ -158,7 +170,7 @@ void falk::ev::evaluator::print_result() {
     }
 }
 
-falk::ev::array& falk::ev::evaluator::extract(array& arr, value& v) {
+falk::ev::array& falk::ev::evaluator::extract(array& arr, rvalue& v) {
     v.traverse(*this);
     if (aut::pop(types_stack) == structural::type::SCALAR) {
         auto scalar = aut::pop(scalar_stack);

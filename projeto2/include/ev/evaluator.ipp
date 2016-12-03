@@ -4,7 +4,7 @@ void falk::ev::evaluator::analyse(op::callback<Type, OP, 2> op,
     for (auto& node : nodes) {
         node->traverse(*this);
     }
-
+    std::cout << "idiot" << std::endl;
     auto t1 = aut::pop(types_stack);
     auto t2 = aut::pop(types_stack);
 
@@ -66,31 +66,30 @@ void falk::ev::evaluator::analyse(op::callback<Type, OP, 1> op,
     }
 }
 
-
 template<falk::op::assignment OP>
 void falk::ev::evaluator::analyse(op::callback<op::assignment, OP, 2> op,
                                   node_array<2>& nodes) {
     for (auto& node : nodes) {
         node->traverse(*this);
     }
-
+    std::cout << "hello" << std::endl;
     auto t1 = aut::pop(types_stack);
     switch (t1) {
         case structural::type::SCALAR: {
             auto rhs = aut::pop(scalar_stack);
-            auto& var = mapper.retrieve_variable(aut::pop(id_stack));
+            auto& var = mapper.retrieve_variable(aut::pop(id_stack).id);
             op(var, rhs);
             break;
         }
         case structural::type::ARRAY: {
             auto rhs = aut::pop(array_stack);
-            auto& var = mapper.retrieve_variable(aut::pop(id_stack));
+            auto& var = mapper.retrieve_variable(aut::pop(id_stack).id);
             op(var, rhs);
             break;
         }
         case structural::type::MATRIX: {
             auto rhs = aut::pop(matrix_stack);
-            auto& var = mapper.retrieve_variable(aut::pop(id_stack));
+            auto& var = mapper.retrieve_variable(aut::pop(id_stack).id);
             op(var, rhs);
             break;
         }
@@ -117,7 +116,7 @@ inline void falk::ev::evaluator::push(const matrix& data) {
     types_stack.push(structural::type::MATRIX);
 }
 
-inline void falk::ev::evaluator::push(const identifier& data) {
+inline void falk::ev::evaluator::push(const var_id& data) {
     id_stack.push(data);
 }
 

@@ -13,7 +13,7 @@ namespace falk {
 
         class array {
          public:
-            array(bool flag = false) : fail(flag) { }
+            explicit array(bool flag = false) : fail(flag) { }
 
             size_t size() const {
                 return values.size();

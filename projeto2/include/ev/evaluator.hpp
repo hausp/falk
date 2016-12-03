@@ -16,7 +16,8 @@
 #include "symbol_mapper.hpp"
 #include "ast/declaration.hpp"
 #include "ast/list.hpp"
-#include "ast/value.hpp"
+#include "ast/lvalue.hpp"
+#include "ast/rvalue.hpp"
 
 namespace falk {
     namespace ev {
@@ -39,7 +40,8 @@ namespace falk {
             using declaration = ast::declaration<evaluator>;
             using empty = ast::empty_node<evaluator>;
             using list = ast::list<evaluator>;
-            using value = ast::value<evaluator>;
+            using lvalue = ast::lvalue<evaluator>;
+            using rvalue = ast::rvalue<evaluator>;
 
             void initialize();
             real make_real(const std::string&);
@@ -49,11 +51,12 @@ namespace falk {
             template<typename T>
             void analyse(const T&);
             void analyse(const declare_variable&, node_array<1>&);
-            void analyse(const valueof&);
             void analyse(const block&, std::list<node_ptr>&);
             void analyse(const conditional&, node_array<3>&);
             void analyse(const loop&, node_array<2>&);
-            void analyse(const index_access&, node_array<3>&);
+            
+            void analyse(var_id&, node_array<2>&);
+            void analyse(const valueof&, node_array<1>&);
 
             // Binary calculations
             template<typename Type, Type OP>
@@ -66,25 +69,25 @@ namespace falk {
             template<op::assignment OP>
             void analyse(op::callback<op::assignment, OP, 2>, node_array<2>&);
             
-            array& extract(array&, value&);
+            array& extract(array&, rvalue&);
 
             template<typename Operation, typename Stack>
             void handle_operation(const Operation&, structural::type, Stack&);
 
             void print_result();
-            void process(value&);
+            void process(rvalue&);
             void prompt();
 
             void push(const scalar&);
             void push(const array&);
             void push(const matrix&);
-            void push(const identifier&);
+            void push(const var_id&);
          private:
             symbol_mapper mapper;
             std::stack<scalar> scalar_stack;
             std::stack<array> array_stack;
             std::stack<matrix> matrix_stack;
-            std::stack<identifier> id_stack;
+            std::stack<var_id> id_stack;
             std::stack<structural::type> types_stack;
         };
     }

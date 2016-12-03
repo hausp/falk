@@ -5,7 +5,7 @@
 #include "types.hpp"
 
 namespace falk {
-    using identifier = std::string;
+    // using identifier = std::string;
 
     struct block {
         static constexpr int arity() {
@@ -26,7 +26,7 @@ namespace falk {
     struct declare<symbol::type::VARIABLE> {
         static constexpr size_t arity() { return 1; }
         
-        identifier id;
+        std::string id;
         structural::type s_type;
         fundamental::type f_type;
     };
@@ -38,19 +38,24 @@ namespace falk {
     };
 
     struct valueof {
-        identifier id;
-    };
-
-    struct index_access {
         static constexpr size_t arity() {
-            return 3;
+            return 1;
         }
     };
 
-    struct retrieve {
+    // struct index_access {
+    //     static constexpr size_t arity() {
+    //         return 3;
+    //     }
+    // };
+
+    struct var_id {
         static constexpr size_t arity() {
-            return 3;
+            return 2;
         }
+
+        std::string id;
+        std::pair<int64_t, int64_t> index = {-1, -1};
     };
 
     using declare_variable = falk::declare<symbol::type::VARIABLE>;

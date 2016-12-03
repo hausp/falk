@@ -10,14 +10,17 @@
 #include "function.hpp"
 #include "variable.hpp"
 
+namespace {
+    struct scope {
+        std::unordered_map<std::string, falk::ev::variable> variables;
+        std::unordered_map<std::string, falk::ev::function> functions;
+        std::unordered_map<std::string, falk::symbol::type> symbol_table;
+    };
+}
+
 namespace falk {
     namespace ev {
         class symbol_mapper {
-            struct scope {
-                std::unordered_map<std::string, variable> variables;
-                std::unordered_map<std::string, function> functions;
-                std::unordered_map<std::string, symbol::type> symbol_table;
-            };
          public:
             symbol_mapper();
 

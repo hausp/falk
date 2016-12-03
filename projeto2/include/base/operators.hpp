@@ -294,7 +294,7 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
 
         template<typename LH, typename RH>
-        bool operator()(LH& lhs, const RH& rhs) const {
+        decltype(auto) operator()(LH& lhs, const RH& rhs) const {
             return lhs = rhs;
         }
     };
