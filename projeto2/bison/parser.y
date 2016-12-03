@@ -93,9 +93,12 @@
 %type<falk::rvalue> index rvalue;
 %type<falk::lvalue> assignment;
 %type<falk::lvalue> lvalue;
-%type<falk::declaration> declaration;
-%type<falk::array> array_list scalar_list
-%type<falk::matrix> matrix_list matrix_list_body;
+%type<falk::declaration> decl_var decl_fun;
+%type<falk::list> container container_body;
+%type<falk::parameters> param_list;
+%type<falk::parameter> param;
+// %type<falk::list> array_list scalar_list
+// %type<falk::list> matrix_list matrix_list_body;
 
 // Operators precedence.
 // The latest it is listed, the highest the precedence.
@@ -165,12 +168,13 @@ command:
     | single_calc { $$ = $1; }
     //| include     { /*TODO: include functions defined here */ }
     | assignment  { $$ = $1.extract(); }
-    | declaration { $$ = $1.extract(); }
+    | decl_var    { $$ = $1.extract(); }
+    | decl_fun    { $$ = $1.extract(); }
     | conditional { $$ = $1.extract(); }
     | loop        { $$ = $1.extract(); }
     ;
 
-declaration:
+decl_var:
     VAR ID COLON TYPE {
         auto decl = falk::declare_variable{$2, structural::type::SCALAR, $4};
         $$ = falk::declaration(decl);
@@ -195,6 +199,42 @@ declaration:
         auto decl = falk::declare_variable{$2, structural::type::MATRIX};
         $$ = falk::declaration(decl, $4);
     };
+
+decl_fun:
+    FUN ID OPAR param_list CPAR block {
+        // auto decl = falk::declare_function{$2, structural::type::MATRIX};
+        // $$ = falk::declaration(decl, $6);
+    };
+
+param_list:
+    param {
+        $$ = {};
+        $$.push_back($1);
+    }
+    | param_list COMMA param {
+        $$ = $1;
+        $$.push_back($3);    
+    };
+
+param:
+    VAR ID {
+        $$ = {{$2}, falk::structural::type::SCALAR};
+    }
+    | ARRAY ID {
+        $$ = {{$2}, falk::structural::type::ARRAY};
+    }
+    | ARRAY arr_size ID {
+        // TODO
+        $$ = {{$3}, falk::structural::type::ARRAY};
+    }
+    | MATRIX ID {
+        $$ = {{$2}, falk::structural::type::MATRIX};
+    }
+    | MATRIX mat_size ID {
+        // TODO
+        $$ = {{$3}, falk::structural::type::MATRIX};
+    }
+    ;
 
 assignment:
     lvalue ASSIGN rvalue {
@@ -278,38 +318,22 @@ lvalue:
     
 
 index:
-    lvalue {
-        $$ = $1;
-    }
-    | REAL {
-        $$ = $1;
-    };
+    lvalue { $$ = $1; }
+    | REAL { $$ = $1; };
 
-array_list:
-    OBRACKET scalar_list CBRACKET {
+container:
+    OBRACKET container_body CBRACKET {
         $$ = $2;
     };
 
-matrix_list:
-    OBRACKET matrix_list_body CBRACKET {
-        $$ = $2;
-    };
-
-scalar_list:
-    flat_expr {
-        $$ = analyser.extract($$, $1);
+container_body:
+    expr {
+        $$ = falk::create_structure();
+        $$ += $1;
     }
-    | scalar_list COMMA flat_expr {
-        $$ = analyser.extract($1, $3);
-    };
-
-matrix_list_body:
-    array_list {
-        $$.push_back($1);
-    }
-    | matrix_list_body COMMA array_list {
+    | container_body COMMA expr {
         $$ = $1;
-        $$.push_back($3);
+        $$ += $3;
     };
 
 flat_expr:
@@ -369,14 +393,11 @@ expr:
     flat_expr {
         $$ = $1;
     }
-    | array_list {
-        $$ = $1;
-    }
-    | matrix_list {
-        $$ = $1;        
+    | container {
+        $$ = $1.extract();
     };
 %%
 
 void falk::parser::error(const location& loc, const std::string& message) {
-	std::cout <<  "[Line " << context.line_count() << "] syntax error: " << message << std::endl;// << "Location: " << loc << std::endl;
+    std::cout <<  "[Line " << context.line_count() << "] syntax error: " << message << std::endl;// << "Location: " << loc << std::endl;
 }

@@ -25,6 +25,9 @@ namespace falk {
             template<typename T>
             T& value();
 
+            template<typename T>
+            const T& value() const;
+
             bool error() const;
 
             template<typename T>
@@ -54,6 +57,8 @@ namespace falk {
             template<typename Type, Type OP, typename T>
             variable& op(op::callback<Type, OP, 2>, const T&);
         };
+
+        std::ostream& operator<<(std::ostream&, const variable&);
     }
 }
 

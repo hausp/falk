@@ -2,7 +2,7 @@
 #ifndef FALK_EV_MATRIX_HPP
 #define FALK_EV_MATRIX_HPP
 
-#include <vector>
+#include <deque>
 #include "array.hpp"
 #include "base/errors.hpp"
 #include "scalar.hpp"
@@ -16,7 +16,12 @@ namespace falk {
 
             scalar& at(size_t, size_t);
             const scalar& at(size_t, size_t) const;
+            array row(size_t) const;
+            array column(size_t) const;
+
             void push_back(const array&);
+            void push_front(const array&);
+            void set_error();
             bool error() const;
             std::pair<size_t, size_t> size() const;
             size_t row_count() const;
@@ -58,7 +63,7 @@ namespace falk {
             matrix& operator|=(const matrix&);
 
          private:
-            std::vector<scalar> values;
+            std::deque<scalar> values;
             static scalar invalid;
             size_t num_rows = 0;
             size_t num_columns = 0;
@@ -66,6 +71,10 @@ namespace falk {
         };
 
         const auto invalid_matrix = matrix(true);
+
+        inline void matrix::set_error() {
+            fail = true;
+        }
 
         inline matrix operator+(const matrix& lhs, const matrix& rhs) {
             auto copy = lhs;

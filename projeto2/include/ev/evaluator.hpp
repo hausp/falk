@@ -11,7 +11,6 @@
 #include "base/actions.hpp"
 #include "base/operators.hpp"
 #include "base/types.hpp"
-#include "function.hpp"
 #include "matrix.hpp"
 #include "symbol_mapper.hpp"
 #include "ast/declaration.hpp"
@@ -58,6 +57,8 @@ namespace falk {
             void analyse(var_id&, node_array<2>&);
             void analyse(const valueof&, node_array<1>&);
 
+            void analyse(const create_structure&, std::list<node_ptr>&);
+
             // Binary calculations
             template<typename Type, Type OP>
             void analyse(op::callback<Type, OP, 2>, node_array<2>&);
@@ -68,8 +69,6 @@ namespace falk {
             // Binary operation-assignment calculations
             template<op::assignment OP>
             void analyse(op::callback<op::assignment, OP, 2>, node_array<2>&);
-            
-            array& extract(array&, rvalue&);
 
             template<typename Operation, typename Stack>
             void handle_operation(const Operation&, structural::type, Stack&);

@@ -15,7 +15,6 @@ namespace ast {
         list(const T&);
 
         list<Analyser>& operator+=(node_ptr);
-
         operator node_ptr();
         node_ptr extract();
      private:

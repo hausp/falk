@@ -5,25 +5,15 @@
 #include "types.hpp"
 
 namespace falk {
-    // using identifier = std::string;
-
     struct block {
-        static constexpr int arity() {
-            return -1;
-        }
+        static constexpr int arity() { return -1; }
     };
 
     struct conditional {
-        static constexpr size_t arity() {
-            return 3;
-        }
+        static constexpr size_t arity() { return 3; }
     };
 
-    template<symbol::type>
-    struct declare;
-
-    template<>
-    struct declare<symbol::type::VARIABLE> {
+    struct declare_variable {
         static constexpr size_t arity() { return 1; }
         
         std::string id;
@@ -32,33 +22,30 @@ namespace falk {
     };
 
     struct loop {
-        static constexpr size_t arity() {
-            return 2;
-        }
+        static constexpr size_t arity() { return 2; }
     };
 
     struct valueof {
-        static constexpr size_t arity() {
-            return 1;
-        }
+        static constexpr size_t arity() { return 1; }
     };
 
-    // struct index_access {
-    //     static constexpr size_t arity() {
-    //         return 3;
-    //     }
-    // };
-
     struct var_id {
-        static constexpr size_t arity() {
-            return 2;
-        }
+        static constexpr size_t arity() { return 2; }
 
         std::string id;
         std::pair<int64_t, int64_t> index = {-1, -1};
     };
 
-    using declare_variable = falk::declare<symbol::type::VARIABLE>;
+    struct create_structure {
+        static constexpr int arity() { return -1; }
+    };
+
+    struct parameter {
+        var_id vid;
+        structural::type s_type;
+    };
+
+    using parameters = std::vector<falk::parameter>;
 }
 
 #endif /* FALK_ACTIONS_HPP */
