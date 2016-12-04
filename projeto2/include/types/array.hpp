@@ -27,11 +27,11 @@ namespace falk {
         }
 
         void push_front(const scalar& value) {
-            values.push_front(value);
+            values.push_front(prepare(value));
         }
 
         void push_back(const scalar& value) {
-            values.push_back(value);
+            values.push_back(prepare(value));
         }
 
         void set_error() {
@@ -94,6 +94,9 @@ namespace falk {
      private:
         std::deque<scalar> values;
         bool fail = false;
+        falk::type value_type = falk::type::BOOL;
+
+        scalar prepare(const scalar&);
     };
 
     inline array operator+(const array& lhs, const array& rhs) {

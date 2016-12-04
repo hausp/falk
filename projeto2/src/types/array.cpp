@@ -1,6 +1,26 @@
 #include "types/array.hpp"
 #include "types/matrix.hpp"
 
+falk::scalar falk::array::prepare(const scalar& value) {
+    static const std::unordered_map<falk::type, unsigned> priority = {
+        {falk::type::BOOL, 0},
+        {falk::type::REAL, 1},
+        {falk::type::COMPLEX, 2},
+    };
+
+    auto val_priority = priority.at(value.type());
+    auto curr_priority = priority.at(value_type);
+    if (val_priority < curr_priority) {
+        return scalar(value_type, value.real(), value.imag());
+    } else if (val_priority > curr_priority) {
+        value_type = value.type();
+        for (size_t i = 0; i < size(); i++) {
+            values[i] = scalar(value_type, values[i].real(), values[i].imag());
+        }
+    }
+    return value;
+}
+
 falk::array& falk::array::assign(const scalar& rhs) {
     return assign(rhs.to_array(size()));
 }
