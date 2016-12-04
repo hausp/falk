@@ -41,49 +41,67 @@ namespace falk {
         using lvalue = ast::lvalue<evaluator>;
         using rvalue = ast::rvalue<evaluator>;
 
+        // enable/disable console mode (see prompt() method)
         void console_mode(bool);
-
-        void initialize();
+        // instantiates a real token
         real make_real(const std::string&);
+        // instantiates a complex token
         complex make_complex(const std::string&);
+        // instantiates a boolean token
         boolean make_boolean(const std::string&);
 
+        // store values in the correspondent stack (see push(...) methods)
         template<typename T>
         void analyse(const T&);
+        // declares a variable
         void analyse(const declare_variable&, node_array<1>&);
+        // declares a function
         void analyse(const declare_function&, node_array<1>&);
+        // executes a block of commands 
         void analyse(const block&, std::list<node_ptr>&);
+        // executes conditionals (if-then-else)
         void analyse(const conditional&, node_array<3>&);
+        // executes 'while' loops
         void analyse(const loop&, node_array<2>&);
+        // executes 'for' loops
+        void analyse(const for_it&, node_array<2>&);
+        // place a value as return
         void analyse(const ret&, node_array<1>&);
+        // remove definition of a given function
         void analyse(const undef&);
+        // retrieves a given id as function
         void analyse(fun_id&, node_array<1>&);
+        // retrieves a given id as variable
         void analyse(var_id&, node_array<2>&);
+        // get the value of an lvalue
         void analyse(const valueof&, node_array<1>&);
+        // prints a value
         void analyse(const print&, node_array<1>&);
-
+        // creates a structure to store data to initialize arrays and matrices
         void analyse(const create_structure&, std::list<node_ptr>&);
-
         // Binary calculations
         template<typename Type, Type OP>
         void analyse(op::callback<Type, OP, 2>, node_array<2>&);
         // Unary calculations
         template<typename Type, Type OP>
         void analyse(op::callback<Type, OP, 1>, node_array<1>&);
-
         // Binary operation-assignment calculations
         template<op::assignment OP>
         void analyse(op::callback<op::assignment, OP, 2>, node_array<2>&);
-
+        // Auxiliar method for calculations
         template<typename Operation, typename Stack>
         void handle_operation(const Operation&, structural::type, Stack&);
-
+        // Process a command, received as an rvalue
         void process(rvalue&);
+        // prompts "falk>"
         void prompt();
-
+        // pushes a scalar to scalar_stack
         void push(const scalar&);
+        // pushes a array to array_stack
         void push(const array&);
+        // pushes a matrix to matrix_stack
         void push(const matrix&);
+        // pushes a var_id to id_stack
         void push(const var_id&);
      private:
         symbol_mapper mapper;

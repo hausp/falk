@@ -28,6 +28,12 @@ namespace falk {
         static constexpr size_t arity() { return 2; }
     };
 
+    struct for_it {
+        static constexpr size_t arity() { return 2; }
+
+        std::string var_name;
+    };
+
     struct ret {
         static constexpr size_t arity() { return 1; }
     };

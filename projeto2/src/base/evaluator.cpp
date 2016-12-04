@@ -292,6 +292,10 @@ void falk::evaluator::analyse(const loop&, node_array<2>& nodes) {
     }
 }
 
+void falk::evaluator::analyse(const for_it& fit, node_array<2>& nodes) {
+
+}
+
 void falk::evaluator::analyse(const ret&, node_array<1>& nodes) {
     if (inside_function) {
         nodes[0]->traverse(*this);

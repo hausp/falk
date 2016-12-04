@@ -157,12 +157,6 @@ inline void falk::evaluator::push(const var_id& data) {
     id_stack.push_back(data);
 }
 
-inline void falk::evaluator::initialize() {
-    if (console) {
-        std::cout << "falk> ";
-    }
-}
-
 inline falk::evaluator::real
 falk::evaluator::make_real(const std::string& text) {
     return std::stod(text);

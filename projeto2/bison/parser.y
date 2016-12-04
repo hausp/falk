@@ -122,15 +122,12 @@
 %%
 
 program:
-      init
+      %empty            { analyser.prompt(); }
     | program new_line  { analyser.prompt(); }
     | entry eoc         { analyser.prompt(); }
     | program error eoc { yyerrok; analyser.prompt(); };
-    // | program function
 
-init: %empty { analyser.initialize(); };
-
-entry: program command { analyser.process($2); };
+entry: program command  { analyser.process($2); };
 
 new_line: NL { context.count_new_line(); };
 
@@ -301,14 +298,16 @@ loop:
         $$ += $3;
         $$ += $5;
     }
-    /*| FOR OPAR ID IN lvalue CPAR block {
-        $$ = falk::loop();
-        // TODO: Criar struct para absorver essas coisas
-    }*/;
+    | FOR OPAR ID IN lvalue CPAR block {
+        $$ = falk::for_it{$3};
+        $$ += $5.extract();
+        $$ += $7;
+    }
+    ;
 
 return: RET rvalue { $$ = {falk::ret(), $2}; };
 
-undef: UNDEF ID    { $$ = {falk::undef{$2}, falk::rvalue()}; };
+undef: UNDEF ID { $$ = {falk::undef{$2}}; };
 
 include:
     INCLUDE COLON inc_block DOT;
@@ -421,9 +420,9 @@ expr:
     | expr OR expr {
         $$ = $1 || $3;
     }
-    // | NOT expr {
-    //     $$ = $1 % $3;
-    // }
+    | NOT expr {
+        // $$ = !$1;
+    }
     | MINUS expr %prec U_MINUS {
         $$ = -$2;
     }
@@ -431,7 +430,7 @@ expr:
         $$ = $2;
     }
     | OPAR expr CPAR {
-        $$ = std::move($2);
+        $$ = $2;
     };
 %%
 
