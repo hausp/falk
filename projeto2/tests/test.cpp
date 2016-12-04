@@ -1,6 +1,7 @@
 /* created by Ghabriel Nunes <ghabriel.nunes@gmail.com> [2016] */
 
 #include <gtest/gtest.h>
+#include <fstream>
 #include <list>
 #include "aux/Connection.hpp"
 
@@ -70,6 +71,36 @@ namespace {
             }
             ++out_it;
         }
+    }
+
+    std::string read_file(const std::string& name) {
+        std::string result;
+        std::ifstream stream(name, std::ifstream::in);
+        if (stream.is_open()) {
+            std::stringstream ss;
+            result += stream.get();
+            while (stream.good()) {
+                result += stream.get();
+            }
+            result = result.substr(0, result.size() - 1);
+        } else {
+            std::cout << "Couldn't read file '" << name << "'" << std::endl;
+        }
+        return result;
+    }
+
+    void run_test(const std::string& in_file, const std::string& out_file) {
+        Connection program("./bin/falk", "0", "0", in_file.c_str());
+        auto expected = read_file(out_file);
+        auto actual = program.receive();
+
+        bool padded = false;
+        if (actual.size() >= expected.size()) {
+            actual = actual.substr(0, expected.size());
+            padded = true;
+        }
+
+        run("[content of " + in_file + "]", actual, expected, padded);
     }
 }
 
@@ -374,8 +405,11 @@ TEST_F(FalkTest, interpreter_v5) {
     inputs.add("while ([[53]]):", "42", ".");
     outputs.add("[Line 2] semantic error: non-boolean condition");
 
-
     run_tests(inputs, outputs);
+}
+
+TEST_F(FalkTest, hardcore) {
+    run_test("tests/cases/1.falk", "tests/cases/1.out");
 }
 
 // TEST_F(FalkTest, interpreter_v98) {
@@ -448,6 +482,7 @@ TEST_F(FalkTest, interpreter_v5) {
 // }
 
 int main(int argc, char** argv) {
+    std::cout << argv[0] << std::endl;
     constexpr double min_version = 0;
     constexpr double latest_stable = 0.1;
 
@@ -467,6 +502,8 @@ int main(int argc, char** argv) {
         }
         return result;
     }();
-    ::testing::GTEST_FLAG(filter) = tests;
+    if (argc <= 1 || argv[1] != std::string("hardcore")) {
+        ::testing::GTEST_FLAG(filter) = tests;
+    }
     return RUN_ALL_TESTS();
 }

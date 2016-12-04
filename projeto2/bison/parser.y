@@ -93,7 +93,7 @@
 %type<falk::rvalue> scoped_block;
 %type<falk::rvalue> arr_size mat_size;
 %type<falk::rvalue> expr single_calc;
-%type<falk::rvalue> index rvalue;
+%type<falk::rvalue> rvalue;
 %type<falk::rvalue> fun_call return undef;
 %type<falk::rvalue> typeof
 %type<falk::lvalue> assignment;
@@ -351,15 +351,15 @@ lvalue:
         $$ = falk::var_id{$1};
         $$.set_index(falk::rvalue(), falk::rvalue());
     }
-    | ID OBRACKET index CBRACKET {
+    | ID OBRACKET rvalue CBRACKET {
         $$ = falk::var_id{$1};
         $$.set_index($3, falk::rvalue());
     }
-    | ID OBRACKET index COMMA index CBRACKET {
+    | ID OBRACKET rvalue COMMA rvalue CBRACKET {
         $$ = falk::var_id{$1};
         $$.set_index($3, $5);
     }
-    | ID OBRACKET COMMA index CBRACKET {
+    | ID OBRACKET COMMA rvalue CBRACKET {
         $$ = falk::var_id{$1};
         $$.set_index(falk::rvalue(), $4);
     };
@@ -369,10 +369,6 @@ typeof:
         falk::rvalue v = $2;
         $$ = {falk::typeof(), v};
     };
-
-index:
-    lvalue { $$ = $1; }
-    | REAL { $$ = $1; };
 
 container:
     OBRACKET container_body CBRACKET {
