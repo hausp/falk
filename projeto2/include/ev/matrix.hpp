@@ -19,6 +19,9 @@ namespace falk {
             array row(size_t) const;
             array column(size_t) const;
 
+            matrix& assign_row(size_t, const array&);
+            matrix& assign_column(size_t, const array&);
+
             void push_back(const array&);
             void push_front(const array&);
             void set_error();

@@ -30,6 +30,20 @@ falk::ev::array falk::ev::matrix::column(size_t index) const {
     return result;
 }
 
+falk::ev::matrix& falk::ev::matrix::assign_row(size_t index, const array& data) {
+    for (size_t i = 0; i < num_columns; i++) {
+        at(index, i) = data[i];
+    }
+    return *this;
+}
+
+falk::ev::matrix& falk::ev::matrix::assign_column(size_t index, const array& data) {
+    for (size_t i = 0; i < num_columns; i++) {
+        at(i, index) = data[i];
+    }
+    return *this;
+}
+
 falk::ev::matrix falk::ev::operator*(const matrix& lhs, const matrix& rhs) {
     if (lhs.column_count() != rhs.row_count()) {
         err::semantic<Error::MATRIX_MULT_MISMATCH>(lhs.column_count(), rhs.row_count());

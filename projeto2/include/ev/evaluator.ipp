@@ -68,8 +68,6 @@ void falk::ev::evaluator::analyse(op::callback<Type, OP, 1> op,
 template<falk::op::assignment OP>
 void falk::ev::evaluator::analyse(op::callback<op::assignment, OP, 2> op,
                                   node_array<2>& nodes) {
-    // TODO: find out why this doesn't work
-    // Assigned to Ghabriel
     auto apply = [&](auto& op, auto& vid, auto& rhs) {
         variable& var = mapper.retrieve_variable(vid.id);
         switch (var.stored_type()) {
@@ -91,9 +89,13 @@ void falk::ev::evaluator::analyse(op::callback<op::assignment, OP, 2> op,
                 if (vid.index.first > -1 && vid.index.second > -1) {
                     op(value.at(vid.index.first, vid.index.second), rhs);
                 } else if (vid.index.first > -1) {
-                    // op(value.row(vid.index.first), rhs);
+                    auto data = value.row(vid.index.first);
+                    op(data, rhs);
+                    value.assign_row(vid.index.first, data);
                 } else if (vid.index.second > -1) {
-                    // op(value.column(vid.index.second), rhs);
+                    auto data = value.column(vid.index.second);
+                    op(data, rhs);
+                    value.assign_column(vid.index.second, data);
                 } else {
                     op(var, rhs);
                 }
