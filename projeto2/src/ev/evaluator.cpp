@@ -87,16 +87,15 @@ void falk::ev::evaluator::analyse(fun_id& fun, node_array<1>& nodes) {
     if (params.size() == fun.number_of_params) {
         nodes[0]->traverse(*this);
         mapper.open_scope();
-        for (size_t i = 0; i < fun.number_of_params; i++) {
+        bool error = false;
+        for (int i = fun.number_of_params - 1; i >= 0; i--) {
             auto t = aut::pop(types_stack);
             if (params[i].s_type != t) {
                 err::semantic<Error::MISMATCHING_PARAMETER>(fun.id,
                                                             params[i].vid.id,
                                                             params[i].s_type,
                                                             t);
-                mapper.close_scope();
-                // return something
-                break;
+                error = true;
             }
             switch (t) {
                 case structural::type::SCALAR: {
@@ -116,8 +115,11 @@ void falk::ev::evaluator::analyse(fun_id& fun, node_array<1>& nodes) {
                 }
             }
         }
-        auto& code = fn.code();
-        code->traverse(*this);
+
+        if (!error) {
+            auto& code = fn.code();
+            code->traverse(*this);
+        }
         mapper.close_scope();
     } else {
         // TODO: error (assigned to Ghabriel)
