@@ -82,9 +82,9 @@ namespace falk {
         static constexpr size_t arity() { return 1; }
 
         template<typename T>
-        variable operator()(const T& value, structural::type type) const {
+        variable operator()(const T& value) const {
             std::cout << "res = " << value << std::endl;
-            return {value, type};
+            return {value};
         }
     };
 }

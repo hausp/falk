@@ -8,6 +8,10 @@ inline falk::variable::variable(bool flag):
 }
 
 template<typename T>
+falk::variable::variable(const T& value):
+  data{value}, type{value.type()} { }
+
+template<typename T>
 falk::variable::variable(const T& value, structural::type t):
   data{value}, type{t} { }
 

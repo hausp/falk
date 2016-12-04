@@ -17,6 +17,9 @@ namespace falk {
         variable(bool);
 
         template<typename T>
+        variable(const T&);
+
+        template<typename T>
         variable(const T&, structural::type);
 
         structural::type stored_type() const;
