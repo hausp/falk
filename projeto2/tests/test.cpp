@@ -393,12 +393,6 @@ TEST_F(FalkTest, interpreter_v5) {
     inputs.add("while (false):", "nope", ".", "1");
     outputs.add("res = 1");
 
-    // inputs.add("");
-    // outputs.add("");
-
-    // inputs.add("");
-    // outputs.add("");
-
     inputs.add("while ([70 * 47]):", "2 + 2", ".");
     outputs.add("[Line 2] semantic error: non-boolean condition");
 
@@ -408,8 +402,50 @@ TEST_F(FalkTest, interpreter_v5) {
     run_tests(inputs, outputs);
 }
 
+TEST_F(FalkTest, interpreter_v6) {
+    Container inputs;
+    Container outputs;
+    inputs.add("function f(array a, array b): return a + b.", "f([1, 2], [4, 7])");
+    outputs.add("res = [5, 9]");
+
+    inputs.add("function f(matrix a, matrix b): return a + b.", "f([[1, 2]], [[4, 7]])");
+    outputs.add("res = [[5, 9]]");
+
+    inputs.add("function f(): return 2.", "function f(): return -1.");
+    outputs.add("[Line 1] semantic error: re-declaration of symbol f");
+
+    inputs.add("function f(): return -1.", "var g = 42", "f", "g()");
+    outputs.add("[Line 2] semantic error: f is not a variable",
+                "[Line 3] semantic error: g is not a function");
+
+    inputs.add("j()");
+    outputs.add("[Line 0] semantic error: undeclared function j");
+
+    inputs.add("function f(array[1] x): x.", "f([1,2])");
+    outputs.add("[Line 1] semantic error: mismatching array size for parameter "
+        "x in function f (expected 1, got 2)");
+
+    inputs.add("function f(matrix[2,3] x): x.", "f([[1,2]])");
+    outputs.add("[Line 1] semantic error: mismatching matrix size for parameter "
+        "x in function f (expected 2 x 3, got 1 x 2)");
+
+    inputs.add("function f(var x): x.", "f(1, 2)");
+    outputs.add("[Line 1] semantic error: mismatching parameter count for "
+        "function f (expected 1, got 2)");
+
+    inputs.add("undef f");
+    outputs.add("[Line 0] semantic error: undeclared function f");
+
+    inputs.add("var g = 42", "undef g");
+    outputs.add("[Line 1] semantic error: g is not a function");
+
+    run_tests(inputs, outputs);
+}
+
 TEST_F(FalkTest, hardcore) {
     run_test("tests/cases/1.falk", "tests/cases/1.out");
+    run_test("tests/cases/2.falk", "tests/cases/2.out");
+    run_test("tests/cases/3.falk", "tests/cases/3.out");
 }
 
 // TEST_F(FalkTest, interpreter_v98) {

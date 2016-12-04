@@ -1,0 +1,25 @@
+function sum(array x):
+	var c : typeof x[0];
+	for (e in x):
+		c += e;
+	.
+	return c
+.
+
+function prod(array x):
+	var c : typeof x[0];
+	c = 1;
+	for (e in x):
+		c *= e;
+	.
+	return c;
+.
+
+var result = 0;
+var i = 1;
+while (i < 5):
+	array a = [i, 2 * i, 3 * i, 4 * i];
+	result += sum(a) + prod(a);
+	i += 1;
+.
+result
