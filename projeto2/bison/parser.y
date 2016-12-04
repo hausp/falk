@@ -174,8 +174,8 @@ command:
     SEMICOLON     { $$ = {}; }
     | return      { $$ = $1; }
     | undef       { $$ = $1; }
+    | include     { $$ = {}; }
     | single_calc { $$ = {falk::print(), $1}; }
-    //| include     { /*TODO: include functions defined here */ }
     | assignment  { $$ = $1.extract(); }
     | decl_var    { $$ = $1.extract(); }
     | decl_fun    { $$ = $1.extract(); }
@@ -305,20 +305,20 @@ loop:
         // TODO: Criar struct para absorver essas coisas
     }*/;
 
-/*include:
-    INCLUDE COLON inc_block DOT { $$ = $2; };
-
-inc_block:
-    FILE_ID COMMA inc_block {
-        // TODO: Receive code included heres
-    } 
-    | FILE_ID {
-        // Receive code from FILE_ID
-    };*/
-
 return: RET rvalue { $$ = {falk::ret(), $2}; };
 
 undef: UNDEF ID    { $$ = {falk::undef{$2}, falk::rvalue()}; };
+
+include:
+    INCLUDE COLON inc_block DOT;
+
+inc_block:
+    ID {
+        falk::include($1);
+    }
+    | ID COMMA inc_block {
+        falk::include($1);
+    };
 
 rvalue: expr { $$ = $1; };
 

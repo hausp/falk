@@ -340,6 +340,10 @@ namespace falk {
                 return lhs |= rhs;
         }
     }
+
+    inline void include(const std::string& name) {
+        std::cout << "TODO: include " << name << std::endl;
+    }
 }
 
 #endif /* FALK_OPERATORS_HPP */
