@@ -35,6 +35,9 @@ enum class Error {
     SCALAR_INDEXED_ACCESS,
     NONSCALAR_INDEX,
     MISMATCHING_PARAMETER,
+    MISMATCHING_PARAMETER_COUNT,
+    PARAMETER_ARRAY_SIZE_MISMATCH,
+    PARAMETER_MATRIX_SIZE_MISMATCH,
 };
 
 namespace std {
@@ -78,6 +81,12 @@ namespace err {
     inline void semantic(size_t, size_t);
     template<Error>
     inline void semantic(const std::string&, const std::string&, falk::struct_t, falk::struct_t);
+    template<Error>
+    inline void semantic(const std::string&, size_t, size_t);
+    template<Error>
+    inline void semantic(const std::string&, const std::string&, size_t, size_t);
+    template<Error>
+    inline void semantic(const std::string&, const std::string&, size_t, size_t, size_t, size_t);
     template<Error>
     inline void semantic(const std::string&);
     template<Error>
@@ -169,6 +178,42 @@ namespace err {
         echo(error_prefix("semantic") + "mismatching type for parameter " +
             param + " in function " + fn + " (expected " + 
             struct_type_table.at(expected) + ", got " + struct_type_table.at(actual) + ")");
+    }
+
+    template<>
+    inline void semantic<Error::MISMATCHING_PARAMETER_COUNT>(const std::string& fn,
+                                                            size_t expected,
+                                                            size_t actual) {
+        echo(error_prefix("semantic") + "mismatching parameter count for "
+            "function " + fn + " (expected " + std::to_string(expected) +
+            ", got " + std::to_string(actual) + ")");
+    }
+
+    template<>
+    inline void semantic<Error::PARAMETER_ARRAY_SIZE_MISMATCH>(const std::string& fn,
+                                                               const std::string& param,
+                                                               size_t expected,
+                                                               size_t actual) {
+        echo(error_prefix("semantic") + "mismatching array size for parameter " +
+            param + " in function " + fn + " (expected " +
+            std::to_string(expected) + ", got " + std::to_string(actual) + ")");
+    }
+
+    template<>
+    inline void semantic<Error::PARAMETER_MATRIX_SIZE_MISMATCH>(const std::string& fn,
+                                                                const std::string& param,
+                                                                size_t expected_rows,
+                                                                size_t expected_columns,
+                                                                size_t actual_rows,
+                                                                size_t actual_columns) {
+        auto exp_rows = std::to_string(expected_rows);
+        auto exp_columns = std::to_string(expected_columns);
+        auto act_rows = std::to_string(actual_rows);
+        auto act_columns = std::to_string(actual_columns);
+        echo(error_prefix("semantic") + "mismatching matrix size for "
+            "parameter " + param + " in function " + fn + " (expected " +
+            exp_rows + " x " + exp_columns + ", got " + act_rows + " x " +
+            act_columns + ")");
     }
 
     template<>

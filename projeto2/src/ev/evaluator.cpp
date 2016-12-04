@@ -104,8 +104,12 @@ void falk::ev::evaluator::analyse(fun_id& fun, node_array<1>& nodes) {
                 }
                 case structural::type::ARRAY: {
                     auto v = aut::pop(array_stack);
-                    if (v.size() != params[i].vid.index.first) {
-                        // TODO: error
+                    auto expected_size = params[i].vid.index.first;
+                    if (expected_size != -1 && v.size() != expected_size) {
+                        err::semantic<Error::PARAMETER_ARRAY_SIZE_MISMATCH>(
+                            fun.id, params[i].vid.id, expected_size, v.size()
+                        );
+                        error = true;
                         break;
                     }
                     mapper.declare_variable(params[i].vid.id, variable(v, t));
@@ -113,7 +117,21 @@ void falk::ev::evaluator::analyse(fun_id& fun, node_array<1>& nodes) {
                 }
                 case structural::type::MATRIX: {
                     auto v = aut::pop(matrix_stack);
-                    // TODO: same as previous
+                    auto expected_rows = params[i].vid.index.first;
+                    auto expected_columns = params[i].vid.index.second;
+                    bool row_mismatch = expected_rows != -1
+                                     && v.row_count() != expected_rows;
+                    bool column_mismatch = expected_columns != -1
+                                        && v.column_count() != expected_columns;
+                    if (row_mismatch || column_mismatch) {
+                        err::semantic<Error::PARAMETER_MATRIX_SIZE_MISMATCH>(
+                            fun.id, params[i].vid.id,
+                            expected_rows, expected_columns,
+                            v.row_count(), v.column_count()
+                        );
+                        error = true;
+                        break;
+                    }
                     mapper.declare_variable(params[i].vid.id, variable(v, t));
                     break;
                 }
@@ -125,7 +143,6 @@ void falk::ev::evaluator::analyse(fun_id& fun, node_array<1>& nodes) {
             inside_function = true;
             code->traverse(*this);
             inside_function = false;
-            
         }
 
         if (!return_called) {
@@ -134,7 +151,10 @@ void falk::ev::evaluator::analyse(fun_id& fun, node_array<1>& nodes) {
         return_called = false;
         mapper.close_scope();
     } else {
-        // TODO: error (assigned to Ghabriel)
+        err::semantic<Error::MISMATCHING_PARAMETER_COUNT>(
+            fun.id, params.size(), fun.number_of_params
+        );
+        // TODO: fix segfault
     }
 }
 
