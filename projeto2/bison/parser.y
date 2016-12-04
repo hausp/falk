@@ -211,6 +211,11 @@ decl_fun:
         $$ = falk::declaration(decl, $6);
     };
 
+fun_call:
+    ID OPAR rvalue_list CPAR {
+
+    };
+
 param_list:
     param {
         $$ = {};
