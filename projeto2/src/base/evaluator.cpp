@@ -245,18 +245,20 @@ void falk::evaluator::analyse(const valueof&, node_array<1>& nodes) {
 }
 
 void falk::evaluator::analyse(const typeof&, node_array<1>& nodes) {
-    // std::cout << "hello" << std::endl;
     nodes[0]->traverse(*this);
 
     if(aut::pop(types_stack) != structural::type::SCALAR) {
-        // TODO: usuário burro toma erro na cara
+        err::semantic<Error::NONSCALAR_TYPEOF>();
+        scalar result;
+        result.set_error();
+        push(result);
+        return;
     }
     
     auto value = aut::pop(scalar_stack);
     auto type = value.inner_type();
 
     push(scalar(type));
-    // std::cout << "darkness" << std::endl;
 }
 
 void falk::evaluator::analyse(const block&, std::list<node_ptr>& nodes) {
@@ -308,10 +310,10 @@ void falk::evaluator::analyse(const for_it& fit, node_array<2>& nodes) {
     nodes[0]->traverse(*this);
     auto vid = aut::pop(id_stack);
     auto& var = mapper.retrieve_variable(vid.id);
-    
+
     switch (var.stored_type()) {
         case structural::type::SCALAR: {
-            // TODO: usuário burro bostão morra
+            err::semantic<Error::FOR_SCALAR_TARGET>();
             break;
         }
         case structural::type::ARRAY: {
