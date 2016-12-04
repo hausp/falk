@@ -23,6 +23,11 @@ void lpi::lpa_context<L,P,A>::console_mode(bool flag) {
 }
 
 template<typename L, typename P, typename A>
+void lpi::lpa_context<L,P,A>::include(const std::string& name) {
+    std::cout << "TODO: include " << name << std::endl;
+}
+
+template<typename L, typename P, typename A>
 void lpi::lpa_context<L,P,A>::count_new_line() {
     lines++;
 }

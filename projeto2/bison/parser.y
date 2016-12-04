@@ -314,10 +314,10 @@ include:
 
 inc_block:
     ID {
-        falk::include($1);
+        context.include($1);
     }
     | ID COMMA inc_block {
-        falk::include($1);
+        context.include($1);
     };
 
 rvalue: expr { $$ = $1; };
