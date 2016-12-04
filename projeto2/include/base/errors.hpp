@@ -42,13 +42,6 @@ enum class Error {
 
 namespace std {
     template<>
-    struct hash<falk::type> {
-        inline size_t operator()(falk::type type) const {
-            return static_cast<int>(type);
-        }
-    };
-
-    template<>
     struct hash<falk::struct_t> {
         inline size_t operator()(falk::struct_t type) const {
             return static_cast<int>(type);
@@ -268,7 +261,7 @@ namespace err {
 
     template<>
     inline void semantic<Error::TOO_MANY_DIMENSIONS>() {
-        echo(error_prefix("semantic") + "3d structures are not supported");
+        echo(error_prefix("semantic") + "3d or bigger structures are not supported");
     }
 
     template<>

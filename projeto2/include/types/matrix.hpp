@@ -29,6 +29,10 @@ namespace falk {
         size_t row_count() const;
         size_t column_count() const;
 
+        constexpr structural::type type() const {
+            return structural::type::MATRIX;
+        }
+
         static matrix pow(const matrix&, const scalar&);
         static matrix pow(const matrix&, const array&);
         static matrix pow(const matrix&, const matrix&);
@@ -70,6 +74,9 @@ namespace falk {
         size_t num_rows = 0;
         size_t num_columns = 0;
         bool fail = false;
+        falk::type value_type = falk::type::BOOL;
+
+        array prepare(const array&);
     };
 
     const auto invalid_matrix = matrix(true);

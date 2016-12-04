@@ -116,7 +116,9 @@ const falk::scalar& falk::matrix::at(size_t row, size_t column) const {
     return values.at(row * num_columns + column);
 }
 
-void falk::matrix::push_back(const array& row) {
+void falk::matrix::push_back(const array& new_row) {
+    auto row = new_row;
+    // auto row = prepare(new_row);
     if (values.size() == 0) {
         num_columns = row.size();
     }
@@ -133,7 +135,9 @@ void falk::matrix::push_back(const array& row) {
     ++num_rows;
 }
 
-void falk::matrix::push_front(const array& row) {
+void falk::matrix::push_front(const array& new_row) {
+    // auto row = prepare(new_row);
+    auto row = new_row;
     if (values.size() == 0) {
         num_columns = row.size();
     }
@@ -354,4 +358,23 @@ falk::matrix& falk::matrix::operator|=(const matrix& rhs) {
     err::semantic<Error::ILLEGAL_BOOL_OP>(falk::struct_t::MATRIX, falk::struct_t::MATRIX);
     fail = true;
     return *this;
+}
+
+falk::array falk::matrix::prepare(const array& row) {
+    auto arr_type = row.inner_type();
+    auto arr_priority = falk::priority.at(arr_type);
+    auto curr_priority = falk::priority.at(value_type);
+    if (arr_priority < curr_priority) {
+        auto copy = row;
+        copy.coerce_to(value_type);
+        return copy;
+    } else if (arr_priority > curr_priority) {
+        for (size_t i = 0; i < num_rows; i++) {
+            for (size_t j = 0; j < num_columns; j++) {
+                auto& value = at(i, j);
+                at(i, j) = scalar(arr_type, value.real(), value.imag());
+            }
+        }
+    }
+    return row;
 }

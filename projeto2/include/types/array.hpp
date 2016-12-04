@@ -34,6 +34,16 @@ namespace falk {
             values.push_back(prepare(value));
         }
 
+        void coerce_to(falk::type);
+
+        falk::type inner_type() const {
+            return value_type;
+        }
+
+        void inner_type(falk::type type) {
+            value_type = type;
+        }
+
         void set_error() {
             fail = true;
         }
@@ -43,6 +53,10 @@ namespace falk {
         }
 
         matrix to_matrix() const;
+
+        constexpr structural::type type() const {
+            return structural::type::ARRAY;
+        }
 
         array& pow(const scalar& rhs);
         array& pow(const array& rhs);

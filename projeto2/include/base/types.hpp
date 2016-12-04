@@ -1,6 +1,8 @@
 #ifndef FALK_TYPES_HPP
 #define FALK_TYPES_HPP
 
+#include <unordered_map>
+
 namespace falk {
     namespace fundamental {
         enum class type {
@@ -28,6 +30,23 @@ namespace falk {
 
     using type = fundamental::type;
     using struct_t = structural::type;
+}
+
+namespace std {
+    template<>
+    struct hash<falk::type> {
+        inline size_t operator()(falk::type type) const {
+            return static_cast<int>(type);
+        }
+    };
+}
+
+namespace falk {
+    const std::unordered_map<falk::type, unsigned> priority = {
+        {falk::type::BOOL, 0},
+        {falk::type::REAL, 1},
+        {falk::type::COMPLEX, 2},
+    };
 
     inline type resolve_types(type t1, type t2) {
         if (t1 == type::COMPLEX || t2 == type::COMPLEX) {

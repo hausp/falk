@@ -53,7 +53,7 @@ falk::scalar& falk::scalar::assign(const matrix& rhs) {
 }
 
 falk::scalar& falk::scalar::operator+=(const scalar& rhs) {
-    auto type = falk::resolve_types(_type, rhs.type());
+    auto type = falk::resolve_types(_type, rhs.inner_type());
     switch (type) {
         case falk::type::COMPLEX:
             _real += rhs._real;
@@ -68,7 +68,7 @@ falk::scalar& falk::scalar::operator+=(const scalar& rhs) {
 }
 
 falk::scalar& falk::scalar::operator-=(const scalar& rhs) {
-    auto type = falk::resolve_types(_type, rhs.type());
+    auto type = falk::resolve_types(_type, rhs.inner_type());
     switch (type) {
         case falk::type::COMPLEX:
             _real -= rhs._real;
@@ -83,7 +83,7 @@ falk::scalar& falk::scalar::operator-=(const scalar& rhs) {
 }
 
 falk::scalar& falk::scalar::operator*=(const scalar& rhs) {
-    auto type = falk::resolve_types(_type, rhs.type());
+    auto type = falk::resolve_types(_type, rhs.inner_type());
     switch (type) {
         case falk::type::COMPLEX:
             *this = complex() * rhs.complex();
@@ -97,7 +97,7 @@ falk::scalar& falk::scalar::operator*=(const scalar& rhs) {
 }
 
 falk::scalar& falk::scalar::operator/=(const scalar& rhs) {
-    auto type = falk::resolve_types(_type, rhs.type());
+    auto type = falk::resolve_types(_type, rhs.inner_type());
     switch (type) {
         case falk::type::COMPLEX:
             *this = complex() / rhs.complex();
@@ -111,7 +111,7 @@ falk::scalar& falk::scalar::operator/=(const scalar& rhs) {
 }
 
 falk::scalar& falk::scalar::operator%=(const scalar& rhs) {
-    auto type = falk::resolve_types(_type, rhs.type());
+    auto type = falk::resolve_types(_type, rhs.inner_type());
     switch (type) {
         case falk::type::COMPLEX:
             err::semantic<Error::ILLEGAL_OPERATION>("complex modulus");
@@ -141,7 +141,7 @@ falk::scalar& falk::scalar::operator&=(const scalar& rhs) {
 }
 
 falk::scalar& falk::scalar::operator|=(const scalar& rhs) {
-    auto type = falk::resolve_types(_type, rhs.type());
+    auto type = falk::resolve_types(_type, rhs.inner_type());
     switch (type) {
         case falk::type::COMPLEX:
         case falk::type::REAL:
@@ -263,41 +263,41 @@ falk::matrix falk::scalar::pow(const scalar& lhs, const matrix& rhs) {
 
 falk::scalar falk::operator+(const scalar& lhs, const scalar& rhs) {
     auto copy = lhs;
-    copy.type(falk::resolve_types(lhs.type(), rhs.type()));
+    copy.inner_type(falk::resolve_types(lhs.inner_type(), rhs.inner_type()));
     return copy += rhs;
 }
 
 falk::scalar falk::operator-(const scalar& lhs, const scalar& rhs) {
     auto copy = lhs;
-    copy.type(falk::resolve_types(lhs.type(), rhs.type()));
+    copy.inner_type(falk::resolve_types(lhs.inner_type(), rhs.inner_type()));
     return copy -= rhs;
 }
 
 falk::scalar falk::operator*(const scalar& lhs, const scalar& rhs) {
     auto copy = lhs;
-    copy.type(falk::resolve_types(lhs.type(), rhs.type()));
+    copy.inner_type(falk::resolve_types(lhs.inner_type(), rhs.inner_type()));
     return copy *= rhs;
 }
 
 falk::scalar falk::operator/(const scalar& lhs, const scalar& rhs) {
     auto copy = lhs;
-    copy.type(falk::resolve_types(lhs.type(), rhs.type()));
+    copy.inner_type(falk::resolve_types(lhs.inner_type(), rhs.inner_type()));
     return copy /= rhs;
 }
 
 falk::scalar falk::operator%(const scalar& lhs, const scalar& rhs) {
     auto copy = lhs;
-    copy.type(falk::resolve_types(lhs.type(), rhs.type()));
+    copy.inner_type(falk::resolve_types(lhs.inner_type(), rhs.inner_type()));
     return copy %= rhs;
 }
 
 falk::scalar falk::operator-(const scalar& n) {
-    auto type = n.type();
+    auto type = n.inner_type();
     switch (type) {
         case falk::type::COMPLEX:
         case falk::type::REAL:
         case falk::type::BOOL:
-            return {n.type(), -n.real(), -n.imag()};
+            return {n.inner_type(), -n.real(), -n.imag()};
     }
 }
 
@@ -390,7 +390,7 @@ falk::matrix falk::operator%(const scalar& lhs, const matrix& rhs) {
 }
 
 std::ostream& falk::operator<<(std::ostream& out, const scalar& n) {
-    auto type = n.type();
+    auto type = n.inner_type();
     switch (type) {
         case falk::type::COMPLEX:
             if (std::signbit(n.imag())) {

@@ -30,10 +30,14 @@ namespace falk {
         void set_error();
         bool error() const;
 
-        falk::fundamental::type type() const;
-        void type(falk::type);
+        falk::fundamental::type inner_type() const;
+        void inner_type(falk::type);
 
         array to_array(size_t) const;
+
+        constexpr structural::type type() const {
+            return structural::type::SCALAR;
+        }
 
         static scalar pow(const scalar&, const scalar&);
         static array pow(const scalar&, const array&);
@@ -275,8 +279,6 @@ namespace falk {
 
     std::ostream& operator<<(std::ostream&, const scalar&);
 
-    // inline implementations
-
     // class scalar methods
     inline scalar::scalar(double v):
       _type{falk::type::REAL}, _real{v} { }
@@ -317,11 +319,11 @@ namespace falk {
         return _real;
     }
 
-    inline falk::type scalar::type() const {
+    inline falk::type scalar::inner_type() const {
         return _type;
     }
 
-    inline void scalar::type(falk::type t) {
+    inline void scalar::inner_type(falk::type t) {
         _type = t;
     }
 

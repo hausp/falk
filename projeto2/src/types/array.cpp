@@ -1,22 +1,23 @@
 #include "types/array.hpp"
 #include "types/matrix.hpp"
 
-falk::scalar falk::array::prepare(const scalar& value) {
-    static const std::unordered_map<falk::type, unsigned> priority = {
-        {falk::type::BOOL, 0},
-        {falk::type::REAL, 1},
-        {falk::type::COMPLEX, 2},
-    };
-
-    auto val_priority = priority.at(value.type());
-    auto curr_priority = priority.at(value_type);
-    if (val_priority < curr_priority) {
-        return scalar(value_type, value.real(), value.imag());
-    } else if (val_priority > curr_priority) {
-        value_type = value.type();
+void falk::array::coerce_to(falk::type new_type) {
+    auto new_priority = falk::priority.at(new_type);
+    auto curr_priority = falk::priority.at(value_type);
+    value_type = new_type;
+    if (new_priority > curr_priority) {
         for (size_t i = 0; i < size(); i++) {
             values[i] = scalar(value_type, values[i].real(), values[i].imag());
         }
+    }
+}
+
+falk::scalar falk::array::prepare(const scalar& value) {
+    auto val_priority = falk::priority.at(value.inner_type());
+    auto curr_priority = falk::priority.at(value_type);
+    coerce_to(value.inner_type());
+    if (val_priority < curr_priority) {
+        return scalar(value_type, value.real(), value.imag());
     }
     return value;
 }
