@@ -273,6 +273,12 @@ nonacceptable [^-\+\*\(\)/=%,;\.\n0-9A-Za-z_ \t><!&|:\[\]]+
     return falk::parser::make_SEMICOLON(falk::location());
 }
 
+\"[^\"]*\" {
+    auto content = std::string(yytext);
+    content = content.substr(1, content.size() - 2);
+    return falk::parser::make_STRING(content, falk::location());
+}
+
 {nonacceptable} {
     std::string message = "unknown symbol ";
     message += yytext;

@@ -67,7 +67,8 @@
 %token EOF 0     "end of file";
 
 %token<std::string> FILE_ID "file identifier"
-%token<std::string> ID   "variable identifier";
+%token<std::string> ID      "variable identifier";
+%token<std::string> STRING  "string";
 %token<falk::type> TYPE       "type identifier";
 %token<falk::real> REAL       "real value";
 %token<falk::complex> COMPLEX "complex value";
@@ -313,10 +314,10 @@ include:
     INCLUDE COLON inc_block DOT;
 
 inc_block:
-    ID {
+    STRING {
         context.include($1);
     }
-    | ID COMMA inc_block {
+    | STRING COMMA inc_block {
         context.include($1);
     };
 
