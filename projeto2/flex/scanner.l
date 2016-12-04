@@ -48,6 +48,7 @@ else_literal else
 for_literal for
 while_literal while
 include_literal include
+auto_literal auto
 
 end_of_command ;|\n
 
@@ -142,11 +143,14 @@ nonacceptable [^-\+\*\(\)/=%,;\.\n0-9A-Za-z_ \t><!&|:\[\]]+
 }
 
 {include_literal} {
-    // TODO: make this work
-    // return falk::parser::make_INCLUDE(falk::localtion()); ???
+    return falk::parser::make_INCLUDE(falk::location());
 }
 
-in {
+{auto_literal} {
+    return falk::parser::make_AUTO(falk::location());
+}
+
+"in" {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
     return falk::parser::make_IN(falk::location());

@@ -50,6 +50,8 @@
 %token ELSE      "else keyword";
 %token FOR       "for keyword";
 %token WHILE     "while keyword";
+%token INCLUDE   "include keyword";
+%token AUTO      "auto keyword";
 %token IN        "in keyword";
 %token RET       "return keyword";
 %token FUN       "function keyword";
@@ -63,7 +65,6 @@
 %token CBRACKET  "]";
 %token EOF 0     "end of file";
 
-//%token<TODO: SOME_TYPE> INCLUDE   "include keyword";
 
 %token<std::string> FILE_ID "file identifier"
 %token<std::string> ID   "variable identifier";
@@ -177,11 +178,11 @@ command:
 
 decl_var:
     VAR ID COLON TYPE {
-        auto decl = falk::declare_variable{$2, structural::type::SCALAR, $4};
+        auto decl = falk::declare_variable{$2, false, structural::type::SCALAR, $4};
         $$ = falk::declaration(decl);
     }
     | VAR ID ASSIGN rvalue {
-        auto decl = falk::declare_variable{$2, structural::type::SCALAR};
+        auto decl = falk::declare_variable{$2, false, structural::type::SCALAR};
         $$ = falk::declaration(decl, $4);
     }
     | ARRAY arr_size ID {
@@ -189,7 +190,7 @@ decl_var:
         $$ = falk::declaration();
     }
     | ARRAY ID ASSIGN rvalue {
-        auto decl = falk::declare_variable{$2, structural::type::ARRAY};
+        auto decl = falk::declare_variable{$2, false, structural::type::ARRAY};
         $$ = falk::declaration(decl, $4);
     }
     | MATRIX mat_size ID {
@@ -197,7 +198,11 @@ decl_var:
         $$ = falk::declaration();
     }
     | MATRIX ID ASSIGN rvalue {
-        auto decl = falk::declare_variable{$2, structural::type::MATRIX};
+        auto decl = falk::declare_variable{$2, false, structural::type::MATRIX};
+        $$ = falk::declaration(decl, $4);
+    }
+    | AUTO ID ASSIGN rvalue {
+        auto decl = falk::declare_variable{$2, true};
         $$ = falk::declaration(decl, $4);
     };
 

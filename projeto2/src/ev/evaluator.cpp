@@ -5,7 +5,7 @@ void falk::ev::evaluator::analyse(const declare_variable& var,
                                   node_array<1>& nodes) {
     auto get_value = [this](auto& mapper, auto& var) {
         auto type = aut::pop(types_stack);
-        if (type != var.s_type) {
+        if (!var.deduce_type && type != var.s_type) {
             err::semantic<Error::ILLEGAL_ASSIGNMENT>(var.s_type, type);
             return;
         }
@@ -182,6 +182,10 @@ void falk::ev::evaluator::analyse(const loop&, node_array<2>& nodes) {
     } else {
         err::semantic<Error::NON_BOOLEAN_CONDITION>();
     }
+}
+
+void falk::ev::evaluator::analyse(const ret&, node_array<1>& nodes) {
+    // TODO
 }
 
 void falk::ev::evaluator::process(rvalue& v) {

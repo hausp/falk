@@ -18,12 +18,17 @@ namespace falk {
         static constexpr size_t arity() { return 1; }
         
         std::string id;
+        bool deduce_type;
         structural::type s_type;
         fundamental::type f_type;
     };
 
     struct loop {
         static constexpr size_t arity() { return 2; }
+    };
+
+    struct ret {
+        static constexpr size_t arity() { return 1; }
     };
 
     struct valueof {
