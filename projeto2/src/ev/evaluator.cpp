@@ -139,6 +139,10 @@ void falk::ev::evaluator::analyse(const valueof&, node_array<1>& nodes) {
 
 void falk::ev::evaluator::analyse(const block&, std::list<node_ptr>& nodes) {
     for (auto& node : nodes) {
+        if (return_called) {
+            return_called = !inside_function;
+            break;
+        }
         // TODO: solve this (problem number 666: unknown nullptr)
         if (node) {
             node->traverse(*this);        
@@ -185,7 +189,12 @@ void falk::ev::evaluator::analyse(const loop&, node_array<2>& nodes) {
 }
 
 void falk::ev::evaluator::analyse(const ret&, node_array<1>& nodes) {
-    // TODO
+    if (inside_function) {
+        nodes[0]->traverse(*this);
+        return_called = true;
+    } else {
+        // TODO: error or kill the program (Assigned to Ghabriel)
+    }
 }
 
 void falk::ev::evaluator::process(rvalue& v) {

@@ -91,6 +91,7 @@ namespace falk {
             std::stack<var_id> id_stack;
             std::stack<structural::type> types_stack;
             bool inside_function = false;
+            bool return_called = false;
         };
     }
 }
