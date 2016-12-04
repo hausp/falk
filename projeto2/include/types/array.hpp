@@ -14,6 +14,22 @@ namespace falk {
      public:
         explicit array(bool flag = false) : fail(flag) { }
 
+        auto begin() const {
+            return values.cbegin();
+        }
+
+        auto begin() {
+            return values.begin();
+        }
+
+        auto end() const {
+            return values.cend();
+        }
+
+        auto end() {
+            return values.end();
+        }
+
         size_t size() const {
             return values.size();
         }

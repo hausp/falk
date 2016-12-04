@@ -13,6 +13,26 @@ namespace falk {
         explicit matrix(bool = false);
         matrix(size_t, size_t);
 
+        auto begin() const {
+            // TODO (assigned to Marleson)
+            return nullptr;
+        }
+
+        auto begin() {
+            // TODO (assigned to Marleson)
+            return nullptr;
+        }
+
+        auto end() const {
+            // TODO (assigned to Marleson)
+            return nullptr;
+        }
+
+        auto end() {
+            // TODO (assigned to Marleson)
+            return nullptr;
+        }
+
         scalar& at(size_t, size_t);
         const scalar& at(size_t, size_t) const;
         array row(size_t) const;
