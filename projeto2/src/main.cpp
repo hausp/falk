@@ -14,9 +14,13 @@ int main(int argc, char** argv) {
 
     lpi::lpa_context<falk::scanner, falk::parser, falk::analyser> context;
 
-    std::ifstream stream;
     if (argc >= 3) {
-        stream.open(argv[2], std::ifstream::in);
+        context.console_mode(argv[2] != std::to_string(0));
+    }
+
+    std::ifstream stream;
+    if (argc >= 4) {
+        stream.open(argv[3], std::ifstream::in);
         context.console_mode(false);
         context.switch_input_stream(&stream);
     }

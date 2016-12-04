@@ -55,12 +55,9 @@ namespace {
         for (auto in_it = inputs.begin(); in_it != inputs.end(); ++in_it) {
             auto& in = *in_it;
             auto& expected = *out_it;
-            Connection program("./bin/falk", "0");
+            Connection program("./bin/falk", "0", "0");
             program.send(in + "\n");
             auto actual = program.receive();
-
-            // std::cout << "satan: [" << actual << "]" << std::endl;
-            actual = actual.substr(6);
 
             bool padded = false;
             if (actual.size() >= expected.size()) {
@@ -76,7 +73,7 @@ namespace {
     }
 }
 
-TEST_F(FalkTest, interpreter_v1) {
+TEST_F(FalkTest, interpreter_v0) {
     Container inputs;
     Container outputs;
     inputs.add("2 + 2");
@@ -130,7 +127,52 @@ TEST_F(FalkTest, interpreter_v1) {
     run_tests(inputs, outputs);
 }
 
-TEST_F(FalkTest, interpreter_v3) {
+TEST_F(FalkTest, interpreter_v1) {
+    Container inputs;
+    Container outputs;
+    inputs.add("2 > 3");
+    outputs.add("res = false");
+
+    inputs.add("3 > 2");
+    outputs.add("res = true");
+
+    inputs.add("1 <> 1");
+    outputs.add("res = false");
+
+    inputs.add("1 == 1");
+    outputs.add("res = true");
+
+    inputs.add("1 <> 2");
+    outputs.add("res = true");
+
+    inputs.add("true & false");
+    outputs.add("res = false");
+
+    inputs.add("true | false");
+    outputs.add("res = true");
+
+    inputs.add("1 > [1]");
+    outputs.add("[Line 0] semantic error: cannot compare scalar and array");
+
+    inputs.add("1 > [[1]]");
+    outputs.add("[Line 0] semantic error: cannot compare scalar and matrix");
+
+    inputs.add("[1] > 1");
+    outputs.add("[Line 0] semantic error: cannot compare array and scalar");
+
+    inputs.add("[1] > [[1]]");
+    outputs.add("[Line 0] semantic error: cannot compare array and matrix");
+
+    inputs.add("[[1]] > 1");
+    outputs.add("[Line 0] semantic error: cannot compare matrix and scalar");
+
+    inputs.add("[[1]] > [1]");
+    outputs.add("[Line 0] semantic error: cannot compare matrix and array");
+
+    run_tests(inputs, outputs);
+}
+
+TEST_F(FalkTest, interpreter_v2) {
     Container inputs;
     Container outputs;
     inputs.add("[[1,2,4],[8,16,32]] * [[1,2,3],[4,5,6],[7,8,9]]");
@@ -167,13 +209,77 @@ TEST_F(FalkTest, interpreter_v3) {
     inputs.add("(242 * 3i) / [[42, 74]]");
     outputs.add("res = [[0 + 17.2857i, 0 + 9.81081i]]");
 
-    // TODO: wtf?
-    // inputs.add("(34i * 2 / 1i) % [[25, 9 * 7]]");
-    // outputs.add("res = [[68 + 0i, 68 + 0i]]");
+    inputs.add("(34i * 2 / 1i) % 25");
+    outputs.add("[Line 0] semantic error: illegal operation: complex modulus");
 
-    // TODO: wtf?
-    // inputs.add("912873987 ** [[28 ** 3, 94 % 7]]");
-    // outputs.add("[Line 0] semantic error: illegal operation: matrix exponentiation");
+    inputs.add("var a = [2]");
+    outputs.add("[Line 0] semantic error: cannot assign array to scalar");
+
+    inputs.add("var a = [[2]]");
+    outputs.add("[Line 0] semantic error: cannot assign matrix to scalar");
+
+    inputs.add("array a = 1");
+    outputs.add("[Line 0] semantic error: cannot assign scalar to array");
+
+    inputs.add("array a = [[1]]");
+    outputs.add("[Line 0] semantic error: cannot assign matrix to array");
+
+    inputs.add("matrix a = 1");
+    outputs.add("[Line 0] semantic error: cannot assign scalar to matrix");
+
+    inputs.add("matrix a = [1]");
+    outputs.add("[Line 0] semantic error: cannot assign array to matrix");
+
+    run_tests(inputs, outputs);
+}
+
+TEST_F(FalkTest, interpreter_v3) {
+    Container inputs;
+    Container outputs;
+    inputs.add("array a = [3, 5, 7]", "a = 1", "a");
+    outputs.add("res = [1, 1, 1]");
+
+    inputs.add("array a = [3, 5, 7]", "a = false", "a");
+    outputs.add("res = [0, 0, 0]");
+
+    inputs.add("array a = [3, 5, 7]", "a = 3 + 2i", "a");
+    outputs.add("res = [3, 3, 3]");
+
+    inputs.add("matrix a = [[1, 2], [3, 4]]", "a = 42", "a");
+    outputs.add("res = [[42, 42], [42, 42]]");
+
+    inputs.add("matrix a = [[1, 2], [3, 4]]", "a = false", "a");
+    outputs.add("res = [[0, 0], [0, 0]]");
+
+    inputs.add("matrix a = [[1, 2], [3, 4]]", "a = 3 + 2i", "a");
+    outputs.add("res = [[3, 3], [3, 3]]");
+
+    inputs.add("array a = [3, 5, 7]", "a += [1, 2, 3]", "a");
+    outputs.add("res = [4, 7, 10]");
+
+    inputs.add("matrix a = [[1,2],[3,4]]", "a += [[1, 0], [0, 1]]", "a");
+    outputs.add("res = [[2, 2], [3, 5]]");
+
+    inputs.add("array a = [1, 2, 3, 4, 5]", "a", "res + 1");
+    outputs.add("res = [1, 2, 3, 4, 5]", "res = [2, 3, 4, 5, 6]");
+
+    inputs.add("var a = [1]");
+    outputs.add("[Line 0] semantic error: cannot assign array to scalar");
+
+    inputs.add("var a = [[1]]");
+    outputs.add("[Line 0] semantic error: cannot assign matrix to scalar");
+
+    inputs.add("array a = 1");
+    outputs.add("[Line 0] semantic error: cannot assign scalar to array");
+
+    inputs.add("array a = [[1]]");
+    outputs.add("[Line 0] semantic error: cannot assign matrix to array");
+
+    inputs.add("matrix a = 1");
+    outputs.add("[Line 0] semantic error: cannot assign scalar to matrix");
+
+    inputs.add("matrix a = [1]");
+    outputs.add("[Line 0] semantic error: cannot assign array to matrix");
 
     run_tests(inputs, outputs);
 }
@@ -182,20 +288,19 @@ TEST_F(FalkTest, interpreter_v4) {
     Container inputs;
     Container outputs;
     inputs.add("var a = 42 * 77", "a");
-    outputs.add("falk> res = 3234");
+    outputs.add("res = 3234");
 
     inputs.add("array a = [20 * 18, 37, 4] + [3, 2, 1]", "a");
-    outputs.add("falk> res = [363, 39, 5]");
+    outputs.add("res = [363, 39, 5]");
 
     inputs.add("matrix a = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]", "a");
-    outputs.add("falk> res = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]");
+    outputs.add("res = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]");
 
-    // TODO: wtf?
-    // inputs.add("var a = 42", "var b = 2i", "a + b");
-    // outputs.add("falk> falk> res = 42 + 2i");
+    inputs.add("var a = 42", "var b = 2i", "a + b");
+    outputs.add("res = 42 + 2i");
 
     inputs.add("var a = false", "a += 1", "a");
-    outputs.add("falk> falk> res = true");
+    outputs.add("res = true");
 
     inputs.add("var a = [5]");
     outputs.add("[Line 0] semantic error: cannot assign array to scalar");
@@ -319,8 +424,8 @@ TEST_F(FalkTest, interpreter_v5) {
 // }
 
 int main(int argc, char** argv) {
-    constexpr auto min_version = 0.1;
-    constexpr auto latest_stable = 0.1;
+    constexpr double min_version = 0;
+    constexpr double latest_stable = 0.1;
 
     ::testing::InitGoogleTest(&argc, argv);
     const std::string tests = [&] {

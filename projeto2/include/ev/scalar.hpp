@@ -32,6 +32,7 @@ namespace falk {
             bool error() const;
 
             falk::fundamental::type type() const;
+            void type(falk::type);
 
             array to_array(size_t) const;
 
@@ -319,6 +320,10 @@ namespace falk {
 
         inline falk::type scalar::type() const {
             return _type;
+        }
+
+        inline void scalar::type(falk::type t) {
+            _type = t;
         }
 
         inline void scalar::set_error() {

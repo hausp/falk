@@ -263,26 +263,31 @@ falk::ev::matrix falk::ev::scalar::pow(const scalar& lhs, const matrix& rhs) {
 
 falk::ev::scalar falk::ev::operator+(const scalar& lhs, const scalar& rhs) {
     auto copy = lhs;
+    copy.type(falk::resolve_types(lhs.type(), rhs.type()));
     return copy += rhs;
 }
 
 falk::ev::scalar falk::ev::operator-(const scalar& lhs, const scalar& rhs) {
     auto copy = lhs;
+    copy.type(falk::resolve_types(lhs.type(), rhs.type()));
     return copy -= rhs;
 }
 
 falk::ev::scalar falk::ev::operator*(const scalar& lhs, const scalar& rhs) {
     auto copy = lhs;
+    copy.type(falk::resolve_types(lhs.type(), rhs.type()));
     return copy *= rhs;
 }
 
 falk::ev::scalar falk::ev::operator/(const scalar& lhs, const scalar& rhs) {
     auto copy = lhs;
+    copy.type(falk::resolve_types(lhs.type(), rhs.type()));
     return copy /= rhs;
 }
 
 falk::ev::scalar falk::ev::operator%(const scalar& lhs, const scalar& rhs) {
     auto copy = lhs;
+    copy.type(falk::resolve_types(lhs.type(), rhs.type()));
     return copy %= rhs;
 }
 
