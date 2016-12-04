@@ -81,6 +81,8 @@ namespace falk {
         void analyse(const scoped&, node_array<1>&);
         // get the value of an lvalue
         void analyse(const valueof&, node_array<1>&);
+        // get the type of an lvalue
+        void analyse(const typeof&, node_array<1>&);
         // Binary calculations
         template<typename Type, Type OP>
         void analyse(op::callback<Type, OP, 2>, node_array<2>&);

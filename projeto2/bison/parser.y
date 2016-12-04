@@ -95,6 +95,7 @@
 %type<falk::rvalue> expr single_calc;
 %type<falk::rvalue> index rvalue;
 %type<falk::rvalue> fun_call return undef;
+%type<falk::rvalue> typeof
 %type<falk::lvalue> assignment;
 %type<falk::lvalue> lvalue;
 %type<falk::declaration> decl_var decl_fun;
@@ -190,6 +191,10 @@ decl_var:
     VAR ID COLON TYPE {
         auto decl = falk::declare_variable{$2, false, structural::type::SCALAR, $4};
         $$ = falk::declaration(decl);
+    }
+    | VAR ID COLON typeof {
+        auto decl = falk::declare_variable{$2, false, structural::type::SCALAR};
+        $$ = falk::declaration(decl, $4);
     }
     | VAR ID ASSIGN rvalue {
         auto decl = falk::declare_variable{$2, false, structural::type::SCALAR};
@@ -358,7 +363,11 @@ lvalue:
         $$ = falk::var_id{$1};
         $$.set_index(falk::rvalue(), $4);
     };
-    
+
+typeof:
+    TYPEOF lvalue {
+        $$ = {falk::typeof(), $2.extract()};
+    };
 
 index:
     lvalue { $$ = $1; }

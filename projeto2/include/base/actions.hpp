@@ -46,6 +46,10 @@ namespace falk {
         static constexpr size_t arity() { return 1; }
     };
 
+    struct typeof {
+         static constexpr size_t arity() { return 1; }
+    };
+
     struct var_id {
         static constexpr size_t arity() { return 2; }
 

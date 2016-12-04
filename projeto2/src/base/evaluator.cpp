@@ -244,6 +244,16 @@ void falk::evaluator::analyse(const valueof&, node_array<1>& nodes) {
     }
 }
 
+void falk::evaluator::analyse(const typeof&, node_array<1>& nodes) {
+    nodes[0]->traverse(*this);
+
+    if(aut::pop(types_stack) != structural::type::SCALAR) {
+        // TODO: usuário burro toma erro na cara
+    }
+    
+    
+}
+
 void falk::evaluator::analyse(const block&, std::list<node_ptr>& nodes) {
     for (auto& node : nodes) {
         if (return_called) {
