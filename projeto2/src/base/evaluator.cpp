@@ -134,23 +134,25 @@ void falk::evaluator::analyse(fun_id& fun, node_array<1>& nodes) {
 
         if (!error) {
             auto& code = fn.code();
-            inside_function = true;
+            ++function_counter;
             code->traverse(*this);
-            inside_function = false;
-        }
+            --function_counter;
 
-        if (!return_called) {
-            push(scalar::silent());
+            if (!return_called) {
+                push(scalar::silent());
+            }
+        } else {
+            push(scalar::invalid());
         }
         return_called = false;
         mapper.close_scope();
     } else if (fn.error()) {
-        push(scalar::silent());
+        push(scalar::invalid());
     } else {
         err::semantic<Error::MISMATCHING_PARAMETER_COUNT>(
             fun.id, params.size(), fun.number_of_params
         );
-        push(scalar::silent());
+        push(scalar::invalid());
     }
 }
 
@@ -261,11 +263,10 @@ void falk::evaluator::analyse(const typeof&, node_array<1>& nodes) {
 
 void falk::evaluator::analyse(const block&, std::list<node_ptr>& nodes) {
     for (auto& node : nodes) {
+        node->traverse(*this);
         if (return_called) {
-            return_called = !inside_function;
             break;
         }
-        node->traverse(*this);
     }
 }
 
@@ -338,7 +339,7 @@ void falk::evaluator::analyse(const for_it& fit, node_array<2>& nodes) {
 }
 
 void falk::evaluator::analyse(const ret&, node_array<1>& nodes) {
-    if (inside_function) {
+    if (function_counter > 0) {
         nodes[0]->traverse(*this);
         return_called = true;
     } else {
@@ -349,6 +350,7 @@ void falk::evaluator::analyse(const ret&, node_array<1>& nodes) {
 void falk::evaluator::analyse(const undef& container) {
     mapper.undefine_function(container.id);
 }
+
 void falk::evaluator::process(node_ptr v) {
     if (!v->empty()) {
         v->traverse(*this);
@@ -356,7 +358,7 @@ void falk::evaluator::process(node_ptr v) {
 }
 
 void falk::evaluator::analyse(const create_structure&,
-                                  std::list<node_ptr>& nodes) {
+                              std::list<node_ptr>& nodes) {
     auto size = nodes.size();
     for (auto& node : nodes) {
         node->traverse(*this);

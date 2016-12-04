@@ -31,6 +31,7 @@ namespace falk {
         bool error() const;
         bool printable() const;
         static scalar silent(fundamental::type = type::BOOL);
+        static scalar invalid(fundamental::type = type::BOOL);
 
         falk::fundamental::type inner_type() const;
         void inner_type(falk::type);
@@ -346,6 +347,12 @@ namespace falk {
         scalar s(t);
         s.print = false;
         return s;
+    }
+
+    inline scalar scalar::invalid(fundamental::type t) {
+        scalar s(t);
+        s.fail = true;
+        return s;   
     }
 }
 

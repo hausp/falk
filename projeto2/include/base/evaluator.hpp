@@ -115,8 +115,9 @@ namespace falk {
         std::deque<var_id> id_stack;
         std::deque<structural::type> types_stack;
         bool console = true;
-        bool inside_function = false;
         bool return_called = false;
+        size_t function_counter = 0;
+        // size_t return_counter = 0;
     };
 }
 
