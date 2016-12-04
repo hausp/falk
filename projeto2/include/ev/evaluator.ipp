@@ -69,16 +69,16 @@ template<falk::op::assignment OP>
 void falk::ev::evaluator::analyse(op::callback<op::assignment, OP, 2> op,
                                   node_array<2>& nodes) {
     // TODO: find out why this doesn't work
-    // Assigned to Marleson
+    // Assigned to Ghabriel
     auto apply = [&](auto& op, auto& vid, auto& rhs) {
-        auto& var = mapper.retrieve_variable(vid.id);
+        variable& var = mapper.retrieve_variable(vid.id);
         switch (var.stored_type()) {
             case structural::type::SCALAR: {
                 op(var, rhs);
                 break;
             }
             case structural::type::ARRAY: {
-                auto value = var.template value<array>();
+                auto& value = var.value<array>();
                 if (vid.index.first > -1) {
                     op(value[vid.index.first], rhs);
                 } else {
@@ -87,7 +87,7 @@ void falk::ev::evaluator::analyse(op::callback<op::assignment, OP, 2> op,
                 break;
             }
             case structural::type::MATRIX: {
-                auto value = var.template value<matrix>();
+                auto& value = var.value<matrix>();
                 if (vid.index.first > -1 && vid.index.second > -1) {
                     op(value.at(vid.index.first, vid.index.second), rhs);
                 } else if (vid.index.first > -1) {
