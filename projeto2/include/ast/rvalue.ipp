@@ -158,3 +158,8 @@ namespace ast {
                                               falk::op::logic::OR, 2>());
     }
 }
+
+template<typename A>
+typename ast::rvalue<A>::node_ptr ast::rvalue<A>::extract() {
+    return object;
+}

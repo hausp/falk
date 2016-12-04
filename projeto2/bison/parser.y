@@ -287,7 +287,10 @@ inc_block:
         // Receive code from FILE_ID
     };*/
 
-return: RET rvalue { $$ = falk::ret{$2}; };
+return: RET rvalue {
+    $$ = falk::ret();
+    $$.extract()->add_subnode($2);
+};
 
 rvalue: expr { $$ = $1; };
 

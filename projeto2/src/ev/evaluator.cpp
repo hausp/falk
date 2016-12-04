@@ -188,9 +188,9 @@ void falk::ev::evaluator::analyse(const loop&, node_array<2>& nodes) {
     }
 }
 
-void falk::ev::evaluator::analyse(ret& r) {
+void falk::ev::evaluator::analyse(const ret&, node_array<1>& nodes) {
     if (inside_function) {
-        r.value.traverse(*this);
+        nodes[0]->traverse(*this);
         return_called = true;
     } else {
         // TODO: error or kill the program (Assigned to Ghabriel)

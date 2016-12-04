@@ -30,10 +30,11 @@ namespace ast {
         rvalue<Analyser> op(rvalue<Analyser>&, const T&);
         template<typename T>
         rvalue<Analyser> op(const T&);
-
         static rvalue<Analyser> pow(rvalue<Analyser>&, rvalue<Analyser>&);
         rvalue<Analyser> operator!();
+
         operator node_ptr();
+        node_ptr extract();
      private:
         node_ptr object;
     };

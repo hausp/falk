@@ -3,12 +3,8 @@
 #define FALK_ACTIONS_HPP
 
 #include "types.hpp"
-#include "ast/rvalue.hpp"
 
 namespace falk {
-    namespace ev {
-        class evaluator;
-    }
     
     struct block {
         static constexpr int arity() { return -1; }
@@ -33,7 +29,7 @@ namespace falk {
     };
 
     struct ret {
-        ast::rvalue<ev::evaluator> value;
+        static constexpr size_t arity() { return 1; }
     };
 
     struct valueof {
