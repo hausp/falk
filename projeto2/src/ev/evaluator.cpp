@@ -49,6 +49,11 @@ void falk::ev::evaluator::analyse(const declare_variable& var,
     }
 }
 
+void falk::ev::evaluator::analyse(const declare_function& fn,
+                                  node_array<1>& nodes) {
+
+}
+
 void falk::ev::evaluator::analyse(var_id& vid, node_array<2>& index) {
     if (!index[0]->empty()) {
         index[0]->traverse(*this);

@@ -97,8 +97,8 @@
 %type<falk::list> container container_body;
 %type<falk::parameters> param_list;
 %type<falk::parameter> param;
-// %type<falk::list> array_list scalar_list
-// %type<falk::list> matrix_list matrix_list_body;
+%type<falk::real> literal_arr_size;
+%type<std::pair<falk::real, falk::real>> literal_mat_size;
 
 // Operators precedence.
 // The latest it is listed, the highest the precedence.
@@ -184,7 +184,7 @@ decl_var:
         $$ = falk::declaration(decl, $4);
     }
     | ARRAY arr_size ID {
-        // TODO
+        // TODO: resolve this colossal treta
         $$ = falk::declaration();
     }
     | ARRAY ID ASSIGN rvalue {
@@ -192,7 +192,7 @@ decl_var:
         $$ = falk::declaration(decl, $4);
     }
     | MATRIX mat_size ID {
-        // TODO
+        // TODO: resolve this colossal treta
         $$ = falk::declaration();
     }
     | MATRIX ID ASSIGN rvalue {
@@ -202,8 +202,8 @@ decl_var:
 
 decl_fun:
     FUN ID OPAR param_list CPAR block {
-        // auto decl = falk::declare_function{$2, structural::type::MATRIX};
-        // $$ = falk::declaration(decl, $6);
+        auto decl = falk::declare_function{$2};
+        $$ = falk::declaration(decl, $6);
     };
 
 param_list:
@@ -223,16 +223,14 @@ param:
     | ARRAY ID {
         $$ = {{$2}, falk::structural::type::ARRAY};
     }
-    | ARRAY arr_size ID {
-        // TODO
-        $$ = {{$3}, falk::structural::type::ARRAY};
+    | ARRAY literal_arr_size ID {
+        $$ = {falk::var_id{$3, {$2, -1}}, falk::structural::type::ARRAY};
     }
     | MATRIX ID {
         $$ = {{$2}, falk::structural::type::MATRIX};
     }
-    | MATRIX mat_size ID {
-        // TODO
-        $$ = {{$3}, falk::structural::type::MATRIX};
+    | MATRIX literal_mat_size ID {
+        $$ = {falk::var_id{$3, $2}, falk::structural::type::MATRIX};
     }
     ;
 
@@ -288,14 +286,18 @@ rvalue:
         $$ = $1;
     };
 
+literal_arr_size: OBRACKET REAL CBRACKET { $$ = $2; };
+
+literal_mat_size: OBRACKET REAL COMMA REAL CBRACKET { $$ = {$2, $4}; };
+
 arr_size:
-    OBRACKET REAL CBRACKET {
-        // $$ = analyser.make_array_index($2);
+    OBRACKET rvalue CBRACKET {
+        // TODO: resolve this colossal treta
     };
 
 mat_size:
-    OBRACKET REAL COMMA REAL CBRACKET {
-        // $$ = analyser.make_matrix_index($2, $4);
+    OBRACKET rvalue COMMA rvalue CBRACKET {
+        // TODO: resolve this colossal treta
     };
 
 lvalue:

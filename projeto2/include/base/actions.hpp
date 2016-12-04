@@ -13,7 +13,8 @@ namespace falk {
         static constexpr size_t arity() { return 3; }
     };
 
-    struct declare_variable {
+    template<symbol::type Type>
+    struct declare {
         static constexpr size_t arity() { return 1; }
         
         std::string id;
@@ -46,6 +47,8 @@ namespace falk {
     };
 
     using parameters = std::vector<falk::parameter>;
+    using declare_variable = declare<symbol::type::VARIABLE>;
+    using declare_function = declare<symbol::type::FUNCTION>;
 }
 
 #endif /* FALK_ACTIONS_HPP */

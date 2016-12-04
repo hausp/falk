@@ -50,6 +50,7 @@ namespace falk {
             template<typename T>
             void analyse(const T&);
             void analyse(const declare_variable&, node_array<1>&);
+            void analyse(const declare_function&, node_array<1>&);
             void analyse(const block&, std::list<node_ptr>&);
             void analyse(const conditional&, node_array<3>&);
             void analyse(const loop&, node_array<2>&);
