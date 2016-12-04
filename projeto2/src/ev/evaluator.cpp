@@ -51,7 +51,10 @@ void falk::ev::evaluator::analyse(const declare_variable& var,
 
 void falk::ev::evaluator::analyse(const declare_function& fn,
                                   node_array<1>& nodes) {
+    auto& id = fn.id;
+    auto& params = fn.params;
 
+    
 }
 
 void falk::ev::evaluator::analyse(var_id& vid, node_array<2>& index) {

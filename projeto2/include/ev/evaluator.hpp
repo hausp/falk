@@ -92,6 +92,7 @@ namespace falk {
             std::stack<structural::type> types_stack;
             bool inside_function = false;
             bool return_called = false;
+            bool pre_validating = false;
         };
     }
 }

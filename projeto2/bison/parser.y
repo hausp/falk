@@ -65,7 +65,6 @@
 %token CBRACKET  "]";
 %token EOF 0     "end of file";
 
-
 %token<std::string> FILE_ID "file identifier"
 %token<std::string> ID   "variable identifier";
 %token<falk::type> TYPE       "type identifier";
@@ -208,7 +207,7 @@ decl_var:
 
 decl_fun:
     FUN ID OPAR param_list CPAR block {
-        auto decl = falk::declare_function{$2};
+        auto decl = falk::declare_function{$2, $4};
         $$ = falk::declaration(decl, $6);
     };
 

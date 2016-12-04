@@ -86,10 +86,8 @@ namespace ast {
 
     template<typename A>
     rvalue<A> operator-(rvalue<A>& rhs) {
-        return rhs.op(
-            falk::op::callback<falk::op::arithmetic,
-                               falk::op::arithmetic::SUB, 1>()
-        );
+        return rhs.op(falk::op::callback<falk::op::arithmetic,
+                                         falk::op::arithmetic::SUB, 1>());
     }
 
     template<typename A>
