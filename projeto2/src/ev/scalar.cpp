@@ -114,7 +114,7 @@ falk::ev::scalar& falk::ev::scalar::operator%=(const scalar& rhs) {
     auto type = falk::resolve_types(_type, rhs.type());
     switch (type) {
         case falk::type::COMPLEX:
-            // TODO: error (operation not allowed)
+            err::semantic<Error::ILLEGAL_OPERATION>("complex modulus");
             fail = true;
             break;
         case falk::type::REAL:

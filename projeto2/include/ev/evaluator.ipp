@@ -139,22 +139,22 @@ void falk::ev::evaluator::analyse(const T& object) {
 }
 
 inline void falk::ev::evaluator::push(const scalar& data) {
-    scalar_stack.push(data);
-    types_stack.push(structural::type::SCALAR);
+    scalar_stack.push_back(data);
+    types_stack.push_back(structural::type::SCALAR);
 }
 
 inline void falk::ev::evaluator::push(const array& data) {
-    array_stack.push(data);
-    types_stack.push(structural::type::ARRAY);
+    array_stack.push_back(data);
+    types_stack.push_back(structural::type::ARRAY);
 }
 
 inline void falk::ev::evaluator::push(const matrix& data) {
-    matrix_stack.push(data);
-    types_stack.push(structural::type::MATRIX);
+    matrix_stack.push_back(data);
+    types_stack.push_back(structural::type::MATRIX);
 }
 
 inline void falk::ev::evaluator::push(const var_id& data) {
-    id_stack.push(data);
+    id_stack.push_back(data);
 }
 
 inline void falk::ev::evaluator::initialize() {

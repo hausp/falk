@@ -87,11 +87,11 @@ namespace falk {
             void push(const var_id&);
          private:
             symbol_mapper mapper;
-            std::stack<scalar> scalar_stack;
-            std::stack<array> array_stack;
-            std::stack<matrix> matrix_stack;
-            std::stack<var_id> id_stack;
-            std::stack<structural::type> types_stack;
+            std::deque<scalar> scalar_stack;
+            std::deque<array> array_stack;
+            std::deque<matrix> matrix_stack;
+            std::deque<var_id> id_stack;
+            std::deque<structural::type> types_stack;
             bool console = true;
             bool inside_function = false;
             bool return_called = false;

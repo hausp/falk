@@ -41,9 +41,16 @@ namespace aut {
     };
 
     template<typename T>
-    T pop(std::stack<T>& stack) {
-        auto value = stack.top();
-        stack.pop();
+    T pop(std::deque<T>& container) {
+        auto value = container.back();
+        container.pop_back();
+        return value;
+    }
+
+    template<typename T>
+    T pop_front(std::deque<T>& container) {
+        auto value = container.front();
+        container.pop_front();
         return value;
     }
 }

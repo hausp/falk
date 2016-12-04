@@ -210,10 +210,10 @@ void falk::ev::evaluator::process(rvalue& v) {
 }
 
 void falk::ev::evaluator::print_result() {
-    auto type = aut::pop(types_stack);
+    auto type = aut::pop_front(types_stack);
     switch (type) {
         case structural::type::SCALAR: {
-            auto result = aut::pop(scalar_stack);
+            auto result = aut::pop_front(scalar_stack);
             if (!result.error()) {
                 std::cout << "res = " << result << std::endl;
                 mapper.update_result(variable(result, type));
@@ -221,7 +221,7 @@ void falk::ev::evaluator::print_result() {
             break;
         }
         case structural::type::ARRAY: {
-            auto result = aut::pop(array_stack);
+            auto result = aut::pop_front(array_stack);
             if (!result.error()) {
                 std::cout << "res = " << result << std::endl;
                 mapper.update_result(variable(result, type));
@@ -229,7 +229,7 @@ void falk::ev::evaluator::print_result() {
             break;
         }
         case structural::type::MATRIX: {
-            auto result = aut::pop(matrix_stack);
+            auto result = aut::pop_front(matrix_stack);
             if (!result.error()) {
                 std::cout << "res = " << result << std::endl;
                 mapper.update_result(variable(result, type));
