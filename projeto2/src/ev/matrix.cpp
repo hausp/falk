@@ -325,7 +325,7 @@ falk::ev::matrix& falk::ev::matrix::operator*=(const matrix& rhs) {
     }
 
     if (num_columns != rhs.column_count()) {
-        err::semantic<Error::NON_SQUARE_MATRIX>(num_columns, rhs.column_count());
+        err::semantic<Error::NON_SQUARE_MATRIX>(rhs.row_count(), rhs.column_count());
         fail = true;
         return *this;
     }

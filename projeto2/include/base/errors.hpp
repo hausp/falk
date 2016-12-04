@@ -144,8 +144,9 @@ namespace err {
 
     template<>
     inline void semantic<Error::NON_SQUARE_MATRIX>(size_t lhs, size_t rhs) {
-        echo(error_prefix("semantic") + "second matrix must be square (" +
-            std::to_string(lhs) + " and " + std::to_string(rhs) + ")");
+        echo(error_prefix("semantic") + "second matrix must be square ("
+            "found a " + std::to_string(lhs) + " x " + std::to_string(rhs) +
+            " matrix instead)");
     }
 
     template<>

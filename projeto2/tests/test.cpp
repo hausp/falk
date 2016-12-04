@@ -169,6 +169,18 @@ TEST_F(FalkTest, interpreter_v1) {
     inputs.add("[[1]] > [1]");
     outputs.add("[Line 0] semantic error: cannot compare matrix and array");
 
+    inputs.add("1", "// ignore this", "2");
+    outputs.add("res = 1", "res = 2");
+
+    inputs.add("1", "/* ignore", "this */", "2");
+    outputs.add("res = 1", "res = 2");
+
+    inputs.add("1", "/* ignore", "this */ 2");
+    outputs.add("res = 1", "res = 2");
+
+    inputs.add("1", "/**/", "2");
+    outputs.add("res = 1", "res = 2");
+
     run_tests(inputs, outputs);
 }
 
@@ -236,6 +248,15 @@ TEST_F(FalkTest, interpreter_v2) {
 TEST_F(FalkTest, interpreter_v3) {
     Container inputs;
     Container outputs;
+    inputs.add("var a = 42 * 77", "a");
+    outputs.add("res = 3234");
+
+    inputs.add("array a = [20 * 18, 37, 4] + [3, 2, 1]", "a");
+    outputs.add("res = [363, 39, 5]");
+
+    inputs.add("matrix a = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]", "a");
+    outputs.add("res = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]");
+
     inputs.add("array a = [3, 5, 7]", "a = 1", "a");
     outputs.add("res = [1, 1, 1]");
 
@@ -263,6 +284,12 @@ TEST_F(FalkTest, interpreter_v3) {
     inputs.add("array a = [1, 2, 3, 4, 5]", "a", "res + 1");
     outputs.add("res = [1, 2, 3, 4, 5]", "res = [2, 3, 4, 5, 6]");
 
+    inputs.add("var a = 42", "var b = 2i", "a + b");
+    outputs.add("res = 42 + 2i");
+
+    inputs.add("var a = false", "a += 1", "a");
+    outputs.add("res = true");
+
     inputs.add("var a = [1]");
     outputs.add("[Line 0] semantic error: cannot assign array to scalar");
 
@@ -281,53 +308,13 @@ TEST_F(FalkTest, interpreter_v3) {
     inputs.add("matrix a = [1]");
     outputs.add("[Line 0] semantic error: cannot assign array to matrix");
 
+    inputs.add("matrix a = [[1,2],[3,4]]", "a *= [[1,2,3],[4,5,6]]");
+    outputs.add("[Line 1] semantic error: second matrix must be square (found a 2 x 3 matrix instead)");
+
     run_tests(inputs, outputs);
 }
 
 TEST_F(FalkTest, interpreter_v4) {
-    Container inputs;
-    Container outputs;
-    inputs.add("var a = 42 * 77", "a");
-    outputs.add("res = 3234");
-
-    inputs.add("array a = [20 * 18, 37, 4] + [3, 2, 1]", "a");
-    outputs.add("res = [363, 39, 5]");
-
-    inputs.add("matrix a = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]", "a");
-    outputs.add("res = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]");
-
-    inputs.add("var a = 42", "var b = 2i", "a + b");
-    outputs.add("res = 42 + 2i");
-
-    inputs.add("var a = false", "a += 1", "a");
-    outputs.add("res = true");
-
-    inputs.add("var a = [5]");
-    outputs.add("[Line 0] semantic error: cannot assign array to scalar");
-
-    inputs.add("var a = [[5]]");
-    outputs.add("[Line 0] semantic error: cannot assign matrix to scalar");
-
-    inputs.add("array a = 5");
-    outputs.add("[Line 0] semantic error: cannot assign scalar to array");
-
-    inputs.add("array a = [[5]]");
-    outputs.add("[Line 0] semantic error: cannot assign matrix to array");
-
-    inputs.add("matrix a = 42");
-    outputs.add("[Line 0] semantic error: cannot assign scalar to matrix");
-
-    inputs.add("matrix a = [42]");
-    outputs.add("[Line 0] semantic error: cannot assign array to matrix");
-
-    // TODO: test other assignment types
-    // inputs.add("");
-    // outputs.add("");
-
-    run_tests(inputs, outputs);
-}
-
-TEST_F(FalkTest, interpreter_v5) {
     Container inputs;
     Container outputs;
     inputs.add("if (true):", "2 + 2", ".");
@@ -336,8 +323,44 @@ TEST_F(FalkTest, interpreter_v5) {
     inputs.add("if (false):", "2 + 2", ". else:", "3 + 3", ".");
     outputs.add("res = 6");
 
-    // inputs.add("");
-    // outputs.add("");
+    // inputs.add("var a = 3", "if (a < 10):", "a = 8", ". else:", "a = 13", "a");
+    // outputs.add("res = 8");
+
+    // inputs.add("a");
+    // outputs.add("b");
+
+    // inputs.add("var a = 42", "if (a < 10):", "a = 8", ". else:", "a = 13", "a");
+    // outputs.add("res = 13");
+
+    inputs.add("var a = 1", "if (a < 5):", "var a = 10", "if (a > 5):", "1",
+        ". else:", "2", ".", "a", ". else:", "3", ".", "a");
+    outputs.add("res = 1", "res = 10", "res = 1");
+
+    inputs.add("if ([1]):", "2 + 2", ".");
+    outputs.add("[Line 2] semantic error: non-boolean condition");
+
+    inputs.add("if ([[1]]):", "42", ".");
+    outputs.add("[Line 2] semantic error: non-boolean condition");
+
+    run_tests(inputs, outputs);
+}
+
+TEST_F(FalkTest, interpreter_v5) {
+    Container inputs;
+    Container outputs;
+    inputs.add("var a = 1", "while (a < 5):", "a", "a += 1", ".");
+    outputs.add("res = 1", "res = 2", "res = 3", "res = 4");
+
+    inputs.add("var a = 1", "while (a < 5):", "a", "a += 1",
+        "if (a == 3):", "a += 1", ".", ".");
+    outputs.add("res = 1", "res = 2", "res = 4");
+
+    inputs.add("var a = 1", "var b = 9", "while (a != 5 | b != 5):",
+        "a ** b", "a += 1", "b -= 1", ".");
+    outputs.add("res = 1", "res = 256", "res = 2187", "res = 4096");
+
+    inputs.add("while (false):", "nope", ".", "1");
+    outputs.add("res = 1");
 
     // inputs.add("");
     // outputs.add("");
@@ -345,11 +368,12 @@ TEST_F(FalkTest, interpreter_v5) {
     // inputs.add("");
     // outputs.add("");
 
-    // inputs.add("");
-    // outputs.add("");
+    inputs.add("while ([70 * 47]):", "2 + 2", ".");
+    outputs.add("[Line 2] semantic error: non-boolean condition");
 
-    // inputs.add("");
-    // outputs.add("");
+    inputs.add("while ([[53]]):", "42", ".");
+    outputs.add("[Line 2] semantic error: non-boolean condition");
+
 
     run_tests(inputs, outputs);
 }
