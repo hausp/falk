@@ -38,6 +38,8 @@ enum class Error {
     MISMATCHING_PARAMETER_COUNT,
     PARAMETER_ARRAY_SIZE_MISMATCH,
     PARAMETER_MATRIX_SIZE_MISMATCH,
+    NONSCALAR_TYPEOF,
+    FOR_SCALAR_TARGET,
 };
 
 namespace std {
@@ -277,6 +279,16 @@ namespace err {
     template<>
     inline void semantic<Error::NONSCALAR_INDEX>() {
         echo(error_prefix("semantic") + "indexes must be scalars");
+    }
+
+    template<>
+    inline void semantic<Error::NONSCALAR_TYPEOF>() {
+        echo(error_prefix("semantic") + "typeof expects a scalar");
+    }
+
+    template<>
+    inline void semantic<Error::FOR_SCALAR_TARGET>() {
+        echo(error_prefix("semantic") + "for expects an array or matrix, scalar given");
     }
 }
 
