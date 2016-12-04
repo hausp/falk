@@ -366,7 +366,8 @@ lvalue:
 
 typeof:
     TYPEOF lvalue {
-        $$ = {falk::typeof(), $2.extract()};
+        falk::rvalue v = $2;
+        $$ = {falk::typeof(), v};
     };
 
 index:
