@@ -117,14 +117,16 @@ void falk::ev::evaluator::analyse(fun_id& fun, node_array<1>& nodes) {
 
         if (!error) {
             auto& code = fn.code();
+            inside_function = true;
             code->traverse(*this);
+            inside_function = false;
             
         }
 
         if (!return_called) {
             push(0);
         }
-
+        return_called = false;
         mapper.close_scope();
     } else {
         // TODO: error (assigned to Ghabriel)
