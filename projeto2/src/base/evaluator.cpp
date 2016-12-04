@@ -309,6 +309,7 @@ void falk::evaluator::analyse(const for_it& fit, node_array<2>& nodes) {
                 nodes[1]->traverse(*this);
                 mapper.close_scope();
             }
+            break;
         }
         case structural::type::MATRIX: {
             auto& banana = var.value<matrix>();
@@ -319,6 +320,7 @@ void falk::evaluator::analyse(const for_it& fit, node_array<2>& nodes) {
                 nodes[1]->traverse(*this);
                 mapper.close_scope();
             }
+            break;
         }
     }
 }
