@@ -15,9 +15,13 @@ void falk::array::coerce_to(falk::type new_type) {
 falk::scalar falk::array::prepare(const scalar& value) {
     auto val_priority = falk::priority.at(value.inner_type());
     auto curr_priority = falk::priority.at(value_type);
-    coerce_to(value.inner_type());
     if (val_priority < curr_priority) {
         return scalar(value_type, value.real(), value.imag());
+    } else if (val_priority > curr_priority) {
+        value_type = value.inner_type();
+        for (size_t i = 0; i < size(); i++) {
+            values[i] = scalar(value_type, values[i].real(), values[i].imag());
+        }
     }
     return value;
 }

@@ -117,8 +117,7 @@ const falk::scalar& falk::matrix::at(size_t row, size_t column) const {
 }
 
 void falk::matrix::push_back(const array& new_row) {
-    auto row = new_row;
-    // auto row = prepare(new_row);
+    auto row = prepare(new_row);
     if (values.size() == 0) {
         num_columns = row.size();
     }
@@ -136,8 +135,7 @@ void falk::matrix::push_back(const array& new_row) {
 }
 
 void falk::matrix::push_front(const array& new_row) {
-    // auto row = prepare(new_row);
-    auto row = new_row;
+    auto row = prepare(new_row);
     if (values.size() == 0) {
         num_columns = row.size();
     }
@@ -369,6 +367,7 @@ falk::array falk::matrix::prepare(const array& row) {
         copy.coerce_to(value_type);
         return copy;
     } else if (arr_priority > curr_priority) {
+        value_type = arr_type;
         for (size_t i = 0; i < num_rows; i++) {
             for (size_t j = 0; j < num_columns; j++) {
                 auto& value = at(i, j);
