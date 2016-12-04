@@ -82,25 +82,27 @@ void falk::ev::evaluator::analyse(var_id& vid, node_array<2>& index) {
 }
 
 void falk::ev::evaluator::analyse(fun_id& fun, node_array<1>& nodes) {
-    std::cout << "hello" << std::endl;
+    // std::cout << "hello" << std::endl;
     auto& fn = mapper.retrieve_function(fun.id);
     auto& params = fn.params();
-    std::cout << "params.size()" << params.size() << std::endl;
-    std::cout << "fun.number_of_params" << fun.number_of_params << std::endl;
+    // std::cout << "params.size() " << params.size() << std::endl;
+    // std::cout << "fun.number_of_params " << fun.number_of_params << std::endl;
     if (params.size() == fun.number_of_params) {
         nodes[0]->traverse(*this);
+        mapper.open_scope();
         for (size_t i = 0; i < fun.number_of_params; i++) {
             auto type = aut::pop(types_stack);
             if (params[i].s_type == type) {
                 switch (type) {
                     case structural::type::SCALAR: {
-                        std::cout << "scalar" << std::endl;
+                        // std::cout << "scalar" << std::endl;
                         auto v = aut::pop(scalar_stack);
-                        std::cout << "ue" << std::endl;
+                        // std::cout << "ue" << std::endl;
                         mapper.declare_variable(
                             params[i].vid.id,
                             variable(v, type)
                         );
+                        break;
                     }
                     case structural::type::ARRAY: {
                         auto v = aut::pop(array_stack);
@@ -108,6 +110,7 @@ void falk::ev::evaluator::analyse(fun_id& fun, node_array<1>& nodes) {
                             params[i].vid.id,
                             variable(v, type)
                         );
+                        break;
                     }
                     case structural::type::MATRIX: {
                         auto v = aut::pop(matrix_stack);
@@ -115,16 +118,20 @@ void falk::ev::evaluator::analyse(fun_id& fun, node_array<1>& nodes) {
                             params[i].vid.id,
                             variable(v, type)
                         );
+                        break;
                     }
                 }
             } else {
                 // TODO: error (assigned to Ghabriel)
+                // mapper.close_scope();
+                // return something
                 break;
             }
         }
-        std::cout << "darkness" << std::endl;
+        // std::cout << "darkness" << std::endl;
         auto& code = fn.code();
         code.extract()->traverse(*this);
+        mapper.close_scope();
     } else {
         // TODO: error (assigned to Ghabriel)
     }

@@ -219,7 +219,7 @@ decl_fun:
 
 fun_call:
     ID OPAR rvalue_list CPAR {
-        $$ = falk::fun_id{$1, $3.size() - 1};
+        $$ = falk::fun_id{$1, $3.size()};
         $$.extract()->add_subnode($3);
     };
     | ID OPAR CPAR {
