@@ -172,7 +172,7 @@ void falk::ev::evaluator::analyse(const loop&, node_array<2>& nodes) {
     auto type = aut::pop(types_stack);
     if (type == structural::type::SCALAR) {
         auto result = aut::pop(scalar_stack);
-        while (result.boolean()) {
+        while (result.boolean() && !return_called) {
             mapper.open_scope();
             nodes[1]->traverse(*this);
             mapper.close_scope();
@@ -188,9 +188,9 @@ void falk::ev::evaluator::analyse(const loop&, node_array<2>& nodes) {
     }
 }
 
-void falk::ev::evaluator::analyse(const ret&, node_array<1>& nodes) {
+void falk::ev::evaluator::analyse(ret& r) {
     if (inside_function) {
-        nodes[0]->traverse(*this);
+        r.value.traverse(*this);
         return_called = true;
     } else {
         // TODO: error or kill the program (Assigned to Ghabriel)

@@ -91,7 +91,7 @@
 %type<falk::rvalue> command;
 %type<falk::rvalue> arr_size mat_size;
 %type<falk::rvalue> flat_expr expr single_calc;
-%type<falk::rvalue> index rvalue;
+%type<falk::rvalue> index rvalue return;
 %type<falk::lvalue> assignment;
 %type<falk::lvalue> lvalue;
 %type<falk::declaration> decl_var decl_fun;
@@ -166,6 +166,7 @@ block_body:
 
 command:
     SEMICOLON     { $$ = {}; }
+    | return      { $$ = $1; }
     | single_calc { $$ = $1; }
     //| include     { /*TODO: include functions defined here */ }
     | assignment  { $$ = $1.extract(); }
@@ -173,7 +174,6 @@ command:
     | decl_fun    { $$ = $1.extract(); }
     | conditional { $$ = $1.extract(); }
     | loop        { $$ = $1.extract(); }
-    | return_stmt { $$ = {}; }
     ;
 
 decl_var:
@@ -287,15 +287,9 @@ inc_block:
         // Receive code from FILE_ID
     };*/
 
-return_stmt:
-    RET rvalue {
-        // TODO
-    };
+return: RET rvalue { $$ = falk::ret{$2}; };
 
-rvalue:
-    expr {
-        $$ = $1;
-    };
+rvalue: expr { $$ = $1; };
 
 literal_arr_size: OBRACKET REAL CBRACKET { $$ = $2; };
 
