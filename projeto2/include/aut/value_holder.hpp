@@ -34,6 +34,7 @@ namespace aut {
 
     template<typename T, int64_t S>
     struct value_holder<T, S, false> {
+        value_holder();
         template<typename... Targs>
         value_holder(Targs...);
         bool add(T u);

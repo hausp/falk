@@ -150,10 +150,7 @@ void falk::ev::evaluator::analyse(const block&, std::list<node_ptr>& nodes) {
             return_called = !inside_function;
             break;
         }
-        // TODO: solve this (problem number 666: unknown nullptr)
-        if (node) {
-            node->traverse(*this);        
-        }
+        node->traverse(*this);
     }
 }
 
@@ -245,14 +242,9 @@ void falk::ev::evaluator::print_result() {
 
 void falk::ev::evaluator::analyse(const create_structure&,
                                   std::list<node_ptr>& nodes) {
-    // TODO: solve this (problem number 666: unknown nullptr)
-    auto size = nodes.size() - 1;
-
+    auto size = nodes.size();
     for (auto& node : nodes) {
-        // TODO: solve this (problem number 666: unknown nullptr)
-        if (node) {
-            node->traverse(*this);
-        }
+        node->traverse(*this);
     }
 
     array arr;

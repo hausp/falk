@@ -25,6 +25,9 @@ T aut::value_holder<T,S,true>::last() const {
 }
 
 template<typename T, int64_t S>
+aut::value_holder<T,S,false>::value_holder() { }
+
+template<typename T, int64_t S>
 template<typename... Targs>
 aut::value_holder<T,S,false>::value_holder(Targs... elements):
  container{{std::move(elements)...}} { }
