@@ -90,7 +90,8 @@
 %type<falk::rvalue> command;
 %type<falk::rvalue> arr_size mat_size;
 %type<falk::rvalue> expr single_calc;
-%type<falk::rvalue> index rvalue return;
+%type<falk::rvalue> index rvalue rvalue_list;
+%type<falk::rvalue> fun_call return;
 %type<falk::lvalue> assignment;
 %type<falk::lvalue> lvalue;
 %type<falk::declaration> decl_var decl_fun;
@@ -215,6 +216,9 @@ fun_call:
     ID OPAR rvalue_list CPAR {
 
     };
+
+rvalue_list:
+
 
 param_list:
     param {
@@ -364,6 +368,9 @@ expr:
         $$ = $1.extract();
     };
     | lvalue {
+        $$ = $1;
+    }
+    | fun_call {
         $$ = $1;
     }
     | expr COMPARISON expr {
