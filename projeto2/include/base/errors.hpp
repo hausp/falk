@@ -77,7 +77,7 @@ namespace err {
     template<Error>
     inline void semantic(size_t, size_t);
     template<Error>
-    inline void semantic(const std::string&, const std::string&);
+    inline void semantic(const std::string&, const std::string&, falk::struct_t, falk::struct_t);
     template<Error>
     inline void semantic(const std::string&);
     template<Error>
@@ -162,8 +162,12 @@ namespace err {
 
     template<>
     inline void semantic<Error::MISMATCHING_PARAMETER>(const std::string& fn,
-                                                       const std::string& param) {
-        echo(error_prefix("semantic") + "TODO");
+                                                       const std::string& param,
+                                                       falk::struct_t expected,
+                                                       falk::struct_t actual) {
+        echo(error_prefix("semantic") + "mismatching type for parameter " +
+            param + " in function " + fn + " (expected " + 
+            struct_type_table.at(expected) + ", got " + struct_type_table.at(actual) + ")");
     }
 
     template<>

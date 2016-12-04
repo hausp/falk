@@ -91,7 +91,9 @@ void falk::ev::evaluator::analyse(fun_id& fun, node_array<1>& nodes) {
             auto t = aut::pop(types_stack);
             if (params[i].s_type != t) {
                 err::semantic<Error::MISMATCHING_PARAMETER>(fun.id,
-                                                            params[i].vid.id);
+                                                            params[i].vid.id,
+                                                            params[i].s_type,
+                                                            t);
                 mapper.close_scope();
                 // return something
                 break;
