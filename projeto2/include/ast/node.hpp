@@ -15,7 +15,7 @@ namespace ast {
     template<typename T>
     struct has_arity<T, true> {
         static constexpr auto value = false;
-    }; 
+    };
 
     template<typename T>
     struct has_arity<T, false> {
@@ -34,10 +34,13 @@ namespace ast {
             !std::is_void<decltype(f<Derived>(0))>();
     }; 
 
+
+    // This class defines an interface to construct the hole abstract syntax
+    // tree.
     template<typename Analyser>
     class node {
      public:
-        virtual void traverse(Analyser&) = 0;
+        virtual void visit(Analyser&) = 0;
         virtual void add_subnode(std::shared_ptr<node<Analyser>>) = 0;
         virtual bool empty() { return false; }
         virtual size_t size() const = 0;
@@ -51,7 +54,7 @@ namespace ast {
         using node_ptr = std::shared_ptr<node<Analyser>>;
      public:
         model(const T& d) : data{d} { }
-        void traverse(Analyser& analyser) override {
+        void visit(Analyser& analyser) override {
             analyser.analyse(data);
         }
         void add_subnode(node_ptr node) override { }
@@ -66,7 +69,7 @@ namespace ast {
         using holder = aut::value_holder<node_ptr, T::arity()>;
      public:
         model(const T& d) : data{d} { }
-        void traverse(Analyser& analyser) override {
+        void visit(Analyser& analyser) override {
             analyser.analyse(data, subnodes.container);
         }
         void add_subnode(node_ptr node) override {
@@ -82,7 +85,7 @@ namespace ast {
     template<typename Analyser>
     class empty_node : public node<Analyser> {
      public:
-        void traverse(Analyser&) override { };
+        void visit(Analyser&) override { };
         void add_subnode(std::shared_ptr<node<Analyser>>) override { };
         bool empty() override { return true; }
         size_t size() const override { return 0; }

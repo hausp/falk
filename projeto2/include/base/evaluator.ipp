@@ -3,7 +3,7 @@ template<typename Type, Type OP>
 void falk::evaluator::analyse(op::callback<Type, OP, 2> op,
                                   node_array<2>& nodes) {
     for (auto& node : nodes) {
-        node->traverse(*this);
+        node->visit(*this);
     }
     auto t1 = aut::pop(types_stack);
     auto t2 = aut::pop(types_stack);
@@ -50,7 +50,7 @@ void falk::evaluator::handle_operation(const Operation& op,
 template<typename Type, Type OP>
 void falk::evaluator::analyse(op::callback<Type, OP, 1> op,
                                   node_array<1>& nodes) {
-    nodes[0]->traverse(*this);
+    nodes[0]->visit(*this);
 
     auto t1 = aut::pop(types_stack);
     switch (t1) {
@@ -106,7 +106,7 @@ void falk::evaluator::analyse(op::callback<op::assignment, OP, 2> op,
     };
 
     for (auto& node : nodes) {
-        node->traverse(*this);
+        node->visit(*this);
     }
     auto t1 = aut::pop(types_stack);
     auto vid = aut::pop(id_stack);

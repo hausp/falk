@@ -17,7 +17,7 @@ namespace ast {
 
         bool empty() const;
 
-        void traverse(Analyser&);
+        void visit(Analyser&);
 
         void set_index(node_ptr, node_ptr);
 

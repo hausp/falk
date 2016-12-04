@@ -339,6 +339,7 @@ literal_mat_size: OBRACKET REAL COMMA REAL CBRACKET { $$ = {$2, $4}; };
 arr_size:
     OBRACKET rvalue CBRACKET {
         // TODO: resolve this colossal treta
+        
     };
 
 mat_size:
@@ -432,6 +433,7 @@ expr:
         $$ = $1 || $3;
     }
     | NOT expr {
+        // TODO
         // $$ = !$1;
     }
     | MINUS expr %prec U_MINUS {

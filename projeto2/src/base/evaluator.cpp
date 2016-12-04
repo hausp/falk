@@ -36,7 +36,7 @@ void falk::evaluator::analyse(const declare_variable& var,
     };
 
     if (!nodes[0]->empty()) {
-        nodes[0]->traverse(*this);
+        nodes[0]->visit(*this);
         get_value(mapper, var);
     } else {
         mapper.declare_variable(var.id, variable(var.f_type));
@@ -53,7 +53,7 @@ void falk::evaluator::analyse(const declare_function& fn,
 
 void falk::evaluator::analyse(var_id& vid, node_array<2>& index) {
     if (!index[0]->empty()) {
-        index[0]->traverse(*this);
+        index[0]->visit(*this);
         auto type = aut::pop(types_stack);
         if (type != structural::type::SCALAR) {
             // TODO: error
@@ -63,7 +63,7 @@ void falk::evaluator::analyse(var_id& vid, node_array<2>& index) {
     }
 
     if (!index[1]->empty()) {
-        index[1]->traverse(*this);
+        index[1]->visit(*this);
         auto type = aut::pop(types_stack);
         if (type != structural::type::SCALAR) {
             // TODO: error
@@ -79,7 +79,7 @@ void falk::evaluator::analyse(fun_id& fun, node_array<1>& nodes) {
     auto& fn = mapper.retrieve_function(fun.id);
     auto& params = fn.params();
     if (!fn.error() && params.size() == fun.number_of_params) {
-        nodes[0]->traverse(*this);
+        nodes[0]->visit(*this);
         mapper.open_scope();
         bool error = false;
         for (int i = fun.number_of_params - 1; i >= 0; i--) {
@@ -135,7 +135,7 @@ void falk::evaluator::analyse(fun_id& fun, node_array<1>& nodes) {
         if (!error) {
             auto& code = fn.code();
             ++function_counter;
-            code->traverse(*this);
+            code->visit(*this);
             --function_counter;
 
             if (!return_called) {
@@ -157,7 +157,7 @@ void falk::evaluator::analyse(fun_id& fun, node_array<1>& nodes) {
 }
 
 void falk::evaluator::analyse(const print& p, node_array<1>& nodes) {
-    nodes[0]->traverse(*this);
+    nodes[0]->visit(*this);
     auto type = aut::pop(types_stack);
     switch (type) {
         case structural::type::SCALAR: {
@@ -183,12 +183,12 @@ void falk::evaluator::analyse(const print& p, node_array<1>& nodes) {
 
 void falk::evaluator::analyse(const scoped&, node_array<1>& nodes) {
     mapper.open_scope();
-    nodes[0]->traverse(*this);
+    nodes[0]->visit(*this);
     mapper.close_scope();
 }
 
 void falk::evaluator::analyse(const valueof&, node_array<1>& nodes) {
-    nodes[0]->traverse(*this);
+    nodes[0]->visit(*this);
     auto vid = aut::pop(id_stack);
     auto& var = mapper.retrieve_variable(vid.id);
 
@@ -247,7 +247,7 @@ void falk::evaluator::analyse(const valueof&, node_array<1>& nodes) {
 }
 
 void falk::evaluator::analyse(const typeof&, node_array<1>& nodes) {
-    nodes[0]->traverse(*this);
+    nodes[0]->visit(*this);
 
     if(aut::pop(types_stack) != structural::type::SCALAR) {
         err::semantic<Error::NONSCALAR_TYPEOF>();
@@ -265,7 +265,7 @@ void falk::evaluator::analyse(const typeof&, node_array<1>& nodes) {
 
 void falk::evaluator::analyse(const block&, std::list<node_ptr>& nodes) {
     for (auto& node : nodes) {
-        node->traverse(*this);
+        node->visit(*this);
         if (return_called) {
             break;
         }
@@ -273,15 +273,15 @@ void falk::evaluator::analyse(const block&, std::list<node_ptr>& nodes) {
 }
 
 void falk::evaluator::analyse(const conditional&, node_array<3>& nodes) {
-    nodes[0]->traverse(*this);
+    nodes[0]->visit(*this);
     auto type = aut::pop(types_stack);
     if (type == structural::type::SCALAR) {
         auto result = aut::pop(scalar_stack);
         // mapper.open_scope();
         if (result.boolean()) {
-            nodes[1]->traverse(*this);
+            nodes[1]->visit(*this);
         } else {
-            nodes[2]->traverse(*this);
+            nodes[2]->visit(*this);
         }
         // mapper.close_scope();
     } else {
@@ -290,15 +290,15 @@ void falk::evaluator::analyse(const conditional&, node_array<3>& nodes) {
 }
 
 void falk::evaluator::analyse(const loop&, node_array<2>& nodes) {
-    nodes[0]->traverse(*this);
+    nodes[0]->visit(*this);
     auto type = aut::pop(types_stack);
     if (type == structural::type::SCALAR) {
         auto result = aut::pop(scalar_stack);
         while (result.boolean() && !return_called) {
             // mapper.open_scope();
-            nodes[1]->traverse(*this);
+            nodes[1]->visit(*this);
             // mapper.close_scope();
-            nodes[0]->traverse(*this);
+            nodes[0]->visit(*this);
             aut::pop(types_stack);
             result = aut::pop(scalar_stack);
         }
@@ -308,7 +308,7 @@ void falk::evaluator::analyse(const loop&, node_array<2>& nodes) {
 }
 
 void falk::evaluator::analyse(const for_it& fit, node_array<2>& nodes) {
-    nodes[0]->traverse(*this);
+    nodes[0]->visit(*this);
     auto vid = aut::pop(id_stack);
     auto& var = mapper.retrieve_variable(vid.id);
 
@@ -330,7 +330,7 @@ void falk::evaluator::analyse(const for_it& fit, node_array<2>& nodes) {
             for (auto& element : var.value<array>()) {
                 mapper.open_scope();
                 mapper.declare_variable(fit.var_name, variable(element));
-                nodes[1]->traverse(*this);
+                nodes[1]->visit(*this);
                 mapper.close_scope();
             }
             break;
@@ -341,7 +341,7 @@ void falk::evaluator::analyse(const for_it& fit, node_array<2>& nodes) {
                 auto row = banana.row(i);
                 mapper.open_scope();
                 mapper.declare_variable(fit.var_name, variable(row));
-                nodes[1]->traverse(*this);
+                nodes[1]->visit(*this);
                 mapper.close_scope();
             }
             break;
@@ -351,7 +351,7 @@ void falk::evaluator::analyse(const for_it& fit, node_array<2>& nodes) {
 
 void falk::evaluator::analyse(const ret&, node_array<1>& nodes) {
     if (function_counter > 0) {
-        nodes[0]->traverse(*this);
+        nodes[0]->visit(*this);
         return_called = true;
     } else {
         // TODO: error or kill the program (Assigned to Ghabriel)
@@ -364,7 +364,7 @@ void falk::evaluator::analyse(const undef& container) {
 
 void falk::evaluator::process(node_ptr v) {
     if (!v->empty()) {
-        v->traverse(*this);
+        v->visit(*this);
     }
 }
 
@@ -372,7 +372,7 @@ void falk::evaluator::analyse(const create_structure&,
                               std::list<node_ptr>& nodes) {
     auto size = nodes.size();
     for (auto& node : nodes) {
-        node->traverse(*this);
+        node->visit(*this);
     }
 
     array arr;

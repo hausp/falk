@@ -26,7 +26,7 @@ namespace ast {
 
         bool empty() const;
 
-        void traverse(Analyser&);
+        void visit(Analyser&);
 
         template<typename T>
         rvalue<Analyser> op(rvalue<Analyser>&, const T&);

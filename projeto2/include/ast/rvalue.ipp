@@ -69,8 +69,8 @@ namespace ast {
     }
 
     template<typename A>
-    void rvalue<A>::traverse(A& analyser) {
-        object->traverse(analyser);
+    void rvalue<A>::visit(A& analyser) {
+        object->visit(analyser);
     }
 
     template<typename A>
