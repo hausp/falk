@@ -84,7 +84,7 @@ void falk::ev::evaluator::analyse(var_id& vid, node_array<2>& index) {
 void falk::ev::evaluator::analyse(fun_id& fun, node_array<1>& nodes) {
     auto& fn = mapper.retrieve_function(fun.id);
     auto& params = fn.params();
-    if (params.size() == fun.number_of_params) {
+    if (!fn.error() && params.size() == fun.number_of_params) {
         nodes[0]->traverse(*this);
         mapper.open_scope();
         bool error = false;
@@ -150,6 +150,9 @@ void falk::ev::evaluator::analyse(fun_id& fun, node_array<1>& nodes) {
         }
         return_called = false;
         mapper.close_scope();
+    } else if (fn.error()) {
+        push(0);
+        // TODO: suppress "res = 0" in this case
     } else {
         err::semantic<Error::MISMATCHING_PARAMETER_COUNT>(
             fun.id, params.size(), fun.number_of_params

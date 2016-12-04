@@ -5,12 +5,10 @@
 #include <vector>
 #include "ast/list.hpp"
 #include "base/actions.hpp"
-// #include "evaluator.hpp"
 
 namespace falk {
     namespace ev {
         class evaluator;
-        // some black magic to create callable user-defined functions
         class function {
             using node = ast::node<evaluator>;
             using node_ptr = std::shared_ptr<node>;
