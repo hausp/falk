@@ -12,22 +12,22 @@ namespace falk {
         class evaluator;
         // some black magic to create callable user-defined functions
         class function {
+            using node = ast::node<evaluator>;
+            using node_ptr = std::shared_ptr<node>;
          public:
-            function(parameters params, ast::list<evaluator> node):
+            function(parameters params, node_ptr node):
               _code{std::move(node)}, _params{std::move(params)}, fail{false} { }
 
             function(bool flag = false): fail{flag} { }
-
-            // void add_param(falk::parameter p) { _params.push_back(p); }
 
             bool error() const { return fail; }
 
             const parameters& params() const { return _params; }
             parameters& params() { return _params; }
 
-            ast::list<evaluator>& code() { return _code; }
+            node_ptr& code() { return _code; }
          private:
-            ast::list<evaluator> _code;
+            node_ptr _code;
             parameters _params;
             bool fail;
         };
