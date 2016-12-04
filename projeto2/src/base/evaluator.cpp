@@ -312,6 +312,15 @@ void falk::evaluator::analyse(const for_it& fit, node_array<2>& nodes) {
     auto vid = aut::pop(id_stack);
     auto& var = mapper.retrieve_variable(vid.id);
 
+    auto type = mapper.type_of(fit.var_name);
+    if (type == symbol::type::FUNCTION) {
+        err::semantic<Error::NOT_A_VARIABLE>(fit.var_name);
+        return;
+    } else if (type == symbol::type::VARIABLE) {
+        err::semantic<Error::FOR_ALREADY_DECLARED>(fit.var_name);
+        return;
+    }
+
     switch (var.stored_type()) {
         case structural::type::SCALAR: {
             err::semantic<Error::FOR_SCALAR_TARGET>();

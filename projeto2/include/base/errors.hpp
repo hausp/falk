@@ -40,6 +40,7 @@ enum class Error {
     PARAMETER_MATRIX_SIZE_MISMATCH,
     NONSCALAR_TYPEOF,
     FOR_SCALAR_TARGET,
+    FOR_ALREADY_DECLARED,
 };
 
 namespace std {
@@ -239,6 +240,11 @@ namespace err {
     template<>
     inline void semantic<Error::ILLEGAL_OPERATION>(const std::string& extra) {
         echo(error_prefix("semantic") + "illegal operation: " + extra);
+    }
+
+    template<>
+    inline void semantic<Error::FOR_ALREADY_DECLARED>(const std::string& name) {
+        echo(error_prefix("semantic") + "variable " + name + " already declared");
     }
 
     template<>
