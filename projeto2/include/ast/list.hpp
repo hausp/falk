@@ -13,6 +13,7 @@ namespace ast {
         list();
         template<typename T>
         list(const T&);
+        list(node_ptr);
 
         list<Analyser>& operator+=(node_ptr);
         operator node_ptr();

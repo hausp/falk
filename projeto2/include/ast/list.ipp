@@ -8,6 +8,8 @@ template<typename T>
 ast::list<A>::list(const T& data):
   object{new ast::model<A, T>{data}} { }
 
+template<typename A>
+ast::list<A>::list(node_ptr node): object{std::move(node)} { }
 
 template<typename A>
 ast::list<A>& ast::list<A>::operator+=(node_ptr node) {

@@ -54,7 +54,7 @@ void falk::ev::evaluator::analyse(const declare_function& fn,
     auto& id = fn.id;
     auto& params = fn.params;
 
-    
+    mapper.declare_function(id, {params, nodes[0]});
 }
 
 void falk::ev::evaluator::analyse(var_id& vid, node_array<2>& index) {
