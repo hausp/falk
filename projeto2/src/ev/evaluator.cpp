@@ -154,7 +154,8 @@ void falk::ev::evaluator::analyse(fun_id& fun, node_array<1>& nodes) {
         err::semantic<Error::MISMATCHING_PARAMETER_COUNT>(
             fun.id, params.size(), fun.number_of_params
         );
-        // TODO: fix segfault
+        push(0);
+        // TODO: suppress "res = 0" in this case
     }
 }
 
