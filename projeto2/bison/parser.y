@@ -433,8 +433,7 @@ expr:
         $$ = $1 || $3;
     }
     | NOT expr {
-        // TODO
-        // $$ = !$1;
+        $$ = !$2;
     }
     | MINUS expr %prec U_MINUS {
         $$ = -$2;

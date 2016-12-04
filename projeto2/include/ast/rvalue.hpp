@@ -33,7 +33,6 @@ namespace ast {
         template<typename T>
         rvalue<Analyser> op(const T&);
         static rvalue<Analyser> pow(rvalue<Analyser>&, rvalue<Analyser>&);
-        rvalue<Analyser> operator!();
 
         operator node_ptr();
         node_ptr extract();

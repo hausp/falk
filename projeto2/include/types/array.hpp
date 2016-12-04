@@ -173,6 +173,14 @@ namespace falk {
         return result;
     }
 
+    inline array operator!(const array& rhs) {
+        array result;
+        for (size_t i = 0; i < rhs.size(); i++) {
+            result.push_back(!rhs[i]);
+        }
+        return result;
+    }
+
     inline array operator+(const array& lhs, const scalar& rhs) {
         return rhs + lhs;
     }

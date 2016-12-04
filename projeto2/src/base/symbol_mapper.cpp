@@ -108,8 +108,7 @@ scope& falk::symbol_mapper::scope_of(const std::string& id) {
             return scope;
         }
     }
-    // TODO: return what?
-    throw -1; // Hu3
+    throw -1;
 }
 
 falk::symbol::type

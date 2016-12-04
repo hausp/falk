@@ -301,6 +301,13 @@ falk::scalar falk::operator-(const scalar& n) {
     }
 }
 
+falk::scalar falk::operator!(const scalar& n) {
+    auto copy = n;
+    copy.real() = (copy.real() == 0) ? 1 : 0;
+    copy.inner_type(falk::type::BOOL);
+    return copy;
+}
+
 falk::array falk::scalar::to_array(size_t size) const {
     array result;
     for (size_t i = 0; i < size; i++) {

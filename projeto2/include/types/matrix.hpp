@@ -170,6 +170,16 @@ namespace falk {
         return result;
     }
 
+    inline matrix operator!(const matrix& rhs) {
+        auto result = matrix(rhs.row_count(), rhs.column_count());
+        for (size_t i = 0; i < result.row_count(); i++) {
+            for (size_t j = 0; j < result.column_count(); j++) {
+                result.at(i, j) = !rhs.at(i, j);
+            }
+        }
+        return result;
+    }
+
     inline scalar operator&&(const matrix& lhs, const scalar& rhs) {
         err::semantic<Error::ILLEGAL_BOOL_OP>(falk::struct_t::MATRIX,
                                               falk::struct_t::SCALAR);

@@ -162,6 +162,12 @@ namespace ast {
         return lhs.op(rhs, falk::op::callback<falk::op::logic,
                                               falk::op::logic::OR, 2>());
     }
+
+    template<typename A>
+    rvalue<A> operator!(rvalue<A>& rhs) {
+        return rhs.op(rhs, falk::op::callback<falk::op::logic,
+                                              falk::op::logic::NOT, 1>());
+    }
 }
 
 template<typename A>

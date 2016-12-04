@@ -260,8 +260,8 @@ namespace falk {
     };
 
     template<>
-    struct op::callback<op::logic, op::logic::NOT, 2> {
-        static constexpr size_t arity() { return 2; }
+    struct op::callback<op::logic, op::logic::NOT, 1> {
+        static constexpr size_t arity() { return 1; }
 
         template<typename RH>
         decltype(auto) operator()(const RH& operand) const {

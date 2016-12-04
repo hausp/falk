@@ -92,6 +92,7 @@ namespace falk {
     scalar operator/(const scalar&, const scalar&);
     scalar operator%(const scalar&, const scalar&);
     scalar operator-(const scalar&);
+    scalar operator!(const scalar&);
 
     array operator+(const scalar&, const array&);
     array operator-(const scalar&, const array&);
