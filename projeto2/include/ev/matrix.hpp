@@ -366,9 +366,12 @@ namespace falk {
             return num_columns;
         }
 
-        inline matrix& matrix::pow(const scalar&) {
-            // TODO
-            fail = true;
+        inline matrix& matrix::pow(const scalar& rhs) {
+            for (size_t i = 0; i < num_rows; i++) {
+                for (size_t j = 0; j < num_columns; j++) {
+                    at(i, j) = scalar::pow(at(i, j), rhs);
+                }
+            }
             return *this;
         }
 
@@ -384,9 +387,16 @@ namespace falk {
             return *this;
         }
 
-        inline matrix matrix::pow(const matrix&, const scalar&) {
-            // TODO
-            return invalid_matrix;
+        inline matrix matrix::pow(const matrix& lhs, const scalar& rhs) {
+            auto num_rows = lhs.row_count();
+            auto num_columns = lhs.column_count();
+            auto result = matrix(num_rows, num_columns);
+            for (size_t i = 0; i < num_rows; i++) {
+                for (size_t j = 0; j < num_columns; j++) {
+                    result.at(i, j) = scalar::pow(lhs.at(i, j), rhs);
+                }
+            }
+            return result;
         }
 
         inline matrix matrix::pow(const matrix&, const array&) {

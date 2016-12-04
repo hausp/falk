@@ -34,8 +34,8 @@ namespace falk {
             array to_array(size_t) const;
 
             static scalar pow(const scalar&, const scalar&);
-            static scalar pow(const scalar&, const array&);
-            static scalar pow(const scalar&, const matrix&);
+            static array pow(const scalar&, const array&);
+            static matrix pow(const scalar&, const matrix&);
             scalar& pow(const scalar&);
             scalar& pow(const array&);
             scalar& pow(const matrix&);

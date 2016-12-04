@@ -245,14 +245,20 @@ falk::ev::scalar falk::ev::scalar::pow(const scalar& lhs, const scalar& rhs) {
     return copy.pow(rhs);
 }
 
-falk::ev::scalar falk::ev::scalar::pow(const scalar& lhs, const array& rhs) {
-    auto copy = lhs;
-    return copy.pow(rhs);
+falk::ev::array falk::ev::scalar::pow(const scalar& lhs, const array& rhs) {
+    return lhs.to_array(rhs.size()) * rhs;
 }
 
-falk::ev::scalar falk::ev::scalar::pow(const scalar& lhs, const matrix& rhs) {
-    auto copy = lhs;
-    return copy.pow(rhs);
+falk::ev::matrix falk::ev::scalar::pow(const scalar& lhs, const matrix& rhs) {
+    auto num_rows = rhs.row_count();
+    auto num_columns = rhs.column_count();
+    auto result = matrix(num_rows, num_columns);
+    for (size_t i = 0; i < num_rows; i++) {
+        for (size_t j = 0; j < num_columns; j++) {
+            result.at(i, j) = scalar::pow(lhs, rhs.at(i, j));
+        }
+    }
+    return result;
 }
 
 falk::ev::scalar falk::ev::operator+(const scalar& lhs, const scalar& rhs) {

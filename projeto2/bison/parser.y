@@ -212,11 +212,18 @@ decl_fun:
         auto decl = falk::declare_function{$2, $4};
         $$ = falk::declaration(decl, $6);
     };
+    | FUN ID OPAR CPAR block {
+        auto decl = falk::declare_function{$2, {}};
+        $$ = falk::declaration(decl, $5);
+    };
 
 fun_call:
     ID OPAR rvalue_list CPAR {
         $$ = falk::fun_id{$1, $3.size()};
         $$.extract()->add_subnode($3);
+    };
+    | ID OPAR CPAR {
+        $$ = falk::fun_id{$1, 0};
     };
 
 rvalue_list:
