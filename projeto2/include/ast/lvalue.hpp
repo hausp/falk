@@ -6,6 +6,7 @@
 #include "rvalue.hpp"
 
 namespace ast {
+    // Abstraction for lvalues.
     template<typename Analyser>
     class lvalue {
         using node = ast::node<Analyser>;

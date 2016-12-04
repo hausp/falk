@@ -5,6 +5,9 @@
 #include "node.hpp"
 
 namespace ast {
+    // Captures the behaviour of lists. Lists are used to create blocks
+    // of any kind.
+    // The operator += appends an element to the list node.
     template<typename Analyser>
     class list {
         using node = ast::node<Analyser>;

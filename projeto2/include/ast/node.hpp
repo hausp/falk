@@ -36,7 +36,14 @@ namespace ast {
 
 
     // This class defines an interface to construct the hole abstract syntax
-    // tree.
+    // tree. There are 4 methods provided:
+    // visit(Analyser&) - pass all information about the node to the
+    // analyser.
+    // add_subnode(std::shared_ptr<node<Analyser>>) - allows the adition of
+    // a subnode.
+    // empty() - used to detect empty nodes, usually skipped in semantic
+    // analysis.
+    // size() - returns the number of subnodes.
     template<typename Analyser>
     class node {
      public:
@@ -46,9 +53,18 @@ namespace ast {
         virtual size_t size() const = 0;
     };
 
+    // This class allows to create a node holding any kind of value.
+    // That way, is possible to retrieve pure values previously stored
+    // in syntax analysis. The visit() method will pass the pure value
+    // to analyser along with it's children, if any.
+    // The deduction of how many children a node can have is done through
+    // a method called arity(). If a value has this method,
+    // it can have children. If arity() returns a positive value, it's children
+    // will be holded in an array, otherwise, a list.
     template<typename Analyser, typename T, bool = has_arity<T>::value>
     class model;
 
+    // This specialization captures values without children.
     template<typename Analyser, typename T>
     class model<Analyser, T, false> : public node<Analyser> {
         using node_ptr = std::shared_ptr<node<Analyser>>;
@@ -63,6 +79,7 @@ namespace ast {
         T data;
     };
 
+    // This specialization captures values with children.
     template<typename Analyser, typename T>
     class model<Analyser, T, true> : public node<Analyser> {
         using node_ptr = std::shared_ptr<node<Analyser>>;
@@ -82,6 +99,8 @@ namespace ast {
         holder subnodes;
     };
 
+    // An empty node. All methods are empty, does nothing. No exceptions,
+    // no errors. The empty() method returns true.
     template<typename Analyser>
     class empty_node : public node<Analyser> {
      public:

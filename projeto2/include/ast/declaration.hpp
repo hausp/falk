@@ -5,6 +5,11 @@
 #include "node.hpp"
 
 namespace ast {
+    // Captures behavior of declarations.
+    // Basically, constructs a node with any data and
+    // add other node as subnode.
+    // Does not allow operations and provides a explicit
+    // method to extract the node.
     template<typename Analyser>
     class declaration {
         using node = ast::node<Analyser>;

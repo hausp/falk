@@ -9,7 +9,7 @@ namespace ast {
     template<typename>
     class lvalue;
 
-    // Abstraction for lvalues and rvalues.
+    // Abstraction for rvalues.
     template<typename Analyser>
     class rvalue {
         friend class lvalue<Analyser>;

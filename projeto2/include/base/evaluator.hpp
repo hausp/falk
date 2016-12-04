@@ -34,7 +34,7 @@ namespace falk {
         using matrix = matrix;
         using scalar = scalar;
 
-        // Alias to define semantic abstraction for values.
+        // Alias to define abstractions for AST construction.
         using declaration = ast::declaration<evaluator>;
         using empty = ast::empty_node<evaluator>;
         using list = ast::list<evaluator>;
