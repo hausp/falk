@@ -3,7 +3,7 @@
 #define FALK_ACTIONS_HPP
 
 #include "types.hpp"
-#include "ev/variable.hpp"
+#include "types/variable.hpp"
 
 namespace falk {
     
@@ -76,7 +76,7 @@ namespace falk {
         static constexpr size_t arity() { return 1; }
 
         template<typename T>
-        ev::variable operator()(const T& value, structural::type type) const {
+        variable operator()(const T& value, structural::type type) const {
             std::cout << "res = " << value << std::endl;
             return {value, type};
         }

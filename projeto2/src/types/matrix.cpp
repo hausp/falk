@@ -1,8 +1,8 @@
-#include "ev/matrix.hpp"
+#include "types/matrix.hpp"
 
-falk::ev::scalar falk::ev::matrix::invalid;
+falk::scalar falk::matrix::invalid;
 
-falk::ev::array falk::ev::matrix::row(size_t index) const {
+falk::array falk::matrix::row(size_t index) const {
     array result;
     if (index >= num_rows) {
         err::semantic<Error::INDEX_OUT_OF_BOUNDS>(num_rows, index);
@@ -16,7 +16,7 @@ falk::ev::array falk::ev::matrix::row(size_t index) const {
     return result;
 }
 
-falk::ev::array falk::ev::matrix::column(size_t index) const {
+falk::array falk::matrix::column(size_t index) const {
     array result;
     if (index >= num_columns) {
         err::semantic<Error::INDEX_OUT_OF_BOUNDS>(num_columns, index);
@@ -30,21 +30,21 @@ falk::ev::array falk::ev::matrix::column(size_t index) const {
     return result;
 }
 
-falk::ev::matrix& falk::ev::matrix::assign_row(size_t index, const array& data) {
+falk::matrix& falk::matrix::assign_row(size_t index, const array& data) {
     for (size_t i = 0; i < num_columns; i++) {
         at(index, i) = data[i];
     }
     return *this;
 }
 
-falk::ev::matrix& falk::ev::matrix::assign_column(size_t index, const array& data) {
+falk::matrix& falk::matrix::assign_column(size_t index, const array& data) {
     for (size_t i = 0; i < num_columns; i++) {
         at(i, index) = data[i];
     }
     return *this;
 }
 
-falk::ev::matrix falk::ev::operator*(const matrix& lhs, const matrix& rhs) {
+falk::matrix falk::operator*(const matrix& lhs, const matrix& rhs) {
     if (lhs.column_count() != rhs.row_count()) {
         err::semantic<Error::MATRIX_MULT_MISMATCH>(lhs.column_count(), rhs.row_count());
         return invalid_matrix;
@@ -70,7 +70,7 @@ falk::ev::matrix falk::ev::operator*(const matrix& lhs, const matrix& rhs) {
     return result;
 }
 
-std::ostream& falk::ev::operator<<(std::ostream& out, const falk::ev::matrix& mat) {
+std::ostream& falk::operator<<(std::ostream& out, const falk::matrix& mat) {
     out << "[";
     for (size_t i = 0; i < mat.row_count(); i++) {
         if (i != 0) {
@@ -88,7 +88,7 @@ std::ostream& falk::ev::operator<<(std::ostream& out, const falk::ev::matrix& ma
     return out << "]";
 }
 
-falk::ev::scalar& falk::ev::matrix::at(size_t row, size_t column) {
+falk::scalar& falk::matrix::at(size_t row, size_t column) {
     if (row >= num_rows) {
         err::semantic<Error::INDEX_OUT_OF_BOUNDS>(num_rows, row);
         fail = true;
@@ -103,7 +103,7 @@ falk::ev::scalar& falk::ev::matrix::at(size_t row, size_t column) {
     return values.at(row * num_columns + column);
 }
 
-const falk::ev::scalar& falk::ev::matrix::at(size_t row, size_t column) const {
+const falk::scalar& falk::matrix::at(size_t row, size_t column) const {
     if (row >= num_rows) {
         err::semantic<Error::INDEX_OUT_OF_BOUNDS>(num_rows, row);
         return invalid;
@@ -116,7 +116,7 @@ const falk::ev::scalar& falk::ev::matrix::at(size_t row, size_t column) const {
     return values.at(row * num_columns + column);
 }
 
-void falk::ev::matrix::push_back(const array& row) {
+void falk::matrix::push_back(const array& row) {
     if (values.size() == 0) {
         num_columns = row.size();
     }
@@ -133,7 +133,7 @@ void falk::ev::matrix::push_back(const array& row) {
     ++num_rows;
 }
 
-void falk::ev::matrix::push_front(const array& row) {
+void falk::matrix::push_front(const array& row) {
     if (values.size() == 0) {
         num_columns = row.size();
     }
@@ -150,7 +150,7 @@ void falk::ev::matrix::push_front(const array& row) {
     ++num_rows;
 }
 
-falk::ev::matrix& falk::ev::matrix::assign(const scalar& rhs) {
+falk::matrix& falk::matrix::assign(const scalar& rhs) {
     for (size_t i = 0; i < num_rows; i++) {
         for (size_t j = 0; j < num_columns; j++) {
             at(i, j).assign(rhs);
@@ -160,7 +160,7 @@ falk::ev::matrix& falk::ev::matrix::assign(const scalar& rhs) {
 }
 
 
-falk::ev::matrix& falk::ev::matrix::assign(const array& rhs) {
+falk::matrix& falk::matrix::assign(const array& rhs) {
     auto value = rhs.to_matrix();
     if (row_count() != value.row_count()) {
         err::semantic<Error::ROW_SIZE_MISMATCH>(row_count(),
@@ -184,7 +184,7 @@ falk::ev::matrix& falk::ev::matrix::assign(const array& rhs) {
     return *this;
 }
 
-falk::ev::matrix& falk::ev::matrix::assign(const matrix& rhs) {
+falk::matrix& falk::matrix::assign(const matrix& rhs) {
     if (row_count() != rhs.row_count()) {
         err::semantic<Error::ROW_SIZE_MISMATCH>(row_count(),
                                                 rhs.row_count());
@@ -207,71 +207,71 @@ falk::ev::matrix& falk::ev::matrix::assign(const matrix& rhs) {
     return *this;
 }
 
-falk::ev::matrix& falk::ev::matrix::operator+=(const scalar& rhs) {
+falk::matrix& falk::matrix::operator+=(const scalar& rhs) {
     return *this = *this + rhs;
 }
 
-falk::ev::matrix& falk::ev::matrix::operator-=(const scalar& rhs) {
+falk::matrix& falk::matrix::operator-=(const scalar& rhs) {
     return *this = *this - rhs;
 }
 
-falk::ev::matrix& falk::ev::matrix::operator*=(const scalar& rhs) {
+falk::matrix& falk::matrix::operator*=(const scalar& rhs) {
     return *this = *this * rhs;
 }
 
-falk::ev::matrix& falk::ev::matrix::operator/=(const scalar& rhs) {
+falk::matrix& falk::matrix::operator/=(const scalar& rhs) {
     return *this = *this / rhs;
 }
 
-falk::ev::matrix& falk::ev::matrix::operator%=(const scalar& rhs) {
+falk::matrix& falk::matrix::operator%=(const scalar& rhs) {
     return *this = *this % rhs;
 }
 
-falk::ev::matrix& falk::ev::matrix::operator&=(const scalar& rhs) {
+falk::matrix& falk::matrix::operator&=(const scalar& rhs) {
     err::semantic<Error::ILLEGAL_BOOL_OP>(falk::struct_t::MATRIX, falk::struct_t::SCALAR);
     fail = true;
     return *this;
 }
 
-falk::ev::matrix& falk::ev::matrix::operator|=(const scalar& rhs) {
+falk::matrix& falk::matrix::operator|=(const scalar& rhs) {
     err::semantic<Error::ILLEGAL_BOOL_OP>(falk::struct_t::MATRIX, falk::struct_t::SCALAR);
     fail = true;
     return *this;
 }
 
-falk::ev::matrix& falk::ev::matrix::operator+=(const array& rhs) {
+falk::matrix& falk::matrix::operator+=(const array& rhs) {
     return *this = *this + rhs;
 }
 
-falk::ev::matrix& falk::ev::matrix::operator-=(const array& rhs) {
+falk::matrix& falk::matrix::operator-=(const array& rhs) {
     return *this = *this - rhs;
 }
 
-falk::ev::matrix& falk::ev::matrix::operator*=(const array& rhs) {
+falk::matrix& falk::matrix::operator*=(const array& rhs) {
     return *this = *this * rhs;
 }
 
-falk::ev::matrix& falk::ev::matrix::operator/=(const array& rhs) {
+falk::matrix& falk::matrix::operator/=(const array& rhs) {
     return *this = *this / rhs;
 }
 
-falk::ev::matrix& falk::ev::matrix::operator%=(const array& rhs) {
+falk::matrix& falk::matrix::operator%=(const array& rhs) {
     return *this = *this % rhs;
 }
 
-falk::ev::matrix& falk::ev::matrix::operator&=(const array& rhs) {
+falk::matrix& falk::matrix::operator&=(const array& rhs) {
     err::semantic<Error::ILLEGAL_BOOL_OP>(falk::struct_t::MATRIX, falk::struct_t::ARRAY);
     fail = true;
     return *this;
 }
 
-falk::ev::matrix& falk::ev::matrix::operator|=(const array& rhs) {
+falk::matrix& falk::matrix::operator|=(const array& rhs) {
     err::semantic<Error::ILLEGAL_BOOL_OP>(falk::struct_t::MATRIX, falk::struct_t::ARRAY);
     fail = true;
     return *this;
 }
 
-falk::ev::matrix& falk::ev::matrix::operator+=(const matrix& rhs) {
+falk::matrix& falk::matrix::operator+=(const matrix& rhs) {
     if (row_count() != rhs.row_count()) {
         err::semantic<Error::ROW_SIZE_MISMATCH>(row_count(),
                                                 rhs.row_count());
@@ -294,7 +294,7 @@ falk::ev::matrix& falk::ev::matrix::operator+=(const matrix& rhs) {
     return *this;
 }
 
-falk::ev::matrix& falk::ev::matrix::operator-=(const matrix& rhs) {
+falk::matrix& falk::matrix::operator-=(const matrix& rhs) {
     if (row_count() != rhs.row_count()) {
         err::semantic<Error::ROW_SIZE_MISMATCH>(row_count(),
                                                 rhs.row_count());
@@ -317,7 +317,7 @@ falk::ev::matrix& falk::ev::matrix::operator-=(const matrix& rhs) {
     return *this;
 }
 
-falk::ev::matrix& falk::ev::matrix::operator*=(const matrix& rhs) {
+falk::matrix& falk::matrix::operator*=(const matrix& rhs) {
     if (num_columns != rhs.row_count()) {
         err::semantic<Error::MATRIX_MULT_MISMATCH>(num_columns, rhs.row_count());
         fail = true;
@@ -332,25 +332,25 @@ falk::ev::matrix& falk::ev::matrix::operator*=(const matrix& rhs) {
     return *this = *this * rhs;
 }
 
-falk::ev::matrix& falk::ev::matrix::operator/=(const matrix& rhs) {
+falk::matrix& falk::matrix::operator/=(const matrix& rhs) {
     err::semantic<Error::ILLEGAL_OPERATION>("matrix division");
     fail = true;
     return *this;
 }
 
-falk::ev::matrix& falk::ev::matrix::operator%=(const matrix& rhs) {
+falk::matrix& falk::matrix::operator%=(const matrix& rhs) {
     err::semantic<Error::ILLEGAL_OPERATION>("matrix modulus");
     fail = true;
     return *this;
 }
 
-falk::ev::matrix& falk::ev::matrix::operator&=(const matrix& rhs) {
+falk::matrix& falk::matrix::operator&=(const matrix& rhs) {
     err::semantic<Error::ILLEGAL_BOOL_OP>(falk::struct_t::MATRIX, falk::struct_t::MATRIX);
     fail = true;
     return *this;
 }
 
-falk::ev::matrix& falk::ev::matrix::operator|=(const matrix& rhs) {
+falk::matrix& falk::matrix::operator|=(const matrix& rhs) {
     err::semantic<Error::ILLEGAL_BOOL_OP>(falk::struct_t::MATRIX, falk::struct_t::MATRIX);
     fail = true;
     return *this;

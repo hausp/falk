@@ -70,7 +70,7 @@ $(OBJDIR)/%.o: %.cpp
 $(DEPDIR)/%.d: %.cpp
 	@echo "[makedep] $< -> .d"
 	@mkdir -p $(DEPDIR)/$(*D)
-	@$(CXX) -MM -MP -MG -MT "$(OBJDIR)/$*.o $@" -MF "$@" $< $(INCLUDE) $(CXXFLAGS)
+	@$(CXX) -MM -MP -MT "$(OBJDIR)/$*.o $@" -MF "$@" $< $(INCLUDE) $(CXXFLAGS)
 
 makedir: | $(MAKEDIR)
 

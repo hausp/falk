@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <unordered_map>
-#include "base/types.hpp"
+#include "types.hpp"
 
 namespace lpi {
     class context;

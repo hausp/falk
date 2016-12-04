@@ -1,24 +1,24 @@
 
-#include "ev/symbol_mapper.hpp"
+#include "base/symbol_mapper.hpp"
 
 namespace {
-    auto invalid_function = falk::ev::function(true);
-    auto invalid_variable = falk::ev::variable(true);
+    auto invalid_function = falk::function(true);
+    auto invalid_variable = falk::variable(true);
 }
 
-falk::ev::symbol_mapper::symbol_mapper() {
+falk::symbol_mapper::symbol_mapper() {
     auto scp = scope{};
     scp.symbol_table["res"] = symbol::type::VARIABLE;
     scp.variables["res"] = variable();
     scopes.emplace_front(std::move(scp));
 }
 
-void falk::ev::symbol_mapper::update_result(variable var) {
+void falk::symbol_mapper::update_result(variable var) {
     auto& scope = scopes.back();
     scope.variables["res"] = std::move(var);
 }
 
-void falk::ev::symbol_mapper::declare_function(const std::string& id,
+void falk::symbol_mapper::declare_function(const std::string& id,
                                                function fn) {
     auto& scope = scopes.front();
     if (!scope.symbol_table.count(id)) {
@@ -29,7 +29,7 @@ void falk::ev::symbol_mapper::declare_function(const std::string& id,
     }
 }
 
-void falk::ev::symbol_mapper::declare_variable(const std::string& id,
+void falk::symbol_mapper::declare_variable(const std::string& id,
                                                variable var) {
     auto& scope = scopes.front();
     if (!scope.symbol_table.count(id)) {
@@ -40,7 +40,7 @@ void falk::ev::symbol_mapper::declare_variable(const std::string& id,
     }
 }
 
-void falk::ev::symbol_mapper::undefine_function(const std::string& id) {
+void falk::symbol_mapper::undefine_function(const std::string& id) {
     if (is_declared(id)) {
         auto& scope = scope_of(id);
         if (scope.symbol_table.at(id) == symbol::type::FUNCTION) {
@@ -53,8 +53,8 @@ void falk::ev::symbol_mapper::undefine_function(const std::string& id) {
     }
 }
 
-falk::ev::function&
-falk::ev::symbol_mapper::retrieve_function(const std::string& id) {
+falk::function&
+falk::symbol_mapper::retrieve_function(const std::string& id) {
     if (is_declared(id)) {
         auto& scope = scope_of(id);
         if (scope.symbol_table.at(id) == symbol::type::FUNCTION) {
@@ -69,8 +69,8 @@ falk::ev::symbol_mapper::retrieve_function(const std::string& id) {
     }
 }
 
-falk::ev::variable&
-falk::ev::symbol_mapper::retrieve_variable(const std::string& id) {
+falk::variable&
+falk::symbol_mapper::retrieve_variable(const std::string& id) {
     if (is_declared(id)) {
         auto& scope = scope_of(id);
         if (scope.symbol_table.at(id) == symbol::type::VARIABLE) {
@@ -85,15 +85,15 @@ falk::ev::symbol_mapper::retrieve_variable(const std::string& id) {
     }
 }
 
-void falk::ev::symbol_mapper::open_scope() {
+void falk::symbol_mapper::open_scope() {
     scopes.emplace_front();
 }
 
-void falk::ev::symbol_mapper::close_scope() {
+void falk::symbol_mapper::close_scope() {
     scopes.pop_front();
 }
 
-bool falk::ev::symbol_mapper::is_declared(const std::string& id) const {
+bool falk::symbol_mapper::is_declared(const std::string& id) const {
     for (auto& scope : scopes) {
         if (scope.symbol_table.count(id)) {
             return true;
@@ -102,7 +102,7 @@ bool falk::ev::symbol_mapper::is_declared(const std::string& id) const {
     return false;
 }
 
-scope& falk::ev::symbol_mapper::scope_of(const std::string& id) {
+scope& falk::symbol_mapper::scope_of(const std::string& id) {
     for (auto& scope : scopes) {
         if (scope.symbol_table.count(id)) {
             return scope;
@@ -113,7 +113,7 @@ scope& falk::ev::symbol_mapper::scope_of(const std::string& id) {
 }
 
 falk::symbol::type
-falk::ev::symbol_mapper::type_of(const std::string& id) const {
+falk::symbol_mapper::type_of(const std::string& id) const {
     for (auto& scope : scopes) {
         if (scope.symbol_table.count(id)) {
             return scope.symbol_table.at(id);

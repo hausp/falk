@@ -1,36 +1,36 @@
 
-inline falk::ev::variable::variable(falk::type t):
+inline falk::variable::variable(falk::type t):
   data{scalar(t)} {}
 
-inline falk::ev::variable::variable(bool flag):
+inline falk::variable::variable(bool flag):
   data{scalar(falk::type())}, fail{flag} {
     value<scalar>().set_error();
 }
 
 template<typename T>
-falk::ev::variable::variable(const T& value, structural::type t):
+falk::variable::variable(const T& value, structural::type t):
   data{value}, type{t} { }
 
-inline falk::structural::type falk::ev::variable::stored_type() const {
+inline falk::structural::type falk::variable::stored_type() const {
     return type;
 }
 
 template<typename T>
-T& falk::ev::variable::value() {
+T& falk::variable::value() {
     return data.value<T>();
 }
 
 template<typename T>
-const T& falk::ev::variable::value() const {
+const T& falk::variable::value() const {
     return data.value<T>();
 }
 
-inline bool falk::ev::variable::error() const {
+inline bool falk::variable::error() const {
     return fail;
 }
 
 template<typename Type, Type OP, typename T>
-falk::ev::variable& falk::ev::variable::op(op::callback<Type, OP, 2> op,
+falk::variable& falk::variable::op(op::callback<Type, OP, 2> op,
                                            const T& v) {
     switch (type) {
         case falk::structural::type::SCALAR: {
@@ -54,51 +54,51 @@ falk::ev::variable& falk::ev::variable::op(op::callback<Type, OP, 2> op,
 }
 
 template<typename T>
-falk::ev::variable& falk::ev::variable::pow(const T& rhs) {
+falk::variable& falk::variable::pow(const T& rhs) {
     return op(op::callback<op::assignment, op::assignment::POW, 2>(), rhs);
 }
 
 template<typename T>
-falk::ev::variable& falk::ev::variable::operator+=(const T& rhs) {
+falk::variable& falk::variable::operator+=(const T& rhs) {
     return op(op::callback<op::assignment, op::assignment::ADD, 2>(), rhs);
 }
 
 template<typename T>
-falk::ev::variable& falk::ev::variable::operator-=(const T& rhs) {
+falk::variable& falk::variable::operator-=(const T& rhs) {
     return op(op::callback<op::assignment, op::assignment::SUB, 2>(), rhs);
 }
 
 template<typename T>
-falk::ev::variable& falk::ev::variable::operator*=(const T& rhs) {
+falk::variable& falk::variable::operator*=(const T& rhs) {
     return op(op::callback<op::assignment, op::assignment::MULT, 2>(), rhs);
 }
 
 template<typename T>
-falk::ev::variable& falk::ev::variable::operator/=(const T& rhs) {
+falk::variable& falk::variable::operator/=(const T& rhs) {
     return op(op::callback<op::assignment, op::assignment::DIV, 2>(), rhs);
 }
 
 template<typename T>
-falk::ev::variable& falk::ev::variable::operator%=(const T& rhs) {
+falk::variable& falk::variable::operator%=(const T& rhs) {
     return op(op::callback<op::assignment, op::assignment::MOD, 2>(), rhs);
 }
 
 template<typename T>
-falk::ev::variable& falk::ev::variable::operator&=(const T& rhs) {
+falk::variable& falk::variable::operator&=(const T& rhs) {
     return op(op::callback<op::assignment, op::assignment::AND, 2>(), rhs);
 }
 
 template<typename T>
-falk::ev::variable& falk::ev::variable::operator|=(const T& rhs) {
+falk::variable& falk::variable::operator|=(const T& rhs) {
     return op(op::callback<op::assignment, op::assignment::OR, 2>(), rhs);
 }
 
 template<typename T>
-falk::ev::variable& falk::ev::variable::assign(const T& rhs) {
+falk::variable& falk::variable::assign(const T& rhs) {
     return op(op::callback<op::assignment,op::assignment::DIRECT, 2>(), rhs);
 }
 
-inline std::ostream& falk::ev::operator<<(std::ostream& out, const variable& v) {
+inline std::ostream& falk::operator<<(std::ostream& out, const variable& v) {
     switch (v.stored_type()) {
         case falk::structural::type::SCALAR: {
             auto& raw = v.value<scalar>();

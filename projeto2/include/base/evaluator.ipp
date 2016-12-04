@@ -1,6 +1,6 @@
 
 template<typename Type, Type OP>
-void falk::ev::evaluator::analyse(op::callback<Type, OP, 2> op,
+void falk::evaluator::analyse(op::callback<Type, OP, 2> op,
                                   node_array<2>& nodes) {
     for (auto& node : nodes) {
         node->traverse(*this);
@@ -22,7 +22,7 @@ void falk::ev::evaluator::analyse(op::callback<Type, OP, 2> op,
 }
 
 template<typename Operation, typename Stack>
-void falk::ev::evaluator::handle_operation(const Operation& op,
+void falk::evaluator::handle_operation(const Operation& op,
                                            structural::type rhs_type,
                                            Stack& stack) {
     switch (rhs_type) {
@@ -48,7 +48,7 @@ void falk::ev::evaluator::handle_operation(const Operation& op,
 }
 
 template<typename Type, Type OP>
-void falk::ev::evaluator::analyse(op::callback<Type, OP, 1> op,
+void falk::evaluator::analyse(op::callback<Type, OP, 1> op,
                                   node_array<1>& nodes) {
     nodes[0]->traverse(*this);
 
@@ -67,7 +67,7 @@ void falk::ev::evaluator::analyse(op::callback<Type, OP, 1> op,
 }
 
 template<falk::op::assignment OP>
-void falk::ev::evaluator::analyse(op::callback<op::assignment, OP, 2> op,
+void falk::evaluator::analyse(op::callback<op::assignment, OP, 2> op,
                                   node_array<2>& nodes) {
     auto apply = [&](auto& op, auto& vid, auto& rhs) {
         variable& var = mapper.retrieve_variable(vid.id);
@@ -129,57 +129,57 @@ void falk::ev::evaluator::analyse(op::callback<op::assignment, OP, 2> op,
     }
 }
 
-inline void falk::ev::evaluator::console_mode(bool flag) {
+inline void falk::evaluator::console_mode(bool flag) {
     console = flag;
 }
 
 template<typename T>
-void falk::ev::evaluator::analyse(const T& object) {
+void falk::evaluator::analyse(const T& object) {
     push(object);
 }
 
-inline void falk::ev::evaluator::push(const scalar& data) {
+inline void falk::evaluator::push(const scalar& data) {
     scalar_stack.push_back(data);
     types_stack.push_back(structural::type::SCALAR);
 }
 
-inline void falk::ev::evaluator::push(const array& data) {
+inline void falk::evaluator::push(const array& data) {
     array_stack.push_back(data);
     types_stack.push_back(structural::type::ARRAY);
 }
 
-inline void falk::ev::evaluator::push(const matrix& data) {
+inline void falk::evaluator::push(const matrix& data) {
     matrix_stack.push_back(data);
     types_stack.push_back(structural::type::MATRIX);
 }
 
-inline void falk::ev::evaluator::push(const var_id& data) {
+inline void falk::evaluator::push(const var_id& data) {
     id_stack.push_back(data);
 }
 
-inline void falk::ev::evaluator::initialize() {
+inline void falk::evaluator::initialize() {
     if (console) {
         std::cout << "falk> ";
     }
 }
 
-inline falk::ev::evaluator::real
-falk::ev::evaluator::make_real(const std::string& text) {
+inline falk::evaluator::real
+falk::evaluator::make_real(const std::string& text) {
     return std::stod(text);
 }
 
-inline falk::ev::evaluator::complex
-falk::ev::evaluator::make_complex(const std::string& text) {
+inline falk::evaluator::complex
+falk::evaluator::make_complex(const std::string& text) {
     auto clean_text = text.substr(0, text.size() - 2);
     return std::complex<double>{0, std::stod(text)};
 }
 
-inline falk::ev::evaluator::boolean
-falk::ev::evaluator::make_boolean(const std::string& text) {
+inline falk::evaluator::boolean
+falk::evaluator::make_boolean(const std::string& text) {
     return text == "true";
 }
 
-inline void falk::ev::evaluator::prompt() {
+inline void falk::evaluator::prompt() {
     if (console) {
         std::cout << "falk> ";
     }
