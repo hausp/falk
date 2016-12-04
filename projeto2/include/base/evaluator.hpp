@@ -53,18 +53,20 @@ namespace falk {
         // store values in the correspondent stack (see push(...) methods)
         template<typename T>
         void analyse(const T&);
-        // declares a variable
-        void analyse(const declare_variable&, node_array<1>&);
-        // declares a function
-        void analyse(const declare_function&, node_array<1>&);
         // executes a block of commands 
         void analyse(const block&, std::list<node_ptr>&);
         // executes conditionals (if-then-else)
         void analyse(const conditional&, node_array<3>&);
-        // executes 'while' loops
-        void analyse(const loop&, node_array<2>&);
+        // creates a structure to store data to initialize arrays and matrices
+        void analyse(const create_structure&, std::list<node_ptr>&);
+        // declares a variable
+        void analyse(const declare_variable&, node_array<1>&);
+        // declares a function
+        void analyse(const declare_function&, node_array<1>&);
         // executes 'for' loops
         void analyse(const for_it&, node_array<2>&);
+        // executes 'while' loops
+        void analyse(const loop&, node_array<2>&);
         // place a value as return
         void analyse(const ret&, node_array<1>&);
         // remove definition of a given function
@@ -73,12 +75,12 @@ namespace falk {
         void analyse(fun_id&, node_array<1>&);
         // retrieves a given id as variable
         void analyse(var_id&, node_array<2>&);
-        // get the value of an lvalue
-        void analyse(const valueof&, node_array<1>&);
         // prints a value
         void analyse(const print&, node_array<1>&);
-        // creates a structure to store data to initialize arrays and matrices
-        void analyse(const create_structure&, std::list<node_ptr>&);
+        // creates a scope around the node
+        void analyse(const scoped&, node_array<1>&);
+        // get the value of an lvalue
+        void analyse(const valueof&, node_array<1>&);
         // Binary calculations
         template<typename Type, Type OP>
         void analyse(op::callback<Type, OP, 2>, node_array<2>&);
@@ -91,8 +93,8 @@ namespace falk {
         // Auxiliar method for calculations
         template<typename Operation, typename Stack>
         void handle_operation(const Operation&, structural::type, Stack&);
-        // Process a command, received as an rvalue
-        void process(rvalue&);
+        // Process a command, received as a node
+        void process(node_ptr);
         // prompts "falk>"
         void prompt();
         // pushes a scalar to scalar_stack

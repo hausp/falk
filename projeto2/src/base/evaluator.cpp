@@ -182,6 +182,12 @@ void falk::evaluator::analyse(const print& p, node_array<1>& nodes) {
     }
 }
 
+void falk::evaluator::analyse(const scoped&, node_array<1>& nodes) {
+    mapper.open_scope();
+    nodes[0]->traverse(*this);
+    mapper.close_scope();
+}
+
 void falk::evaluator::analyse(const valueof&, node_array<1>& nodes) {
     nodes[0]->traverse(*this);
     auto vid = aut::pop(id_stack);
@@ -256,13 +262,13 @@ void falk::evaluator::analyse(const conditional&, node_array<3>& nodes) {
     auto type = aut::pop(types_stack);
     if (type == structural::type::SCALAR) {
         auto result = aut::pop(scalar_stack);
-        mapper.open_scope();
+        // mapper.open_scope();
         if (result.boolean()) {
             nodes[1]->traverse(*this);
         } else {
             nodes[2]->traverse(*this);
         }
-        mapper.close_scope();
+        // mapper.close_scope();
     } else {
         err::semantic<Error::NON_BOOLEAN_CONDITION>();
     }
@@ -274,9 +280,9 @@ void falk::evaluator::analyse(const loop&, node_array<2>& nodes) {
     if (type == structural::type::SCALAR) {
         auto result = aut::pop(scalar_stack);
         while (result.boolean() && !return_called) {
-            mapper.open_scope();
+            // mapper.open_scope();
             nodes[1]->traverse(*this);
-            mapper.close_scope();
+            // mapper.close_scope();
             nodes[0]->traverse(*this);
             aut::pop(types_stack);
             result = aut::pop(scalar_stack);
@@ -291,16 +297,30 @@ void falk::evaluator::analyse(const for_it& fit, node_array<2>& nodes) {
     auto vid = aut::pop(id_stack);
     auto& var = mapper.retrieve_variable(vid.id);
     
-    if (var.stored_type() == structural::type::SCALAR) {
-        // TODO: usuário burro bostão morra
+    switch (var.stored_type()) {
+        case structural::type::SCALAR: {
+            // TODO: usuário burro bostão morra
+            break;
+        }
+        case structural::type::ARRAY: {
+            for (auto& element : var.value<array>()) {
+                mapper.open_scope();
+                mapper.declare_variable(fit.var_name, variable(element));
+                nodes[1]->traverse(*this);
+                mapper.close_scope();
+            }
+        }
+        case structural::type::MATRIX: {
+            auto& banana = var.value<matrix>();
+            for (size_t i = 0; i < banana.row_count(); i++) {
+                auto row = banana.row(i);
+                mapper.open_scope();
+                mapper.declare_variable(fit.var_name, variable(row));
+                nodes[1]->traverse(*this);
+                mapper.close_scope();
+            }
+        }
     }
-    
-    // for (auto& element : var.value<array>()) {
-    //     mapper.open_scope();
-    //     mapper.declare_variable(fit.var_id, variable(element));
-    //     nodes[1]->traverse(*this);
-    //     mapper.close_scope();
-    // }
 }
 
 void falk::evaluator::analyse(const ret&, node_array<1>& nodes) {
@@ -315,10 +335,9 @@ void falk::evaluator::analyse(const ret&, node_array<1>& nodes) {
 void falk::evaluator::analyse(const undef& container) {
     mapper.undefine_function(container.id);
 }
-
-void falk::evaluator::process(rvalue& v) {
-    if (!v.empty()) {
-        v.traverse(*this);
+void falk::evaluator::process(node_ptr v) {
+    if (!v->empty()) {
+        v->traverse(*this);
     }
 }
 

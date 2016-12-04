@@ -90,6 +90,7 @@
 %type<falk::list>  block block_body;
 %type<falk::list>  conditional loop;
 %type<falk::rvalue> command;
+%type<falk::rvalue> scoped_block;
 %type<falk::rvalue> arr_size mat_size;
 %type<falk::rvalue> expr single_calc;
 %type<falk::rvalue> index rvalue;
@@ -127,11 +128,15 @@ program:
     | entry eoc         { analyser.prompt(); }
     | program error eoc { yyerrok; analyser.prompt(); };
 
-entry: program command  { analyser.process($2); };
+entry:
+      program command      { analyser.process($2); }
+    | program scoped_block { analyser.process($2); };
 
 new_line: NL { context.count_new_line(); };
 
 eoc: SEMICOLON | new_line | EOF;
+
+scoped_block : block { $$ = {falk::scoped(), $1}; }
 
 block:
     COLON block_body DOT {
@@ -282,21 +287,21 @@ conditional:
     IF OPAR expr CPAR block {
         $$ = falk::conditional();
         $$ += $3;
-        $$ += $5;
+        $$ += falk::rvalue{falk::scoped(), $5};
         $$ += falk::rvalue();
     }
     | IF OPAR expr CPAR block ELSE block {
         $$ = falk::conditional();
         $$ += $3;
-        $$ += $5;
-        $$ += $7;
+        $$ += falk::rvalue{falk::scoped(), $5};
+        $$ += falk::rvalue{falk::scoped(), $7};
     };
 
 loop:
     WHILE OPAR expr CPAR block {
         $$ = falk::loop();
         $$ += $3;
-        $$ += $5;
+        $$ += falk::rvalue{falk::scoped(), $5};
     }
     | FOR OPAR ID IN lvalue CPAR block {
         $$ = falk::for_it{$3};

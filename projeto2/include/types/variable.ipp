@@ -9,11 +9,11 @@ inline falk::variable::variable(bool flag):
 
 template<typename T>
 falk::variable::variable(const T& value):
-  data{value}, type{value.type()} { }
+  data{value}, type{value.type()}, fail{value.error()} { }
 
 template<typename T>
 falk::variable::variable(const T& value, structural::type t):
-  data{value}, type{t} { }
+  data{value}, type{t}, fail{value.error()} { }
 
 inline falk::structural::type falk::variable::stored_type() const {
     return type;

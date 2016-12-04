@@ -87,6 +87,10 @@ namespace falk {
             return {value};
         }
     };
+
+    struct scoped {
+        static constexpr size_t arity() { return 1; }
+    };
 }
 
 #endif /* FALK_ACTIONS_HPP */
