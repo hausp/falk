@@ -25,6 +25,9 @@ namespace falk {
         void push_front(const array&);
         void set_error();
         bool error() const;
+        bool printable() const;
+        static matrix silent();
+
         std::pair<size_t, size_t> size() const;
         size_t row_count() const;
         size_t column_count() const;
@@ -74,6 +77,7 @@ namespace falk {
         size_t num_rows = 0;
         size_t num_columns = 0;
         bool fail = false;
+        bool print = true;
         falk::type value_type = falk::type::BOOL;
 
         array prepare(const array&);
@@ -83,6 +87,15 @@ namespace falk {
 
     inline void matrix::set_error() {
         fail = true;
+    }
+
+    inline bool matrix::printable() const {
+        return print;
+    }
+    inline matrix matrix::silent() {
+        matrix m;
+        m.print = false;
+        return m;
     }
 
     inline matrix operator+(const matrix& lhs, const matrix& rhs) {

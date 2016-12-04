@@ -140,20 +140,17 @@ void falk::evaluator::analyse(fun_id& fun, node_array<1>& nodes) {
         }
 
         if (!return_called) {
-            push(0);
-            // TODO: suppress "res = 0" in this case
+            push(scalar::silent());
         }
         return_called = false;
         mapper.close_scope();
     } else if (fn.error()) {
-        push(0);
-        // TODO: suppress "res = 0" in this case
+        push(scalar::silent());
     } else {
         err::semantic<Error::MISMATCHING_PARAMETER_COUNT>(
             fun.id, params.size(), fun.number_of_params
         );
-        push(0);
-        // TODO: suppress "res = 0" in this case
+        push(scalar::silent());
     }
 }
 

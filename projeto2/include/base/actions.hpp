@@ -83,7 +83,9 @@ namespace falk {
 
         template<typename T>
         variable operator()(const T& value) const {
-            std::cout << "res = " << value << std::endl;
+            if (value.printable()) {
+                std::cout << "res = " << value << std::endl;
+            }
             return {value};
         }
     };

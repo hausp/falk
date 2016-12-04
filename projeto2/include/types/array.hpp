@@ -68,6 +68,16 @@ namespace falk {
             return fail;
         }
 
+        bool printable() const {
+            return print;
+        }
+
+        static array silent() {
+            array arr;
+            arr.print = false;
+            return arr;
+        }
+
         matrix to_matrix() const;
 
         constexpr structural::type type() const {
@@ -124,6 +134,7 @@ namespace falk {
      private:
         std::deque<scalar> values;
         bool fail = false;
+        bool print = true;
         falk::type value_type = falk::type::BOOL;
 
         scalar prepare(const scalar&);
