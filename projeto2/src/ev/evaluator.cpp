@@ -104,11 +104,16 @@ void falk::ev::evaluator::analyse(fun_id& fun, node_array<1>& nodes) {
                 }
                 case structural::type::ARRAY: {
                     auto v = aut::pop(array_stack);
+                    if (v.size() != params[i].vid.index.first) {
+                        // TODO: error
+                        break;
+                    }
                     mapper.declare_variable(params[i].vid.id, variable(v, t));
                     break;
                 }
                 case structural::type::MATRIX: {
                     auto v = aut::pop(matrix_stack);
+                    // TODO: same as previous
                     mapper.declare_variable(params[i].vid.id, variable(v, t));
                     break;
                 }
