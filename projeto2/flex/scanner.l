@@ -270,7 +270,7 @@ function {
     return falk::parser::make_COMPARISON(falk::op::comparison::EQ, falk::location());
 }
 
-"!=" {
+"!="|"<>" {
     // std::cout << "scanner scanning: " << yytext << std::endl;
     // TODO: pass real location of token, not an empty one
     return falk::parser::make_COMPARISON(falk::op::comparison::NE, falk::location());

@@ -140,7 +140,7 @@ namespace falk {
         }
 
         inline scalar operator!=(const scalar& lhs, const scalar& rhs) {
-            return lhs.real() != rhs.real() || lhs.imag() == rhs.imag();
+            return lhs.real() != rhs.real() || lhs.imag() != rhs.imag();
         }
 
         inline scalar operator&&(const scalar& lhs, const array& rhs) {
