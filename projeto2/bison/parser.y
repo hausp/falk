@@ -89,7 +89,7 @@
 %type<falk::list>  conditional loop;
 %type<falk::rvalue> command;
 %type<falk::rvalue> arr_size mat_size;
-%type<falk::rvalue> flat_expr expr single_calc;
+%type<falk::rvalue> expr single_calc;
 %type<falk::rvalue> index rvalue return;
 %type<falk::lvalue> assignment;
 %type<falk::lvalue> lvalue;
@@ -350,7 +350,7 @@ container_body:
         $$ += $3;
     };
 
-flat_expr:
+expr:
     REAL {
         $$ = falk::scalar($1);
     }
@@ -360,6 +360,9 @@ flat_expr:
     | BOOL {
         $$ = falk::scalar($1);
     }
+    | container {
+        $$ = $1.extract();
+    };
     | lvalue {
         $$ = $1;
     }
@@ -401,14 +404,6 @@ flat_expr:
     }
     | OPAR expr CPAR {
         $$ = std::move($2);
-    };
-
-expr:
-    flat_expr {
-        $$ = $1;
-    }
-    | container {
-        $$ = $1.extract();
     };
 %%
 
