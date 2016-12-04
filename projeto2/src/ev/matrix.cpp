@@ -153,7 +153,7 @@ void falk::ev::matrix::push_front(const array& row) {
 falk::ev::matrix& falk::ev::matrix::assign(const scalar& rhs) {
     for (size_t i = 0; i < num_rows; i++) {
         for (size_t j = 0; j < num_columns; j++) {
-            at(i, j) = rhs;
+            at(i, j).assign(rhs);
         }
     }
     return *this;

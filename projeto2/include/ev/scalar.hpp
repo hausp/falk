@@ -25,6 +25,8 @@ namespace falk {
             std::complex<double> complex() const;
             double imag() const;
             double real() const;
+            double& imag();
+            double& real();
 
             void set_error();
             bool error() const;
@@ -304,6 +306,14 @@ namespace falk {
         }
 
         inline double scalar::real() const {
+            return _real;
+        }
+
+        inline double& scalar::imag() {
+            return _imag;
+        }
+
+        inline double& scalar::real() {
             return _real;
         }
 

@@ -2,7 +2,7 @@
 #include "ev/matrix.hpp"
 
 falk::ev::array& falk::ev::array::assign(const scalar& rhs) {
-    return *this = rhs.to_array(size());
+    return assign(rhs.to_array(size()));
 }
 
 falk::ev::array& falk::ev::array::assign(const array& rhs) {
@@ -13,7 +13,8 @@ falk::ev::array& falk::ev::array::assign(const array& rhs) {
     }
 
     for (size_t i = 0; i < size(); i++) {
-        values[i] = rhs[i];
+        values[i].real() = rhs[i].real();
+        values[i].imag() = rhs[i].imag();
     }
     return *this;
 }
