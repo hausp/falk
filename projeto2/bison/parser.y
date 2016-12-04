@@ -52,6 +52,7 @@
 %token WHILE     "while keyword";
 %token INCLUDE   "include keyword";
 %token AUTO      "auto keyword";
+%token UNDEF     "undef keyword";
 %token IN        "in keyword";
 %token RET       "return keyword";
 %token FUN       "function keyword";
@@ -91,7 +92,7 @@
 %type<falk::rvalue> arr_size mat_size;
 %type<falk::rvalue> expr single_calc;
 %type<falk::rvalue> index rvalue;
-%type<falk::rvalue> fun_call return;
+%type<falk::rvalue> fun_call return undef;
 %type<falk::lvalue> assignment;
 %type<falk::lvalue> lvalue;
 %type<falk::declaration> decl_var decl_fun;
@@ -172,6 +173,7 @@ block_body:
 command:
     SEMICOLON     { $$ = {}; }
     | return      { $$ = $1; }
+    | undef       { $$ = $1; }
     | single_calc { $$ = {falk::print(), $1}; }
     //| include     { /*TODO: include functions defined here */ }
     | assignment  { $$ = $1.extract(); }
@@ -314,9 +316,9 @@ inc_block:
         // Receive code from FILE_ID
     };*/
 
-return: RET rvalue {
-    $$ = {falk::ret(), $2};
-};
+return: RET rvalue { $$ = {falk::ret(), $2}; };
+
+undef: UNDEF ID    { $$ = {falk::undef{$2}, falk::rvalue()}; };
 
 rvalue: expr { $$ = $1; };
 

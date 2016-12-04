@@ -32,6 +32,10 @@ namespace falk {
         static constexpr size_t arity() { return 1; }
     };
 
+    struct undef {
+        std::string id;
+    };
+
     struct valueof {
         static constexpr size_t arity() { return 1; }
     };

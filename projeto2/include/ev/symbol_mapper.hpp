@@ -30,6 +30,8 @@ namespace falk {
             void declare_function(const std::string&, function);
             void declare_variable(const std::string&, variable);
 
+            void undefine_function(const std::string&);
+
             function& retrieve_function(const std::string&);
             variable& retrieve_variable(const std::string&);
 

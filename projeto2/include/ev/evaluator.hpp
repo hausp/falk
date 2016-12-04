@@ -57,6 +57,7 @@ namespace falk {
             void analyse(const conditional&, node_array<3>&);
             void analyse(const loop&, node_array<2>&);
             void analyse(const ret&, node_array<1>&);
+            void analyse(const undef&);
             void analyse(fun_id&, node_array<1>&);
             void analyse(var_id&, node_array<2>&);
             void analyse(const valueof&, node_array<1>&);

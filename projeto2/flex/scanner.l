@@ -43,13 +43,6 @@ complex {real}i
 bool_literal true|false
 name [a-zA-Z][a-zA-Z0-9_]*
 
-if_literal if
-else_literal else
-for_literal for
-while_literal while
-include_literal include
-auto_literal auto
-
 end_of_command ;|\n
 
 nonacceptable [^-\+\*\(\)/=%,;\.\n0-9A-Za-z_ \t><!&|:\[\]]+
@@ -100,39 +93,43 @@ nonacceptable [^-\+\*\(\)/=%,;\.\n0-9A-Za-z_ \t><!&|:\[\]]+
     return falk::parser::make_BOOL(std::move(rvalue), falk::location());
 }
 
-{if_literal} {
+"if" {
     return falk::parser::make_IF(falk::location());
 }
 
-{else_literal} {
+"else" {
     return falk::parser::make_ELSE(falk::location());
 }
 
-{for_literal} {
+"for" {
     return falk::parser::make_FOR(falk::location());
 }
 
-{while_literal} {
+"while" {
     return falk::parser::make_WHILE(falk::location());
 }
 
-{include_literal} {
+"include" {
     return falk::parser::make_INCLUDE(falk::location());
 }
 
-{auto_literal} {
+"auto" {
     return falk::parser::make_AUTO(falk::location());
+}
+
+"undef" {
+    return falk::parser::make_UNDEF(falk::location());
 }
 
 "in" {
     return falk::parser::make_IN(falk::location());
 }
 
-return {
+"return" {
     return falk::parser::make_RET(falk::location());
 }
 
-function {
+"function" {
     return falk::parser::make_FUN(falk::location());
 }
 

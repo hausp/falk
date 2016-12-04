@@ -297,6 +297,10 @@ void falk::ev::evaluator::analyse(const ret&, node_array<1>& nodes) {
     }
 }
 
+void falk::ev::evaluator::analyse(const undef& container) {
+    mapper.undefine_function(container.id);
+}
+
 void falk::ev::evaluator::process(rvalue& v) {
     if (!v.empty()) {
         v.traverse(*this);

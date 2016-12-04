@@ -40,6 +40,18 @@ void falk::ev::symbol_mapper::declare_variable(const std::string& id,
     }
 }
 
+void falk::ev::symbol_mapper::undefine_function(const std::string& id) {
+    if (is_declared(id)) {
+        auto& scope = scope_of(id);
+        if (scope.symbol_table.at(id) == symbol::type::FUNCTION) {
+            scope.symbol_table.erase(id);
+        } else {
+            err::semantic<Error::NOT_A_FUNCTION>(id);
+        }
+    } else {
+        err::semantic<Error::UNDECLARED_FUNCTION>(id);
+    }
+}
 
 falk::ev::function&
 falk::ev::symbol_mapper::retrieve_function(const std::string& id) {
@@ -50,12 +62,10 @@ falk::ev::symbol_mapper::retrieve_function(const std::string& id) {
         } else {
             err::semantic<Error::NOT_A_FUNCTION>(id);
             return invalid_function;
-            // TODO: return what?
         }
     } else {
         err::semantic<Error::UNDECLARED_FUNCTION>(id);
         return invalid_function;
-        // TODO: return what?
     }
 }
 
@@ -68,12 +78,10 @@ falk::ev::symbol_mapper::retrieve_variable(const std::string& id) {
         } else {
             err::semantic<Error::NOT_A_VARIABLE>(id);
             return invalid_variable;
-            // TODO: return what?
         }
     } else {
         err::semantic<Error::UNDECLARED_VARIABLE>(id);
         return invalid_variable;
-        // TODO: return what?
     }
 }
 
