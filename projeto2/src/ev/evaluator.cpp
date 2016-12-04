@@ -90,8 +90,9 @@ void falk::ev::evaluator::analyse(fun_id& fun, node_array<1>& nodes) {
         for (size_t i = 0; i < fun.number_of_params; i++) {
             auto t = aut::pop(types_stack);
             if (params[i].s_type != t) {
-                // TODO: error (assigned to Ghabriel)
-                // mapper.close_scope();
+                err::semantic<Error::MISMATCHING_PARAMETER>(fun.id,
+                                                            params[i].vid.id);
+                mapper.close_scope();
                 // return something
                 break;
             }

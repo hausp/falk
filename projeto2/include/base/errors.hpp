@@ -34,6 +34,7 @@ enum class Error {
     TOO_MANY_INDEXES,
     SCALAR_INDEXED_ACCESS,
     NONSCALAR_INDEX,
+    MISMATCHING_PARAMETER,
 };
 
 namespace std {
@@ -75,6 +76,8 @@ namespace err {
     inline void semantic(falk::type, falk::type);
     template<Error>
     inline void semantic(size_t, size_t);
+    template<Error>
+    inline void semantic(const std::string&, const std::string&);
     template<Error>
     inline void semantic(const std::string&);
     template<Error>
@@ -155,6 +158,12 @@ namespace err {
     inline void semantic<Error::WRONG_COLUMN_COUNT>(size_t expected, size_t actual) {
         echo(error_prefix("semantic") + "mismatching column count (expected " +
             std::to_string(expected) + ", got " + std::to_string(actual) + ")");
+    }
+
+    template<>
+    inline void semantic<Error::MISMATCHING_PARAMETER>(const std::string& fn,
+                                                       const std::string& param) {
+        echo(error_prefix("semantic") + "TODO");
     }
 
     template<>
