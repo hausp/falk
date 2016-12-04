@@ -14,6 +14,13 @@ namespace ast {
       object{new ast::model<A, T>{data}} { }
 
     template<typename A>
+    template<typename T>
+    rvalue<A>::rvalue(const T& data, node_ptr node):
+      object{new ast::model<A, T>{data}} {
+        object->add_subnode(std::move(node));
+    }
+
+    template<typename A>
     bool rvalue<A>::empty() const {
         return object->empty();
     }

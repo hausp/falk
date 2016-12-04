@@ -168,7 +168,7 @@ block_body:
 command:
     SEMICOLON     { $$ = {}; }
     | return      { $$ = $1; }
-    | single_calc { $$ = $1; }
+    | single_calc { $$ = {falk::print(), $1}; }
     //| include     { /*TODO: include functions defined here */ }
     | assignment  { $$ = $1.extract(); }
     | decl_var    { $$ = $1.extract(); }
@@ -219,12 +219,10 @@ decl_fun:
 
 fun_call:
     ID OPAR rvalue_list CPAR {
-        $$ = falk::fun_id{$1, $3.size()};
-        $$.extract()->add_subnode($3);
+        $$ = {falk::fun_id{$1, $3.size()}, $3};
     };
     | ID OPAR CPAR {
-        $$ = falk::fun_id{$1, 0};
-        $$.extract()->add_subnode(falk::rvalue());
+        $$ = {falk::fun_id{$1, 0}, falk::rvalue()};
     };
 
 rvalue_list:
@@ -313,8 +311,7 @@ inc_block:
     };*/
 
 return: RET rvalue {
-    $$ = falk::ret();
-    $$.extract()->add_subnode($2);
+    $$ = {falk::ret(), $2};
 };
 
 rvalue: expr { $$ = $1; };

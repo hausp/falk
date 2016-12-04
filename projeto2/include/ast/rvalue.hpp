@@ -21,6 +21,8 @@ namespace ast {
         rvalue(node_ptr);
         template<typename T>
         rvalue(const T&);
+        template<typename T>
+        rvalue(const T&, node_ptr);
 
         bool empty() const;
 

@@ -60,6 +60,7 @@ namespace falk {
             void analyse(fun_id&, node_array<1>&);
             void analyse(var_id&, node_array<2>&);
             void analyse(const valueof&, node_array<1>&);
+            void analyse(const print&, node_array<1>&);
 
             void analyse(const create_structure&, std::list<node_ptr>&);
 
@@ -77,7 +78,6 @@ namespace falk {
             template<typename Operation, typename Stack>
             void handle_operation(const Operation&, structural::type, Stack&);
 
-            void print_result();
             void process(rvalue&);
             void prompt();
 

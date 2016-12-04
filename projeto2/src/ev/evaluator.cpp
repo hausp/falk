@@ -91,10 +91,9 @@ void falk::ev::evaluator::analyse(fun_id& fun, node_array<1>& nodes) {
         for (int i = fun.number_of_params - 1; i >= 0; i--) {
             auto t = aut::pop(types_stack);
             if (params[i].s_type != t) {
-                err::semantic<Error::MISMATCHING_PARAMETER>(fun.id,
-                                                            params[i].vid.id,
-                                                            params[i].s_type,
-                                                            t);
+                err::semantic<Error::MISMATCHING_PARAMETER>(
+                    fun.id, params[i].vid.id, params[i].s_type, t
+                );
                 error = true;
             }
             switch (t) {
@@ -119,10 +118,41 @@ void falk::ev::evaluator::analyse(fun_id& fun, node_array<1>& nodes) {
         if (!error) {
             auto& code = fn.code();
             code->traverse(*this);
+            
         }
+
+        if (!return_called) {
+            push(0);
+        }
+
         mapper.close_scope();
     } else {
         // TODO: error (assigned to Ghabriel)
+    }
+}
+
+void falk::ev::evaluator::analyse(const print& p, node_array<1>& nodes) {
+    nodes[0]->traverse(*this);
+    auto type = aut::pop(types_stack);
+    switch (type) {
+        case structural::type::SCALAR: {
+            auto result = aut::pop(scalar_stack);
+            if (!result.error())
+                mapper.update_result(p(result, type));
+            break;
+        }
+        case structural::type::ARRAY: {
+            auto result = aut::pop(array_stack);
+            if (!result.error())
+                mapper.update_result(p(result, type));
+            break;
+        }
+        case structural::type::MATRIX: {
+            auto result = aut::pop(matrix_stack);
+            if (!result.error())
+                mapper.update_result(p(result, type));
+            break;
+        }
     }
 }
 
@@ -221,9 +251,6 @@ void falk::ev::evaluator::analyse(const loop&, node_array<2>& nodes) {
             mapper.open_scope();
             nodes[1]->traverse(*this);
             mapper.close_scope();
-            if (!types_stack.empty()) {
-                print_result();
-            }
             nodes[0]->traverse(*this);
             aut::pop(types_stack);
             result = aut::pop(scalar_stack);
@@ -246,40 +273,37 @@ void falk::ev::evaluator::process(rvalue& v) {
     if (!v.empty()) {
         v.traverse(*this);
     }
-    while (!types_stack.empty()) {
-        print_result();
-    }
 }
 
-void falk::ev::evaluator::print_result() {
-    auto type = aut::pop_front(types_stack);
-    switch (type) {
-        case structural::type::SCALAR: {
-            auto result = aut::pop_front(scalar_stack);
-            if (!result.error()) {
-                std::cout << "res = " << result << std::endl;
-                mapper.update_result(variable(result, type));
-            }
-            break;
-        }
-        case structural::type::ARRAY: {
-            auto result = aut::pop_front(array_stack);
-            if (!result.error()) {
-                std::cout << "res = " << result << std::endl;
-                mapper.update_result(variable(result, type));
-            }
-            break;
-        }
-        case structural::type::MATRIX: {
-            auto result = aut::pop_front(matrix_stack);
-            if (!result.error()) {
-                std::cout << "res = " << result << std::endl;
-                mapper.update_result(variable(result, type));
-            }
-            break;
-        }
-    }
-}
+// void falk::ev::evaluator::print_result() {
+//     auto type = aut::pop_front(types_stack);
+//     switch (type) {
+//         case structural::type::SCALAR: {
+//             auto result = aut::pop_front(scalar_stack);
+//             if (!result.error()) {
+//                 std::cout << "res = " << result << std::endl;
+//                 mapper.update_result(variable(result, type));
+//             }
+//             break;
+//         }
+//         case structural::type::ARRAY: {
+//             auto result = aut::pop_front(array_stack);
+//             if (!result.error()) {
+//                 std::cout << "res = " << result << std::endl;
+//                 mapper.update_result(variable(result, type));
+//             }
+//             break;
+//         }
+//         case structural::type::MATRIX: {
+//             auto result = aut::pop_front(matrix_stack);
+//             if (!result.error()) {
+//                 std::cout << "res = " << result << std::endl;
+//                 mapper.update_result(variable(result, type));
+//             }
+//             break;
+//         }
+//     }
+// }
 
 void falk::ev::evaluator::analyse(const create_structure&,
                                   std::list<node_ptr>& nodes) {
