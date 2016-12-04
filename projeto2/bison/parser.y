@@ -90,12 +90,13 @@
 %type<falk::rvalue> command;
 %type<falk::rvalue> arr_size mat_size;
 %type<falk::rvalue> expr single_calc;
-%type<falk::rvalue> index rvalue rvalue_list;
+%type<falk::rvalue> index rvalue;
 %type<falk::rvalue> fun_call return;
 %type<falk::lvalue> assignment;
 %type<falk::lvalue> lvalue;
 %type<falk::declaration> decl_var decl_fun;
 %type<falk::list> container container_body;
+%type<falk::list> rvalue_list;
 %type<falk::parameters> param_list;
 %type<falk::parameter> param;
 %type<falk::real> literal_arr_size;
@@ -214,11 +215,19 @@ decl_fun:
 
 fun_call:
     ID OPAR rvalue_list CPAR {
-
+        $$ = falk::fun_id{$1, $3.size()};
+        $$.extract()->add_subnode($3);
     };
 
 rvalue_list:
-
+    rvalue {
+        $$ = falk::block();
+        $$ += $1;
+    }
+    | rvalue_list COMMA rvalue {
+        $$ = $1;
+        $$ += $3;
+    };
 
 param_list:
     param {

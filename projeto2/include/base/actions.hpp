@@ -42,6 +42,13 @@ namespace falk {
         std::pair<int64_t, int64_t> index = {-1, -1};
     };
 
+    struct fun_id {
+        static constexpr size_t arity() { return 1; }
+
+        std::string id;
+        size_t number_of_params;
+    };
+
     struct create_structure {
         static constexpr int arity() { return -1; }
     };

@@ -81,6 +81,10 @@ void falk::ev::evaluator::analyse(var_id& vid, node_array<2>& index) {
     push(vid);
 }
 
+void falk::ev::evaluator::analyse(fun_id& fun, node_array<1>& nodes) {
+    // TODO
+}
+
 void falk::ev::evaluator::analyse(const valueof&, node_array<1>& nodes) {
     nodes[0]->traverse(*this);
     auto vid = aut::pop(id_stack);

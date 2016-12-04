@@ -12,6 +12,11 @@ template<typename A>
 ast::list<A>::list(node_ptr node): object{std::move(node)} { }
 
 template<typename A>
+size_t ast::list<A>::size() const {
+    return object->size();
+}
+
+template<typename A>
 ast::list<A>& ast::list<A>::operator+=(node_ptr node) {
     object->add_subnode(node);
     return *this;

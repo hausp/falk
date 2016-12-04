@@ -15,6 +15,8 @@ namespace ast {
         list(const T&);
         list(node_ptr);
 
+        size_t size() const;
+
         list<Analyser>& operator+=(node_ptr);
         operator node_ptr();
         node_ptr extract();

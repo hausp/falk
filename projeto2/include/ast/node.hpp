@@ -40,6 +40,7 @@ namespace ast {
         virtual void traverse(Analyser&) = 0;
         virtual void add_subnode(std::shared_ptr<node<Analyser>>) = 0;
         virtual bool empty() { return false; }
+        virtual size_t size() const = 0;
     };
 
     template<typename Analyser, typename T, bool = has_arity<T>::value>
@@ -54,6 +55,7 @@ namespace ast {
             analyser.analyse(data);
         }
         void add_subnode(node_ptr node) override { }
+        size_t size() const override { return 0; }
      private:
         T data;
     };
@@ -70,6 +72,8 @@ namespace ast {
         void add_subnode(node_ptr node) override {
             subnodes.add(std::move(node));
         }
+
+        size_t size() const override { return subnodes.container.size(); }
      private:
         T data;
         holder subnodes;
@@ -81,6 +85,7 @@ namespace ast {
         void traverse(Analyser&) override { };
         void add_subnode(std::shared_ptr<node<Analyser>>) override { };
         bool empty() override { return true; }
+        size_t size() const override { return 0; }
     };
 }
 
