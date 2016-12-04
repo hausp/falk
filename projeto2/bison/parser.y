@@ -138,6 +138,10 @@ block:
     COLON block_body DOT {
         $$ = $2;
     }
+    | COLON block_body command DOT {
+        $$ = $2;
+        $$ += $3;
+    }
     | COLON command DOT {
         $$ = falk::block();
         $$ += $2;
