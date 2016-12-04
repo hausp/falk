@@ -80,9 +80,6 @@ void falk::ev::evaluator::analyse(var_id& vid, node_array<2>& index) {
 
 void falk::ev::evaluator::analyse(const valueof&, node_array<1>& nodes) {
     nodes[0]->traverse(*this);
-
-    // TODO: handle index
-    // Assigned to Ghabriel
     auto vid = aut::pop(id_stack);
     auto& var = mapper.retrieve_variable(vid.id);
 
@@ -186,22 +183,6 @@ void falk::ev::evaluator::analyse(const loop&, node_array<2>& nodes) {
         err::semantic<Error::NON_BOOLEAN_CONDITION>();
     }
 }
-
-// void falk::ev::evaluator::analyse(const index_access&, node_array<3>& nodes) {
-//     nodes[0]->traverse(*this);
-//     auto type = aut::pop(types_stack);
-//     switch (type) {
-//         case structural::type::SCALAR:
-//             err::semantic<Error::NOT_A_STRUCTURE>();
-//             break;
-//         case structural::type::ARRAY:
-//             std::cout << "TODO: implement indexed access to arrays";
-//             break;
-//         case structural::type::MATRIX:
-//             std::cout << "TODO: implement indexed access to matrices";
-//             break;
-//     }
-// }
 
 void falk::ev::evaluator::process(rvalue& v) {
     if (!v.empty()) {

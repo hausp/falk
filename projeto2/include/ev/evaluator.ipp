@@ -68,7 +68,10 @@ void falk::ev::evaluator::analyse(op::callback<Type, OP, 1> op,
 template<falk::op::assignment OP>
 void falk::ev::evaluator::analyse(op::callback<op::assignment, OP, 2> op,
                                   node_array<2>& nodes) {
-    auto apply = [&](auto& vid, auto& op, auto& var, auto& rhs) {
+    // TODO: find out why this doesn't work
+    // Assigned to Marleson
+    auto apply = [&](auto& op, auto& vid, auto& rhs) {
+        auto& var = mapper.retrieve_variable(vid.id);
         switch (var.stored_type()) {
             case structural::type::SCALAR: {
                 op(var, rhs);
@@ -104,21 +107,20 @@ void falk::ev::evaluator::analyse(op::callback<op::assignment, OP, 2> op,
     }
     auto t1 = aut::pop(types_stack);
     auto vid = aut::pop(id_stack);
-    auto& var = mapper.retrieve_variable(vid.id);
     switch (t1) {
         case structural::type::SCALAR: {
             auto rhs = aut::pop(scalar_stack);
-            apply(vid, op, var, rhs);
+            apply(op, vid, rhs);
             break;
         }
         case structural::type::ARRAY: {
             auto rhs = aut::pop(array_stack);
-            apply(vid, op, var, rhs);
+            apply(op, vid, rhs);
             break;
         }
         case structural::type::MATRIX: {
             auto rhs = aut::pop(matrix_stack);
-            apply(vid, op, var, rhs);
+            apply(op, vid, rhs);
             break;
         }
     }

@@ -172,6 +172,7 @@ command:
     | decl_fun    { $$ = $1.extract(); }
     | conditional { $$ = $1.extract(); }
     | loop        { $$ = $1.extract(); }
+    | return_stmt { $$ = {}; }
     ;
 
 decl_var:
@@ -280,6 +281,11 @@ inc_block:
     | FILE_ID {
         // Receive code from FILE_ID
     };*/
+
+return_stmt:
+    RET rvalue {
+        // TODO
+    };
 
 rvalue:
     expr {

@@ -7,16 +7,16 @@
 #include <stack>
 
 #include "array.hpp"
+#include "ast/declaration.hpp"
+#include "ast/list.hpp"
+#include "ast/lvalue.hpp"
+#include "ast/rvalue.hpp"
 #include "aut/utilities.hpp"
 #include "base/actions.hpp"
 #include "base/operators.hpp"
 #include "base/types.hpp"
 #include "matrix.hpp"
 #include "symbol_mapper.hpp"
-#include "ast/declaration.hpp"
-#include "ast/list.hpp"
-#include "ast/lvalue.hpp"
-#include "ast/rvalue.hpp"
 
 namespace falk {
     namespace ev {
@@ -89,6 +89,7 @@ namespace falk {
             std::stack<matrix> matrix_stack;
             std::stack<var_id> id_stack;
             std::stack<structural::type> types_stack;
+            bool inside_function = false;
         };
     }
 }
