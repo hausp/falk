@@ -1,9 +1,9 @@
 
+#include <fstream>
 #include "aut/cursed/overterm.hpp"
+#include "base/types.hpp"
 #include "lpi/lpa_context.hpp"
 #include "scanner.hpp"
-
-#include "base/types.hpp"
 
 int main(int argc, char** argv) {
     using terminal = cursed::overterm<true>;
@@ -13,6 +13,13 @@ int main(int argc, char** argv) {
     }
 
     lpi::lpa_context<falk::scanner, falk::parser, falk::analyser> context;
+
+    std::ifstream stream;
+    if (argc >= 3) {
+        stream.open(argv[2], std::ifstream::in);
+        context.console_mode(false);
+        context.switch_input_stream(&stream);
+    }
 
     return context.run();
 }

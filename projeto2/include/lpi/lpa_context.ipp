@@ -18,6 +18,11 @@ lpi::lpa_context<L,P,A>::lpa_context(A a):
 }
 
 template<typename L, typename P, typename A>
+void lpi::lpa_context<L,P,A>::console_mode(bool flag) {
+    analyser.console_mode(flag);
+}
+
+template<typename L, typename P, typename A>
 void lpi::lpa_context<L,P,A>::count_new_line() {
     lines++;
 }

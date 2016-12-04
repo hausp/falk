@@ -1,3 +1,4 @@
+
 template<typename Type, Type OP>
 void falk::ev::evaluator::analyse(op::callback<Type, OP, 2> op,
                                   node_array<2>& nodes) {
@@ -128,6 +129,10 @@ void falk::ev::evaluator::analyse(op::callback<op::assignment, OP, 2> op,
     }
 }
 
+inline void falk::ev::evaluator::console_mode(bool flag) {
+    console = flag;
+}
+
 template<typename T>
 void falk::ev::evaluator::analyse(const T& object) {
     push(object);
@@ -153,7 +158,9 @@ inline void falk::ev::evaluator::push(const var_id& data) {
 }
 
 inline void falk::ev::evaluator::initialize() {
-    std::cout << "falk> ";
+    if (console) {
+        std::cout << "falk> ";
+    }
 }
 
 inline falk::ev::evaluator::real
@@ -173,5 +180,7 @@ falk::ev::evaluator::make_boolean(const std::string& text) {
 }
 
 inline void falk::ev::evaluator::prompt() {
-    std::cout << "falk> ";
+    if (console) {
+        std::cout << "falk> ";
+    }
 }

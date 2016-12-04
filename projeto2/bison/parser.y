@@ -130,7 +130,7 @@ entry: program command { analyser.process($2); };
 
 new_line: NL { context.count_new_line(); };
 
-eoc: SEMICOLON | new_line;
+eoc: SEMICOLON | new_line | EOF;
 
 block:
     COLON block_body DOT {

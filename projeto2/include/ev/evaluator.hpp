@@ -42,6 +42,8 @@ namespace falk {
             using lvalue = ast::lvalue<evaluator>;
             using rvalue = ast::rvalue<evaluator>;
 
+            void console_mode(bool);
+
             void initialize();
             real make_real(const std::string&);
             complex make_complex(const std::string&);
@@ -55,7 +57,7 @@ namespace falk {
             void analyse(const conditional&, node_array<3>&);
             void analyse(const loop&, node_array<2>&);
             void analyse(const ret&, node_array<1>&);
-            
+
             void analyse(var_id&, node_array<2>&);
             void analyse(const valueof&, node_array<1>&);
 
@@ -90,6 +92,7 @@ namespace falk {
             std::stack<matrix> matrix_stack;
             std::stack<var_id> id_stack;
             std::stack<structural::type> types_stack;
+            bool console = true;
             bool inside_function = false;
             bool return_called = false;
             bool pre_validating = false;

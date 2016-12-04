@@ -15,6 +15,8 @@ namespace lpi {
         lpa_context();
         lpa_context(Analyser);
 
+        void console_mode(bool);
+
         void count_new_line() override;
         unsigned line_count() const override;
         int run();
