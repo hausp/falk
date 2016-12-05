@@ -50,7 +50,6 @@
 %token ELSE      "else keyword";
 %token FOR       "for keyword";
 %token WHILE     "while keyword";
-%token INCLUDE   "include keyword";
 %token AUTO      "auto keyword";
 %token UNDEF     "undef keyword";
 %token IN        "in keyword";
@@ -64,6 +63,7 @@
 %token DOT       ".";
 %token OBRACKET  "[";
 %token CBRACKET  "]";
+%token INCLUDE   "include";
 %token EOF 0     "end of file";
 
 %token<std::string> FILE_ID "file identifier"
@@ -214,10 +214,6 @@ decl_var:
         auto magic = falk::rvalue{falk::materialize{type, $5}, $2};
         $$ = falk::declaration(decl, magic);
     }
-    | ARRAY arr_size ID ASSIGN rvalue {
-        // TODO: resolve this colossal treta
-        $$ = falk::declaration();
-    }
     | ARRAY ID ASSIGN rvalue {
         auto decl = falk::declare_variable{$2, false, structural::type::ARRAY};
         $$ = falk::declaration(decl, $4);
@@ -227,10 +223,6 @@ decl_var:
         auto decl = falk::declare_variable{$3, false, type};
         auto magic = falk::rvalue{falk::materialize{type, $5}, $2};
         $$ = falk::declaration(decl, magic);
-    }
-    | MATRIX mat_size ID ASSIGN rvalue {
-        // TODO: resolve this colossal treta
-        $$ = falk::declaration();
     }
     | MATRIX ID ASSIGN rvalue {
         auto decl = falk::declare_variable{$2, false, structural::type::MATRIX};

@@ -7,11 +7,11 @@ namespace lpi {
     // stuck with templates deduction
     class context {
      public:
-        virtual void include(const std::string&) = 0;
         virtual void increase_location(unsigned) = 0;
         virtual unsigned location() const = 0;
         virtual void count_new_line() = 0;
         virtual unsigned line_count() const = 0;
+        virtual void include(const std::string&) = 0;
         virtual void close_file() = 0;
     };
 

@@ -17,11 +17,11 @@ namespace lpi {
 
         void console_mode(bool);
 
-        void include(const std::string&) override;
         void count_new_line() override;
         unsigned line_count() const override;
         int run();
         void clear();
+        void include(const std::string&) override;
         void close_file() override;
         void switch_input_stream(std::istream*);
      private:
