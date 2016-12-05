@@ -1,5 +1,7 @@
 
+#include <chrono>
 #include <fstream>
+#include <thread>
 #include "aut/cursed/overterm.hpp"
 #include "base/types.hpp"
 #include "lpi/lpa_context.hpp"
@@ -25,5 +27,9 @@ int main(int argc, char** argv) {
         context.switch_input_stream(&stream);
     }
 
-    return context.run();
+    auto ret = context.run();
+
+    std::this_thread::sleep_for(std::chrono::seconds(10));
+
+    return ret;
 }
