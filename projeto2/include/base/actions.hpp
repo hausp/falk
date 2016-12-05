@@ -98,6 +98,13 @@ namespace falk {
     struct scoped {
         static constexpr size_t arity() { return 1; }
     };
+
+    struct materialize {
+        static constexpr size_t arity() { return 1; }
+
+        structural::type s_type;
+        fundamental::type f_type;
+    };
 }
 
 #endif /* FALK_ACTIONS_HPP */

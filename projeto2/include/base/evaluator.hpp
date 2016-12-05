@@ -83,6 +83,9 @@ namespace falk {
         void analyse(const valueof&, node_array<1>&);
         // get the type of an lvalue
         void analyse(const typeof&, node_array<1>&);
+        // Creates a value with the specified type in materialize struct
+        // and with size passed by the node
+        void analyse(const materialize&, node_array<1>&);
         // Binary calculations
         template<typename Type, Type OP>
         void analyse(op::callback<Type, OP, 2>, node_array<2>&);
@@ -95,6 +98,8 @@ namespace falk {
         // Auxiliar method for calculations
         template<typename Operation, typename Stack>
         void handle_operation(const Operation&, structural::type, Stack&);
+        // Auxiliar method for variable declarations
+        void get_value(symbol_mapper&, const declare_variable&);
         // Process a command, received as a node
         void process(node_ptr);
         // prompts "falk>"

@@ -89,9 +89,9 @@
 // Non-terminals
 %type<falk::list>  block block_body;
 %type<falk::list>  conditional loop;
+%type<falk::list> arr_size mat_size;
 %type<falk::rvalue> command;
 %type<falk::rvalue> scoped_block;
-%type<falk::rvalue> arr_size mat_size;
 %type<falk::rvalue> expr single_calc;
 %type<falk::rvalue> rvalue;
 %type<falk::rvalue> fun_call return undef;
@@ -200,7 +200,13 @@ decl_var:
         auto decl = falk::declare_variable{$2, false, structural::type::SCALAR};
         $$ = falk::declaration(decl, $4);
     }
-    | ARRAY arr_size ID {
+    | ARRAY arr_size ID COLON TYPE {
+        auto type = structural::type::ARRAY;
+        auto decl = falk::declare_variable{$3, false, type};
+        auto magic = falk::rvalue{falk::materialize{type, $5}, $2};
+        $$ = falk::declaration(decl, magic);
+    }
+    | ARRAY arr_size ID ASSIGN rvalue {
         // TODO: resolve this colossal treta
         $$ = falk::declaration();
     }
@@ -208,7 +214,13 @@ decl_var:
         auto decl = falk::declare_variable{$2, false, structural::type::ARRAY};
         $$ = falk::declaration(decl, $4);
     }
-    | MATRIX mat_size ID {
+    | MATRIX mat_size ID COLON TYPE {
+        auto type = structural::type::MATRIX;
+        auto decl = falk::declare_variable{$3, false, type};
+        auto magic = falk::rvalue{falk::materialize{type, $5}, $2};
+        $$ = falk::declaration(decl, magic);
+    }
+    | MATRIX mat_size ID ASSIGN rvalue {
         // TODO: resolve this colossal treta
         $$ = falk::declaration();
     }
@@ -338,13 +350,15 @@ literal_mat_size: OBRACKET REAL COMMA REAL CBRACKET { $$ = {$2, $4}; };
 
 arr_size:
     OBRACKET rvalue CBRACKET {
-        // TODO: resolve this colossal treta
-        
+        $$ = falk::block();
+        $$ += $2;
     };
 
 mat_size:
     OBRACKET rvalue COMMA rvalue CBRACKET {
-        // TODO: resolve this colossal treta
+        $$ = falk::block();
+        $$ += $4;
+        $$ += $2;
     };
 
 lvalue:

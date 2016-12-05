@@ -1,40 +1,41 @@
 #include "base/errors.hpp"
 #include "base/evaluator.hpp"
 
+void falk::evaluator::get_value(symbol_mapper& mapper,
+                                const declare_variable& var) {
+    auto type = aut::pop(types_stack);
+    if (!var.deduce_type && type != var.s_type) {
+        err::semantic<Error::ILLEGAL_ASSIGNMENT>(var.s_type, type);
+        return;
+    }
+
+    switch (type) {
+        case structural::type::SCALAR: {
+            auto result = aut::pop(scalar_stack);
+            if (!result.error()) {
+                mapper.declare_variable(var.id, variable(result));
+            }
+            break;
+        }
+        case structural::type::ARRAY: {
+            auto result = aut::pop(array_stack);
+            if (!result.error()) {
+                mapper.declare_variable(var.id, variable(result));
+            }
+            break;
+        }
+        case structural::type::MATRIX: {
+            auto result = aut::pop(matrix_stack);
+            if (!result.error()) {
+                mapper.declare_variable(var.id, variable(result));
+            }
+            break;
+        }
+    }
+}
+
 void falk::evaluator::analyse(const declare_variable& var,
                                   node_array<1>& nodes) {
-    auto get_value = [this](auto& mapper, auto& var) {
-        auto type = aut::pop(types_stack);
-        if (!var.deduce_type && type != var.s_type) {
-            err::semantic<Error::ILLEGAL_ASSIGNMENT>(var.s_type, type);
-            return;
-        }
-
-        switch (type) {
-            case structural::type::SCALAR: {
-                auto result = aut::pop(scalar_stack);
-                if (!result.error()) {
-                    mapper.declare_variable(var.id, variable(result));
-                }
-                break;
-            }
-            case structural::type::ARRAY: {
-                auto result = aut::pop(array_stack);
-                if (!result.error()) {
-                    mapper.declare_variable(var.id, variable(result));
-                }
-                break;
-            }
-            case structural::type::MATRIX: {
-                auto result = aut::pop(matrix_stack);
-                if (!result.error()) {
-                    mapper.declare_variable(var.id, variable(result));
-                }
-                break;
-            }
-        }
-    };
-
     if (!nodes[0]->empty()) {
         nodes[0]->visit(*this);
         get_value(mapper, var);
@@ -284,7 +285,6 @@ void falk::evaluator::analyse(const conditional&, node_array<3>& nodes) {
     auto type = aut::pop(types_stack);
     if (type == structural::type::SCALAR) {
         auto result = aut::pop(scalar_stack);
-        // mapper.open_scope();
         if (result.boolean()) {
             nodes[1]->visit(*this);
         } else {
@@ -302,9 +302,7 @@ void falk::evaluator::analyse(const loop&, node_array<2>& nodes) {
     if (type == structural::type::SCALAR) {
         auto result = aut::pop(scalar_stack);
         while (result.boolean() && !return_called) {
-            // mapper.open_scope();
             nodes[1]->visit(*this);
-            // mapper.close_scope();
             nodes[0]->visit(*this);
             aut::pop(types_stack);
             result = aut::pop(scalar_stack);
@@ -429,5 +427,34 @@ void falk::evaluator::analyse(const create_structure&,
         push(m);
     } else {
         push(arr);
+    }
+}
+
+void falk::evaluator::analyse(const materialize& m, node_array<1>& nodes) {
+    nodes[0]->visit(*this);
+
+    auto t1 = aut::pop(types_stack);
+    if (t1 != structural::type::SCALAR) {
+        // TODO: error
+        return;
+    }
+
+    auto s1 = aut::pop(scalar_stack);
+
+    switch (m.s_type) {
+        case structural::type::SCALAR: {
+            // TODO: error
+            break;
+        }
+        case structural::type::ARRAY:
+            push(array(s1, m.f_type));
+            break;
+        case structural::type::MATRIX:
+            if (aut::pop(types_stack) != structural::type::SCALAR) {
+                // TODO: error
+                break;
+            }
+            push(matrix(s1, aut::pop(scalar_stack), m.f_type));
+            break;
     }
 }
