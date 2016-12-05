@@ -56,8 +56,10 @@ void falk::evaluator::analyse(var_id& vid, node_array<2>& index) {
         index[0]->visit(*this);
         auto type = aut::pop(types_stack);
         if (type != structural::type::SCALAR) {
-            // TODO: error
-            std::cout << "stop!" << std::endl;
+            err::semantic<Error::NONSCALAR_INDEX>();
+            vid.fail = true;
+            push(vid);
+            return;
         }
         vid.index.first = aut::pop(scalar_stack).real();
     }
@@ -66,8 +68,10 @@ void falk::evaluator::analyse(var_id& vid, node_array<2>& index) {
         index[1]->visit(*this);
         auto type = aut::pop(types_stack);
         if (type != structural::type::SCALAR) {
-            // TODO: error
-            std::cout << "stop!!" << std::endl;
+            err::semantic<Error::NONSCALAR_INDEX>();
+            vid.fail = true;
+            push(vid);
+            return;
         }
         vid.index.second = aut::pop(scalar_stack).real();
     }
@@ -190,6 +194,11 @@ void falk::evaluator::analyse(const scoped&, node_array<1>& nodes) {
 void falk::evaluator::analyse(const valueof&, node_array<1>& nodes) {
     nodes[0]->visit(*this);
     auto vid = aut::pop(id_stack);
+    if (vid.fail) {
+        push(scalar::invalid());
+        return;
+    }
+
     auto& var = mapper.retrieve_variable(vid.id);
 
     switch (var.stored_type()) {
@@ -251,9 +260,7 @@ void falk::evaluator::analyse(const typeof&, node_array<1>& nodes) {
 
     if(aut::pop(types_stack) != structural::type::SCALAR) {
         err::semantic<Error::NONSCALAR_TYPEOF>();
-        scalar result;
-        result.set_error();
-        push(result);
+        push(scalar::invalid());
         return;
     }
     
@@ -310,6 +317,10 @@ void falk::evaluator::analyse(const loop&, node_array<2>& nodes) {
 void falk::evaluator::analyse(const for_it& fit, node_array<2>& nodes) {
     nodes[0]->visit(*this);
     auto vid = aut::pop(id_stack);
+    if (vid.fail) {
+        return;
+    }
+
     auto& var = mapper.retrieve_variable(vid.id);
 
     auto type = mapper.type_of(fit.var_name);

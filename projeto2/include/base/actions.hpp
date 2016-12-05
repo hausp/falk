@@ -55,6 +55,7 @@ namespace falk {
 
         std::string id;
         std::pair<int64_t, int64_t> index = {-1, -1};
+        bool fail = false;
     };
 
     struct fun_id {

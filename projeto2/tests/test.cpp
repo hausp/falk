@@ -354,14 +354,11 @@ TEST_F(FalkTest, interpreter_v4) {
     inputs.add("if (false):", "2 + 2", ". else:", "3 + 3", ".");
     outputs.add("res = 6");
 
-    // inputs.add("var a = 3", "if (a < 10):", "a = 8", ". else:", "a = 13", "a");
-    // outputs.add("res = 8");
+    inputs.add("var a = 3", "if (a < 10):", "a = 8", ". else:", "a = 13", ".", "a");
+    outputs.add("res = 8");
 
-    // inputs.add("a");
-    // outputs.add("b");
-
-    // inputs.add("var a = 42", "if (a < 10):", "a = 8", ". else:", "a = 13", "a");
-    // outputs.add("res = 13");
+    inputs.add("var a = 42", "if (a < 10):", "a = 8", ". else:", "a = 13", ".", "a");
+    outputs.add("res = 13");
 
     inputs.add("var a = 1", "if (a < 5):", "var a = 10", "if (a > 5):", "1",
         ". else:", "2", ".", "a", ". else:", "3", ".", "a");
@@ -438,6 +435,37 @@ TEST_F(FalkTest, interpreter_v6) {
 
     inputs.add("var g = 42", "undef g");
     outputs.add("[Line 1] semantic error: g is not a function");
+
+    run_tests(inputs, outputs);
+}
+
+TEST_F(FalkTest, interpreter_v8) {
+    Container inputs;
+    Container outputs;
+    inputs.add("function sum(array x):", "var c : typeof x[0];",
+        "for (e in x): c += e.", "return c.", "sum([1, 2, 3, 4])");
+    outputs.add("res = 10");
+
+    inputs.add("auto a = 42", "auto b = [42]", "auto c = [[42]]", "a", "b", "c");
+    outputs.add("res = 42", "res = [42]", "res = [[42]]");
+
+    inputs.add("");
+    outputs.add("");
+
+    inputs.add("");
+    outputs.add("");
+
+    inputs.add("");
+    outputs.add("");
+
+    inputs.add("");
+    outputs.add("");
+
+    inputs.add("");
+    outputs.add("");
+
+    inputs.add("");
+    outputs.add("");
 
     run_tests(inputs, outputs);
 }
