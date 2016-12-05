@@ -90,7 +90,7 @@
 %type<falk::list>  block block_body;
 %type<falk::list>  conditional loop;
 %type<falk::list> arr_size mat_size;
-%type<falk::rvalue> command;
+%type<falk::rvalue> command normal_command special_command;
 %type<falk::rvalue> scoped_block;
 %type<falk::rvalue> expr single_calc;
 %type<falk::rvalue> rvalue;
@@ -152,11 +152,11 @@ block:
     COLON block_body DOT {
         $$ = $2;
     }
-    | COLON block_body command DOT {
+    | COLON block_body normal_command DOT {
         $$ = $2;
         $$ += $3;
     }
-    | COLON command DOT {
+    | COLON normal_command DOT {
         $$ = falk::block();
         $$ += $2;
     }
@@ -168,14 +168,22 @@ block_body:
     new_line {
         $$ = falk::block();
     }
-    | command eoc {
+    | normal_command eoc {
+        $$ = falk::block();
+        $$ += $1;
+    }
+    | special_command {
         $$ = falk::block();
         $$ += $1;
     }
     | block_body new_line {
         $$ = $1;
     }
-    | block_body command eoc {
+    | block_body normal_command eoc {
+        $$ = $1;
+        $$ += $2;
+    }
+    | block_body special_command {
         $$ = $1;
         $$ += $2;
     }
@@ -183,16 +191,24 @@ block_body:
         yyerrok;
     };
 
-command:
-    SEMICOLON     { $$ = {}; }
-    | return      { $$ = $1; }
+normal_command:
+    return        { $$ = $1; }
     | undef       { $$ = $1; }
     | single_calc { $$ = {falk::print(), $1}; }
     | assignment  { $$ = $1.extract(); }
     | decl_var    { $$ = $1.extract(); }
     | decl_fun    { $$ = $1.extract(); }
+    ;
+
+special_command:
+    SEMICOLON     { $$ = {}; }
     | conditional { $$ = $1.extract(); }
     | loop        { $$ = $1.extract(); }
+    ;
+
+command:
+    normal_command    { $$ = $1; }
+    | special_command { $$ = $1; }
     ;
 
 decl_var:
