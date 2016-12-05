@@ -42,6 +42,7 @@ enum class Error {
     FOR_SCALAR_TARGET,
     FOR_ALREADY_DECLARED,
     RETURN_OUT_OF_FUNCTION,
+    NONSCALAR_SIZE,
 };
 
 namespace std {
@@ -301,6 +302,11 @@ namespace err {
     template<>
     inline void semantic<Error::RETURN_OUT_OF_FUNCTION>() {
         echo(error_prefix("semantic") + "return outside of function scope");
+    }
+
+    template<>
+    inline void semantic<Error::NONSCALAR_SIZE>() {
+        echo(error_prefix("semantic") + "the size must be a scalar");
     }
 }
 

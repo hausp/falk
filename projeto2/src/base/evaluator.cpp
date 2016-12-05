@@ -435,26 +435,38 @@ void falk::evaluator::analyse(const materialize& m, node_array<1>& nodes) {
 
     auto t1 = aut::pop(types_stack);
     if (t1 != structural::type::SCALAR) {
-        // TODO: error
+        err::semantic<Error::NONSCALAR_SIZE>();
+        switch (m.s_type) {
+            case structural::type::ARRAY: {
+                array result;
+                result.set_error();
+                push(result);
+                break;
+            }
+            case structural::type::MATRIX: {
+                matrix result;
+                result.set_error();
+                push(result);
+                break;
+            }
+            default:;
+        }
         return;
     }
 
     auto s1 = aut::pop(scalar_stack);
 
     switch (m.s_type) {
-        case structural::type::SCALAR: {
-            // TODO: error
-            break;
-        }
         case structural::type::ARRAY:
             push(array(s1, m.f_type));
             break;
         case structural::type::MATRIX:
             if (aut::pop(types_stack) != structural::type::SCALAR) {
-                // TODO: error
+                err::semantic<Error::NONSCALAR_SIZE>();
                 break;
             }
             push(matrix(s1, aut::pop(scalar_stack), m.f_type));
             break;
+        default:;
     }
 }

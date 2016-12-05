@@ -458,59 +458,23 @@ TEST_F(FalkTest, interpreter_v8) {
     run_tests(inputs, outputs);
 }
 
-TEST_F(FalkTest, interpreter_v8) {
+TEST_F(FalkTest, interpreter_v9) {
     Container inputs;
     Container outputs;
-    inputs.add("function sum(array x):", "var c : typeof x[0];",
-        "for (e in x): c += e.", "return c.", "sum([1, 2, 3, 4])");
-    outputs.add("res = 10");
+    inputs.add("array a = [1, 2, 3]", "a[1] = 4", "a");
+    outputs.add("res = [1, 4, 3]");
 
-    inputs.add("auto a = 42", "auto b = [42]", "auto c = [[42]]", "a", "b", "c");
-    outputs.add("res = 42", "res = [42]", "res = [[42]]");
+    inputs.add("matrix b = [[1, 0], [0, 1]]", "b[1] = [4, 5]",
+        "b[,1] = [7, 8]", "b[1,1] = 3", "b");
+    outputs.add("res = [[1, 7], [4, 3]]");
 
-    inputs.add("array a = [1, 2]", "var x : typeof a");
-    outputs.add("[Line 1] semantic error: typeof expects a scalar");
-
-    inputs.add("matrix a = [[1, 2], [7, 21]]", "var x : typeof a");
-    outputs.add("[Line 1] semantic error: typeof expects a scalar");
+    // inputs.add("");
+    // outputs.add("");
 
     run_tests(inputs, outputs);
 }
 
-// TEST_F(FalkTest, interpreter_v98) {
-//     Container inputs;
-//     Container outputs;
-//     inputs.add("var a@");
-//     outputs.add("[Line 1] lexical error: unknown symbol @");
-
-//     inputs.add("var #####a");
-//     outputs.add("[Line 1] lexical error: unknown symbol #####");
-
-//     inputs.add("var 10b");
-//     outputs.add("[Line 1] syntax error");
-
-//     inputs.add("A = 2");
-//     outputs.add("[Line 1] semantic error: undeclared variable A");
-
-//     inputs.add("var a", "var a");
-//     outputs.add("[Line 2] semantic error: re-declaration of variable a");
-
-//     inputs.add("var a");
-//     outputs.add("");
-
-//     inputs.add("var a = 2");
-//     outputs.add("");
-
-//     inputs.add("array[2] a", "array b = a");
-//     outputs.add("");
-
-//     inputs.add("matrix[2,2] a", "matrix b = a");
-//     outputs.add("");
-
-//     run_tests(inputs, outputs);
-// }
-
-TEST_F(FalkTest, hardcore) {
+TEST_F(FalkTest, interpreter_v10) {
     run_test("tests/cases/1.falk", "tests/cases/1.out");
     run_test("tests/cases/2.falk", "tests/cases/2.out");
     run_test("tests/cases/3.falk", "tests/cases/3.out");
@@ -519,7 +483,7 @@ TEST_F(FalkTest, hardcore) {
 int main(int argc, char** argv) {
     std::cout << argv[0] << std::endl;
     constexpr double min_version = 0;
-    constexpr double latest_stable = 0.1;
+    constexpr double latest_stable = 1;
 
     ::testing::InitGoogleTest(&argc, argv);
     const std::string tests = [&] {
