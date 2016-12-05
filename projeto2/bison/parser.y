@@ -105,6 +105,7 @@
 %type<falk::parameter> param;
 %type<falk::real> literal_arr_size;
 %type<std::pair<falk::real, falk::real>> literal_mat_size;
+%type<std::vector<std::string>> inc_block include;
 
 // Operators precedence.
 // The latest it is listed, the highest the precedence.
@@ -127,7 +128,12 @@ program:
       %empty            { analyser.prompt(); }
     | program new_line  { analyser.prompt(); }
     | entry eoc         { analyser.prompt(); }
-    | program error eoc { yyerrok; analyser.prompt(); };
+    | program error eoc { yyerrok; analyser.prompt(); }
+    | program include eoc {
+        for (auto& file : $2) {
+            context.include(file);
+        }
+    };
 
 entry:
       program command      { analyser.process($2); }
@@ -135,10 +141,10 @@ entry:
 
 new_line: NL { context.count_new_line(); };
 
-eoc:
-      SEMICOLON
-    | new_line
-    | EOF { context.close_file(); };
+eoc: SEMICOLON | new_line | EOF {
+    context.close_file();
+    analyser.prompt();
+};
 
 scoped_block : block { $$ = {falk::scoped(), $1}; }
 
@@ -181,7 +187,6 @@ command:
     SEMICOLON     { $$ = {}; }
     | return      { $$ = $1; }
     | undef       { $$ = $1; }
-    | include     { $$ = {}; }
     | single_calc { $$ = {falk::print(), $1}; }
     | assignment  { $$ = $1.extract(); }
     | decl_var    { $$ = $1.extract(); }
@@ -334,15 +339,14 @@ return: RET rvalue { $$ = {falk::ret(), $2}; };
 
 undef: UNDEF ID { $$ = {falk::undef{$2}}; };
 
-include:
-    INCLUDE COLON inc_block DOT;
+include: INCLUDE COLON inc_block DOT { $$ = $3; };
 
 inc_block:
     STRING {
-        context.include($1);
+        $$.push_back($1);
     }
     | STRING COMMA inc_block {
-        context.include($1);
+        $$.push_back($1);
     };
 
 rvalue: expr { $$ = $1; };

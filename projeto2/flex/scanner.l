@@ -286,6 +286,9 @@ nonacceptable [^-\+\*\(\)/=%,;\.\n0-9A-Za-z_ \t><!&|:\[\]]+
     lpi::lexical_error(context, message);
 }
 
-<<EOF>> { return yyterminate(); }
+<<EOF>> {
+    std::cout << "hello" << std::endl;
+    return yyterminate();
+}
 
 %%
