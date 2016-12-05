@@ -12,6 +12,7 @@ namespace falk {
      public:
         explicit matrix(bool = false);
         matrix(size_t, size_t);
+        matrix(size_t, size_t, falk::type);
 
         scalar& at(size_t, size_t);
         const scalar& at(size_t, size_t) const;
@@ -378,6 +379,9 @@ namespace falk {
 
     inline matrix::matrix(size_t rows, size_t columns):
       values(rows * columns), num_rows{rows}, num_columns{columns} { }
+
+    inline matrix::matrix(size_t rows, size_t columns, falk::type type):
+      values(rows * columns, 0), num_rows{rows}, num_columns{columns}, value_type{type} { }
 
     inline bool matrix::error() const {
         return fail;

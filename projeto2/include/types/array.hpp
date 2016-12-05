@@ -14,9 +14,7 @@ namespace falk {
      public:
         explicit array(bool flag = false) : fail(flag) { }
         array(const scalar& size, falk::type type)
-        : values(size.real(), 0) {
-            value_type = type;
-        }
+        : values(size.real(), 0), value_type{type} { }
 
         auto begin() const {
             return values.cbegin();
