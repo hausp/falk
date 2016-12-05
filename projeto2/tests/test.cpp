@@ -468,8 +468,14 @@ TEST_F(FalkTest, interpreter_v9) {
         "b[,1] = [7, 8]", "b[1,1] = 3", "b");
     outputs.add("res = [[1, 7], [4, 3]]");
 
-    // inputs.add("");
-    // outputs.add("");
+    inputs.add("array[3] a : real", "a");
+    outputs.add("res = [0, 0, 0]");
+
+    inputs.add("var x : real", "array[[x]] a : real");
+    outputs.add("[Line 1] semantic error: the size must be a scalar");
+
+    inputs.add("var x : real", "matrix[2, [x]] a : real");
+    outputs.add("[Line 1] semantic error: the size must be a scalar");
 
     run_tests(inputs, outputs);
 }
@@ -481,7 +487,6 @@ TEST_F(FalkTest, interpreter_v10) {
 }
 
 int main(int argc, char** argv) {
-    std::cout << argv[0] << std::endl;
     constexpr double min_version = 0;
     constexpr double latest_stable = 1;
 
