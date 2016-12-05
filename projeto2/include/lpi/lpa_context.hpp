@@ -29,6 +29,7 @@ namespace lpi {
         Analyser analyser;
         unsigned loc = 0;
         unsigned lines = 0;
+        std::ifstream file;
 
         void increase_location(unsigned) override;
         unsigned location() const override;
