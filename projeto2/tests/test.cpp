@@ -449,31 +449,32 @@ TEST_F(FalkTest, interpreter_v8) {
     inputs.add("auto a = 42", "auto b = [42]", "auto c = [[42]]", "a", "b", "c");
     outputs.add("res = 42", "res = [42]", "res = [[42]]");
 
-    inputs.add("");
-    outputs.add("");
+    inputs.add("array a = [1, 2]", "var x : typeof a");
+    outputs.add("[Line 1] semantic error: typeof expects a scalar");
 
-    inputs.add("");
-    outputs.add("");
-
-    inputs.add("");
-    outputs.add("");
-
-    inputs.add("");
-    outputs.add("");
-
-    inputs.add("");
-    outputs.add("");
-
-    inputs.add("");
-    outputs.add("");
+    inputs.add("matrix a = [[1, 2], [7, 21]]", "var x : typeof a");
+    outputs.add("[Line 1] semantic error: typeof expects a scalar");
 
     run_tests(inputs, outputs);
 }
 
-TEST_F(FalkTest, hardcore) {
-    run_test("tests/cases/1.falk", "tests/cases/1.out");
-    run_test("tests/cases/2.falk", "tests/cases/2.out");
-    run_test("tests/cases/3.falk", "tests/cases/3.out");
+TEST_F(FalkTest, interpreter_v8) {
+    Container inputs;
+    Container outputs;
+    inputs.add("function sum(array x):", "var c : typeof x[0];",
+        "for (e in x): c += e.", "return c.", "sum([1, 2, 3, 4])");
+    outputs.add("res = 10");
+
+    inputs.add("auto a = 42", "auto b = [42]", "auto c = [[42]]", "a", "b", "c");
+    outputs.add("res = 42", "res = [42]", "res = [[42]]");
+
+    inputs.add("array a = [1, 2]", "var x : typeof a");
+    outputs.add("[Line 1] semantic error: typeof expects a scalar");
+
+    inputs.add("matrix a = [[1, 2], [7, 21]]", "var x : typeof a");
+    outputs.add("[Line 1] semantic error: typeof expects a scalar");
+
+    run_tests(inputs, outputs);
 }
 
 // TEST_F(FalkTest, interpreter_v98) {
@@ -509,41 +510,11 @@ TEST_F(FalkTest, hardcore) {
 //     run_tests(inputs, outputs);
 // }
 
-// TEST_F(FalkTest, interpreter_v99) {
-//     Container inputs;
-//     Container outputs;
-//     inputs.add("var a = 2 + 2", "var b = 7 - 4", "a + b");
-//     outputs.add("res = 7");
-
-//     inputs.add("var a = 2", "var b = a ** a", "a * b");
-//     outputs.add("res = 8");
-
-//     inputs.add("array a = [1, 2, 3]", "a + 1");
-//     outputs.add("res = [2, 3, 4]");
-
-//     inputs.add("matrix a = [[1,0,0],[0,1,0],[0,0,1]]", "a * 2");
-//     outputs.add("res = [[2,0,0],[0,2,0],[0,0,2]]");
-
-//     inputs.add("array a = [1, 2, 3]", "array b = [1, 3, 6]", "a + b");
-//     outputs.add("res = [2, 5, 9]");
-
-//     inputs.add("array a = [1, 2, 3]", "array b = [1, 3]", "a + b");
-//     outputs.add("[Line 3] semantic error: non-compatible size array operation");
-
-//     inputs.add("matrix a = [[1,0,0],[0,1,0],[0,0,1]]", "matrix b = [[1,0,0],[0,1,0]]", "a + b");
-//     outputs.add("[Line 3] semantic error: non-compatible size matrix operation");
-
-//     inputs.add("matrix a = [[1,0,0],[0,1,0],[1,0,0]]", "matrix b = [[1,1,1],[0,0,0],[0,0,0]]", "a * b");
-//     outputs.add("res = [[1,1,1],[0,0,0],[1,1,1]]");
-
-//     inputs.add("matrix a = [[1,0,0],[0,1,0],[1,0,0]]", "matrix b = [[1,1],[0,0],[0,0]]", "a * b");
-//     outputs.add("res = [[1,1],[0,0],[1,1]]");
-
-//     inputs.add("matrix a = [[1,0,0],[0,1,0],[1,0,0]]", "matrix b = [[1,1,1],[0,0,0]]", "a * b");
-//     outputs.add("[Line 3] semantic error: non-compatible size matrix operation");
-
-//     run_tests(inputs, outputs);
-// }
+TEST_F(FalkTest, hardcore) {
+    run_test("tests/cases/1.falk", "tests/cases/1.out");
+    run_test("tests/cases/2.falk", "tests/cases/2.out");
+    run_test("tests/cases/3.falk", "tests/cases/3.out");
+}
 
 int main(int argc, char** argv) {
     std::cout << argv[0] << std::endl;
