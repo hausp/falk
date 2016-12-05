@@ -1,0 +1,62 @@
+// Falk Standard Library v1.0
+// Returns the sum of the values of an array
+function sum(array x):
+	var c : typeof x[0]
+	for (element in x):
+		c += element
+	.	
+	return c
+.
+
+// Returns the product of the values of an array
+function prod(array x):
+	var c : typeof x[0]
+	c = 1
+	for (element in x):
+		c *= element
+	.	
+	return c
+.
+
+// Returns the factorial of a given number
+function fact(var x):
+	var c = 1
+	while (x > 0):
+		c *= x
+		x -= 1
+	.
+	return c
+.
+
+// Returns the square root of n
+function sqrt(var n):
+	return n ** 0.5
+.
+
+// Returns the size of an array
+function array_size(array s):
+	var size : real
+	for (e in s):
+		size += 1
+	.
+	return size
+.
+
+// Returns the number of lines of a matrix
+function num_lines(matrix m):
+	var count = 0;
+	for (row in m):
+		count += 1;
+	.
+	return count;
+.
+
+// Returns the number of lines of a matrix
+function num_columns(matrix m):
+	var count = 0;
+	auto row = m[0];
+	for (elem in row):
+		count += 1;
+	.
+	return count;
+.
