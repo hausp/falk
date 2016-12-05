@@ -41,6 +41,7 @@ enum class Error {
     NONSCALAR_TYPEOF,
     FOR_SCALAR_TARGET,
     FOR_ALREADY_DECLARED,
+    RETURN_OUT_OF_FUNCTION,
 };
 
 namespace std {
@@ -295,6 +296,11 @@ namespace err {
     template<>
     inline void semantic<Error::FOR_SCALAR_TARGET>() {
         echo(error_prefix("semantic") + "for expects an array or matrix, scalar given");
+    }
+
+    template<>
+    inline void semantic<Error::RETURN_OUT_OF_FUNCTION>() {
+        echo(error_prefix("semantic") + "return outside of function scope");
     }
 }
 

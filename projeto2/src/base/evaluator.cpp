@@ -363,7 +363,7 @@ void falk::evaluator::analyse(const ret&, node_array<1>& nodes) {
         nodes[0]->visit(*this);
         return_called = true;
     } else {
-        // TODO: error or kill the program (Assigned to Ghabriel)
+        err::semantic<Error::RETURN_OUT_OF_FUNCTION>();
     }
 }
 
