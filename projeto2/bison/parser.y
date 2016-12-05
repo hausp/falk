@@ -50,7 +50,6 @@
 %token ELSE      "else keyword";
 %token FOR       "for keyword";
 %token WHILE     "while keyword";
-%token INCLUDE   "include keyword";
 %token AUTO      "auto keyword";
 %token UNDEF     "undef keyword";
 %token IN        "in keyword";
@@ -181,7 +180,6 @@ command:
     SEMICOLON     { $$ = {}; }
     | return      { $$ = $1; }
     | undef       { $$ = $1; }
-    | include     { $$ = {}; }
     | single_calc { $$ = {falk::print(), $1}; }
     | assignment  { $$ = $1.extract(); }
     | decl_var    { $$ = $1.extract(); }
@@ -209,10 +207,6 @@ decl_var:
         auto magic = falk::rvalue{falk::materialize{type, $5}, $2};
         $$ = falk::declaration(decl, magic);
     }
-    | ARRAY arr_size ID ASSIGN rvalue {
-        // TODO: resolve this colossal treta
-        $$ = falk::declaration();
-    }
     | ARRAY ID ASSIGN rvalue {
         auto decl = falk::declare_variable{$2, false, structural::type::ARRAY};
         $$ = falk::declaration(decl, $4);
@@ -222,10 +216,6 @@ decl_var:
         auto decl = falk::declare_variable{$3, false, type};
         auto magic = falk::rvalue{falk::materialize{type, $5}, $2};
         $$ = falk::declaration(decl, magic);
-    }
-    | MATRIX mat_size ID ASSIGN rvalue {
-        // TODO: resolve this colossal treta
-        $$ = falk::declaration();
     }
     | MATRIX ID ASSIGN rvalue {
         auto decl = falk::declare_variable{$2, false, structural::type::MATRIX};
@@ -333,17 +323,6 @@ loop:
 return: RET rvalue { $$ = {falk::ret(), $2}; };
 
 undef: UNDEF ID { $$ = {falk::undef{$2}}; };
-
-include:
-    INCLUDE COLON inc_block DOT;
-
-inc_block:
-    STRING {
-        context.include($1);
-    }
-    | STRING COMMA inc_block {
-        context.include($1);
-    };
 
 rvalue: expr { $$ = $1; };
 

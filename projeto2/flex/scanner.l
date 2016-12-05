@@ -109,10 +109,6 @@ nonacceptable [^-\+\*\(\)/=%,;\.\n0-9A-Za-z_ \t><!&|:\[\]]+
     return falk::parser::make_WHILE(falk::location());
 }
 
-"include" {
-    return falk::parser::make_INCLUDE(falk::location());
-}
-
 "auto" {
     return falk::parser::make_AUTO(falk::location());
 }
