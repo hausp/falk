@@ -26,16 +26,16 @@ void lpi::lpa_context<L,P,A>::console_mode(bool flag) {
 template<typename L, typename P, typename A>
 void lpi::lpa_context<L,P,A>::include(const std::string& name) {
     // std::cout << "TODO: include " << name << std::endl;
-    std::ifstream stream(name, std::ifstream::in);
-    if (stream.is_open()) {
+    file = std::ifstream(name, std::ifstream::in);
+    if (file.is_open()) {
         // std::stringstream ss;
-        // ss << stream.get();
-        // while (stream.good()) {
-        //     ss << stream.get();
+        // ss << file.get();
+        // while (file.good()) {
+        //     ss << file.get();
         // }
         // yy_scan_string(ss.str());
-        // switch_input_stream(&stream);
-        // switch_input_stream(&std::cin);
+        switch_input_stream(&file);
+        switch_input_stream(&std::cin);
     } else {
         std::cout << "couldn't read file '" << name << "'" << std::endl;
     }
