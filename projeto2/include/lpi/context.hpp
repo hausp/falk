@@ -12,6 +12,7 @@ namespace lpi {
         virtual unsigned location() const = 0;
         virtual void count_new_line() = 0;
         virtual unsigned line_count() const = 0;
+        virtual void close_file() = 0;
     };
 
     template<typename Context>

@@ -22,6 +22,7 @@ namespace lpi {
         unsigned line_count() const override;
         int run();
         void clear();
+        void close_file() override;
         void switch_input_stream(std::istream*);
      private:
         Lexer lexer;

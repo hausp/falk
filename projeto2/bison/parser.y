@@ -135,7 +135,10 @@ entry:
 
 new_line: NL { context.count_new_line(); };
 
-eoc: SEMICOLON | new_line | EOF;
+eoc:
+      SEMICOLON
+    | new_line
+    | EOF { context.close_file(); };
 
 scoped_block : block { $$ = {falk::scoped(), $1}; }
 
