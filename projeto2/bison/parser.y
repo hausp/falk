@@ -197,13 +197,13 @@ normal_command:
     | single_calc { $$ = {falk::print(), $1}; }
     | assignment  { $$ = $1.extract(); }
     | decl_var    { $$ = $1.extract(); }
-    | decl_fun    { $$ = $1.extract(); }
     ;
 
 special_command:
     SEMICOLON     { $$ = {}; }
     | conditional { $$ = $1.extract(); }
     | loop        { $$ = $1.extract(); }
+    | decl_fun    { $$ = $1.extract(); }
     ;
 
 command:
