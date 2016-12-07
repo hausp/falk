@@ -15,11 +15,17 @@
 ## limitations under the License.                                            ##
 ###############################################################################
 
-################################## SCALARS ##################################
+################################## VARIABLES ##################################
 BISON     :=bison
 BISONDIR  :=bison
 BISONIN   :=$(shell find $(BISONDIR) -name '*.y' 2> /dev/null)
 BISONDEF  :=$(patsubst $(BISONDIR)/%.y,$(HDRDIR)/%.hpp,$(BISONIN))
+BISONDEF  +=$(patsubst $(BISONDIR)/%.y,\
+$(HDRDIR)/$(dir %.y)location.hpp,$(BISONIN))
+BISONDEF  +=$(patsubst $(BISONDIR)/%.y,\
+$(HDRDIR)/$(dir %.y)position.hpp,$(BISONIN))
+BISONDEF  +=$(patsubst $(BISONDIR)/%.y,\
+$(HDRDIR)/$(dir %.y)stack.hpp,$(BISONIN))
 BISONOUT  :=$(patsubst $(BISONDIR)/%.y,$(SRCDIR)/%.cpp,$(BISONIN))
 MAKEDIR   +=$(BISONDIR)
 MKXCLNALL +=clean_bison

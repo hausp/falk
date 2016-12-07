@@ -15,7 +15,7 @@
 ## limitations under the License.                                            ##
 ###############################################################################
 
-################################## SCALARS ##################################
+################################## VARIABLES ##################################
 FLEXDIR   :=flex
 FLEXIN    :=$(shell find $(FLEXDIR) -name '*.l' 2> /dev/null)
 FLEXOUT   :=$(patsubst $(FLEXDIR)/%.l,$(SRCDIR)/%.cpp,$(FLEXIN))

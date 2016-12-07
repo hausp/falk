@@ -18,13 +18,15 @@
 #################################### RULES ####################################
 $(SRCDIR)/%.cpp $(HDRDIR)/%.hpp: $(BISONDIR)/%.y
 	@echo "[ $(BISON) ] $^ -> .hpp .cpp"
-	@$(BISON) --defines=$(HDRDIR)/$*.hpp --output=$(SRCDIR)/$*.cpp $^
+	@$(BISON) -l --defines=$(HDRDIR)/$*.hpp --output=$(SRCDIR)/$*.cpp $^
 	@mv $(SRCDIR)/location.hh $(HDRDIR)/ 2> /dev/null
 	@mv $(SRCDIR)/position.hh $(HDRDIR)/ 2> /dev/null
 	@mv $(SRCDIR)/stack.hh $(HDRDIR)/ 2> /dev/null
 
 clean_bison:
 	@$(RM) $(BISONOUT) $(BISONDEF)
-	@$(RM) $(HDRDIR)/location.hh
-	@$(RM) $(HDRDIR)/position.hh
-	@$(RM) $(HDRDIR)/stack.hh
+
+# @$(RM) $(HDRDIR)/location.hh
+# @$(RM) $(HDRDIR)/position.hh
+# @$(RM) $(HDRDIR)/stack.hh
+# @echo $(BISONDEF)

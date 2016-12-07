@@ -15,7 +15,7 @@
 ## limitations under the License.                                            ##
 ###############################################################################
 
-################################## SCALARS ##################################
+################################## VARIABLES ##################################
 # Include all Makefile definitions
 -include $(wildcard *.mkd)
 # Project files
@@ -41,7 +41,7 @@ MAKEDIR  :=$(BINDIR) $(SRCDIR) $(HDRDIR)
 # Printables
 CXXPRINT :=$(CXX)
 
-.PHONY: all makedir clean clean_deps clean_all tests
+.PHONY: all makedir clean clean_deps clean_all tests cleanest
 
 # Include variables used by Makefile Extensions
 -include $(MKXVAR)
@@ -70,7 +70,7 @@ $(OBJDIR)/%.o: %.cpp
 $(DEPDIR)/%.d: %.cpp
 	@echo "[makedep] $< -> .d"
 	@mkdir -p $(DEPDIR)/$(*D)
-	@$(CXX) -MM -MP -MT "$(OBJDIR)/$*.o $@" -MF "$@" $< $(INCLUDE) $(CXXFLAGS)
+	@$(CXX) -MM -MP -MG -MT "$(OBJDIR)/$*.o $@" -MF "$@" $< $(INCLUDE) $(CXXFLAGS)
 
 makedir: | $(MAKEDIR)
 
@@ -99,12 +99,17 @@ clean_all: clean $(MKXCLNALL)
 	@$(RM) -r $(BINDIR)
 	@$(RM) -r $(DEPDIR)
 
+cleanest: clean_all
+
 ################################ PREREQUISITES ################################
-# Do not include list of dependencies when they are going to be deleted, i.e.,
-# when the target is clean_all
+# Do not include list of dependencies with clean rules
+ifneq ($(MAKECMDGOALS), clean)
 ifneq ($(MAKECMDGOALS), clean_all)
+ifneq ($(MAKECMDGOALS), cleanest)
   -include $(DEP)
   ifeq ($(MAKECMDGOALS), tests)
 	-include $(TDEP)
   endif
+endif
+endif
 endif
